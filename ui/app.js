@@ -103,6 +103,7 @@ async function openProject(q) {
     S.project = r.project; S.saved = JSON.stringify(r.project);
     if (draft && draft !== S.saved && confirm('Có bản chỉnh sửa chưa lưu từ lần trước. Khôi phục?')) S.project = JSON.parse(draft);
     S.hist = []; S.fut = [];
+    try { const u = JSON.parse(sessionStorage.getItem('undo_' + r.id) || 'null'); sessionStorage.removeItem('undo_' + r.id); if (u) { S.hist = u.hist || []; S.fut = u.fut || []; } } catch {} // survive the auto-reload after scene code changes
     S.ratio = S.project.formats[0]; S.scene = S.project.scenes[0]?.id;
     S.render = {...S.state.render, ratio: S.ratio};
     $('#home').hidden = true; $('#editor').hidden = false; $('#topActions').hidden = false;
@@ -261,7 +262,7 @@ function renderRatios() {
 // ─────────────────────────── INSPECTOR TABS ───────────────────────────
 $$('#tabs button').forEach((b) => (b.onclick = () => { S.tab = b.dataset.tab; $$('#tabs button').forEach((x) => x.classList.toggle('on', x === b)); renderTab(); }));
 function renderAll() { renderRatios(); renderScenes(); renderScrub(); renderTab(); $('#dirty').hidden = !isDirty(); }
-function renderTab() { setTimeout(renderHandles, 0); const B = $('#tabBody'); B.innerHTML = ''; ({text: tabText, titles: tabTitles, overlays: tabOverlays, subs: tabSubs, audio: tabAudio, look: tabLook, render: tabRender})[S.tab](B); }
+function renderTab() { setTimeout(renderHandles, 0); const B = $('#tabBody'); B.innerHTML = ''; ({text: tabText, titles: tabTitles, overlays: tabOverlays, subs: tabSubs, audio: tabAudio, look: tabLook, render: tabRender, history: tabHistory})[S.tab](B); }
 
 const field = (label, input, hint) => h('label', {}, label, input, hint ? h('div', {class: 'hint'}, hint) : null);
 const assetSelect = (value, type, onchange) => {
@@ -356,7 +357,7 @@ function tabTitles(B) {
   const upd = (fn, rerender = true) => { commit((p) => fn(p.titles.find((x) => x.id === t.id)), {rerender}); if (rerender) renderTab(); };
   const g = h('div', {class: 'group'}, h('h4', {}, 'Sửa tiêu đề', h('button', {class: 'small danger', onclick: () => { commit((p) => { p.titles = p.titles.filter((x) => x.id !== t.id); }); S.titleSel = null; renderTab(); }}, 'Xoá')));
   const ta = h('textarea', {rows: 2}); ta.value = t.text;
-  let first = true; ta.oninput = () => { if (first) { S.hist.push(JSON.stringify(S.project)); first = false; } t.text = ta.value; afterChange(true, false); }; ta.onblur = () => { first = true; renderScrub(); };
+  let first = true; ta.oninput = () => { if (first) { S.hist.push(JSON.stringify(S.project)); S.fut = []; first = false; } t.text = ta.value; afterChange(true, false); }; ta.onblur = () => { first = true; renderScrub(); };
   g.append(field('Nội dung', ta, 'Dùng *chữ* để tô màu nhấn, / để xuống dòng.'));
   g.append(h('div', {class: 'cols2'},
     field('Bắt đầu (giây)', h('div', {class: 'row'}, h('input', {type: 'number', step: '0.1', value: t.start, onchange: (e) => upd((x) => { x.start = +e.target.value; })}), h('button', {class: 'small', title: 'Lấy thời điểm đang xem', onclick: () => upd((x) => { x.start = +secNow().toFixed(2); })}, '⌖'))),
@@ -683,6 +684,60 @@ async function diagnoseGpu() {
   } catch (e) { modal(h('div', {}, h('h3', {}, 'Chẩn đoán GPU'), h('p', {class: 'v-fail'}, e.message))); }
 }
 
+// ─────────────────────────── HISTORY (điểm neo) ───────────────────────────
+const keepUndo = () => { try { sessionStorage.setItem('undo_' + S.id, JSON.stringify({hist: S.hist.slice(-40), fut: S.fut.slice(-40)})); } catch {} };
+const HKIND = {ai: ['AI', 'Trước một lượt chat với Claude Code'], save: ['Lưu', 'Khi bấm Lưu trong Studio'], open: ['Mở', 'Khi mở dự án'], manual: ['Mốc', 'Mốc bạn tự đặt'], 'before-restore': ['Trước khôi phục', 'Tự lưu ngay trước một lần khôi phục — khôi phục điểm này để hoàn tác'], 'before-upload': ['Trước thay media', 'Tự lưu trước khi một file trùng tên bị ghi đè']};
+const fmtBytes = (b) => b > 1e9 ? (b / 1e9).toFixed(2) + ' GB' : b > 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1e3)) + ' KB';
+$('#btnHistory').onclick = () => { S.tab = 'history'; $$('#tabs button').forEach((x) => x.classList.toggle('on', x.dataset.tab === 'history')); renderTab(); };
+async function tabHistory(B) {
+  const g = h('div', {class: 'group'}, h('h4', {}, 'Đặt mốc (bản ưng ý)'));
+  const name = h('input', {placeholder: 'VD: Bản nháp 1 gửi khách, Nhạc mới đã duyệt…'});
+  g.append(name, h('div', {class: 'row', style: 'margin-top:8px'}, h('button', {class: 'primary', onclick: async () => {
+    if (isDirty()) { if (!confirm('Có thay đổi chưa lưu. Lưu rồi đặt mốc?')) return; await save(); }
+    try { const r = await api('/api/history/snapshot', {id: S.id, label: name.value.trim() || 'Mốc ' + new Date().toLocaleString('vi-VN'), starred: true}); toast(`★ Đã đặt mốc · ${r.files} tệp${r.newBytes ? ' · lưu thêm ' + fmtBytes(r.newBytes) : ''}`); renderTab(); } catch (e) { toast(e.message, true); }
+  }}, '★ Đặt mốc ngay')),
+  h('div', {class: 'hint', style: 'margin:8px 0 0'}, 'Studio tự tạo điểm neo trước mỗi lượt chat với Claude Code, khi mở dự án và khi Lưu (tối đa 2 phút/lần). Mỗi điểm neo chứa toàn bộ dự án: project.json, code cảnh, brief, ảnh, video, âm thanh, Lottie — trừ out/. File không đổi chỉ lưu 1 lần nên rất nhẹ. Mốc ★ không bao giờ bị dọn; điểm tự động giữ 60 cái gần nhất + 1 cái/ngày trong 30 ngày.'));
+  B.append(g);
+  const L = h('div', {}, h('div', {class: 'muted'}, 'Đang tải lịch sử…')); B.append(L);
+  let r; try { r = await api('/api/history?id=' + S.id); } catch (e) { L.innerHTML = ''; L.append(h('div', {class: 'v-fail'}, e.message)); return; }
+  if (S.tab !== 'history') return;
+  L.innerHTML = '';
+  L.append(h('div', {class: 'row', style: 'justify-content:space-between;margin-bottom:8px'}, h('span', {class: 'muted'}, `${r.items.length} điểm neo · kho lịch sử ${fmtBytes(r.bytes)}`), h('button', {class: 'small', onclick: () => renderTab()}, '↻ Làm mới')));
+  if (!r.items.length) L.append(h('div', {class: 'muted'}, 'Chưa có điểm neo nào.'));
+  let day = '';
+  for (const it of r.items) {
+    const d = new Date(it.time); const dd = d.toLocaleDateString('vi-VN', {weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric'});
+    if (dd !== day) { day = dd; L.append(h('div', {class: 'hday'}, dd)); }
+    const k = HKIND[it.kind] || [it.kind, ''];
+    L.append(h('div', {class: 'hitem' + (it.starred ? ' star' : '')},
+      h('div', {class: 'l1'}, h('b', {}, d.toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit', second: '2-digit'})), h('span', {class: 'hk hk-' + it.kind, title: k[1]}, k[0]), h('span', {class: 'lb', title: it.label}, it.label || ''),
+        h('button', {class: 'small', title: it.starred ? 'Bỏ ★ (điểm tự động có thể bị dọn)' : 'Giữ vĩnh viễn', onclick: async () => { await api('/api/history/star', {id: S.id, snap: it.id, starred: !it.starred}); renderTab(); }}, it.starred ? '★' : '☆')),
+      h('div', {class: 'l2', title: 'Thay đổi so với điểm neo trước đó'}, '△ ' + it.diff.summary, it.source ? ' · ' + it.source : ''),
+      h('div', {class: 'row', style: 'margin-top:6px'},
+        h('button', {class: 'small', onclick: () => restoreDlg(it)}, 'Khôi phục…'),
+        h('button', {class: 'small', onclick: async () => { const v = prompt('Tên cho điểm neo này:', it.label || ''); if (v == null) return; await api('/api/history/star', {id: S.id, snap: it.id, label: v, starred: true}); renderTab(); }}, 'Đặt tên'))));
+  }
+}
+async function restoreDlg(it) {
+  let d; try { d = await api(`/api/history/preview?id=${S.id}&snap=${encodeURIComponent(it.id)}`); } catch (e) { return toast(e.message, true); }
+  const rows = [...d.changed.map((f) => [f, 'ghi đè về bản cũ']), ...d.added.map((f) => [f, 'lấy lại (đã bị xoá)']), ...d.removed.map((f) => [f, 'xoá (thêm sau mốc này)'])].sort((a, b) => a[0].localeCompare(b[0]));
+  const box = h('div', {class: 'hfiles'});
+  const checks = rows.map(([f, what]) => { const c = h('input', {type: 'checkbox', value: f}); box.append(h('label', {class: 'chk', style: 'display:flex;margin:0 0 4px'}, c, h('span', {style: 'color:var(--text)'}, f), h('span', {class: 'muted'}, ' — ' + what))); return c; });
+  const go = async (paths) => {
+    const msg = (paths ? `Khôi phục ${paths.length} mục đã chọn` : 'Khôi phục TOÀN BỘ dự án') + ` về điểm neo ${new Date(it.time).toLocaleString('vi-VN')}?\n\nTrạng thái hiện tại sẽ được tự lưu thành 1 điểm neo trước, nên bạn luôn quay lại được.` + (isDirty() ? '\n\n⚠ Thay đổi CHƯA LƯU trong Studio sẽ bị bỏ.' : '');
+    if (!confirm(msg)) return;
+    S.restoring = true;
+    try { const r = await api('/api/history/restore', {id: S.id, snap: it.id, paths}); localStorage.removeItem('draft_' + S.id); sessionStorage.removeItem('undo_' + S.id); S.project = null; toast(`Đã khôi phục (${r.written} tệp ghi lại, ${r.deleted} tệp xoá) — đang tải lại…`); setTimeout(() => location.reload(), 700); }
+    catch (e) { S.restoring = false; toast(e.message, true, 6000); }
+  };
+  modal(h('div', {style: 'min-width:min(620px,86vw)'}, h('h3', {}, 'Khôi phục điểm neo'),
+    h('p', {class: 'muted', style: 'margin-top:0'}, `${new Date(it.time).toLocaleString('vi-VN')} · ${(HKIND[it.kind] || [it.kind])[0]}${it.label ? ' · ' + it.label : ''}`),
+    rows.length ? h('div', {}, h('p', {}, h('b', {}, `${rows.length} mục khác với hiện tại.`), ' Tick từng mục nếu chỉ muốn khôi phục một phần (vd chỉ 1 cảnh hoặc chỉ nhạc):'), box) : h('p', {class: 'v-ok'}, 'Dự án hiện tại giống hệt điểm neo này — không có gì để khôi phục.'),
+    h('div', {class: 'row', style: 'margin-top:12px;flex-wrap:wrap'},
+      h('button', {class: 'primary', disabled: !rows.length, onclick: () => go(null)}, 'Khôi phục toàn bộ'),
+      h('button', {disabled: !rows.length, onclick: () => { const p = checks.filter((c) => c.checked).map((c) => c.value); if (!p.length) return toast('Chưa chọn mục nào', true); go(p); }}, 'Chỉ khôi phục mục đã chọn'))));
+}
+
 // ─────────────────────────── LIVE EVENTS ───────────────────────────
 let es, lastBeat = Date.now(), pollT = null;
 const onJobsData = (list) => { const prev = S.jobs; S.jobs = list; for (const j of S.jobs) { const p = prev.find((x) => x.id === j.id); if (p && p.status !== j.status && j.status === 'done') toast('Render xong: ' + j.out.split(/[\\/]/).pop(), false, 6000); } renderJobs(); };
@@ -692,7 +747,8 @@ function connectEvents() {
   es.addEventListener('ping', beat);
   es.addEventListener('template', (e) => { const d = JSON.parse(e.data); toast(d.thumbs ? `Đã tạo ảnh bìa cho mẫu ${d.tpl}` : `Tạo ảnh bìa mẫu ${d.tpl} lỗi: ${d.error || ''}`, !d.thumbs, 6000); });
   es.addEventListener('jobs', (e) => { beat(); onJobsData(JSON.parse(e.data)); });
-  es.addEventListener('code', (e) => { const d = JSON.parse(e.data); if (d.id !== S.id) return; if (d.error) showBundleError(d.error); else { toast('Code cảnh vừa thay đổi — đang tải lại preview…'); setTimeout(() => location.reload(), 600); } });
+  es.addEventListener('code', (e) => { const d = JSON.parse(e.data); if (d.id !== S.id) return; if (d.error) showBundleError(d.error); else { toast('Code cảnh vừa thay đổi — đang tải lại preview…'); keepUndo(); setTimeout(() => location.reload(), 600); } });
+  es.addEventListener('restored', (e) => { const d = JSON.parse(e.data); if (d.id !== S.id || S.restoring) return; if (!isDirty()) { toast('Dự án vừa được khôi phục về điểm neo cũ — đang tải lại…'); setTimeout(() => location.reload(), 600); } else toast('Dự án vừa được khôi phục ở nơi khác — lưu ý: bạn đang có thay đổi chưa lưu', true, 8000); });
   es.addEventListener('project', async (e) => { const d = JSON.parse(e.data); if (d.id !== S.id || isDirty()) return; const r = await api('/api/project/open', {id: S.id}); if (JSON.stringify(r.project) !== S.saved) { S.project = r.project; S.saved = JSON.stringify(r.project); pushPreview(); renderAll(); toast('project.json được cập nhật từ bên ngoài (Claude Code?) — đã tải lại'); } });
   clearInterval(pollT);
   pollT = setInterval(async () => { // watchdog for the live connection: no heartbeat for 25 s → warn + poll + reconnect

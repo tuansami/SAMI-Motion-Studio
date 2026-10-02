@@ -1,6 +1,6 @@
 # SAMI Motion Studio — Hướng dẫn sử dụng
 
-> Phiên bản 0.2 (giai đoạn 1: web app chạy trên máy). Mới ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab **Ảnh chèn**, **Thư viện mẫu**. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà **không cần biết code**. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.
+> Phiên bản 0.3 (giai đoạn 1: web app chạy trên máy). Mới ở 0.3: **Lịch sử phiên bản / điểm neo** (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab **Ảnh chèn**, **Thư viện mẫu**. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà **không cần biết code**. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.
 
 >
 > **Làm việc theo nhóm / với Claude:** đọc `docs/QUY_TRINH_LAM_VIEC.md` (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).
@@ -75,7 +75,7 @@ Dòng cuối trang cho biết cấu hình máy: số luồng CPU, có phát hi�
 ### Thanh trên cùng
 - **● Chưa lưu** — có thay đổi chưa ghi vào `project.json`.
 - **↶ / ↷** — hoàn tác / làm lại (Ctrl+Z / Ctrl+Y), tối đa 80 bước.
-- **Lưu** (Ctrl+S) — ghi file, đồng thời tự kiểm tra lỗi. Bản trước được giữ ở `.project.backup.json`.
+- **Lưu** (Ctrl+S) — ghi file, đồng thời tự kiểm tra lỗi. Mỗi lần Lưu (tối đa 2 phút/lần) còn tạo một **điểm neo** trong tab **Lịch sử**.
 - **Kiểm tra** — liệt kê ✓ đạt / ⚠ lưu ý / ✗ lỗi (thiếu ảnh, cảnh hở, nhạc ngắn hơn video, chữ sai cú pháp…). Có lỗi ✗ thì không cho render.
 - **📁** — mở thư mục dự án trong Explorer.
 - **Dự án** — về màn hình dự án.
@@ -264,6 +264,35 @@ Luôn **xuất bản nháp / 1 cảnh trước**, duyệt xong mới xuất 4K.
 
 ---
 
+## 11b. Tab **Lịch sử** — điểm neo, khôi phục bản cũ (mới ở 0.3)
+Ctrl+Z chỉ nhớ các thao tác trong lúc đang mở Studio, và chỉ nhớ phần chữ/thời lượng. **Lịch sử** thì lưu **toàn bộ dự án** xuống đĩa: project.json, code cảnh, brief, ảnh, video, âm thanh, Lottie (trừ `out/`). Tắt máy, sang ngày hôm sau vẫn khôi phục được.
+
+**Điểm neo tự tạo khi:**
+| Lúc | Nhãn |
+|---|---|
+| Trước **mỗi lượt chat** với Claude Code trong thư mục dự án (nhãn là đầu câu bạn gõ) | AI |
+| Mở dự án trong Studio | Mở |
+| Bấm Lưu (tối đa 2 phút/lần) | Lưu |
+| Tải lên / nhập file **trùng tên** với file đang có | Trước thay media |
+| Ngay trước mỗi lần khôi phục, nên khôi phục cũng hoàn tác được | Trước khôi phục |
+
+Nếu không có gì thay đổi so với điểm neo gần nhất thì Studio bỏ qua, không tạo điểm mới.
+
+**Dùng:**
+1. Bấm **🕘 Lịch sử** trên thanh trên cùng (hoặc tab Lịch sử).
+2. Có bản ưng ý thì gõ tên rồi bấm **★ Đặt mốc ngay**, ví dụ "Bản nháp 1 gửi khách". Mốc ★ được giữ **vĩnh viễn**.
+3. Muốn quay lại: chọn điểm neo → **Khôi phục…** → Studio liệt kê các file sẽ đổi →
+   - **Khôi phục toàn bộ**, hoặc
+   - tick từng mục rồi bấm **Chỉ khôi phục mục đã chọn**, ví dụ chỉ `scenes/S03.tsx` hoặc chỉ `public/audio/music.mp3`.
+4. Lỡ khôi phục nhầm: điểm neo **Trước khôi phục** ở trên cùng chính là trạng thái vừa rồi. Khôi phục điểm đó là xong.
+
+**Dung lượng:** file không đổi chỉ lưu một lần, nên một điểm neo thường chỉ tốn vài KB. Media chỉ tốn thêm khi thật sự thay file.
+- Điểm tự động giữ 60 cái gần nhất, cộng mỗi ngày 1 cái trong 30 ngày.
+- Mốc ★ không bao giờ bị dọn.
+- Kho nằm ở `<dự án>/.history/`. **Đừng xoá thư mục này.** Copy cả thư mục dự án là mang theo luôn lịch sử.
+
+**Dòng lệnh** (Claude Code cũng dùng): `node <app>/server/cli-snapshot.mjs . list` · `… snapshot --label "…"` · `… restore <id> [file …]`
+
 ## 12. Làm video mới cùng Claude Code (quy trình chuẩn)
 
 ### Cấu trúc 1 thư mục dự án
@@ -318,7 +347,7 @@ Nhắn Claude Code: *"Thêm bố cục riêng 9:16 và 1:1 cho các cảnh (dùn
 | Render chậm | Tăng số luồng, chọn MP4 H.264 + GPU Tự động, dùng Full HD 30 fps cho bản nháp |
 | Bộ mã hoá hiện "CPU" dù có card NVIDIA | Tab Xuất → **🩺 Chẩn đoán GPU** → làm theo hướng dẫn hiện ra (thường: cập nhật driver NVIDIA, tắt OBS/app ghi màn hình). Nhớ: ProRes luôn dùng CPU |
 | Chữ tiếng Việt bị cắt dấu | Tăng *Giãn dòng* hoặc báo Claude Code (cảnh dùng mask) |
-| Muốn quay về bản trước | Undo; hoặc đổi tên `.project.backup.json` thành `project.json` (bản trước lần lưu gần nhất) |
+| Muốn quay về bản trước | Vài thao tác vừa rồi: Undo (Ctrl+Z). Bản hôm qua / trước khi AI sửa / bản đã ưng: **🕘 Lịch sử** → chọn điểm neo → Khôi phục (toàn bộ hoặc từng file). |
 
 ---
 

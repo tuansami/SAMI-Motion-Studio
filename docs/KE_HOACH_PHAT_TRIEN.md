@@ -63,7 +63,7 @@ Render chống treo (chia đoạn ~15 s, mỗi đoạn 1 tiến trình, watchdog
 | 2.3 | **Mix âm thanh tự động khi xuất** (ghép lớp → chuẩn −14 LUFS, −1 dBTP) | Không phải mix tay, âm lượng đều trên mọi nền tảng | S |
 | 2.4 | **Preset nền tảng**: Reels/TikTok (9:16, vùng an toàn), YouTube, Meta Ads 1:1/4:5, Google Ads 16:9 | Không nhầm thông số | S |
 | 2.5 | **Contact sheet & link duyệt**: xuất ảnh lưới 1 khung/cảnh + bản nháp nhẹ để gửi khách | Duyệt nhanh, ít vòng sửa | S |
-| 2.6 | **Lịch sử phiên bản** (snapshot mỗi lần Lưu, so sánh, khôi phục) | An toàn khi nhiều người sửa | S |
+| 2.6 | ✅ **Lịch sử phiên bản** (v0.3.0): điểm neo trước mỗi lượt chat AI, khi mở và khi Lưu; khôi phục toàn bộ hoặc từng file, kể cả media | An toàn khi nhiều người và AI cùng sửa | S |
 
 ### GĐ 3 — Đóng gói .exe (Electron) + thư viện
 | # | Tính năng | Ghi chú |
@@ -106,3 +106,5 @@ Render chống treo (chia đoạn ~15 s, mỗi đoạn 1 tiến trình, watchdog
 - Mở thư mục `SAMI_Motion_Studio` bằng Claude Code → đọc `CLAUDE.md`.
 - Mỗi tính năng: viết spec ngắn trong `docs/specs/<ten>.md` → duyệt → code → test bằng `node server/cli-still.mjs` và mở Studio.
 - Không phá tương thích `project.json`: thêm trường mới phải có mặc định; tăng `version` trong `package.json`.
+- **Phát hành**: mỗi bản thêm một mục vào `CHANGELOG.md`, commit, `git tag vX.Y.Z`, push lên GitHub `tuansami/SAMI-Motion-Studio`, rồi `gh release create vX.Y.Z` với nội dung lấy từ mục CHANGELOG. Muốn roll back thì `git checkout vX.Y.Z`.
+- `npm run check` (selftest) phải đạt trước khi phát hành.

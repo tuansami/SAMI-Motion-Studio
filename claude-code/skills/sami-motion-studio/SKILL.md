@@ -40,6 +40,11 @@ Premium motion ads for SAMI Marketing Agency and its hospitality clients (restau
 ## House rules
 One easing `cubic-bezier(0.22,1,0.36,1)` · crossfade every cut (engine) · grain + vignette once (engine) · few SFX · cut ruthlessly · no raw screenshots as content · no invented stats · no other agencies' work · no platform/Google logos · SAMI end card: lockup + "Strategy • Automation • Marketing • Intelligence" + WhatsApp + URL (client videos: client logo + CTA).
 
+## Version history (điểm neo)
+- Studio snapshots the WHOLE project (json, scenes, brief, all media; not out/) before every chat turn via the `.claude/settings.json` UserPromptSubmit hook, on open and on save. Users restore in Studio → tab **Lịch sử**.
+- Before a big or risky change (replacing media, rewriting several scenes, new music) also set a named anchor: `node <app>/server/cli-snapshot.mjs . snapshot --label "Trước khi <việc>"`. List / restore: `… list`, `… restore <id> [scenes/S03.tsx public/audio]` (restore always snapshots the current state first).
+- Never delete or edit `.history/`.
+
 ## Gotchas
 - Never `useCurrentFrame()` in scenes (breaks 24/60 fps) — use `useT()` / `useBaseFrame()`.
 - Read `COPY.X` inside the component, never in a module-level const (live edits won't show).

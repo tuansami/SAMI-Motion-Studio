@@ -34,6 +34,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <li><a href="#thoi-gian-render-tham-khao-video-60-s-full-hd-30-fps-uoc-tinh-tho-tuy-o-nang-canh">Thời gian render tham khảo (video 60 s, Full HD 30 fps — ước tính thô, tuỳ độ nặng cảnh)</a></li>
 </ul>
 </li>
+<li><a href="#11b-tab-lich-su-iem-neo-khoi-phuc-ban-cu-moi-o-03">11b. Tab Lịch sử — điểm neo, khôi phục bản cũ (mới ở 0.3)</a></li>
 <li><a href="#12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</a><ul>
 <li><a href="#cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</a></li>
 <li><a href="#cac-buoc">Các bước</a></li>
@@ -49,7 +50,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </div>
 </div><h1 id="sami-motion-studio-huong-dan-su-dung">SAMI Motion Studio — Hướng dẫn sử dụng</h1>
 <blockquote>
-<p>Phiên bản 0.2 (giai đoạn 1: web app chạy trên máy). Mới ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
+<p>Phiên bản 0.3 (giai đoạn 1: web app chạy trên máy). Mới ở 0.3: <strong>Lịch sử phiên bản / điểm neo</strong> (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
 <p><strong>Làm việc theo nhóm / với Claude:</strong> đọc <code>docs/QUY_TRINH_LAM_VIEC.md</code> (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).</p>
 </blockquote>
 <hr />
@@ -170,7 +171,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <ul>
 <li><strong>● Chưa lưu</strong> — có thay đổi chưa ghi vào <code>project.json</code>.</li>
 <li><strong>↶ / ↷</strong> — hoàn tác / làm lại (Ctrl+Z / Ctrl+Y), tối đa 80 bước.</li>
-<li><strong>Lưu</strong> (Ctrl+S) — ghi file, đồng thời tự kiểm tra lỗi. Bản trước được giữ ở <code>.project.backup.json</code>.</li>
+<li><strong>Lưu</strong> (Ctrl+S) — ghi file, đồng thời tự kiểm tra lỗi. Mỗi lần Lưu (tối đa 2 phút/lần) còn tạo một <strong>điểm neo</strong> trong tab <strong>Lịch sử</strong>.</li>
 <li><strong>Kiểm tra</strong> — liệt kê ✓ đạt / ⚠ lưu ý / ✗ lỗi (thiếu ảnh, cảnh hở, nhạc ngắn hơn video, chữ sai cú pháp…). Có lỗi ✗ thì không cho render.</li>
 <li><strong>📁</strong> — mở thư mục dự án trong Explorer.</li>
 <li><strong>Dự án</strong> — về màn hình dự án.</li>
@@ -445,6 +446,29 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </table>
 <p>Luôn <strong>xuất bản nháp / 1 cảnh trước</strong>, duyệt xong mới xuất 4K.</p>
 <hr />
+<h2 id="11b-tab-lich-su-iem-neo-khoi-phuc-ban-cu-moi-o-03">11b. Tab <strong>Lịch sử</strong> — điểm neo, khôi phục bản cũ (mới ở 0.3)</h2>
+<p>Ctrl+Z chỉ nhớ các thao tác trong lúc đang mở Studio, và chỉ nhớ phần chữ/thời lượng. <strong>Lịch sử</strong> thì lưu <strong>toàn bộ dự án</strong> xuống đĩa: project.json, code cảnh, brief, ảnh, video, âm thanh, Lottie (trừ <code>out/</code>). Tắt máy, sang ngày hôm sau vẫn khôi phục được.</p>
+<p><strong>Điểm neo tự tạo khi:</strong>
+| Lúc | Nhãn |
+|---|---|
+| Trước <strong>mỗi lượt chat</strong> với Claude Code trong thư mục dự án (nhãn là đầu câu bạn gõ) | AI |
+| Mở dự án trong Studio | Mở |
+| Bấm Lưu (tối đa 2 phút/lần) | Lưu |
+| Tải lên / nhập file <strong>trùng tên</strong> với file đang có | Trước thay media |
+| Ngay trước mỗi lần khôi phục, nên khôi phục cũng hoàn tác được | Trước khôi phục |</p>
+<p>Nếu không có gì thay đổi so với điểm neo gần nhất thì Studio bỏ qua, không tạo điểm mới.</p>
+<p><strong>Dùng:</strong>
+1. Bấm <strong>🕘 Lịch sử</strong> trên thanh trên cùng (hoặc tab Lịch sử).
+2. Có bản ưng ý thì gõ tên rồi bấm <strong>★ Đặt mốc ngay</strong>, ví dụ "Bản nháp 1 gửi khách". Mốc ★ được giữ <strong>vĩnh viễn</strong>.
+3. Muốn quay lại: chọn điểm neo → <strong>Khôi phục…</strong> → Studio liệt kê các file sẽ đổi →
+   - <strong>Khôi phục toàn bộ</strong>, hoặc
+   - tick từng mục rồi bấm <strong>Chỉ khôi phục mục đã chọn</strong>, ví dụ chỉ <code>scenes/S03.tsx</code> hoặc chỉ <code>public/audio/music.mp3</code>.
+4. Lỡ khôi phục nhầm: điểm neo <strong>Trước khôi phục</strong> ở trên cùng chính là trạng thái vừa rồi. Khôi phục điểm đó là xong.</p>
+<p><strong>Dung lượng:</strong> file không đổi chỉ lưu một lần, nên một điểm neo thường chỉ tốn vài KB. Media chỉ tốn thêm khi thật sự thay file.
+- Điểm tự động giữ 60 cái gần nhất, cộng mỗi ngày 1 cái trong 30 ngày.
+- Mốc ★ không bao giờ bị dọn.
+- Kho nằm ở <code>&lt;dự án&gt;/.history/</code>. <strong>Đừng xoá thư mục này.</strong> Copy cả thư mục dự án là mang theo luôn lịch sử.</p>
+<p><strong>Dòng lệnh</strong> (Claude Code cũng dùng): <code>node &lt;app&gt;/server/cli-snapshot.mjs . list</code> · <code>… snapshot --label "…"</code> · <code>… restore &lt;id&gt; [file …]</code></p>
 <h2 id="12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</h2>
 <h3 id="cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</h3>
 <pre><code>du-an-cua-khach/
@@ -556,7 +580,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </tr>
 <tr>
 <td>Muốn quay về bản trước</td>
-<td>Undo; hoặc đổi tên <code>.project.backup.json</code> thành <code>project.json</code> (bản trước lần lưu gần nhất)</td>
+<td>Vài thao tác vừa rồi: Undo (Ctrl+Z). Bản hôm qua / trước khi AI sửa / bản đã ưng: <strong>🕘 Lịch sử</strong> → chọn điểm neo → Khôi phục (toàn bộ hoặc từng file).</td>
 </tr>
 </tbody>
 </table>

@@ -23,3 +23,5 @@ Owner: Tuan (CEO SAMI) — reply in Vietnamese, concise, push back when a reques
 - Test: `NO_OPEN=1 node server/index.mjs` + `node server/cli-still.mjs <dir> out/x.jpg <frames> <ratio>`; read the stills before claiming it works.
 - Server must never block: long work (render, bundle, thumbs, dialogs) goes to child processes / async spawn.
 - Don't run full renders unless asked. Paid APIs (ElevenLabs) → ask first.
+- Release: every app change → bump version + new entry on top of `CHANGELOG.md` (VI, detailed: Thêm/Thay đổi/Sửa lỗi/File chính/Roll back) → `npm run check` → commit → `git tag vX.Y.Z` → push (GitHub tuansami/SAMI-Motion-Studio) → `gh release create`.
+- `<project>/.history/` = version history store (server/history.mjs). Never delete it; don't commit `projects/`.

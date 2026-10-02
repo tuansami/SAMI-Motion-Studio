@@ -13,6 +13,7 @@ public/        img/ video/ audio/ fonts/  (+ _engine/ do Studio sinh — không 
 brief/         BRIEF.md + tài liệu khách (đọc trước khi lên kịch bản)
 out/           video xuất
 ```
+`.history/` là kho lịch sử phiên bản (điểm neo) do Studio quản lý: **không sửa, không xoá**. Trước một thay đổi lớn (thay media, viết lại nhiều cảnh), đặt mốc bằng `node <app>/server/cli-snapshot.mjs . snapshot --label "Trước khi …"`.
 
 ### project.json (các trường chính)
 ```jsonc

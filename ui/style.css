@@ -69,3 +69,9 @@ label>input[type=color]{display:block}
 .tpl .body{padding:10px 12px;flex:1}.tpl .body b{display:block}.tpl .body p{margin:4px 0 6px;color:var(--muted);font-size:12.5px}.tpl .badges{display:flex;gap:4px;flex-wrap:wrap}.tpl .badges span{font-size:11px;border:1px solid var(--line);border-radius:6px;padding:0 6px;color:var(--muted)}
 .tpl .acts{display:flex;gap:6px;padding:0 12px 12px}
 .tpl .thumbs{overflow:hidden}.tpl .thumbs img{min-width:0;flex-shrink:1;max-width:62%}
+.hday{color:var(--muted);font-size:12px;margin:12px 0 6px;text-transform:capitalize}
+.hitem{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:6px;background:var(--panel2)}.hitem.star{border-color:rgba(255,181,71,.55)}
+.hitem .l1{display:flex;gap:8px;align-items:center}.hitem .lb{flex:1;font-size:12.5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.hitem .l2{color:var(--muted);font-size:12px;margin-top:4px}
+.hk{font-size:11px;border-radius:5px;padding:0 6px;background:rgba(255,255,255,.08);white-space:nowrap}.hk-ai{background:rgba(118,103,254,.25)}.hk-manual{background:rgba(255,181,71,.2);color:var(--amber)}.hk-before-restore,.hk-before-upload{background:rgba(255,90,95,.15)}
+.hfiles{max-height:42vh;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12.5px}
+.tabs button{flex:1 0 auto;padding:9px 5px}

@@ -135,8 +135,8 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </tr>
 <tr>
 <td>2.6</td>
-<td><strong>Lịch sử phiên bản</strong> (snapshot mỗi lần Lưu, so sánh, khôi phục)</td>
-<td>An toàn khi nhiều người sửa</td>
+<td>✅ <strong>Lịch sử phiên bản</strong> (v0.3.0): điểm neo trước mỗi lượt chat AI, khi mở và khi Lưu; khôi phục toàn bộ hoặc từng file, kể cả media</td>
+<td>An toàn khi nhiều người và AI cùng sửa</td>
 <td>S</td>
 </tr>
 </tbody>
@@ -259,4 +259,6 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <li>Mở thư mục <code>SAMI_Motion_Studio</code> bằng Claude Code → đọc <code>CLAUDE.md</code>.</li>
 <li>Mỗi tính năng: viết spec ngắn trong <code>docs/specs/&lt;ten&gt;.md</code> → duyệt → code → test bằng <code>node server/cli-still.mjs</code> và mở Studio.</li>
 <li>Không phá tương thích <code>project.json</code>: thêm trường mới phải có mặc định; tăng <code>version</code> trong <code>package.json</code>.</li>
+<li><strong>Phát hành</strong>: mỗi bản thêm một mục vào <code>CHANGELOG.md</code>, commit, <code>git tag vX.Y.Z</code>, push lên GitHub <code>tuansami/SAMI-Motion-Studio</code>, rồi <code>gh release create vX.Y.Z</code> với nội dung lấy từ mục CHANGELOG. Muốn roll back thì <code>git checkout vX.Y.Z</code>.</li>
+<li><code>npm run check</code> (selftest) phải đạt trước khi phát hành.</li>
 </ul></body></html>

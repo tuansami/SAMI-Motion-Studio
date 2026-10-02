@@ -14,6 +14,7 @@ import {analyzeMusic} from './audio.mjs';
 import {importAssets, listAssets} from './assets.mjs';
 import {listTemplates, checkTemplate, saveAsTemplate, importTemplate, exportTemplate, CATEGORIES, GOALS} from './template.mjs';
 import {gpuEncoders, gpuDiagnose, FFMPEG} from './ffmpeg.mjs';
+import * as history from './history.mjs';
 
 const PORT = +(process.env.STUDIO_PORT || 5178);
 fs.mkdirSync(DATA, {recursive: true});
@@ -28,14 +29,16 @@ const idOf = (dir) => crypto.createHash('sha1').update(path.resolve(dir).toLower
 const dirs = new Map();
 const register = (dir) => { const d = path.resolve(dir); const id = idOf(d); dirs.set(id, d); return id; };
 for (const r of settings.recent) if (fs.existsSync(path.join(r.dir, 'project.json'))) register(r.dir);
+const samePath = (a, b) => idOf(a) === idOf(b); // Windows paths are case-insensitive
 const touchRecent = (dir, name) => {
-  settings.recent = [{dir: path.resolve(dir), name, opened: new Date().toISOString()}, ...settings.recent.filter((r) => path.resolve(r.dir) !== path.resolve(dir))].slice(0, 20);
+  settings.recent = [{dir: path.resolve(dir), name, opened: new Date().toISOString()}, ...settings.recent.filter((r) => !samePath(r.dir, dir))].slice(0, 20);
   saveSettings(settings);
 };
+settings.recent = settings.recent.filter((r, i, a) => a.findIndex((x) => samePath(x.dir, r.dir)) === i); // drop case-variant duplicates
 // sample projects shipped with the app
 if (fs.existsSync(DEFAULT_PROJECTS)) for (const e of fs.readdirSync(DEFAULT_PROJECTS)) {
   const d = path.join(DEFAULT_PROJECTS, e);
-  if (fs.existsSync(path.join(d, 'project.json')) && !settings.recent.some((r) => path.resolve(r.dir) === path.resolve(d))) { settings.recent.push({dir: d, name: readProject(d).name, opened: null}); register(d); }
+  if (fs.existsSync(path.join(d, 'project.json')) && !settings.recent.some((r) => samePath(r.dir, d))) { settings.recent.push({dir: d, name: readProject(d).name, opened: null}); register(d); }
 }
 saveSettings(settings);
 
@@ -174,8 +177,24 @@ const ensureClaude = (dir, pj) => {
       const a = path.join(src, rel), b = path.join(dir, '.claude', rel);
       if (fs.existsSync(a) && (!fs.existsSync(b) || fs.readFileSync(a, 'utf8') !== fs.readFileSync(b, 'utf8'))) { fs.mkdirSync(path.dirname(b), {recursive: true}); fs.copyFileSync(a, b); }
     }
+    ensureSnapshotHook(dir);
   } catch {}
 };
+// Claude Code hook: snapshot the project BEFORE every chat turn (version history). Merges into .claude/settings.json, keeps user settings.
+const HOOK_MARK = 'cli-snapshot.mjs';
+const ensureSnapshotHook = (dir) => {
+  const f = path.join(dir, '.claude', 'settings.json');
+  let s = {}; try { s = JSON.parse(fs.readFileSync(f, 'utf8')); } catch (e) { if (fs.existsSync(f)) return; } // unreadable user file → leave it alone
+  const cmd = `node "${path.join(ROOT, 'server', 'cli-snapshot.mjs').replace(/\\/g, '/')}" --hook`;
+  const groups = (s.hooks ||= {}).UserPromptSubmit ||= [];
+  const ours = groups.flatMap((g) => g.hooks || []).find((x) => String(x.command || '').includes(HOOK_MARK));
+  if (ours && ours.command === cmd) return;
+  if (ours) ours.command = cmd; else groups.push({hooks: [{type: 'command', command: cmd, timeout: 60}]});
+  fs.mkdirSync(path.dirname(f), {recursive: true}); fs.writeFileSync(f, JSON.stringify(s, null, 2));
+};
+// automatic anchors — never block a request; "save" anchors at most every 2 min per project
+const lastSaveSnap = new Map();
+const autoSnap = (dir, kind, label = '') => history.snapshot(dir, {kind, label, source: 'Studio'}).catch((e) => console.error('snapshot:', e.message));
 
 // ── server ───────────────────────────────────────────────────────────
 const server = http.createServer(async (req, res) => {
@@ -218,12 +237,13 @@ const server = http.createServer(async (req, res) => {
       const b = await jbody(req);
       const dir = b.id ? dirs.get(b.id) : b.dir;
       if (!dir || !fs.existsSync(path.join(dir, 'project.json'))) return json(res, {error: 'Thư mục này không có project.json'}, 400);
-      const id = register(dir); const pj = readProject(dir); syncEngineAssets(dir); ensureClaude(dir, pj); touchRecent(dir, pj.name); watch(id);
+      const id = register(dir); const pj = readProject(dir); syncEngineAssets(dir); ensureClaude(dir, pj); touchRecent(dir, pj.name); watch(id); autoSnap(dir, 'open', 'Mở dự án');
       return json(res, {id, dir, project: pj, assets: listAssets(dir)});
     }
     if (p === '/api/project/save' && req.method === 'POST') {
       const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'unknown'}, 404);
       writeProject(dir, b.project); touchRecent(dir, b.project.name);
+      if (Date.now() - (lastSaveSnap.get(dir) || 0) > 120000) { lastSaveSnap.set(dir, Date.now()); autoSnap(dir, 'save', 'Lưu trong Studio'); }
       return json(res, {ok: true, validation: validateProject(dir)});
     }
     if (p === '/api/project/validate') { const dir = dirs.get(u.searchParams.get('id')); return json(res, validateProject(dir)); }
@@ -247,12 +267,14 @@ const server = http.createServer(async (req, res) => {
       const id = register(dir); touchRecent(dir, pj.name);
       return json(res, {id, dir, report});
     }
-    if (p === '/api/project/import-assets' && req.method === 'POST') { const b = await jbody(req); const dir = dirs.get(b.id); return json(res, importAssets(b.from, dir)); }
+    if (p === '/api/project/import-assets' && req.method === 'POST') { const b = await jbody(req); const dir = dirs.get(b.id); await autoSnap(dir, 'before-upload', 'Trước khi nhập tài nguyên'); return json(res, importAssets(b.from, dir)); }
     if (p === '/api/upload' && req.method === 'POST') { // raw body, ?id=&sub=audio&name=file.mp3
       const dir = dirs.get(u.searchParams.get('id')); const sub = (u.searchParams.get('sub') || 'img').replace(/[^a-z]/g, '');
       const name = path.basename(u.searchParams.get('name') || 'file').replace(/[^\p{L}\p{N}._-]+/gu, '_');
       const dst = path.join(dir, 'public', sub, name); fs.mkdirSync(path.dirname(dst), {recursive: true});
-      fs.writeFileSync(dst, await body(req)); return json(res, {path: `${sub}/${name}`});
+      const data = await body(req);
+      if (fs.existsSync(dst)) await autoSnap(dir, 'before-upload', `Trước khi thay ${sub}/${name}`); // same name → keep the old file in history
+      fs.writeFileSync(dst, data); return json(res, {path: `${sub}/${name}`});
     }
     if (p === '/api/audio/analyze') {
       const dir = dirs.get(u.searchParams.get('id')); const f = path.join(dir, 'public', u.searchParams.get('file') || '');
@@ -289,6 +311,20 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/gpu/diagnose') return json(res, gpuDiagnose());
     if (p === '/api/render/stop-all' && req.method === 'POST') { stopAll(); return json(res, {ok: true}); }
     if (p === '/api/jobs') return json(res, publicJobs());
+    // ── version history (điểm neo) ──
+    if (p.startsWith('/api/history')) {
+      const b = req.method === 'POST' ? await jbody(req) : {}; const dir = dirs.get(b.id || u.searchParams.get('id')); if (!dir) return json(res, {error: 'unknown project'}, 404);
+      if (p === '/api/history') return json(res, {items: await history.list(dir), bytes: await history.usage(dir)});
+      if (p === '/api/history/preview') return json(res, await history.preview(dir, u.searchParams.get('snap')));
+      if (p === '/api/history/snapshot') return json(res, await history.snapshot(dir, {kind: 'manual', label: b.label || '', starred: !!b.starred, source: b.source || 'Studio', force: true}));
+      if (p === '/api/history/star') return json(res, await history.star(dir, b.snap, {label: b.label, starred: b.starred}));
+      if (p === '/api/history/prune') return json(res, await history.prune(dir));
+      if (p === '/api/history/restore') {
+        const r = await history.restore(dir, b.snap, {paths: b.paths?.length ? b.paths : null});
+        const id = register(dir); const pb = await previewBundle(dir); broadcast('restored', {id, hash: pb.hash});
+        return json(res, r);
+      }
+    }
     res.writeHead(404); res.end('not found');
   } catch (e) {
     console.error(e); json(res, {error: String(e?.message || e)}, 500);

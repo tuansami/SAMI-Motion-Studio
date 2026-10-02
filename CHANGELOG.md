@@ -19,6 +19,52 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [0.3.0] — 2026-10-02 — Lịch sử phiên bản (điểm neo)
+Spec: `docs/specs/version-history.md` · Hướng dẫn: `docs/HUONG_DAN_SU_DUNG.md` mục 11b
+
+### Thêm
+- **Kho lịch sử cho mỗi dự án** tại `<dự án>/.history/`. Mỗi điểm neo chụp **toàn bộ dự án**: `project.json`, `scenes/`, `brief/`, ảnh, video, âm thanh, Lottie, font. Không chụp `out/`, `public/_engine/`, `.claude/`.
+  - File lưu theo nội dung (sha1), mỗi nội dung chỉ lưu một lần. Một điểm neo mà media không đổi chỉ tốn vài KB.
+  - Đo thực tế trên dự án 40 MB: lần đầu khoảng 0,6 s; các lần sau dưới 0,1 s nhờ cache stat.
+  - Điểm neo nào giống hệt điểm gần nhất thì tự bỏ qua.
+- **Điểm neo tự động**:
+  - Trước **mỗi lượt chat với Claude Code** trong thư mục dự án. Đây là hook `UserPromptSubmit` mà Studio tự gộp vào `<dự án>/.claude/settings.json` khi mở dự án. Nhãn là đầu câu chat.
+  - Khi mở dự án.
+  - Khi Lưu (tối đa 2 phút/lần).
+  - Trước khi upload hoặc nhập file trùng tên.
+  - Trước mỗi lần khôi phục, nên khôi phục cũng hoàn tác được.
+- **Tab / nút 🕘 Lịch sử**:
+  - Đặt mốc có tên (★, giữ vĩnh viễn) và đổi tên điểm neo.
+  - Danh sách theo ngày, kèm tóm tắt thay đổi (cảnh nào, bao nhiêu media).
+  - **Khôi phục toàn bộ** hoặc **chỉ khôi phục mục đã chọn**: từng cảnh, từng file nhạc hay ảnh. Trước khi khôi phục có xem danh sách file sẽ ghi đè, lấy lại hoặc xoá.
+- Dọn dẹp tự động: giữ mốc ★ và mốc tay, 60 điểm tự động gần nhất, cộng 1 điểm mỗi ngày trong 30 ngày, rồi xoá dữ liệu không còn dùng.
+- CLI `server/cli-snapshot.mjs`: `snapshot | list | restore <id> [file…] | star | prune | --hook`.
+- API: `GET /api/history`, `GET /api/history/preview`, `POST /api/history/{snapshot,star,restore,prune}`. Thêm SSE `restored`.
+- `server/selftest.mjs` cho `npm run check`: kiểm tra deps, parse toàn bộ server và UI, chạy validate trên 8 mẫu, và test khôi phục lịch sử trên bản sao tạm.
+- File lịch sử phiên bản app: `CHANGELOG.md`, `.gitignore`, `.gitattributes`. Repo GitHub có tag và Release cho từng bản.
+
+### Thay đổi
+- Bỏ hướng dẫn "đổi tên `.project.backup.json`" trong tài liệu, thay bằng tab Lịch sử. File backup đơn vẫn được ghi như cũ để tương thích.
+- Skill `sami-motion-studio` dặn AI đặt mốc trước thay đổi lớn và không đụng `.history/`.
+- `CLAUDE.md` và `docs/KE_HOACH_PHAT_TRIEN.md` thêm quy trình phát hành: bump version, CHANGELOG, tag, Release.
+- Thanh tab bên phải tự xuống dòng khi chật.
+
+### Sửa lỗi
+- Lịch sử Ctrl+Z bị xoá mỗi lần Claude sửa code cảnh, vì trang tự tải lại. Nay Ctrl+Z được giữ qua lần tải lại, tối đa 40 bước.
+- Gõ ô phụ đề không xoá chồng "Làm lại", gây redo sai.
+- "Dự án gần đây" hiện trùng một dự án khi đường dẫn khác chữ hoa/thường. Nay so sánh không phân biệt hoa/thường và tự dọn mục trùng.
+- `npm run check` trỏ tới `server/selftest.mjs` vốn không tồn tại.
+
+### File chính
+Mới: `server/history.mjs`, `server/cli-snapshot.mjs`, `server/selftest.mjs`, `docs/specs/version-history.md`, `CHANGELOG.md`.
+Sửa: `server/index.mjs`, `ui/app.js`, `ui/index.html`, `ui/style.css`, `claude-code/skills/sami-motion-studio/SKILL.md`, `docs/*`, `CLAUDE.md`, `package.json`.
+
+### Tương thích / Roll back
+- Không đổi schema `project.json`.
+- Quay về 0.2.2 bằng `git checkout v0.2.2`. Thư mục `.history/` sẽ bị bỏ qua và vô hại. Hook trong `.claude/settings.json` sẽ báo lỗi nhẹ vì không còn `cli-snapshot.mjs`, nhưng không chặn chat. Nếu dùng bản cũ lâu dài thì nên xoá mục `UserPromptSubmit` đó.
+
+---
+
 ## [0.2.2] — 2026-10-02 — Thoại (voice-over) + SFX riêng
 Spec: `docs/specs/audio-voice.md`
 
