@@ -1,7 +1,7 @@
 // Locate ffmpeg/ffprobe: $FFMPEG → Remotion's bundled binary (node_modules/@remotion/compositor-*) → PATH.
 import fs from 'fs';
 import path from 'path';
-import {spawnSync} from 'child_process';
+import {spawn, spawnSync} from 'child_process';
 import {NODE_MODULES} from './paths.mjs';
 const exe = process.platform === 'win32' ? '.exe' : '';
 const bundled = (name) => {
@@ -52,4 +52,31 @@ export const gpuDiagnose = () => {
   else if (/No capable devices|OpenEncodeSessionEx|incompatible/i.test(tests.h264_nvenc.err)) advice = 'Card không hỗ trợ NVENC (một số GTX đời cũ / MX không có) hoặc đang bị app khác chiếm hết phiên mã hoá (OBS, trình ghi màn hình). Tắt các app đó rồi thử lại.';
   else advice = 'NVENC chưa chạy — xem thông báo lỗi bên dưới, gửi cho Claude nếu cần.';
   return {ffmpeg: FFMPEG, version, compiled, tests, gpu: smi, advice, platform: process.platform};
+};
+
+/** async ffmpeg (never blocks the server) → {code, stdout, stderr} */
+export const ffAsync = (args) => new Promise((ok) => {
+  const c = spawn(FFMPEG, args, {env: envFor(FFMPEG), windowsHide: true}); let out = '', err = '';
+  c.stdout.on('data', (d) => (out += d)); c.stderr.on('data', (d) => { err = (err + d).slice(-20000); });
+  c.on('exit', (code) => ok({code, stdout: out, stderr: err})); c.on('error', (e) => ok({code: -1, stdout: '', stderr: String(e)}));
+});
+let _filters;
+export const hasFilter = (name) => { if (_filters == null) { const r = ff(['-hide_banner', '-filters'], {windowsHide: true}); _filters = String(r.stdout || '') + String(r.stderr || ''); } return new RegExp('\\s' + name + '\\s').test(_filters); };
+const lnJson = (s) => { const m = String(s).match(/\{[^{}]*"input_i"[^{}]*\}/); return m ? JSON.parse(m[0]) : null; };
+/** measure integrated loudness (LUFS) + true peak of a file */
+export const measureLoudness = async (file) => {
+  const r = await ffAsync(['-hide_banner', '-nostats', '-i', file, '-vn', '-af', 'loudnorm=I=-14:TP=-1:LRA=11:print_format=json', '-f', 'null', '-']);
+  const j = lnJson(r.stderr); return j ? {lufs: +j.input_i, tp: +j.input_tp, lra: +j.input_lra, thresh: +j.input_thresh} : null;
+};
+/** two-pass EBU R128 normalisation (default −14 LUFS / −1 dBTP, the social-media target) → {from, to} or {skipped} */
+export const normalizeLoudness = async (src, dst, target = -14, tp = -1) => {
+  if (!hasFilter('loudnorm')) return {skipped: 'ffmpeg không có bộ lọc loudnorm'};
+  const r1 = await ffAsync(['-hide_banner', '-nostats', '-i', src, '-vn', '-af', `loudnorm=I=${target}:TP=${tp}:LRA=11:print_format=json`, '-f', 'null', '-']);
+  const m = lnJson(r1.stderr);
+  if (!m || !isFinite(+m.input_i) || +m.input_i < -60) return {skipped: 'âm thanh gần như im lặng'};
+  const af = `loudnorm=I=${target}:TP=${tp}:LRA=11:measured_I=${m.input_i}:measured_TP=${m.input_tp}:measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true:print_format=json`;
+  const r2 = await ffAsync(['-hide_banner', '-nostats', '-y', '-i', src, '-vn', '-af', af, '-ar', '48000', '-c:a', 'pcm_s16le', dst]);
+  if (r2.code !== 0) throw new Error('Chuẩn âm lượng lỗi: ' + r2.stderr.slice(-600));
+  const o = lnJson(r2.stderr);
+  return {from: +m.input_i, to: o ? +o.output_i : target, tp: o ? +o.output_tp : null};
 };

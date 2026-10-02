@@ -19,6 +19,47 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [0.4.0] — 2026-10-03 — Gói duyệt khách · So sánh điểm neo · Chuẩn −14 LUFS
+Spec: `docs/specs/review-compare-loudness.md` · Hướng dẫn: `docs/HUONG_DAN_SU_DUNG.md` mục 11 (Gói duyệt, LUFS) và 11b (So sánh)
+
+### Thêm
+- **Gói duyệt khách** (tab Xuất → "📋 Tạo gói duyệt"): tạo ảnh khung giữa của mọi cảnh × mọi tỉ lệ mà không cần render video. Đo thực tế: 16 cảnh × 2 tỉ lệ ≈ 2 phút.
+  - `review.html` gồm 1 file khoảng 2 MB, ảnh nhúng sẵn, mở được trên điện thoại. Có ô góp ý cho từng cảnh, tự lưu, và nút **Sao chép góp ý**.
+  - `contact_<tỉ lệ>.jpg`: lưới mọi cảnh, gửi thẳng vào nhóm chat được.
+  - Nút **＋ Bản xem 540p**: thêm một bản mp4 nhẹ vào hàng đợi để khách xem chuyển động.
+  - Ô **"Dán góp ý khách" → Lưu vào `brief/GOP_Y.md`**: mỗi dòng thành một checkbox `- [ ]`, có ngày giờ. Claude Code đọc file này khi được bảo "sửa theo góp ý".
+- **So sánh điểm neo ↔ hiện tại** (tab Lịch sử → "So sánh"):
+  - Studio dựng lại bản cũ trong thư mục tạm, chụp ảnh từng cảnh của cả 2 bản và đặt cạnh nhau. Chỉ hiện các cảnh khác nhau.
+  - Thuật toán so sánh có ngưỡng chịu nhiễu GPU (lưới xám 64×36, Δ ≥ 12/255).
+  - Thư mục tạm tự dọn sau 24 h.
+- **Chuẩn âm lượng khi xuất**: loudnorm 2 lượt (EBU R128), mặc định **−14 LUFS / −1 dBTP**, có tuỳ chọn −16 hoặc Tắt.
+  - Đo thực tế: bản mix −16,3 → file mp4 −14,01 LUFS.
+  - Kết quả ghi trên lượt render. Tiếp tục render sẽ dùng lại file đã chuẩn hoá.
+- Độ phân giải **Nháp 540p**.
+- API: `POST /api/review`, `GET /api/review/list`, `POST /api/review/feedback`, `POST /api/history/compare`, `GET /api/tasks`, `/cmp/…`. Thêm SSE `task`.
+- `cli-review.mjs <dir> review | compare <a> [b] [ratio]`.
+- Selftest kiểm tra ffmpeg có `loudnorm`.
+
+### Sửa lỗi
+- **Thay ảnh/nhạc trùng tên nhưng video xuất ra vẫn dùng file CŨ.**
+  - Nguyên nhân: bundle Remotion copy `public/` nhưng cache chỉ tính theo code.
+  - Cách sửa: `codeHash` tính thêm stat của `public/` (trừ `_engine`). Lỗi này có từ 0.1.
+- Hộp so sánh và hộp khôi phục bị tràn ngang.
+
+### Thay đổi
+- Mọi bản xuất có âm thanh giờ được chuẩn về −14 LUFS theo mặc định. Muốn giữ đúng mức đã mix như bản cũ thì chọn "Tắt".
+- Sau khi thay media trùng tên, lần render đầu tiên sẽ đóng gói lại, chậm hơn khoảng 20–60 s. Đây là hành vi đúng.
+- Skill dặn AI đọc và tick `brief/GOP_Y.md`.
+
+### File chính
+Mới: `server/review.mjs`, `server/cli-review.mjs`, `docs/specs/review-compare-loudness.md`.
+Sửa: `server/ffmpeg.mjs` (ffAsync, hasFilter, measureLoudness, normalizeLoudness), `server/render.mjs` (540p, loudness), `server/project.mjs` (codeHash + media), `server/preview.mjs`, `server/index.mjs`, `server/selftest.mjs`, `ui/app.js`, `ui/style.css`, skill, docs, `package.json`.
+
+### Roll back
+`git checkout v0.3.0`. Các thư mục `out/review/` và `.studio/compare/` vô hại, xoá được. Lưu ý: bản 0.3.0 vẫn còn lỗi media cũ trong bundle.
+
+---
+
 ## [0.3.0] — 2026-10-02 — Lịch sử phiên bản (điểm neo)
 Spec: `docs/specs/version-history.md` · Hướng dẫn: `docs/HUONG_DAN_SU_DUNG.md` mục 11b
 

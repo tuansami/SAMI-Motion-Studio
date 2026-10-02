@@ -44,6 +44,7 @@ One easing `cubic-bezier(0.22,1,0.36,1)` · crossfade every cut (engine) · grai
 - Studio snapshots the WHOLE project (json, scenes, brief, all media; not out/) before every chat turn via the `.claude/settings.json` UserPromptSubmit hook, on open and on save. Users restore in Studio → tab **Lịch sử**.
 - Before a big or risky change (replacing media, rewriting several scenes, new music) also set a named anchor: `node <app>/server/cli-snapshot.mjs . snapshot --label "Trước khi <việc>"`. List / restore: `… list`, `… restore <id> [scenes/S03.tsx public/audio]` (restore always snapshots the current state first).
 - Never delete or edit `.history/`.
+- Client feedback lands in `brief/GOP_Y.md` (Studio → Xuất → Gói duyệt khách → "Lưu vào brief/GOP_Y.md"). On "sửa theo góp ý": read it, fix, tick `[x]`, note the round in TRANG_THAI.md.
 
 ## Gotchas
 - Never `useCurrentFrame()` in scenes (breaks 24/60 fps) — use `useT()` / `useBaseFrame()`.

@@ -12,11 +12,11 @@ import crypto from 'crypto';
 import {fork, spawnSync} from 'child_process';
 import {fileURLToPath} from 'url';
 import {readProject, codeHash} from './project.mjs';
-import {gpuEncoders, ff, fprobe} from './ffmpeg.mjs';
+import {gpuEncoders, ff, fprobe, normalizeLoudness} from './ffmpeg.mjs';
 import {DATA} from './paths.mjs';
 
-export const SCALE = {FHD: 1, '2K': 4 / 3, '4K': 2};
-const BITRATE = {FHD: '16M', '2K': '28M', '4K': '55M'}; // GPU (NVENC ignores CRF)
+export const SCALE = {'540p': 0.5, FHD: 1, '2K': 4 / 3, '4K': 2};
+const BITRATE = {'540p': '4M', FHD: '16M', '2K': '28M', '4K': '55M'}; // GPU (NVENC ignores CRF)
 const PRIORITY = {low: os.constants.priority.PRIORITY_BELOW_NORMAL, normal: os.constants.priority.PRIORITY_NORMAL, high: os.constants.priority.PRIORITY_ABOVE_NORMAL};
 const WIN = process.platform === 'win32';
 const STALL_S = +(process.env.STUDIO_STALL_S || 150); // seconds without progress = hung
@@ -242,18 +242,33 @@ const run = async (j) => {
     }
   }
 
+  // loudness normalisation (EBU R128, default −14 LUFS / −1 dBTP — what Reels/TikTok/YouTube play back at)
+  let muxAudio = audioFile;
+  const lufs = o.loudness ?? -14;
+  if (wantAudio && lufs !== 'off' && isFinite(+lufs)) {
+    const norm = path.join(partsDir, `audio_norm_${-lufs}.wav`);
+    if (!fs.existsSync(norm + '.ok')) {
+      j.stage = `Chuẩn âm lượng ${lufs} LUFS`; j.progress = 0.96; emit();
+      const r = await normalizeLoudness(audioFile, norm, +lufs);
+      if (r.skipped) { j.loudNote = 'Không chuẩn âm lượng: ' + r.skipped; fs.rmSync(norm, {force: true}); }
+      else fs.writeFileSync(norm + '.ok', JSON.stringify(r));
+    }
+    if (fs.existsSync(norm + '.ok')) { muxAudio = norm; try { const r = JSON.parse(fs.readFileSync(norm + '.ok', 'utf8')); j.loudNote = `Âm lượng ${r.from.toFixed(1)} → ${r.to.toFixed(1)} LUFS`; } catch {} }
+  }
+  if (j.status === 'cancelled') return;
+
   // join parts without re-encoding + mux audio
   j.stage = 'Ghép các đoạn' + (wantAudio ? ' + âm thanh' : ''); j.progress = 0.97; emit();
   const list = path.join(partsDir, 'list.txt');
   fs.writeFileSync(list, ranges.map((_, i) => `file '${partFile(i).replace(/\\/g, '/').replace(/'/g, "'\\''")}'`).join('\n'));
   const dur = (N / fps).toFixed(3);
   const args = ['-hide_banner', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', list];
-  if (wantAudio) args.push('-i', audioFile, '-map', '0:v:0', '-map', '1:a:0', '-c:a', prores ? 'pcm_s16le' : 'aac', ...(prores ? [] : ['-b:a', '320k']));
+  if (wantAudio) args.push('-i', muxAudio, '-map', '0:v:0', '-map', '1:a:0', '-c:a', prores ? 'pcm_s16le' : 'aac', ...(prores ? [] : ['-b:a', '320k']));
   args.push('-c:v', 'copy', '-t', dur, ...(prores ? [] : ['-movflags', '+faststart']), j.out);
   const r = ff(args);
   if (r.status !== 0) throw new Error('Ghép video lỗi: ' + String(r.stderr).slice(-800));
   const probe = fprobe(['-v', 'error', '-count_packets', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_packets', '-of', 'csv=p=0', j.out]);
   const got = parseInt(String(probe.stdout)); if (got && Math.abs(got - N) > 2) j.note = `Cảnh báo: video có ${got}/${N} khung`;
   fs.rmSync(partsDir, {recursive: true, force: true}); j.partsDir = null;
-  j.status = 'done'; j.progress = 1; j.stage = 'Hoàn tất'; j.eta = null;
+  j.status = 'done'; j.progress = 1; j.stage = 'Hoàn tất'; j.eta = null; if (j.loudNote && !j.note) j.note = j.loudNote;
 };

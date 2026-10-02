@@ -7,7 +7,7 @@ const cache = new Map(); // dir → {hash, outdir, error}
 /** esbuild bundle of the Player preview for one project (fast; rebuilt when scene/engine code changes) */
 export const previewBundle = async (dir0) => {
   const dir = path.resolve(dir0);
-  const hash = codeHash(dir);
+  const hash = codeHash(dir, {media: false}); // preview serves public/ live — only code matters
   const c = cache.get(dir);
   if (c && c.hash === hash) return c;
   const esbuild = await import('esbuild');

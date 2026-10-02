@@ -60,9 +60,9 @@ Render chống treo (chia đoạn ~15 s, mỗi đoạn 1 tiến trình, watchdog
 |---|---|---|---|
 | 2.1 | **Brand Kit** theo khách (logo, màu, font, CTA, WhatsApp, địa chỉ) lưu 1 lần, áp cho mọi video của khách | Nhất quán, giảm nhập lại | S |
 | 2.2 | **Biến thể hàng loạt**: bảng (CSV/Sheet) → mỗi dòng 1 video (ngôn ngữ VI/DE/EN, món, giá, ưu đãi) × 3 tỉ lệ | **Nhân sản lượng** — lõi của gói tháng | M |
-| 2.3 | **Mix âm thanh tự động khi xuất** (ghép lớp → chuẩn −14 LUFS, −1 dBTP) | Không phải mix tay, âm lượng đều trên mọi nền tảng | S |
+| 2.3 | ✅ (v0.4.0: chuẩn −14 LUFS / −1 dBTP khi xuất) **Mix âm thanh tự động khi xuất** (ghép lớp → chuẩn −14 LUFS, −1 dBTP) | Không phải mix tay, âm lượng đều trên mọi nền tảng | S |
 | 2.4 | **Preset nền tảng**: Reels/TikTok (9:16, vùng an toàn), YouTube, Meta Ads 1:1/4:5, Google Ads 16:9 | Không nhầm thông số | S |
-| 2.5 | **Contact sheet & link duyệt**: xuất ảnh lưới 1 khung/cảnh + bản nháp nhẹ để gửi khách | Duyệt nhanh, ít vòng sửa | S |
+| 2.5 | ✅ (v0.4.0: review.html + contact sheet + bản 540p + so sánh điểm neo) **Contact sheet & link duyệt**: xuất ảnh lưới 1 khung/cảnh + bản nháp nhẹ để gửi khách | Duyệt nhanh, ít vòng sửa | S |
 | 2.6 | ✅ **Lịch sử phiên bản** (v0.3.0): điểm neo trước mỗi lượt chat AI, khi mở và khi Lưu; khôi phục toàn bộ hoặc từng file, kể cả media | An toàn khi nhiều người và AI cùng sửa | S |
 
 ### GĐ 3 — Đóng gói .exe (Electron) + thư viện

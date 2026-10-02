@@ -1,6 +1,6 @@
 # SAMI Motion Studio — Hướng dẫn sử dụng
 
-> Phiên bản 0.3 (giai đoạn 1: web app chạy trên máy). Mới ở 0.3: **Lịch sử phiên bản / điểm neo** (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab **Ảnh chèn**, **Thư viện mẫu**. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà **không cần biết code**. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.
+> Phiên bản 0.4 (giai đoạn 1: web app chạy trên máy). Mới ở 0.4: **Gói duyệt khách**, **So sánh điểm neo**, **chuẩn âm lượng −14 LUFS**. Ở 0.3: **Lịch sử phiên bản / điểm neo** (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab **Ảnh chèn**, **Thư viện mẫu**. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà **không cần biết code**. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.
 
 >
 > **Làm việc theo nhóm / với Claude:** đọc `docs/QUY_TRINH_LAM_VIEC.md` (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).
@@ -232,6 +232,23 @@ Bấm để Studio đo file nhạc: **BPM**, phách đầu, **DROP** (điểm b�
 
 **Hàng đợi render**: thanh tiến độ, số khung đã vẽ / đã mã hoá, thời gian còn lại, bộ mã hoá đang dùng (GPU NVENC hay CPU), nút **Huỷ**, **Mở video**, **Mở thư mục out**, **Dọn xong**. Có thể tiếp tục chỉnh dự án khác khi đang render (mỗi bản render dùng dữ liệu **đã Lưu** tại lúc nó bắt đầu chạy — Studio tự lưu khi bấm Xuất).
 
+### Gói duyệt khách (mới ở 0.4)
+Dùng để khách hoặc sếp góp ý theo từng cảnh **mà không cần render video**.
+1. Vào tab Xuất → **📋 Tạo gói duyệt**. Mất khoảng 2–4 phút, chạy nền.
+2. Studio tạo `out/review/<ngày_giờ>/`, gồm:
+   - **review.html**: chỉ 1 file, ảnh đã nhúng sẵn. Gửi qua Lark/Zalo/Email, mở được trên điện thoại.
+   - **contact_16x9.jpg**, **contact_9x16.jpg**…: lưới ảnh mọi cảnh, đăng được vào nhóm chat.
+3. Khách ghi góp ý vào ô của từng cảnh → bấm **Sao chép góp ý** → dán gửi lại.
+4. Dán góp ý vào ô trong tab Xuất → **Lưu vào brief/GOP_Y.md**. Sau đó bảo Claude Code: *"sửa theo brief/GOP_Y.md"*.
+5. Muốn khách xem cả chuyển động: bấm **＋ Bản xem 540p** để có file mp4 nhẹ, gửi nhanh.
+
+Lưu ý: nhãn cảnh trong trang duyệt lấy từ tên cảnh của dự án (đang là tiếng Việt). Gửi khách Đức thì nên đặt tên cảnh dễ hiểu, hoặc chỉ gửi contact sheet.
+
+### Chuẩn âm lượng −14 LUFS (mới ở 0.4)
+Mặc định Studio tự đo bản mix và đưa về **−14 LUFS, đỉnh tối đa −1 dBTP**. Đây là mức Reels, TikTok và YouTube phát lại, nên video không bị nền tảng tự hạ nhỏ hay bị bé hơn video khác.
+- Chọn −16 LUFS cho web; chọn Tắt nếu đã mix tay.
+- Kết quả ghi trên lượt render, ví dụ "Âm lượng −16,3 → −14,0 LUFS".
+
 ### Render chống treo (mới ở 0.2)
 - Video được chia thành **các đoạn ~15 giây**, mỗi đoạn render ở một tiến trình riêng. Studio (cửa sổ đen + trang web) **không bao giờ bị đơ theo** render.
 - **Tự phát hiện treo**: 2,5 phút không có khung hình mới → Studio tự tắt tiến trình đó và **thử lại đoạn đó** với ít luồng hơn (tối đa 3 lần). Dòng vàng trong hàng đợi cho biết đang thử lại.
@@ -290,6 +307,8 @@ Nếu không có gì thay đổi so với điểm neo gần nhất thì Studio b
 - Điểm tự động giữ 60 cái gần nhất, cộng mỗi ngày 1 cái trong 30 ngày.
 - Mốc ★ không bao giờ bị dọn.
 - Kho nằm ở `<dự án>/.history/`. **Đừng xoá thư mục này.** Copy cả thư mục dự án là mang theo luôn lịch sử.
+
+**So sánh** (mới ở 0.4): bấm **So sánh** ở một điểm neo. Studio chụp ảnh từng cảnh của bản đó và của bản hiện tại, đặt cạnh nhau, chỉ hiện các cảnh có khác biệt. Mất khoảng 1–3 phút. Nhờ vậy bạn biết bản nào đẹp hơn trước khi khôi phục.
 
 **Dòng lệnh** (Claude Code cũng dùng): `node <app>/server/cli-snapshot.mjs . list` · `… snapshot --label "…"` · `… restore <id> [file …]`
 

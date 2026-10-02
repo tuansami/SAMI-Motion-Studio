@@ -589,8 +589,8 @@ function tabLook(B) {
 }
 
 // — Xuất video —
-const RES = {FHD: 'Full HD', '2K': '2K', '4K': '4K'};
-const dims = (ratio, res) => { const st = {'16:9': [1920, 1080], '9:16': [1080, 1920], '1:1': [1080, 1080]}[ratio]; const k = {FHD: 1, '2K': 4 / 3, '4K': 2}[res]; return `${Math.round(st[0] * k)}×${Math.round(st[1] * k)}`; };
+const RES = {'540p': 'Nháp 540p', FHD: 'Full HD', '2K': '2K', '4K': '4K'};
+const dims = (ratio, res) => { const st = {'16:9': [1920, 1080], '9:16': [1080, 1920], '1:1': [1080, 1080]}[ratio]; const k = {'540p': 0.5, FHD: 1, '2K': 4 / 3, '4K': 2}[res]; return `${Math.round(st[0] * k)}×${Math.round(st[1] * k)}`; };
 function tabRender(B) {
   const r = S.render;
   const set = (k, v) => { r[k] = v; renderTab(); };
@@ -606,6 +606,8 @@ function tabRender(B) {
   box.append(field('Tăng tốc GPU', h('div', {class: 'row', style: 'flex-wrap:wrap'}, seg('gpu', [['auto', 'Tự động'], ['off', 'Tắt (chỉ CPU)']]), h('button', {class: 'small', onclick: diagnoseGpu}, '🩺 Chẩn đoán GPU')),
     r.codec === 'prores' ? 'ProRes luôn mã hoá bằng CPU (NVIDIA không có bộ mã hoá ProRes). Muốn dùng GPU → chọn MP4 H.264/H.265.'
     : g.nvenc ? 'NVIDIA NVENC ✓ — GPU mã hoá video, CPU chỉ lo vẽ khung hình.' : 'Chưa chạy được NVENC — bấm "Chẩn đoán GPU" để xem nguyên nhân và cách sửa.'));
+  if (r.loudness === undefined) r.loudness = -14;
+  box.append(field('Chuẩn âm lượng khi xuất', seg('loudness', [[-14, '−14 LUFS (mạng xã hội)'], [-16, '−16 LUFS (web)'], ['off', 'Tắt']]), r.loudness === 'off' ? 'Giữ nguyên mức âm đã mix.' : 'Tự đo và chỉnh cả bản mix về ' + r.loudness + ' LUFS, đỉnh tối đa −1 dBTP — đều tiếng trên Reels/TikTok/YouTube, không bị nền tảng tự hạ nhỏ.'));
   box.append(field('Mức ưu tiên', seg('priority', [['low', 'Thấp (vẫn dùng máy mượt)'], ['normal', 'Bình thường'], ['high', 'Cao']])));
   box.append(h('div', {class: 'row', style: 'flex-wrap:wrap'},
     h('label', {class: 'chk'}, h('input', {type: 'checkbox', checked: r.titles, onchange: (e) => (r.titles = e.target.checked)}), 'Kèm tiêu đề'),
@@ -625,7 +627,7 @@ function tabRender(B) {
     h('button', {onclick: () => go(RATIOS), title: 'Xuất 16:9 + 9:16 + 1:1 với cùng cài đặt'}, 'Xuất cả 3 tỉ lệ'),
     h('button', {onclick: () => go([r.ratio], S.scene), title: 'Chỉ xuất cảnh đang chọn'}, `Chỉ cảnh ${S.scene}`),
     h('button', {onclick: () => { r.res = 'FHD'; r.fps = 30; r.crf = 26; r.threads = Math.min(8, cpus); renderTab(); }, title: 'Cài nhanh để xem thử'}, 'Preset: bản nháp nhanh')));
-  B.append(box);
+  B.append(box, reviewGroup());
   const q = h('div', {class: 'group'}, h('h4', {}, 'Hàng đợi render', h('span', {}, h('button', {class: 'small', onclick: () => api('/api/open', {path: S.dir + (S.state.platform === 'win32' ? '\\out' : '/out')})}, 'Mở thư mục out'), ' ', h('button', {class: 'small', onclick: () => api('/api/render/clear', {})}, 'Dọn xong'), ' ', h('button', {class: 'small danger', title: 'Huỷ mọi lượt đang chạy/đang chờ và tắt hẳn các tiến trình render (kể cả khi bị treo)', onclick: async () => { if (!confirm('Dừng TẤT CẢ lượt render và tắt hẳn các tiến trình render?')) return; try { await api('/api/render/stop-all', {}); toast('Đã dừng tất cả. Các đoạn đã xong được giữ lại — bấm Tiếp tục khi cần.'); } catch (e) { toast('Không gửi được lệnh dừng: ' + e.message + ' — đóng cửa sổ đen của Studio rồi mở lại.', true, 8000); } }}, '⛔ Dừng tất cả'))));
   q.append(h('div', {id: 'connWarn', class: 'v-warn', hidden: true, style: 'font-size:12.5px;margin-bottom:8px'}, '⚠ Mất kết nối với Studio (cửa sổ đen) — trạng thái có thể cũ. Đang thử kết nối lại…'));
   q.id = 'jobBox'; B.append(q); renderJobs();
@@ -652,12 +654,12 @@ function renderJobs() {
 }
 // rough output size (label only — real size depends on motion/detail)
 function estimateSize(r) {
-  const st = {'16:9': [1920, 1080], '9:16': [1080, 1920], '1:1': [1080, 1080]}[r.ratio]; const k = {FHD: 1, '2K': 4 / 3, '4K': 2}[r.res];
+  const st = {'16:9': [1920, 1080], '9:16': [1080, 1920], '1:1': [1080, 1080]}[r.ratio]; const k = {'540p': 0.5, FHD: 1, '2K': 4 / 3, '4K': 2}[r.res];
   const px = (st[0] * k * st[1] * k) / (1920 * 1080); const f = +r.fps / 30;
   const gpu = r.gpu !== 'off' && S.state.gpu.nvenc && r.codec !== 'prores';
   let mbps;
   if (r.codec === 'prores') mbps = 220 * px * f;
-  else if (gpu) mbps = {FHD: 16, '2K': 28, '4K': 55}[r.res] * (r.codec === 'h265' ? 1 : 1);
+  else if (gpu) mbps = {'540p': 4, FHD: 16, '2K': 28, '4K': 55}[r.res] * (r.codec === 'h265' ? 1 : 1);
   else mbps = 12 * Math.pow(0.87, (+r.crf || 18) - 18) * px * Math.pow(f, 0.6) * (r.codec === 'h265' ? 0.6 : 1);
   const sec = totalSec(); const mb = (mbps * sec) / 8 + (0.32 * sec) / 8;
   const label = mb > 1024 ? (mb / 1024).toFixed(1) + ' GB' : Math.round(mb) + ' MB';
@@ -715,6 +717,7 @@ async function tabHistory(B) {
       h('div', {class: 'l2', title: 'Thay đổi so với điểm neo trước đó'}, '△ ' + it.diff.summary, it.source ? ' · ' + it.source : ''),
       h('div', {class: 'row', style: 'margin-top:6px'},
         h('button', {class: 'small', onclick: () => restoreDlg(it)}, 'Khôi phục…'),
+        h('button', {class: 'small', title: 'Chụp ảnh từng cảnh của điểm neo này và của bản hiện tại, đặt cạnh nhau', onclick: () => compareDlg(it)}, 'So sánh'),
         h('button', {class: 'small', onclick: async () => { const v = prompt('Tên cho điểm neo này:', it.label || ''); if (v == null) return; await api('/api/history/star', {id: S.id, snap: it.id, label: v, starred: true}); renderTab(); }}, 'Đặt tên'))));
   }
 }
@@ -730,12 +733,52 @@ async function restoreDlg(it) {
     try { const r = await api('/api/history/restore', {id: S.id, snap: it.id, paths}); localStorage.removeItem('draft_' + S.id); sessionStorage.removeItem('undo_' + S.id); S.project = null; toast(`Đã khôi phục (${r.written} tệp ghi lại, ${r.deleted} tệp xoá) — đang tải lại…`); setTimeout(() => location.reload(), 700); }
     catch (e) { S.restoring = false; toast(e.message, true, 6000); }
   };
-  modal(h('div', {style: 'min-width:min(620px,86vw)'}, h('h3', {}, 'Khôi phục điểm neo'),
+  modal(h('div', {}, h('h3', {}, 'Khôi phục điểm neo'),
     h('p', {class: 'muted', style: 'margin-top:0'}, `${new Date(it.time).toLocaleString('vi-VN')} · ${(HKIND[it.kind] || [it.kind])[0]}${it.label ? ' · ' + it.label : ''}`),
     rows.length ? h('div', {}, h('p', {}, h('b', {}, `${rows.length} mục khác với hiện tại.`), ' Tick từng mục nếu chỉ muốn khôi phục một phần (vd chỉ 1 cảnh hoặc chỉ nhạc):'), box) : h('p', {class: 'v-ok'}, 'Dự án hiện tại giống hệt điểm neo này — không có gì để khôi phục.'),
     h('div', {class: 'row', style: 'margin-top:12px;flex-wrap:wrap'},
       h('button', {class: 'primary', disabled: !rows.length, onclick: () => go(null)}, 'Khôi phục toàn bộ'),
       h('button', {disabled: !rows.length, onclick: () => { const p = checks.filter((c) => c.checked).map((c) => c.value); if (!p.length) return toast('Chưa chọn mục nào', true); go(p); }}, 'Chỉ khôi phục mục đã chọn'))));
+}
+
+// ─────────────────────────── REVIEW PACK + COMPARE (tasks in child processes) ───────────────────────────
+S.tasks = {}; const taskWaiters = {};
+const onTask = (t) => { S.tasks[t.id] = t; taskWaiters[t.id]?.(t); if (t.kind === 'review' && t.project === S.id) { const el = $('#reviewMsg'); if (el) el.textContent = t.status === 'running' ? `${t.msg} (${Math.round((t.p || 0) * 100)}%)` : t.status === 'error' ? '✗ ' + t.error : ''; if (t.status === 'done') { toast(`Gói duyệt xong: ${t.result.scenes} cảnh × ${t.result.ratios.length} tỉ lệ`, false, 6000); if (S.tab === 'render') renderTab(); } } };
+const projUrl = (rel) => `/proj/${S.id}/${rel.split('/').map(encodeURIComponent).join('/')}`;
+function reviewGroup() {
+  const g = h('div', {class: 'group'}, h('h4', {}, 'Gói duyệt khách'));
+  const running = Object.values(S.tasks).find((t) => t.project === S.id && t.kind === 'review' && t.status === 'running');
+  g.append(h('div', {class: 'hint', style: 'margin:0 0 8px'}, 'Ảnh khung giữa của mọi cảnh × mọi tỉ lệ → 1 file review.html (gửi qua Lark/Zalo/Email, mở trên điện thoại, có ô góp ý từng cảnh + nút Sao chép góp ý) + ảnh contact sheet. Không cần render video. ≈ 2–4 phút.'),
+    h('div', {class: 'row', style: 'flex-wrap:wrap'},
+      h('button', {class: 'primary', disabled: !!running, onclick: async () => { if (isDirty()) await save(); try { await api('/api/review', {id: S.id}); renderTab(); } catch (e) { toast(e.message, true); } }}, running ? 'Đang tạo…' : '📋 Tạo gói duyệt'),
+      h('button', {title: 'Thêm bản video nhẹ 540p vào hàng đợi (gửi kèm để khách xem chuyển động)', onclick: async () => { if (isDirty()) await save(); try { await api('/api/render', {...S.render, res: '540p', fps: 30, crf: 28, ratio: S.project.formats[0], id: S.id, name: (S.render.name || S.project.name) + '_duyet', scope: 'all'}); toast('Đã thêm bản xem 540p vào hàng đợi'); } catch (e) { modal(h('pre', {style: 'white-space:pre-wrap'}, e.message)); } }}, '＋ Bản xem 540p')),
+    h('div', {id: 'reviewMsg', class: 'muted', style: 'font-size:12.5px;margin-top:6px'}, running ? `${running.msg} (${Math.round((running.p || 0) * 100)}%)` : ''));
+  const list = h('div', {style: 'margin-top:8px'}); g.append(list);
+  api('/api/review/list?id=' + S.id).then((L) => { for (const r of L.slice(0, 4)) list.append(h('div', {class: 'item', style: 'cursor:default;flex-wrap:wrap'}, h('span', {class: 't'}, r.stamp.replace('_', ' ')), h('a', {class: 'help', href: projUrl(r.html), target: '_blank'}, 'Mở trang duyệt'), ...r.sheets.map((s) => h('a', {class: 'help', href: projUrl(s), target: '_blank'}, s.match(/contact_(.*)\.jpg/)[1].replace('x', ':'))), h('button', {class: 'small', onclick: () => api('/api/open', {path: r.path})}, '📁'))); }).catch(() => {});
+  const fb = h('textarea', {placeholder: 'Dán góp ý khách vào đây (vd nội dung "Sao chép góp ý" từ trang duyệt)…', style: 'margin-top:10px;min-height:70px'});
+  g.append(fb, h('div', {class: 'row', style: 'margin-top:6px'}, h('button', {onclick: async () => { try { const r = await api('/api/review/feedback', {id: S.id, text: fb.value}); fb.value = ''; toast(`Đã lưu ${r.items} góp ý vào brief/GOP_Y.md — bảo Claude Code: "sửa theo brief/GOP_Y.md"`, false, 7000); } catch (e) { toast(e.message, true); } }}, 'Lưu vào brief/GOP_Y.md')));
+  return g;
+}
+async function compareDlg(it) {
+  const body = h('div', {}, h('h3', {}, 'So sánh: điểm neo ↔ hiện tại'), h('p', {class: 'muted', style: 'margin-top:0'}, `${new Date(it.time).toLocaleString('vi-VN')}${it.label ? ' · ' + it.label : ''}`));
+  const msg = h('div', {class: 'muted'}, 'Đang dựng lại phiên bản cũ và chụp ảnh từng cảnh (≈ 1–3 phút, chạy nền — có thể đóng hộp này)…'); body.append(msg); modal(body);
+  let r; try { r = await api('/api/history/compare', {id: S.id, a: it.id, b: 'current', ratio: S.ratio}); } catch (e) { msg.textContent = '✗ ' + e.message; return; }
+  const show = (t) => {
+    if (t.status === 'running') { msg.textContent = `${t.msg} (${Math.round((t.p || 0) * 100)}%)`; return; }
+    delete taskWaiters[t.id];
+    if (t.status === 'error') { msg.className = 'v-fail'; msg.textContent = '✗ ' + t.error; return; }
+    const c = t.result; msg.className = c.changed ? 'v-warn' : 'v-ok'; msg.textContent = c.changed ? `${c.changed}/${c.scenes.length} cảnh khác nhau (tỉ lệ ${c.ratio}) — cảnh giống nhau được thu gọn.` : `Mọi cảnh giống nhau ở tỉ lệ ${c.ratio} (khác biệt có thể nằm ở âm thanh / tỉ lệ khác).`;
+    const grid = h('div', {class: 'cmpGrid'}, h('b', {}, 'Điểm neo'), h('b', {}, 'Hiện tại'));
+    for (const s of c.scenes) {
+      if (s.same) continue;
+      grid.append(h('div', {class: 'cmpHead'}, h('b', {style: 'color:var(--mint)'}, s.id), ' ', s.label || ''));
+      grid.append(s.a ? h('img', {src: s.a}) : h('div', {class: 'ph'}, 'không có'), s.b ? h('img', {src: s.b}) : h('div', {class: 'ph'}, 'không có'));
+    }
+    const same = c.scenes.filter((s) => s.same).map((s) => s.id);
+    body.append(grid, same.length ? h('p', {class: 'muted', style: 'font-size:12.5px'}, 'Giống nhau: ' + same.join(', ')) : null,
+      h('div', {class: 'row'}, h('button', {class: 'primary', onclick: () => restoreDlg(it)}, 'Khôi phục điểm neo này…')));
+  };
+  taskWaiters[r.task] = show; if (S.tasks[r.task]) show(S.tasks[r.task]);
 }
 
 // ─────────────────────────── LIVE EVENTS ───────────────────────────
@@ -746,6 +789,7 @@ function connectEvents() {
   const beat = () => { lastBeat = Date.now(); const w = $('#connWarn'); if (w) w.hidden = true; };
   es.addEventListener('ping', beat);
   es.addEventListener('template', (e) => { const d = JSON.parse(e.data); toast(d.thumbs ? `Đã tạo ảnh bìa cho mẫu ${d.tpl}` : `Tạo ảnh bìa mẫu ${d.tpl} lỗi: ${d.error || ''}`, !d.thumbs, 6000); });
+  es.addEventListener('task', (e) => onTask(JSON.parse(e.data)));
   es.addEventListener('jobs', (e) => { beat(); onJobsData(JSON.parse(e.data)); });
   es.addEventListener('code', (e) => { const d = JSON.parse(e.data); if (d.id !== S.id) return; if (d.error) showBundleError(d.error); else { toast('Code cảnh vừa thay đổi — đang tải lại preview…'); keepUndo(); setTimeout(() => location.reload(), 600); } });
   es.addEventListener('restored', (e) => { const d = JSON.parse(e.data); if (d.id !== S.id || S.restoring) return; if (!isDirty()) { toast('Dự án vừa được khôi phục về điểm neo cũ — đang tải lại…'); setTimeout(() => location.reload(), 600); } else toast('Dự án vừa được khôi phục ở nơi khác — lưu ý: bạn đang có thay đổi chưa lưu', true, 8000); });

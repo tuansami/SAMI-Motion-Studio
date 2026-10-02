@@ -28,6 +28,8 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </li>
 <li><a href="#10-tab-giao-dien">10. Tab Giao diện</a></li>
 <li><a href="#11-tab-xuat-video">11. Tab Xuất video</a><ul>
+<li><a href="#goi-duyet-khach-moi-o-04">Gói duyệt khách (mới ở 0.4)</a></li>
+<li><a href="#chuan-am-luong-14-lufs-moi-o-04">Chuẩn âm lượng −14 LUFS (mới ở 0.4)</a></li>
 <li><a href="#render-chong-treo-moi-o-02">Render chống treo (mới ở 0.2)</a></li>
 <li><a href="#gpu-nvidia-nvenc">GPU NVIDIA (NVENC)</a></li>
 <li><a href="#ve-gpu-en-80">Về "GPU đến 80 %"</a></li>
@@ -50,7 +52,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </div>
 </div><h1 id="sami-motion-studio-huong-dan-su-dung">SAMI Motion Studio — Hướng dẫn sử dụng</h1>
 <blockquote>
-<p>Phiên bản 0.3 (giai đoạn 1: web app chạy trên máy). Mới ở 0.3: <strong>Lịch sử phiên bản / điểm neo</strong> (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
+<p>Phiên bản 0.4 (giai đoạn 1: web app chạy trên máy). Mới ở 0.4: <strong>Gói duyệt khách</strong>, <strong>So sánh điểm neo</strong>, <strong>chuẩn âm lượng −14 LUFS</strong>. Ở 0.3: <strong>Lịch sử phiên bản / điểm neo</strong> (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
 <p><strong>Làm việc theo nhóm / với Claude:</strong> đọc <code>docs/QUY_TRINH_LAM_VIEC.md</code> (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).</p>
 </blockquote>
 <hr />
@@ -400,6 +402,20 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 - <strong>Preset: bản nháp nhanh</strong> — Full HD, 30 fps, CRF 26.</p>
 <p><strong>Dung lượng ước tính</strong> hiện ngay dưới tên file (vàng = cảnh báo). Ví dụ ProRes 2K 60 fps ≈ 780 Mbps → 66 s ≈ 6,4 GB.</p>
 <p><strong>Hàng đợi render</strong>: thanh tiến độ, số khung đã vẽ / đã mã hoá, thời gian còn lại, bộ mã hoá đang dùng (GPU NVENC hay CPU), nút <strong>Huỷ</strong>, <strong>Mở video</strong>, <strong>Mở thư mục out</strong>, <strong>Dọn xong</strong>. Có thể tiếp tục chỉnh dự án khác khi đang render (mỗi bản render dùng dữ liệu <strong>đã Lưu</strong> tại lúc nó bắt đầu chạy — Studio tự lưu khi bấm Xuất).</p>
+<h3 id="goi-duyet-khach-moi-o-04">Gói duyệt khách (mới ở 0.4)</h3>
+<p>Dùng để khách hoặc sếp góp ý theo từng cảnh <strong>mà không cần render video</strong>.
+1. Vào tab Xuất → <strong>📋 Tạo gói duyệt</strong>. Mất khoảng 2–4 phút, chạy nền.
+2. Studio tạo <code>out/review/&lt;ngày_giờ&gt;/</code>, gồm:
+   - <strong>review.html</strong>: chỉ 1 file, ảnh đã nhúng sẵn. Gửi qua Lark/Zalo/Email, mở được trên điện thoại.
+   - <strong>contact_16x9.jpg</strong>, <strong>contact_9x16.jpg</strong>…: lưới ảnh mọi cảnh, đăng được vào nhóm chat.
+3. Khách ghi góp ý vào ô của từng cảnh → bấm <strong>Sao chép góp ý</strong> → dán gửi lại.
+4. Dán góp ý vào ô trong tab Xuất → <strong>Lưu vào brief/GOP_Y.md</strong>. Sau đó bảo Claude Code: <em>"sửa theo brief/GOP_Y.md"</em>.
+5. Muốn khách xem cả chuyển động: bấm <strong>＋ Bản xem 540p</strong> để có file mp4 nhẹ, gửi nhanh.</p>
+<p>Lưu ý: nhãn cảnh trong trang duyệt lấy từ tên cảnh của dự án (đang là tiếng Việt). Gửi khách Đức thì nên đặt tên cảnh dễ hiểu, hoặc chỉ gửi contact sheet.</p>
+<h3 id="chuan-am-luong-14-lufs-moi-o-04">Chuẩn âm lượng −14 LUFS (mới ở 0.4)</h3>
+<p>Mặc định Studio tự đo bản mix và đưa về <strong>−14 LUFS, đỉnh tối đa −1 dBTP</strong>. Đây là mức Reels, TikTok và YouTube phát lại, nên video không bị nền tảng tự hạ nhỏ hay bị bé hơn video khác.
+- Chọn −16 LUFS cho web; chọn Tắt nếu đã mix tay.
+- Kết quả ghi trên lượt render, ví dụ "Âm lượng −16,3 → −14,0 LUFS".</p>
 <h3 id="render-chong-treo-moi-o-02">Render chống treo (mới ở 0.2)</h3>
 <ul>
 <li>Video được chia thành <strong>các đoạn ~15 giây</strong>, mỗi đoạn render ở một tiến trình riêng. Studio (cửa sổ đen + trang web) <strong>không bao giờ bị đơ theo</strong> render.</li>
@@ -468,6 +484,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 - Điểm tự động giữ 60 cái gần nhất, cộng mỗi ngày 1 cái trong 30 ngày.
 - Mốc ★ không bao giờ bị dọn.
 - Kho nằm ở <code>&lt;dự án&gt;/.history/</code>. <strong>Đừng xoá thư mục này.</strong> Copy cả thư mục dự án là mang theo luôn lịch sử.</p>
+<p><strong>So sánh</strong> (mới ở 0.4): bấm <strong>So sánh</strong> ở một điểm neo. Studio chụp ảnh từng cảnh của bản đó và của bản hiện tại, đặt cạnh nhau, chỉ hiện các cảnh có khác biệt. Mất khoảng 1–3 phút. Nhờ vậy bạn biết bản nào đẹp hơn trước khi khôi phục.</p>
 <p><strong>Dòng lệnh</strong> (Claude Code cũng dùng): <code>node &lt;app&gt;/server/cli-snapshot.mjs . list</code> · <code>… snapshot --label "…"</code> · <code>… restore &lt;id&gt; [file …]</code></p>
 <h2 id="12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</h2>
 <h3 id="cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</h3>

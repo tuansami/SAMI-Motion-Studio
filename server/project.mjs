@@ -25,18 +25,21 @@ export const syncEngineAssets = (dir) => {
   walk(src, dst);
 };
 
-/** hash of code files (scenes + engine) → cache key for bundles */
-export const codeHash = (dir) => {
+/** hash of code files (scenes + engine) AND public media → cache key for bundles.
+ *  Remotion's bundle() copies public/ into the bundle, so a media file replaced under the same name must invalidate it
+ *  (before 0.4.0 a re-uploaded image/music kept rendering the OLD file). */
+export const codeHash = (dir, {media = true} = {}) => {
   const h = crypto.createHash('sha1');
-  const walk = (d) => {
+  const walk = (d, all = false) => {
     if (!fs.existsSync(d)) return;
     for (const e of fs.readdirSync(d, {withFileTypes: true}).sort((a, b) => a.name.localeCompare(b.name))) {
       const p = path.join(d, e.name);
-      if (e.isDirectory()) walk(p);
-      else if (/\.(tsx?|jsx?|css|json)$/.test(e.name)) { const st = fs.statSync(p); h.update(p + st.mtimeMs + st.size); }
+      if (e.isDirectory()) { if (!(all && e.name === '_engine')) walk(p, all); }
+      else if (all || /\.(tsx?|jsx?|css|json)$/.test(e.name)) { const st = fs.statSync(p); h.update(p + st.mtimeMs + st.size); }
     }
   };
   walk(path.join(dir, 'scenes'));
+  if (media) walk(path.join(dir, "public"), true);
   walk(ENGINE_SRC);
   return h.digest('hex').slice(0, 12);
 };

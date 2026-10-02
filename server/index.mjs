@@ -15,11 +15,12 @@ import {importAssets, listAssets} from './assets.mjs';
 import {listTemplates, checkTemplate, saveAsTemplate, importTemplate, exportTemplate, CATEGORIES, GOALS} from './template.mjs';
 import {gpuEncoders, gpuDiagnose, FFMPEG} from './ffmpeg.mjs';
 import * as history from './history.mjs';
+import {CMP_ROOT} from './review.mjs';
 
 const PORT = +(process.env.STUDIO_PORT || 5178);
 fs.mkdirSync(DATA, {recursive: true});
 const SETTINGS = path.join(DATA, 'settings.json');
-const DEFAULT_RENDER = {threads: Math.min(8, os.cpus().length), gpu: 'auto', res: 'FHD', fps: 30, codec: 'h264', crf: 18, priority: 'normal', titles: true, subtitles: true, audio: true};
+const DEFAULT_RENDER = {threads: Math.min(8, os.cpus().length), gpu: 'auto', res: 'FHD', fps: 30, codec: 'h264', crf: 18, priority: 'normal', titles: true, subtitles: true, audio: true, loudness: -14};
 const loadSettings = () => { try { return {recent: [], render: DEFAULT_RENDER, projectsRoot: DEFAULT_PROJECTS, ...JSON.parse(fs.readFileSync(SETTINGS, 'utf8'))}; } catch { return {recent: [], render: DEFAULT_RENDER, projectsRoot: DEFAULT_PROJECTS}; } };
 const saveSettings = (s) => fs.writeFileSync(SETTINGS, JSON.stringify(s, null, 1));
 let settings = loadSettings();
@@ -194,6 +195,20 @@ const ensureSnapshotHook = (dir) => {
 };
 // automatic anchors — never block a request; "save" anchors at most every 2 min per project
 const lastSaveSnap = new Map();
+// long Chrome jobs (review pack, compare) run in cli-review.mjs; progress → SSE "task"
+const tasks = new Map(); let taskSeq = 0;
+const startTask = (id, dir, kind, args) => {
+  for (const t of tasks.values()) if (t.project === id && t.kind === kind && t.status === 'running') return {task: t.id, already: true};
+  const t = {id: ++taskSeq, project: id, kind, status: 'running', msg: 'Đang chuẩn bị…', p: 0, result: null, error: null, started: Date.now()};
+  const child = spawn(process.execPath, [path.join(ROOT, 'server', 'cli-review.mjs'), dir, ...args], {windowsHide: true, env: process.env});
+  t.child = child; tasks.set(t.id, t);
+  const pub = () => { const {child: _c, ...x} = t; broadcast('task', x); };
+  let buf = '', log = '';
+  child.stdout.on('data', (d) => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const line = buf.slice(0, i); buf = buf.slice(i + 1); if (!line.startsWith('@@')) continue; try { const m = JSON.parse(line.slice(2)); if (m.done) { t.result = m.done; t.status = 'done'; t.p = 1; t.msg = 'Xong'; } else if (m.error) { t.error = m.error; t.status = 'error'; } else { t.msg = m.msg; if (m.p != null) t.p = m.p; } pub(); } catch {} } });
+  child.stderr.on('data', (d) => { log = (log + d).slice(-3000); });
+  child.on('exit', (code) => { if (t.status === 'running') { t.status = 'error'; t.error = `Tiến trình dừng (mã ${code})\n` + log.replace(/\x1b\[[0-9;]*m/g, '').slice(-800); } t.child = null; pub(); setTimeout(() => tasks.delete(t.id), 3600e3); });
+  pub(); return {task: t.id};
+};
 const autoSnap = (dir, kind, label = '') => history.snapshot(dir, {kind, label, source: 'Studio'}).catch((e) => console.error('snapshot:', e.message));
 
 // ── server ───────────────────────────────────────────────────────────
@@ -210,6 +225,7 @@ const server = http.createServer(async (req, res) => {
     if (m) return sendFile(req, res, path.join(dirs.get(m[1]) || '/nonexistent', 'public', m[2]));
     m = p.match(/^\/proj\/([0-9a-f]{10})\/out\/(.+)$/);
     if (m) return sendFile(req, res, path.join(dirs.get(m[1]) || '/nonexistent', 'out', m[2]));
+    if (p.startsWith('/cmp/')) { const f = path.resolve(CMP_ROOT, p.slice(5)); if (!f.startsWith(path.resolve(CMP_ROOT) + path.sep)) { res.writeHead(403); return res.end(); } return sendFile(req, res, f); }
     m = p.match(/^\/tpl\/([\w.-]+)\/(preview\/[\w.-]+)$/);
     if (m) return sendFile(req, res, path.join(TEMPLATES, m[1], m[2]));
     // preview bundle
@@ -311,6 +327,30 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/gpu/diagnose') return json(res, gpuDiagnose());
     if (p === '/api/render/stop-all' && req.method === 'POST') { stopAll(); return json(res, {ok: true}); }
     if (p === '/api/jobs') return json(res, publicJobs());
+    // ── review pack + compare (Chrome → child process) ──
+    if (p === '/api/review' && req.method === 'POST') {
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'unknown project'}, 404);
+      return json(res, startTask(b.id, dir, 'review', ['review']));
+    }
+    if (p === '/api/history/compare' && req.method === 'POST') {
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'unknown project'}, 404);
+      return json(res, startTask(b.id, dir, 'compare', ['compare', path.basename(b.a), b.b ? path.basename(b.b) : 'current', ...(b.ratio ? [b.ratio] : [])]));
+    }
+    if (p === '/api/tasks') return json(res, [...tasks.values()].map(({child, ...t}) => t));
+    if (p === '/api/review/feedback' && req.method === 'POST') {
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'unknown project'}, 404);
+      const text = String(b.text || '').trim(); if (!text) return json(res, {error: 'Chưa có nội dung góp ý'}, 400);
+      const f = path.join(dir, 'brief', 'GOP_Y.md'); fs.mkdirSync(path.dirname(f), {recursive: true});
+      if (!fs.existsSync(f)) fs.writeFileSync(f, `# GÓP Ý KHÁCH — ${readProject(dir).name}\n\nMới nhất ở cuối. Claude Code: đọc file này khi được yêu cầu "sửa theo góp ý", rồi đánh dấu [x] mục đã xử lý.\n`);
+      const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => (/^- \[/.test(l) ? l : '- [ ] ' + l.replace(/^[-•*]\s*/, '')));
+      fs.appendFileSync(f, `\n## ${new Date().toLocaleString('vi-VN')}${b.who ? ' — ' + String(b.who).slice(0, 60) : ''}\n${lines.join('\n')}\n`);
+      return json(res, {ok: true, file: f, items: lines.length});
+    }
+    if (p === '/api/review/list') {
+      const dir = dirs.get(u.searchParams.get('id')); const rd = path.join(dir || '', 'out', 'review');
+      const items = fs.existsSync(rd) ? fs.readdirSync(rd).filter((d) => fs.existsSync(path.join(rd, d, 'review.html'))).sort().reverse().slice(0, 10).map((d) => ({stamp: d, html: `out/review/${d}/review.html`, sheets: fs.readdirSync(path.join(rd, d)).filter((f) => /^contact_.*\.jpg$/.test(f)).map((f) => `out/review/${d}/${f}`), path: path.join(rd, d)})) : [];
+      return json(res, items);
+    }
     // ── version history (điểm neo) ──
     if (p.startsWith('/api/history')) {
       const b = req.method === 'POST' ? await jbody(req) : {}; const dir = dirs.get(b.id || u.searchParams.get('id')); if (!dir) return json(res, {error: 'unknown project'}, 404);

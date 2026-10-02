@@ -7,6 +7,7 @@ import {spawnSync} from 'child_process';
 import {ROOT, TEMPLATES} from './paths.mjs';
 import * as history from './history.mjs';
 import {validateProject} from './validate.mjs';
+import {hasFilter, FFMPEG} from './ffmpeg.mjs';
 
 let bad = 0;
 const ok = (m) => console.log('✓ ' + m);
@@ -17,6 +18,7 @@ const sha = (f) => crypto.createHash('sha1').update(fs.readFileSync(f)).digest('
 await t('dependencies installed', () => { const r = spawnSync(process.execPath, [path.join(ROOT, 'server', 'check-deps.cjs')], {encoding: 'utf8'}); if (r.status) throw new Error(r.stdout.trim()); });
 await t('server modules parse', () => { for (const f of fs.readdirSync(path.join(ROOT, 'server')).filter((x) => /\.m?js$/.test(x))) { const r = spawnSync(process.execPath, ['--check', path.join(ROOT, 'server', f)], {encoding: 'utf8'}); if (r.status) throw new Error(f + ': ' + r.stderr.split('\n').slice(0, 3).join(' ')); } });
 await t('ui/app.js parses', () => { const r = spawnSync(process.execPath, ['--check', path.join(ROOT, 'ui', 'app.js')], {encoding: 'utf8'}); if (r.status) throw new Error(r.stderr.split('\n').slice(0, 3).join(' ')); });
+await t('ffmpeg + loudnorm filter (chuẩn −14 LUFS)', () => { if (!FFMPEG) throw new Error('không thấy ffmpeg'); if (!hasFilter('loudnorm')) throw new Error('ffmpeg thiếu loudnorm → xuất video sẽ bỏ qua bước chuẩn âm lượng'); });
 const tpls = fs.readdirSync(TEMPLATES).filter((d) => fs.existsSync(path.join(TEMPLATES, d, 'project.json')));
 await t(`validate runs on ${tpls.length} templates`, () => { for (const d of tpls) validateProject(path.join(TEMPLATES, d)); });
 

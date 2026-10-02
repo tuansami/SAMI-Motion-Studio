@@ -75,3 +75,5 @@ label>input[type=color]{display:block}
 .hk{font-size:11px;border-radius:5px;padding:0 6px;background:rgba(255,255,255,.08);white-space:nowrap}.hk-ai{background:rgba(118,103,254,.25)}.hk-manual{background:rgba(255,181,71,.2);color:var(--amber)}.hk-before-restore,.hk-before-upload{background:rgba(255,90,95,.15)}
 .hfiles{max-height:42vh;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12.5px}
 .tabs button{flex:1 0 auto;padding:9px 5px}
+.cmpGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;max-height:62vh;overflow:auto;margin:10px 0}.cmpGrid img{width:100%;border-radius:6px;border:1px solid var(--line)}.cmpGrid .cmpHead{grid-column:span 2;font-size:13px;margin-top:6px}.cmpGrid .ph{border:1px dashed var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);min-height:80px}
+.modal .box:has(.cmpGrid){max-width:1100px}
