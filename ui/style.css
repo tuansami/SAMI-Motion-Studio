@@ -77,3 +77,5 @@ label>input[type=color]{display:block}
 .tabs button{flex:1 0 auto;padding:9px 5px}
 .cmpGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;max-height:62vh;overflow:auto;margin:10px 0}.cmpGrid img{width:100%;border-radius:6px;border:1px solid var(--line)}.cmpGrid .cmpHead{grid-column:span 2;font-size:13px;margin-top:6px}.cmpGrid .ph{border:1px dashed var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);min-height:80px}
 .modal .box:has(.cmpGrid){max-width:1100px}
+#projStatus{width:auto;padding:4px 6px;font-size:12.5px}
+.stb{font-size:11px;border:1px solid;border-radius:20px;padding:0 8px;white-space:nowrap;font-weight:600}

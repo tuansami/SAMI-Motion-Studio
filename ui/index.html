@@ -11,6 +11,7 @@
   <div class="brand"><span class="mark"></span><b>SAMI</b> Motion Studio <small id="ver"></small></div>
   <div class="proj" id="projTitle"></div>
   <div class="actions" id="topActions" hidden>
+    <select id="projStatus" title="Trạng thái dự án — Đã duyệt / Đã đăng tự đặt mốc ★ trong Lịch sử"><option value="draft">Nháp</option><option value="review">Chờ duyệt</option><option value="approved">Đã duyệt</option><option value="published">Đã đăng</option></select>
     <span class="dirty" id="dirty" hidden>● Chưa lưu</span>
     <button id="btnUndo" title="Hoàn tác (Ctrl+Z)">↶</button>
     <button id="btnRedo" title="Làm lại (Ctrl+Y)">↷</button>
@@ -54,6 +55,7 @@
       <div class="span2 row gap"><button id="btnCreate" class="primary">＋ Tạo dự án</button><span class="muted" id="npMsg"></span></div>
     </div>
   </section>
+  <section id="teamBox"></section>
   <section class="sys" id="sysInfo"></section>
 </main>
 
@@ -93,6 +95,7 @@
       <button data-tab="subs">Phụ đề</button>
       <button data-tab="audio">Âm thanh</button>
       <button data-tab="look">Giao diện</button>
+      <button data-tab="variants" title="Biến thể hàng loạt từ bảng CSV">Biến thể</button>
       <button data-tab="render">Xuất</button>
       <button data-tab="history" title="Lịch sử phiên bản / điểm neo">Lịch sử</button>
     </nav>

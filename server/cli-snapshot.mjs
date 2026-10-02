@@ -23,7 +23,7 @@ if (argv.includes('--hook')) {
     const dir = findProject(process.env.CLAUDE_PROJECT_DIR || input.cwd || process.cwd());
     if (dir) {
       const prompt = String(input.prompt || '').replace(/\s+/g, ' ').trim();
-      await snapshot(dir, {kind: 'ai', label: prompt ? 'Trước lượt chat: “' + prompt.slice(0, 80) + (prompt.length > 80 ? '…' : '') + '”' : 'Trước lượt chat AI', source: 'Claude Code'});
+      await snapshot(dir, {kind: 'ai', label: prompt ? 'Trước lượt chat: “' + prompt.slice(0, 80) + (prompt.length > 80 ? '…' : '') + '”' : 'Trước lượt chat AI', source: 'Claude Code · ' + (process.env.USERNAME || process.env.USER || '')});
     }
   } catch (e) { try { process.stderr.write('snapshot: ' + e.message + '\n'); } catch {} }
   process.exit(0);

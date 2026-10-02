@@ -144,12 +144,20 @@ const totalFrames = (project, scene, fps) => {
   return Math.max(1, toReal(project.scenes.at(-1)?.end || 30));
 };
 
+/** batch variants: replace copy values (CSV row) without touching project.json */
+export const applyCopy = (project, over) => {
+  if (!over || typeof over !== 'object') return project;
+  const p = JSON.parse(JSON.stringify(project));
+  for (const [k, v] of Object.entries(over)) if (p.copy?.[k] && v !== undefined && v !== null && String(v) !== '') p.copy[k].value = String(v);
+  return p;
+};
+
 const run = async (j) => {
   const o = j.opts;
   j.status = 'running'; j.started = Date.now(); j.stage = 'Đóng gói dự án'; j.note = null; emit();
   const serveUrl = await bundleInChild(j, o.dir, (p) => { j.progress = p / 100 * 0.03; j.stage = `Đóng gói dự án ${p}%`; emit(); });
   if (j.status === 'cancelled') return;
-  const project = readProject(o.dir);
+  const project = applyCopy(readProject(o.dir), o.copyOverride);
   const scene = o.scope && o.scope !== 'all' ? o.scope : null;
   const fps = +o.fps;
   const inputProps = {project, ratio: o.ratio, fps, titles: o.titles !== false, subtitles: o.subtitles !== false, audio: o.audio !== false, ...(scene ? {sceneId: scene} : {})};
@@ -168,7 +176,8 @@ const run = async (j) => {
   if (!j.out) {
     const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 13).replace('T', '_');
     const safe = (o.name || project.name || 'video').replace(/[^\p{L}\p{N}_-]+/gu, '_').slice(0, 60);
-    j.out = path.join(outDir, `${safe}_${o.ratio.replace(':', 'x')}_${o.res}_${fps}fps${scene ? '_' + scene : ''}_${stamp}.${ext}`);
+    const dest = o.copyOverride ? path.join(outDir, 'variants') : outDir; fs.mkdirSync(dest, {recursive: true});
+    j.out = path.join(dest, `${safe}_${o.ratio.replace(':', 'x')}_${o.res}_${fps}fps${scene ? '_' + scene : ''}_${stamp}.${ext}`);
   }
 
   const enc = gpuEncoders();

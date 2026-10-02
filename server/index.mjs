@@ -12,7 +12,7 @@ import {addJob, cancelJob, clearDone, resumeJob, stopAll, killOrphans, publicJob
 import {validateProject} from './validate.mjs';
 import {analyzeMusic} from './audio.mjs';
 import {importAssets, listAssets} from './assets.mjs';
-import {listTemplates, checkTemplate, saveAsTemplate, importTemplate, exportTemplate, CATEGORIES, GOALS} from './template.mjs';
+import {listTemplates, checkTemplate, saveAsTemplate, importTemplate, exportTemplate, tplDir, setSharedRoots, CATEGORIES, GOALS} from './template.mjs';
 import {gpuEncoders, gpuDiagnose, FFMPEG} from './ffmpeg.mjs';
 import * as history from './history.mjs';
 import {CMP_ROOT} from './review.mjs';
@@ -24,6 +24,8 @@ const DEFAULT_RENDER = {threads: Math.min(8, os.cpus().length), gpu: 'auto', res
 const loadSettings = () => { try { return {recent: [], render: DEFAULT_RENDER, projectsRoot: DEFAULT_PROJECTS, ...JSON.parse(fs.readFileSync(SETTINGS, 'utf8'))}; } catch { return {recent: [], render: DEFAULT_RENDER, projectsRoot: DEFAULT_PROJECTS}; } };
 const saveSettings = (s) => fs.writeFileSync(SETTINGS, JSON.stringify(s, null, 1));
 let settings = loadSettings();
+setSharedRoots(settings.sharedTemplates);
+const userName = () => settings.userName || os.userInfo().username;
 
 // ── project registry (id ↔ absolute folder) ──────────────────────────────
 const idOf = (dir) => crypto.createHash('sha1').update(path.resolve(dir).toLowerCase()).digest('hex').slice(0, 10);
@@ -193,6 +195,20 @@ const ensureSnapshotHook = (dir) => {
   if (ours) ours.command = cmd; else groups.push({hooks: [{type: 'command', command: cmd, timeout: 60}]});
   fs.mkdirSync(path.dirname(f), {recursive: true}); fs.writeFileSync(f, JSON.stringify(s, null, 2));
 };
+// ── team: project lock <project>/.studio-lock {user, host, pid, since, beat} — warns a 2nd person opening the same project ──
+const ME = {host: os.hostname(), pid: process.pid};
+const openSet = new Set();
+const lockFile = (dir) => path.join(dir, '.studio-lock');
+const readLock = (dir) => { try { return JSON.parse(fs.readFileSync(lockFile(dir), 'utf8')); } catch { return null; } };
+const isMine = (l) => !!l && l.host === ME.host && l.pid === ME.pid;
+const lockAlive = (l) => !!l && Date.now() - Date.parse(l.beat) < 180000; // no heartbeat for 3 min = Studio closed / crashed
+const writeLock = (dir) => { const l = readLock(dir); if (l && !isMine(l) && lockAlive(l)) return; /* someone else holds it — take over only after they close / go stale */ const now = new Date().toISOString(); try { fs.writeFileSync(lockFile(dir), JSON.stringify({user: userName(), host: ME.host, pid: ME.pid, since: isMine(l) ? l.since : now, beat: now})); } catch {} };
+const dropLock = (dir) => { openSet.delete(dir); try { if (isMine(readLock(dir))) fs.rmSync(lockFile(dir), {force: true}); } catch {} };
+setInterval(() => { for (const d of openSet) writeLock(d); }, 60000).unref();
+const dropAll = () => { for (const d of [...openSet]) dropLock(d); };
+process.on('exit', dropAll);
+for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGBREAK']) { try { process.on(sig, () => { dropAll(); process.exit(0); }); } catch {} }
+
 // automatic anchors — never block a request; "save" anchors at most every 2 min per project
 const lastSaveSnap = new Map();
 // long Chrome jobs (review pack, compare) run in cli-review.mjs; progress → SSE "task"
@@ -209,7 +225,7 @@ const startTask = (id, dir, kind, args) => {
   child.on('exit', (code) => { if (t.status === 'running') { t.status = 'error'; t.error = `Tiến trình dừng (mã ${code})\n` + log.replace(/\x1b\[[0-9;]*m/g, '').slice(-800); } t.child = null; pub(); setTimeout(() => tasks.delete(t.id), 3600e3); });
   pub(); return {task: t.id};
 };
-const autoSnap = (dir, kind, label = '') => history.snapshot(dir, {kind, label, source: 'Studio'}).catch((e) => console.error('snapshot:', e.message));
+const autoSnap = (dir, kind, label = '') => history.snapshot(dir, {kind, label, source: 'Studio · ' + userName()}).catch((e) => console.error('snapshot:', e.message));
 
 // ── server ───────────────────────────────────────────────────────────
 const server = http.createServer(async (req, res) => {
@@ -227,7 +243,7 @@ const server = http.createServer(async (req, res) => {
     if (m) return sendFile(req, res, path.join(dirs.get(m[1]) || '/nonexistent', 'out', m[2]));
     if (p.startsWith('/cmp/')) { const f = path.resolve(CMP_ROOT, p.slice(5)); if (!f.startsWith(path.resolve(CMP_ROOT) + path.sep)) { res.writeHead(403); return res.end(); } return sendFile(req, res, f); }
     m = p.match(/^\/tpl\/([\w.-]+)\/(preview\/[\w.-]+)$/);
-    if (m) return sendFile(req, res, path.join(TEMPLATES, m[1], m[2]));
+    if (m) return sendFile(req, res, path.join(tplDir(m[1]), m[2]));
     // preview bundle
     m = p.match(/^\/bundle\/([0-9a-f]{10})\/(.+)$/);
     if (m) {
@@ -242,19 +258,21 @@ const server = http.createServer(async (req, res) => {
       sse.add(res); const hb = setInterval(() => res.write(`event: ping\ndata: ${Date.now()}\n\n`), 10000); req.on('close', () => { clearInterval(hb); sse.delete(res); }); return;
     }
     if (p === '/api/state') {
-      const recent = settings.recent.filter((r) => fs.existsSync(path.join(r.dir, 'project.json'))).map((r) => ({...r, id: register(r.dir)}));
+      const recent = settings.recent.filter((r) => fs.existsSync(path.join(r.dir, 'project.json'))).map((r) => { let status = 'draft'; try { status = readProject(r.dir).status || 'draft'; } catch {} const l = readLock(r.dir); return {...r, id: register(r.dir), status, lockedBy: l && !isMine(l) && lockAlive(l) ? l : null}; });
       const templates = listTemplates();
-      return json(res, {recent, templates, categories: CATEGORIES, goals: GOALS, render: {...DEFAULT_RENDER, ...settings.render}, cpus: os.cpus().length, cpuModel: os.cpus()[0]?.model, platform: process.platform, gpu: gpuEncoders(), ffmpeg: !!FFMPEG, projectsRoot: settings.projectsRoot, version: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version});
+      return json(res, {recent, templates, categories: CATEGORIES, goals: GOALS, render: {...DEFAULT_RENDER, ...settings.render}, cpus: os.cpus().length, cpuModel: os.cpus()[0]?.model, platform: process.platform, gpu: gpuEncoders(), ffmpeg: !!FFMPEG, projectsRoot: settings.projectsRoot, sharedTemplates: settings.sharedTemplates || [], userName: userName(), host: os.hostname(), version: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version});
     }
-    if (p === '/api/settings' && req.method === 'POST') { const b = await jbody(req); settings = {...settings, ...b, render: {...settings.render, ...(b.render || {})}}; saveSettings(settings); return json(res, {ok: true}); }
+    if (p === '/api/settings' && req.method === 'POST') { const b = await jbody(req); settings = {...settings, ...b, render: {...settings.render, ...(b.render || {})}}; saveSettings(settings); setSharedRoots(settings.sharedTemplates); return json(res, {ok: true}); }
     if (p === '/api/pick-folder') { const d = await pickFolder(); return json(res, {dir: d, supported: process.platform === 'win32'}); }
     if (p === '/api/open' && req.method === 'POST') { const b = await jbody(req); if (b.path && fs.existsSync(b.path)) openPath(b.path); return json(res, {ok: true}); }
     if (p === '/api/project/open' && req.method === 'POST') {
       const b = await jbody(req);
       const dir = b.id ? dirs.get(b.id) : b.dir;
       if (!dir || !fs.existsSync(path.join(dir, 'project.json'))) return json(res, {error: 'Thư mục này không có project.json'}, 400);
-      const id = register(dir); const pj = readProject(dir); syncEngineAssets(dir); ensureClaude(dir, pj); touchRecent(dir, pj.name); watch(id); autoSnap(dir, 'open', 'Mở dự án');
-      return json(res, {id, dir, project: pj, assets: listAssets(dir)});
+      const id = register(dir); const pj = readProject(dir); syncEngineAssets(dir); ensureClaude(dir, pj); touchRecent(dir, pj.name); watch(id);
+      const other = readLock(dir); const lockedBy = other && !isMine(other) && lockAlive(other) ? other : null;
+      if (!b.reload) autoSnap(dir, 'open', 'Mở dự án'); openSet.add(dir); writeLock(dir);
+      return json(res, {id, dir, project: pj, assets: listAssets(dir), lockedBy});
     }
     if (p === '/api/project/save' && req.method === 'POST') {
       const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'unknown'}, 404);
@@ -262,11 +280,12 @@ const server = http.createServer(async (req, res) => {
       if (Date.now() - (lastSaveSnap.get(dir) || 0) > 120000) { lastSaveSnap.set(dir, Date.now()); autoSnap(dir, 'save', 'Lưu trong Studio'); }
       return json(res, {ok: true, validation: validateProject(dir)});
     }
+    if (p === '/api/project/close' && req.method === 'POST') { const b = await jbody(req); const dir = dirs.get(b.id); if (dir) dropLock(dir); return json(res, {ok: true}); }
     if (p === '/api/project/validate') { const dir = dirs.get(u.searchParams.get('id')); return json(res, validateProject(dir)); }
     if (p === '/api/project/assets') { const dir = dirs.get(u.searchParams.get('id')); return json(res, listAssets(dir)); }
     if (p === '/api/project/new' && req.method === 'POST') {
       const b = await jbody(req);
-      const tpl = path.join(TEMPLATES, b.template || 'agency-promo');
+      const tpl = tplDir(b.template || 'agency-promo');
       if (!fs.existsSync(tpl)) return json(res, {error: 'Không có mẫu ' + b.template}, 400);
       const root = b.location || settings.projectsRoot || DEFAULT_PROJECTS;
       let dir = path.join(root, slug(b.name || 'du-an-moi')); let n = 2;
@@ -306,9 +325,9 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/render/cancel' && req.method === 'POST') { const b = await jbody(req); cancelJob(b.jobId); return json(res, {ok: true}); }
     if (p === '/api/render/clear' && req.method === 'POST') { clearDone(); return json(res, {ok: true}); }
     if (p === '/api/render/resume' && req.method === 'POST') { const b = await jbody(req); const r = resumeJob(b.jobId); return r ? json(res, r) : json(res, {error: 'Không tiếp tục được lượt này'}, 400); }
-    if (p === '/api/template/check' && req.method === 'POST') { const b = await jbody(req); return json(res, checkTemplate(path.join(TEMPLATES, path.basename(b.tpl)))); }
+    if (p === '/api/template/check' && req.method === 'POST') { const b = await jbody(req); return json(res, checkTemplate(tplDir(b.tpl))); }
     if (p === '/api/template/thumbs' && req.method === 'POST') {
-      const b = await jbody(req); const dir = path.join(TEMPLATES, path.basename(b.tpl));
+      const b = await jbody(req); const dir = tplDir(b.tpl);
       const r = spawn(process.execPath, [path.join(ROOT, 'server', 'cli-template.mjs'), 'thumbs', dir], {windowsHide: true, env: process.env});
       let log = ''; r.stderr.on('data', (d) => (log += d));
       r.on('exit', (code) => broadcast('template', {tpl: b.tpl, thumbs: code === 0, error: code ? log.slice(-500) : null}));
@@ -321,12 +340,20 @@ const server = http.createServer(async (req, res) => {
       t.on('exit', (code) => broadcast('template', {tpl: r.id, thumbs: code === 0}));
       return json(res, {id: r.id, dir: r.dir, check: checkTemplate(r.dir)});
     }
-    if (p === '/api/template/import' && req.method === 'POST') { const b = await jbody(req); return json(res, importTemplate(b.from)); }
-    if (p === '/api/template/export' && req.method === 'POST') { const b = await jbody(req); const r = exportTemplate(path.basename(b.tpl)); openPath(path.dirname(r.out)); return json(res, r); }
+    if (p === '/api/template/import' && req.method === 'POST') { const b = await jbody(req); return json(res, importTemplate(b.from, {shared: !!b.shared})); }
+    if (p === '/api/template/export' && req.method === 'POST') { const b = await jbody(req); const r = exportTemplate(b.tpl); openPath(path.dirname(r.out)); return json(res, r); }
     if (p === '/api/pick-file') { const d = await pickFile(u.searchParams.get('filter') || 'Zip|*.zip'); return json(res, {file: d, supported: process.platform === 'win32'}); }
     if (p === '/api/gpu/diagnose') return json(res, gpuDiagnose());
     if (p === '/api/render/stop-all' && req.method === 'POST') { stopAll(); return json(res, {ok: true}); }
     if (p === '/api/jobs') return json(res, publicJobs());
+    // ── batch variants (CSV in brief/variants.csv) ──
+    if (p === '/api/variants') { const dir = dirs.get(u.searchParams.get('id')); const f = path.join(dir || '', 'brief', 'variants.csv'); return json(res, {csv: fs.existsSync(f) ? fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, '') : ''}); }
+    if (p === '/api/variants/save' && req.method === 'POST') {
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'unknown project'}, 404);
+      const f = path.join(dir, 'brief', 'variants.csv'); fs.mkdirSync(path.dirname(f), {recursive: true});
+      if (fs.existsSync(f)) await autoSnap(dir, 'before-upload', 'Trước khi thay bảng biến thể');
+      fs.writeFileSync(f, '\uFEFF' + String(b.csv || '').replace(/^\uFEFF+/, '')); // one BOM \u2192 Excel reads UTF-8 (VI/DE accents) return json(res, {ok: true});
+    }
     // ── review pack + compare (Chrome → child process) ──
     if (p === '/api/review' && req.method === 'POST') {
       const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'unknown project'}, 404);

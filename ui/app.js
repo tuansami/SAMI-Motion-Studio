@@ -34,10 +34,10 @@ async function loadHome() {
   $('#ver').textContent = 'v' + S.state.version;
   const rc = $('#recent'); rc.innerHTML = '';
   if (!S.state.recent.length) rc.append(h('div', {class: 'muted'}, 'Chưa có dự án. Tạo mới bên dưới hoặc mở một thư mục có project.json.'));
-  for (const r of S.state.recent) rc.append(h('div', {class: 'card', onclick: () => openProject({id: r.id})}, h('b', {}, r.name || 'Dự án'), h('small', {}, r.dir), h('div', {class: 'muted', style: 'font-size:12px;margin-top:6px'}, r.opened ? 'Mở lần cuối: ' + new Date(r.opened).toLocaleString('vi-VN') : 'Dự án mẫu')));
+  for (const r of S.state.recent) rc.append(h('div', {class: 'card', onclick: () => openProject({id: r.id})}, h('div', {class: 'row', style: 'justify-content:space-between'}, h('b', {}, r.name || 'Dự án'), statusBadge(r.status)), r.lockedBy ? h('div', {class: 'v-warn', style: 'font-size:12px'}, `🔒 ${r.lockedBy.user} đang mở (${r.lockedBy.host})`) : null, h('small', {}, r.dir), h('div', {class: 'muted', style: 'font-size:12px;margin-top:6px'}, r.opened ? 'Mở lần cuối: ' + new Date(r.opened).toLocaleString('vi-VN') : 'Dự án mẫu')));
   const sel = $('#npTemplate'); sel.innerHTML = '';
   for (const t of S.state.templates) sel.append(h('option', {value: t.id}, `${t.name} — ${t.scenes} cảnh, ${t.seconds}s, ${t.formats.join(' / ')}`));
-  renderGallery();
+  renderGallery(); renderTeam();
   $('#npLocation').value = S.state.projectsRoot;
   const g = S.state.gpu;
   $('#sysInfo').textContent = `Máy: ${S.state.cpuModel} · ${S.state.cpus} luồng CPU · GPU mã hoá: ${g.nvenc ? 'NVIDIA NVENC ✓' : g.qsv ? 'Intel QSV' : g.amf ? 'AMD AMF' : 'không phát hiện (render bằng CPU)'} · ffmpeg ${S.state.ffmpeg ? '✓' : '✗'}`;
@@ -54,7 +54,7 @@ function renderGallery() {
     G.append(h('div', {class: 'tpl' + ($('#npTemplate').value === t.id ? ' sel' : '')},
       h('div', {class: 'thumbs'}, ...(Object.keys(th).length ? ['16:9', '9:16', '1:1'].filter((r) => th[r]).map((r) => h('img', {src: th[r] + '?v=' + t.version, alt: r, title: r})) : [h('div', {class: 'ph'}, 'Chưa có ảnh bìa')])),
       h('div', {class: 'body'}, h('b', {}, t.name), h('p', {}, t.description || '—'),
-        h('div', {class: 'badges'}, h('span', {}, (C[t.category] || t.category)), h('span', {}, t.seconds + 's'), h('span', {}, t.scenes + ' cảnh'), ...t.formats.map((f) => h('span', {}, f)), h('span', {}, 'v' + t.version), !t.hasManifest ? h('span', {style: 'color:var(--amber)'}, 'thiếu template.json') : null)),
+        h('div', {class: 'badges'}, h('span', {}, (C[t.category] || t.category)), h('span', {}, t.seconds + 's'), h('span', {}, t.scenes + ' cảnh'), ...t.formats.map((f) => h('span', {}, f)), h('span', {}, 'v' + t.version), t.shared ? h('span', {style: 'color:var(--mint)', title: t.root}, 'dùng chung') : null, !t.hasManifest ? h('span', {style: 'color:var(--amber)'}, 'thiếu template.json') : null)),
       h('div', {class: 'acts'},
         h('button', {class: 'small primary', onclick: () => { $('#npTemplate').value = t.id; renderGallery(); $('#newProj').scrollIntoView({behavior: 'smooth'}); $('#npName').focus(); }}, 'Dùng mẫu này'),
         h('button', {class: 'small', onclick: () => checkTpl(t.id)}, 'Kiểm tra'),
@@ -76,7 +76,8 @@ $('#btnImportTpl').onclick = async () => {
   let from = mode ? r.file : r.dir;
   if (!r.supported) from = prompt('Dán đường dẫn thư mục mẫu hoặc file .zip:');
   if (!from) return;
-  try { const x = await api('/api/template/import', {from}); await loadHome(); showCheck('Đã nhập mẫu: ' + x.id, x.check); } catch (e) { toast(e.message, true, 6000); }
+  const shared = (S.state.sharedTemplates || []).length && confirm('Nhập vào THƯ MỤC MẪU CHUNG để cả nhóm dùng? (OK = thư mục chung · Huỷ = chỉ máy này)');
+  try { const x = await api('/api/template/import', {from, shared}); await loadHome(); showCheck('Đã nhập mẫu: ' + x.id, x.check); } catch (e) { toast(e.message, true, 6000); }
 };
 
 $('#btnOpenFolder').onclick = async () => { const r = await api('/api/pick-folder'); if (!r.supported) return toast('Hộp chọn thư mục chỉ có trên Windows — hãy dán đường dẫn.', true); if (r.dir) openProject({dir: r.dir}); };
@@ -107,13 +108,13 @@ async function openProject(q) {
     S.ratio = S.project.formats[0]; S.scene = S.project.scenes[0]?.id;
     S.render = {...S.state.render, ratio: S.ratio};
     $('#home').hidden = true; $('#editor').hidden = false; $('#topActions').hidden = false;
-    $('#projTitle').textContent = S.project.name;
+    $('#projTitle').textContent = S.project.name; $('#projStatus').value = S.project.status || 'draft'; S.varCsv = undefined; S.varPreview = null;
     await mountPreview();
     renderAll();
-    connectEvents();
+    connectEvents(); showLockWarn(r.lockedBy);
   } catch (e) { toast(e.message, true, 6000); }
 }
-$('#btnHome').onclick = () => { if (isDirty() && !confirm('Có thay đổi chưa lưu. Vẫn thoát?')) return; location.hash = ''; location.reload(); };
+$('#btnHome').onclick = () => { if (isDirty() && !confirm('Có thay đổi chưa lưu. Vẫn thoát?')) return; closeProject(); location.hash = ''; location.reload(); };
 $('#btnFolder').onclick = () => api('/api/open', {path: S.dir});
 
 // ─────────────────────────── PREVIEW (Remotion Player) ───────────────────────────
@@ -127,7 +128,7 @@ async function mountPreview() {
   S.playerApi = await window.StudioPreview.mount($('#playerBox'), previewOpts(), (f, total, playing) => { S.frame = f; S.total = total; S.playing = playing; updateTransport(); });
 }
 function showBundleError(msg) { const e = $('#bundleErr'); e.hidden = false; e.textContent = 'Lỗi code cảnh (sửa file rồi lưu, Studio sẽ tự tải lại):\n\n' + msg; }
-const previewOpts = () => ({project: S.project, ratio: S.ratio, fps: S.fps, titles: $('#tgTitles').checked, subtitles: $('#tgSubs').checked, audio: $('#tgAudio').checked, sceneId: $('#tgScene').checked ? S.scene : null});
+const previewOpts = () => ({project: S.varPreview != null && S.varCsv ? withCopy(S.project, readVariants(S.varCsv).variants[S.varPreview]?.copy) : S.project, ratio: S.ratio, fps: S.fps, titles: $('#tgTitles').checked, subtitles: $('#tgSubs').checked, audio: $('#tgAudio').checked, sceneId: $('#tgScene').checked ? S.scene : null});
 let upT;
 function pushPreview() { clearTimeout(upT); upT = setTimeout(() => S.playerApi?.update(previewOpts()), 120); }
 function sizePlayer() {
@@ -261,8 +262,8 @@ function renderRatios() {
 
 // ─────────────────────────── INSPECTOR TABS ───────────────────────────
 $$('#tabs button').forEach((b) => (b.onclick = () => { S.tab = b.dataset.tab; $$('#tabs button').forEach((x) => x.classList.toggle('on', x === b)); renderTab(); }));
-function renderAll() { renderRatios(); renderScenes(); renderScrub(); renderTab(); $('#dirty').hidden = !isDirty(); }
-function renderTab() { setTimeout(renderHandles, 0); const B = $('#tabBody'); B.innerHTML = ''; ({text: tabText, titles: tabTitles, overlays: tabOverlays, subs: tabSubs, audio: tabAudio, look: tabLook, render: tabRender, history: tabHistory})[S.tab](B); }
+function renderAll() { renderRatios(); renderScenes(); renderScrub(); renderTab(); $('#dirty').hidden = !isDirty(); $('#projStatus').value = S.project.status || 'draft'; }
+function renderTab() { setTimeout(renderHandles, 0); const B = $('#tabBody'); B.innerHTML = ''; ({text: tabText, titles: tabTitles, overlays: tabOverlays, subs: tabSubs, audio: tabAudio, look: tabLook, render: tabRender, history: tabHistory, variants: tabVariants})[S.tab](B); }
 
 const field = (label, input, hint) => h('label', {}, label, input, hint ? h('div', {class: 'hint'}, hint) : null);
 const assetSelect = (value, type, onchange) => {
@@ -570,15 +571,17 @@ function tabLook(B) {
     field(`Tối viền (vignette): ${Math.round((look.vignette ?? 0.42) * 100)}%`, h('input', {type: 'range', min: 0, max: 0.8, step: 0.02, value: look.vignette ?? 0.42, oninput: (e) => upd((p) => { p.look.vignette = +e.target.value; })}))));
   const C = S.state.categories || {}, GL = S.state.goals || {};
   const tn = h('input', {value: S.project.name.replace(/\s*\(.*?\)\s*/g, ' ').trim()}), tc = h('select', {}, ...Object.entries(C).map(([k, l]) => h('option', {value: k}, l))), td = h('textarea', {rows: 2, placeholder: 'VD: 30 giây, 6 cảnh: hook → món đặc trưng → ưu đãi → địa chỉ → CTA.'});
+  const tsh = h('input', {type: 'checkbox', checked: !!(S.state.sharedTemplates || []).length, disabled: !(S.state.sharedTemplates || []).length});
   const tg = h('div', {class: 'row', style: 'flex-wrap:wrap;margin-bottom:8px'}, ...Object.entries(GL).map(([k, l]) => h('label', {class: 'chk'}, h('input', {type: 'checkbox', value: k}), l)));
   B.append(h('div', {class: 'group'}, h('h4', {}, 'Lưu thành mẫu (template)'),
     h('div', {class: 'hint'}, 'Biến video này thành mẫu dùng lại cho khách khác. Studio sao chép cảnh + cài đặt vào thư viện, tạo ảnh bìa và kiểm tra theo chuẩn. ⚠ Nhớ thay ảnh/logo/số liệu thật của khách bằng ảnh minh hoạ.'),
     h('div', {class: 'cols2'}, field('Tên mẫu', tn), field('Nhóm ngành', tc)), h('div', {class: 'muted', style: 'font-size:12.5px'}, 'Mục đích'), tg, field('Mô tả ngắn', td),
+    h('label', {class: 'chk', style: 'margin-bottom:8px'}, tsh, (S.state.sharedTemplates || []).length ? 'Lưu vào thư mục mẫu chung (cả nhóm thấy)' : 'Lưu vào thư mục mẫu chung — chưa cài (trang Dự án → Nhóm)'),
     h('button', {class: 'primary', onclick: async () => {
       if (isDirty()) await save();
       try {
-        const r = await api('/api/template/from-project', {id: S.id, name: tn.value.trim(), category: tc.value, description: td.value.trim(), goal: $$('input:checked', tg).map((x) => x.value)});
-        showCheck('Đã tạo mẫu: ' + r.id, r.check, h('p', {class: 'muted'}, 'Ảnh bìa đang được tạo trong nền (≈ 1 phút). Mẫu nằm ở thư mục templates/' + r.id));
+        const r = await api('/api/template/from-project', {id: S.id, name: tn.value.trim(), category: tc.value, description: td.value.trim(), goal: $$('input:checked', tg).map((x) => x.value), shared: tsh.checked});
+        showCheck('Đã tạo mẫu: ' + r.id, r.check, h('p', {class: 'muted'}, 'Ảnh bìa đang được tạo trong nền (≈ 1 phút). Mẫu nằm ở ' + r.dir));
       } catch (e) { toast(e.message, true); }
     }}, '＋ Lưu thành mẫu')));
   B.append(h('div', {class: 'group'}, h('h4', {}, 'Thông tin dự án'),
@@ -779,6 +782,108 @@ async function compareDlg(it) {
       h('div', {class: 'row'}, h('button', {class: 'primary', onclick: () => restoreDlg(it)}, 'Khôi phục điểm neo này…')));
   };
   taskWaiters[r.task] = show; if (S.tasks[r.task]) show(S.tasks[r.task]);
+}
+
+// ─────────────────────────── TEAM: status · lock · shared folders ───────────────────────────
+const STATUS = {draft: ['Nháp', '#9C97C0'], review: ['Chờ duyệt', '#FFB547'], approved: ['Đã duyệt', '#08DDA4'], published: ['Đã đăng', '#7667FE']};
+const statusBadge = (s) => { const [l, c] = STATUS[s] || STATUS.draft; return h('span', {class: 'stb', style: `color:${c};border-color:${c}`}, l); };
+$('#projStatus').onchange = async (e) => {
+  const v = e.target.value, prev = S.project.status || 'draft';
+  commit((p) => { p.status = v; }, {preview: false});
+  await save();
+  if ((v === 'approved' || v === 'published') && v !== prev) {
+    try { await api('/api/history/snapshot', {id: S.id, label: (v === 'approved' ? 'Bản duyệt' : 'Bản đăng') + ' — ' + new Date().toLocaleString('vi-VN'), starred: true}); toast(`Trạng thái: ${STATUS[v][0]} · đã đặt mốc ★ để luôn lấy lại được bản này`, false, 6000); } catch (err) { toast(err.message, true); }
+  } else toast('Trạng thái: ' + STATUS[v][0]);
+};
+const closeProject = () => { if (!S.id) return; try { navigator.sendBeacon('/api/project/close', new Blob([JSON.stringify({id: S.id})], {type: 'application/json'})); } catch {} };
+addEventListener('pagehide', closeProject);
+function showLockWarn(l) {
+  if (!l) return;
+  modal(h('div', {}, h('h3', {}, '⚠ Dự án đang được mở ở nơi khác'),
+    h('p', {}, h('b', {}, l.user), ' đang mở dự án này trên máy ', h('b', {}, l.host), ' từ ', new Date(l.since).toLocaleString('vi-VN'), ' (hoạt động lần cuối ', new Date(l.beat).toLocaleTimeString('vi-VN'), ').'),
+    h('p', {class: 'muted'}, 'Hai người cùng sửa sẽ ghi đè lên nhau ở lần Lưu sau. Nên báo người kia đóng dự án, hoặc chỉ xem. Studio vẫn tự tạo điểm neo ở tab Lịch sử nên luôn khôi phục được.')));
+}
+function renderTeam() {
+  const T = $('#teamBox'); if (!T) return; T.innerHTML = '';
+  const st = S.state; const shared = [...(st.sharedTemplates || [])];
+  const nameIn = h('input', {value: st.userName || '', placeholder: 'Tên hiển thị'});
+  const saveSet = async (patch, msg) => { try { await api('/api/settings', patch); toast(msg || 'Đã lưu cài đặt'); await loadHome(); } catch (e) { toast(e.message, true); } };
+  const list = h('div', {});
+  for (const d of shared) list.append(h('div', {class: 'item', style: 'cursor:default'}, h('span', {class: 'x', style: 'flex:1'}, d), h('button', {class: 'small danger', onclick: () => saveSet({sharedTemplates: shared.filter((x) => x !== d)}, 'Đã bỏ thư mục mẫu chung')}, 'Bỏ')));
+  if (!shared.length) list.append(h('div', {class: 'muted', style: 'font-size:12.5px'}, 'Chưa có. Thêm 1 thư mục trên NAS / Google Drive / OneDrive mà cả nhóm cùng thấy → mẫu trong đó hiện ở Thư viện với nhãn "dùng chung".'));
+  T.append(h('h2', {}, 'Nhóm'),
+    h('div', {class: 'form grid2'},
+      h('label', {}, 'Tên của bạn (hiện trong khoá dự án, lịch sử, góp ý)', h('div', {class: 'row'}, nameIn, h('button', {onclick: () => saveSet({userName: nameIn.value.trim()})}, 'Lưu'))),
+      h('label', {}, 'Thư mục dự án mặc định (có thể là thư mục chung)', h('div', {class: 'row'}, h('input', {value: st.projectsRoot || '', readonly: true}), h('button', {onclick: async () => { const r = await api('/api/pick-folder'); if (r.dir) saveSet({projectsRoot: r.dir}); }}, '…'))),
+      h('div', {class: 'span2'}, h('div', {class: 'muted', style: 'font-size:12.5px;margin-bottom:6px'}, 'Thư mục mẫu dùng chung'), list,
+        h('button', {class: 'small', style: 'margin-top:6px', onclick: async () => { const r = await api('/api/pick-folder'); let d = r.dir; if (!r.supported) d = prompt('Dán đường dẫn thư mục mẫu chung:'); if (d && !shared.includes(d)) saveSet({sharedTemplates: [...shared, d]}, 'Đã thêm thư mục mẫu chung'); }}, '＋ Thêm thư mục mẫu chung'))));
+}
+
+// ─────────────────────────── VARIANTS (CSV → many videos) ───────────────────────────
+const csvParse = (txt) => {
+  txt = txt.replace(/^﻿/, '');
+  const first = txt.split(/\r?\n/)[0] || ''; const sep = (first.match(/;/g) || []).length >= (first.match(/,/g) || []).length ? ';' : ',';
+  const rows = []; let row = [], cur = '', q = false;
+  for (let i = 0; i < txt.length; i++) {
+    const c = txt[i];
+    if (q) { if (c === '"') { if (txt[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === sep) { row.push(cur); cur = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && txt[i + 1] === '\n') i++; row.push(cur); rows.push(row); row = []; cur = ''; }
+    else cur += c;
+  }
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  return {sep, rows: rows.filter((r) => r.some((x) => x.trim() !== ''))};
+};
+const csvCell = (v) => { v = String(v ?? ''); return /[;",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+const csvMake = (rows) => rows.map((r) => r.map(csvCell).join(';')).join('\r\n') + '\r\n';
+const fmtList = (s) => String(s || '').split(/[\s,|/]+/).map((x) => x.trim()).filter((x) => RATIOS.includes(x));
+/** CSV text → {variants:[{name, formats, copy}], unknown:[cols]} */
+function readVariants(txt) {
+  const {rows} = csvParse(txt); if (!rows.length) return {variants: [], unknown: [], cols: []};
+  const head = rows[0].map((x) => x.trim()); const keys = Object.keys(S.project.copy || {});
+  const unknown = head.filter((c) => c && !['name', 'formats'].includes(c) && !keys.includes(c));
+  const variants = rows.slice(1).filter((r) => !String(r[0] || '').trim().startsWith('#')).map((r, i) => {
+    const o = {name: '', formats: [], copy: {}};
+    head.forEach((c, j) => { const v = r[j] ?? ''; if (c === 'name') o.name = v.trim(); else if (c === 'formats') o.formats = fmtList(v); else if (keys.includes(c) && v !== '') o.copy[c] = v; });
+    if (!o.name) o.name = 'bien-the-' + (i + 1);
+    return o;
+  });
+  return {variants, unknown, cols: head};
+}
+const withCopy = (p, over) => { if (!over) return p; const x = clone(p); for (const [k, v] of Object.entries(over)) if (x.copy[k]) x.copy[k].value = v; return x; };
+S.varPreview = null;
+async function tabVariants(B) {
+  if (S.varCsv === undefined) { try { S.varCsv = (await api('/api/variants?id=' + S.id)).csv; } catch { S.varCsv = ''; } if (S.tab !== 'variants') return; }
+  const V = readVariants(S.varCsv || '');
+  const g = h('div', {class: 'group'}, h('h4', {}, 'Biến thể hàng loạt (CSV)'),
+    h('div', {class: 'hint', style: 'margin:0 0 8px'}, 'Mỗi dòng của bảng = 1 video: cùng cảnh + nhạc, khác chữ (tên món, giá, ưu đãi, thành phố, ngôn ngữ…). Mở CSV mẫu bằng Excel / Google Sheets, mỗi cột là 1 ô chữ của dự án (dòng "#" là mô tả, để nguyên). Ô để trống = giữ chữ gốc. Cột formats: vd "9:16 1:1" (trống = mọi tỉ lệ của dự án).'),
+    h('div', {class: 'row', style: 'flex-wrap:wrap'},
+      h('button', {onclick: () => {
+        const keys = Object.keys(S.project.copy || {});
+        const rows = [['name', 'formats', ...keys], ['# mô tả (đừng xoá dòng này)', 'vd 9:16 1:1', ...keys.map((k) => S.project.copy[k].label || '')], ['ban-goc', S.project.formats.join(' '), ...keys.map((k) => S.project.copy[k].value ?? '')]];
+        const a = h('a', {href: URL.createObjectURL(new Blob(['﻿' + csvMake(rows)], {type: 'text/csv;charset=utf-8'})), download: (S.project.name || 'du-an').replace(/[^\p{L}\p{N}_-]+/gu, '_') + '_bien-the.csv'}); document.body.append(a); a.click(); a.remove();
+      }}, '⤓ Tải CSV mẫu'),
+      h('button', {class: 'primary', onclick: () => { const fp = h('input', {type: 'file', accept: '.csv,text/csv'}); fp.onchange = async () => { const f = fp.files[0]; if (!f) return; const txt = await f.text(); const r = readVariants(txt); if (!r.variants.length) return toast('CSV không có dòng biến thể nào', true); await api('/api/variants/save', {id: S.id, csv: txt}); S.varCsv = txt; S.varPreview = null; pushPreview(); toast(`Đã nhập ${r.variants.length} biến thể · lưu ở brief/variants.csv`); renderTab(); }; fp.click(); }}, '⤒ Nhập CSV…')));
+  B.append(g);
+  if (!V.variants.length) { g.append(h('p', {class: 'muted', style: 'font-size:12.5px;margin:10px 0 0'}, 'Chưa có bảng biến thể. Tải CSV mẫu → điền → Nhập CSV.')); return; }
+  if (V.unknown.length) g.append(h('div', {class: 'v-warn', style: 'font-size:12.5px;margin-top:8px'}, '⚠ Cột không khớp ô chữ nào (bị bỏ qua): ' + V.unknown.join(', ')));
+  if (S.varPreview != null) g.append(h('div', {class: 'v-ok', style: 'margin-top:8px'}, `👁 Khung xem đang hiện biến thể "${V.variants[S.varPreview]?.name}" — không ghi vào dự án. `, h('button', {class: 'small', onclick: () => { S.varPreview = null; pushPreview(); renderTab(); }}, 'Về bản gốc')));
+  const L = h('div', {style: 'margin-top:10px'});
+  V.variants.forEach((v, i) => L.append(h('div', {class: 'item' + (S.varPreview === i ? ' on' : ''), onclick: () => { S.varPreview = S.varPreview === i ? null : i; pushPreview(); renderTab(); }},
+    h('span', {class: 't'}, String(i + 1).padStart(2, '0')), h('b', {style: 'flex:1'}, v.name), h('span', {class: 'muted', style: 'font-size:12px'}, `${Object.keys(v.copy).length} ô chữ · ${(v.formats.length ? v.formats : S.project.formats).join(' ')}`))));
+  g.append(L);
+  const r = S.render; const jobsN = V.variants.reduce((n, v) => n + (v.formats.length ? v.formats : S.project.formats).length, 0);
+  g.append(h('div', {class: 'muted', style: 'font-size:12.5px;margin:8px 0'}, `Dùng cài đặt ở tab Xuất: ${RES[r.res] || r.res} · ${r.fps} fps · ${r.codec.toUpperCase()}${r.loudness === 'off' ? '' : ' · ' + (r.loudness ?? -14) + ' LUFS'}. Video lưu ở out/variants/.`),
+    h('button', {class: 'primary', onclick: async () => {
+      if (!confirm(`Thêm ${jobsN} lượt render (${V.variants.length} biến thể) vào hàng đợi?`)) return;
+      if (isDirty()) await save();
+      let n = 0;
+      for (const v of V.variants) for (const ratio of (v.formats.length ? v.formats : S.project.formats)) {
+        try { await api('/api/render', {...r, ratio, id: S.id, name: `${r.name || S.project.name}_${v.name}`, scope: 'all', copyOverride: v.copy}); n++; } catch (e) { modal(h('pre', {style: 'white-space:pre-wrap'}, e.message)); return; }
+      }
+      toast(`Đã thêm ${n} video vào hàng đợi — xem tiến độ ở tab Xuất`, false, 6000);
+    }}, `▶ Xuất ${jobsN} video`));
 }
 
 // ─────────────────────────── LIVE EVENTS ───────────────────────────

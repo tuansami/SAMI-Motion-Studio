@@ -26,6 +26,7 @@ out/           video xuất
                "animLength": 121, "warp": null, "fadeIn": 8} ],
   "copy": { "S01_title": {"label": "Tiêu đề lớn mở đầu", "scene": "S01", "value": "Khách hàng / *đang đói.*",
                            "hint": "dùng *…* để tô màu"} },
+  "status": "draft",                          // Nháp | review | approved | published — chỉ là nhãn quy trình, không ảnh hưởng render
   "titles": [], "subtitles": {"enabled": false, "items": []},
   "overlays": [ {"id": "o1", "kind": "image", "src": "img/logo.png", "start": 0, "end": 5, "whole": false,
                  "pos": {"x": 0.88, "y": 0.9}, "width": 0.12, "opacity": 0.35, "anim": "fade", "layer": "top"},

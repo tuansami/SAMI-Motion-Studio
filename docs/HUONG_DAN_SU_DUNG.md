@@ -1,6 +1,6 @@
 # SAMI Motion Studio — Hướng dẫn sử dụng
 
-> Phiên bản 0.4 (giai đoạn 1: web app chạy trên máy). Mới ở 0.4: **Gói duyệt khách**, **So sánh điểm neo**, **chuẩn âm lượng −14 LUFS**. Ở 0.3: **Lịch sử phiên bản / điểm neo** (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab **Ảnh chèn**, **Thư viện mẫu**. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà **không cần biết code**. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.
+> Phiên bản 0.5 (giai đoạn 1: web app chạy trên máy). Mới ở 0.5: **Biến thể hàng loạt từ CSV** (11c), **làm việc nhóm**: trạng thái, khoá dự án, mẫu dùng chung (11d). Ở 0.4: **Gói duyệt khách**, **So sánh điểm neo**, **chuẩn âm lượng −14 LUFS**. Ở 0.3: **Lịch sử phiên bản / điểm neo** (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab **Ảnh chèn**, **Thư viện mẫu**. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà **không cần biết code**. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.
 
 >
 > **Làm việc theo nhóm / với Claude:** đọc `docs/QUY_TRINH_LAM_VIEC.md` (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).
@@ -311,6 +311,36 @@ Nếu không có gì thay đổi so với điểm neo gần nhất thì Studio b
 **So sánh** (mới ở 0.4): bấm **So sánh** ở một điểm neo. Studio chụp ảnh từng cảnh của bản đó và của bản hiện tại, đặt cạnh nhau, chỉ hiện các cảnh có khác biệt. Mất khoảng 1–3 phút. Nhờ vậy bạn biết bản nào đẹp hơn trước khi khôi phục.
 
 **Dòng lệnh** (Claude Code cũng dùng): `node <app>/server/cli-snapshot.mjs . list` · `… snapshot --label "…"` · `… restore <id> [file …]`
+
+## 11c. Tab **Biến thể** — nhiều video từ 1 bảng CSV (mới ở 0.5)
+Cùng cảnh, cùng nhạc, chỉ khác chữ: tên món, giá, ưu đãi, thành phố, ngôn ngữ. Ví dụ 10 món × 2 tỉ lệ cho ra 20 video chỉ với 1 lần bấm.
+1. Tab **Biến thể** → **⤓ Tải CSV mẫu**. File mở được bằng Excel hoặc Google Sheets (phân cách `;`, UTF-8, giữ đủ dấu tiếng Việt và tiếng Đức).
+   - Dòng 1 là tên ô chữ: `name`, `formats`, rồi các khoá như `S03_title`…
+   - Dòng `#` là mô tả vị trí của từng ô chữ. **Đừng xoá dòng này.**
+   - Dòng `ban-goc` là chữ hiện tại.
+2. Mỗi dòng mới là một video:
+   - `name`: tên ngắn, dùng làm tên file.
+   - `formats`: ví dụ `9:16 1:1`. Để trống thì xuất mọi tỉ lệ của dự án.
+   - Ô chữ để trống thì giữ nguyên chữ gốc.
+   - Dùng `*…*` để tô màu như ở tab Chữ.
+3. **⤒ Nhập CSV…**: Studio lưu bảng vào `brief/variants.csv`, nên bảng cũng được lưu trong Lịch sử. Studio cũng báo những cột không khớp ô chữ nào.
+4. Bấm vào một dòng để **xem thử ngay trên khung xem**. Việc này không ghi gì vào dự án; bấm **Về bản gốc** để quay lại.
+5. **▶ Xuất N video**: dùng cài đặt ở tab Xuất (độ phân giải, fps, LUFS…). Video lưu ở `out/variants/`.
+
+Ảnh khác nhau giữa các biến thể: đặt ảnh vào `public/img/` trước, rồi ghi đường dẫn vào cột của ô ảnh, ví dụ `img/pho.jpg`.
+
+## 11d. Làm việc nhóm (mới ở 0.5)
+- **Trạng thái dự án**: ô chọn trên thanh trên cùng, gồm **Nháp → Chờ duyệt → Đã duyệt → Đã đăng**. Trạng thái hiện thành nhãn màu ở trang Dự án.
+  - Khi chọn **Đã duyệt** hoặc **Đã đăng**, Studio tự đặt **mốc ★** ("Bản duyệt…" / "Bản đăng…"). Bản đã duyệt hay đã đăng vì vậy luôn lấy lại được, kể cả khi AI sửa tiếp.
+- **Khoá dự án**: khi mở dự án, Studio ghi `.studio-lock` (tên người, tên máy).
+  - Người thứ hai mở cùng dự án sẽ thấy cảnh báo "Tuấn đang mở trên máy X từ HH:MM"; trang Dự án hiện 🔒.
+  - Khoá tự hết hạn sau 3 phút nếu Studio bị tắt đột ngột.
+  - Đây chỉ là cảnh báo, không chặn: hai người cùng Lưu sẽ ghi đè lên nhau, nhưng Lịch sử vẫn giữ đủ các bản.
+- **Trang Dự án → Nhóm**:
+  - **Tên của bạn**: hiện trong khoá, lịch sử, góp ý.
+  - **Thư mục dự án mặc định**: có thể là thư mục chung trên NAS/Drive.
+  - **Thư mục mẫu dùng chung**: mẫu trong đó hiện ở Thư viện với nhãn "dùng chung". "Lưu thành mẫu" và "Nhập mẫu" có tuỳ chọn lưu thẳng vào thư mục chung để cả nhóm dùng.
+- Mẹo: mỗi người chạy Studio trên máy mình, còn dự án nằm ở thư mục chung. Dự án mang theo `.history/`, nên ai mở cũng thấy đủ lịch sử.
 
 ## 12. Làm video mới cùng Claude Code (quy trình chuẩn)
 

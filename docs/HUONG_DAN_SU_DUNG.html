@@ -37,6 +37,8 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </ul>
 </li>
 <li><a href="#11b-tab-lich-su-iem-neo-khoi-phuc-ban-cu-moi-o-03">11b. Tab Lịch sử — điểm neo, khôi phục bản cũ (mới ở 0.3)</a></li>
+<li><a href="#11c-tab-bien-the-nhieu-video-tu-1-bang-csv-moi-o-05">11c. Tab Biến thể — nhiều video từ 1 bảng CSV (mới ở 0.5)</a></li>
+<li><a href="#11d-lam-viec-nhom-moi-o-05">11d. Làm việc nhóm (mới ở 0.5)</a></li>
 <li><a href="#12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</a><ul>
 <li><a href="#cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</a></li>
 <li><a href="#cac-buoc">Các bước</a></li>
@@ -52,7 +54,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </div>
 </div><h1 id="sami-motion-studio-huong-dan-su-dung">SAMI Motion Studio — Hướng dẫn sử dụng</h1>
 <blockquote>
-<p>Phiên bản 0.4 (giai đoạn 1: web app chạy trên máy). Mới ở 0.4: <strong>Gói duyệt khách</strong>, <strong>So sánh điểm neo</strong>, <strong>chuẩn âm lượng −14 LUFS</strong>. Ở 0.3: <strong>Lịch sử phiên bản / điểm neo</strong> (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
+<p>Phiên bản 0.5 (giai đoạn 1: web app chạy trên máy). Mới ở 0.5: <strong>Biến thể hàng loạt từ CSV</strong> (11c), <strong>làm việc nhóm</strong>: trạng thái, khoá dự án, mẫu dùng chung (11d). Ở 0.4: <strong>Gói duyệt khách</strong>, <strong>So sánh điểm neo</strong>, <strong>chuẩn âm lượng −14 LUFS</strong>. Ở 0.3: <strong>Lịch sử phiên bản / điểm neo</strong> (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
 <p><strong>Làm việc theo nhóm / với Claude:</strong> đọc <code>docs/QUY_TRINH_LAM_VIEC.md</code> (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).</p>
 </blockquote>
 <hr />
@@ -486,6 +488,35 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 - Kho nằm ở <code>&lt;dự án&gt;/.history/</code>. <strong>Đừng xoá thư mục này.</strong> Copy cả thư mục dự án là mang theo luôn lịch sử.</p>
 <p><strong>So sánh</strong> (mới ở 0.4): bấm <strong>So sánh</strong> ở một điểm neo. Studio chụp ảnh từng cảnh của bản đó và của bản hiện tại, đặt cạnh nhau, chỉ hiện các cảnh có khác biệt. Mất khoảng 1–3 phút. Nhờ vậy bạn biết bản nào đẹp hơn trước khi khôi phục.</p>
 <p><strong>Dòng lệnh</strong> (Claude Code cũng dùng): <code>node &lt;app&gt;/server/cli-snapshot.mjs . list</code> · <code>… snapshot --label "…"</code> · <code>… restore &lt;id&gt; [file …]</code></p>
+<h2 id="11c-tab-bien-the-nhieu-video-tu-1-bang-csv-moi-o-05">11c. Tab <strong>Biến thể</strong> — nhiều video từ 1 bảng CSV (mới ở 0.5)</h2>
+<p>Cùng cảnh, cùng nhạc, chỉ khác chữ: tên món, giá, ưu đãi, thành phố, ngôn ngữ. Ví dụ 10 món × 2 tỉ lệ cho ra 20 video chỉ với 1 lần bấm.
+1. Tab <strong>Biến thể</strong> → <strong>⤓ Tải CSV mẫu</strong>. File mở được bằng Excel hoặc Google Sheets (phân cách <code>;</code>, UTF-8, giữ đủ dấu tiếng Việt và tiếng Đức).
+   - Dòng 1 là tên ô chữ: <code>name</code>, <code>formats</code>, rồi các khoá như <code>S03_title</code>…
+   - Dòng <code>#</code> là mô tả vị trí của từng ô chữ. <strong>Đừng xoá dòng này.</strong>
+   - Dòng <code>ban-goc</code> là chữ hiện tại.
+2. Mỗi dòng mới là một video:
+   - <code>name</code>: tên ngắn, dùng làm tên file.
+   - <code>formats</code>: ví dụ <code>9:16 1:1</code>. Để trống thì xuất mọi tỉ lệ của dự án.
+   - Ô chữ để trống thì giữ nguyên chữ gốc.
+   - Dùng <code>*…*</code> để tô màu như ở tab Chữ.
+3. <strong>⤒ Nhập CSV…</strong>: Studio lưu bảng vào <code>brief/variants.csv</code>, nên bảng cũng được lưu trong Lịch sử. Studio cũng báo những cột không khớp ô chữ nào.
+4. Bấm vào một dòng để <strong>xem thử ngay trên khung xem</strong>. Việc này không ghi gì vào dự án; bấm <strong>Về bản gốc</strong> để quay lại.
+5. <strong>▶ Xuất N video</strong>: dùng cài đặt ở tab Xuất (độ phân giải, fps, LUFS…). Video lưu ở <code>out/variants/</code>.</p>
+<p>Ảnh khác nhau giữa các biến thể: đặt ảnh vào <code>public/img/</code> trước, rồi ghi đường dẫn vào cột của ô ảnh, ví dụ <code>img/pho.jpg</code>.</p>
+<h2 id="11d-lam-viec-nhom-moi-o-05">11d. Làm việc nhóm (mới ở 0.5)</h2>
+<ul>
+<li><strong>Trạng thái dự án</strong>: ô chọn trên thanh trên cùng, gồm <strong>Nháp → Chờ duyệt → Đã duyệt → Đã đăng</strong>. Trạng thái hiện thành nhãn màu ở trang Dự án.</li>
+<li>Khi chọn <strong>Đã duyệt</strong> hoặc <strong>Đã đăng</strong>, Studio tự đặt <strong>mốc ★</strong> ("Bản duyệt…" / "Bản đăng…"). Bản đã duyệt hay đã đăng vì vậy luôn lấy lại được, kể cả khi AI sửa tiếp.</li>
+<li><strong>Khoá dự án</strong>: khi mở dự án, Studio ghi <code>.studio-lock</code> (tên người, tên máy).</li>
+<li>Người thứ hai mở cùng dự án sẽ thấy cảnh báo "Tuấn đang mở trên máy X từ HH:MM"; trang Dự án hiện 🔒.</li>
+<li>Khoá tự hết hạn sau 3 phút nếu Studio bị tắt đột ngột.</li>
+<li>Đây chỉ là cảnh báo, không chặn: hai người cùng Lưu sẽ ghi đè lên nhau, nhưng Lịch sử vẫn giữ đủ các bản.</li>
+<li><strong>Trang Dự án → Nhóm</strong>:</li>
+<li><strong>Tên của bạn</strong>: hiện trong khoá, lịch sử, góp ý.</li>
+<li><strong>Thư mục dự án mặc định</strong>: có thể là thư mục chung trên NAS/Drive.</li>
+<li><strong>Thư mục mẫu dùng chung</strong>: mẫu trong đó hiện ở Thư viện với nhãn "dùng chung". "Lưu thành mẫu" và "Nhập mẫu" có tuỳ chọn lưu thẳng vào thư mục chung để cả nhóm dùng.</li>
+<li>Mẹo: mỗi người chạy Studio trên máy mình, còn dự án nằm ở thư mục chung. Dự án mang theo <code>.history/</code>, nên ai mở cũng thấy đủ lịch sử.</li>
+</ul>
 <h2 id="12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</h2>
 <h3 id="cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</h3>
 <pre><code>du-an-cua-khach/

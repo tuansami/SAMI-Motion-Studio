@@ -35,6 +35,7 @@ export type AudioCue = {t: number; sfx: string; gain?: number; label?: string; s
 export type VoiceClip = {t: number; src: string; len: number; gain?: number; label?: string}; // voice-over line; len (s) drives music ducking
 export type ProjectJSON = {
   name: string; client?: string; version?: number;
+  status?: 'draft' | 'review' | 'approved' | 'published'; // workflow label (Studio 0.5) — default 'draft', no effect on rendering
   formats: Ratio[]; baseFps?: 30;
   brand?: {colors?: Record<string, string>; fonts?: Record<string, string>; gradient?: string};
   look?: {grain?: number; vignette?: number; background?: string};

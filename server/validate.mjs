@@ -9,6 +9,7 @@ export const validateProject = (dir) => {
   let p;
   try { p = readProject(dir); } catch (e) { return {ok, warn, fail: ['Không đọc được project.json: ' + e.message]}; }
   const S = p.scenes || [];
+  if (p.status && !['draft', 'review', 'approved', 'published'].includes(p.status)) warn.push(`Trạng thái "${p.status}" không hợp lệ (draft / review / approved / published) — coi như Nháp.`);
   if (!S.length) fail.push('Dự án chưa có cảnh nào.');
   S.forEach((s, i) => {
     if (i === 0 && s.start !== 0) fail.push(`Cảnh đầu (${s.id}) phải bắt đầu ở 0.`);

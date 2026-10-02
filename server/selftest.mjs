@@ -22,6 +22,18 @@ await t('ffmpeg + loudnorm filter (chuẩn −14 LUFS)', () => { if (!FFMPEG) th
 const tpls = fs.readdirSync(TEMPLATES).filter((d) => fs.existsSync(path.join(TEMPLATES, d, 'project.json')));
 await t(`validate runs on ${tpls.length} templates`, () => { for (const d of tpls) validateProject(path.join(TEMPLATES, d)); });
 
+await t('variants: copy override (CSV row) keeps project.json intact', async () => {
+  const {applyCopy} = await import('./render.mjs');
+  const p = {copy: {A: {label: 'a', value: 'gốc'}, B: {label: 'b', value: 'giữ'}}};
+  const q = applyCopy(p, {A: 'Phở Hà Nội', B: '', X: 'bỏ qua'});
+  if (q.copy.A.value !== 'Phở Hà Nội' || q.copy.B.value !== 'giữ' || q.copy.X || p.copy.A.value !== 'gốc') throw new Error(JSON.stringify(q));
+});
+await t('shared template ids resolve', async () => {
+  const {tplDir} = await import('./template.mjs');
+  if (path.resolve(tplDir(tpls[0])) !== path.resolve(TEMPLATES, tpls[0])) throw new Error('library id');
+  if (!tplDir('../../etc').startsWith(TEMPLATES)) throw new Error('path escape');
+});
+
 // version history round trip on a throw-away copy of a template
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-selftest-'));
 try {

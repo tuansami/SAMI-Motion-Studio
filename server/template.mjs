@@ -1,6 +1,7 @@
 // Template library: standard check (docs/TEMPLATE_STANDARD.md), thumbnails, save-as-template, import/export.
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import {spawnSync} from 'child_process';
 import {validateProject} from './validate.mjs';
 import {readProject, renderBundle} from './project.mjs';
@@ -15,6 +16,21 @@ const IMG_SLOT = /(_image|_logo|_img|_photo)$/i;
 const walk = (d) => (fs.existsSync(d) ? fs.readdirSync(d, {withFileTypes: true}).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)])) : []);
 export const readManifest = (dir) => { try { return JSON.parse(fs.readFileSync(path.join(dir, 'template.json'), 'utf8')); } catch { return null; } };
 export const thumbName = (r) => `thumb_${r.replace(':', 'x')}.jpg`;
+
+// ── template roots: the app's own library + shared team folders (NAS / Google Drive / OneDrive) ──
+// shared templates get the id "sh<hash>_<folder>" so ids stay unique and URL-safe ([\w.-]+)
+let SHARED = [];
+export const setSharedRoots = (list) => { SHARED = (list || []).filter((d) => d && fs.existsSync(d)).map((d) => path.resolve(d)); };
+export const sharedRoots = () => SHARED;
+const rootKey = (root) => 'sh' + crypto.createHash('sha1').update(root.toLowerCase()).digest('hex').slice(0, 5) + '_';
+const roots = () => [{root: TEMPLATES, prefix: '', shared: false}, ...SHARED.map((r) => ({root: r, prefix: rootKey(r), shared: true}))];
+/** template id → folder (library or shared) */
+export const tplDir = (id) => {
+  id = path.basename(String(id || ''));
+  for (const r of roots()) if (r.prefix && id.startsWith(r.prefix)) return path.join(r.root, id.slice(r.prefix.length));
+  return path.join(TEMPLATES, id);
+};
+export const isTemplateDir = (dir) => roots().some((r) => path.resolve(dir).toLowerCase().startsWith(r.root.toLowerCase() + path.sep));
 
 /** stats derived from project.json (duration, slots) */
 export const templateStats = (dir) => {
@@ -101,7 +117,7 @@ export const makeThumbs = async (dir, onLog = () => {}) => {
     await renderStill({composition: comp, serveUrl, inputProps, frame, output: path.join(dir, 'preview', thumbName(ratio)), imageFormat: 'jpeg', jpegQuality: 82, scale: ratio === '16:9' ? 0.34 : 0.36, ...opts});
     onLog('ok ' + ratio);
   }
-  if (!hadEngine && dir.startsWith(TEMPLATES)) fs.rmSync(path.join(dir, 'public', '_engine'), {recursive: true, force: true});
+  if (!hadEngine && isTemplateDir(dir)) fs.rmSync(path.join(dir, 'public', '_engine'), {recursive: true, force: true});
 };
 
 const slug = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 48) || 'mau';
@@ -113,13 +129,14 @@ const copyDir = (s, d, skip) => {
     e.isDirectory() ? copyDir(a, b, skip) : fs.copyFileSync(a, b);
   }
 };
-const freeId = (id) => { let x = id, n = 2; while (fs.existsSync(path.join(TEMPLATES, x))) x = `${id}-${n++}`; return x; };
+const freeId = (id, root = TEMPLATES) => { let x = id, n = 2; while (fs.existsSync(path.join(root, x))) x = `${id}-${n++}`; return x; };
 const SKIP = (n) => FORBIDDEN.includes(n) || n === '_engine' || n === '.parts' || n === 'preview_tmp';
 
 /** turn a project into a library template */
 export const saveAsTemplate = (projDir, meta) => {
-  const id = freeId(slug(meta.tplId || meta.name || 'mau'));
-  const dir = path.join(TEMPLATES, id);
+  const root = meta.shared && SHARED[0] ? SHARED[0] : TEMPLATES;
+  const id = freeId(slug(meta.tplId || meta.name || 'mau'), root);
+  const dir = path.join(root, id);
   copyDir(projDir, dir, SKIP);
   const p = readProject(dir);
   if (meta.name) { p.name = meta.name; fs.writeFileSync(path.join(dir, 'project.json'), JSON.stringify(p, null, 1)); }
@@ -127,19 +144,21 @@ export const saveAsTemplate = (projDir, meta) => {
   const man = {id, name: meta.name || p.name, version: '1.0.0', studio: '>=' + pkg.version, category: meta.category || 'generic', goal: meta.goal || [], description: meta.description || '', formats: p.formats, ...templateStats(dir), bpm: 120, languages: ['vi'], thumbFrame: meta.thumbFrame ?? Math.round((p.scenes.at(-1)?.end || 30) * 0.35), author: meta.author || 'SAMI Marketing Agency', license: meta.license || 'internal', tags: meta.tags || []};
   fs.writeFileSync(path.join(dir, 'template.json'), JSON.stringify(man, null, 2));
   if (!fs.existsSync(path.join(dir, 'README.md'))) fs.writeFileSync(path.join(dir, 'README.md'), `# ${man.name}\n\n${man.description}\n\n- Nhóm: ${CATEGORIES[man.category] || man.category}\n- Tỉ lệ: ${man.formats.join(' · ')} · ${man.duration}s\n- Khi nào dùng:\n- Lưu ý khi thay nội dung:\n`);
-  return {id, dir};
+  return {id: (root === TEMPLATES ? '' : rootKey(root)) + id, dir};
 };
 
 /** list templates for the gallery */
-export const listTemplates = () => fs.readdirSync(TEMPLATES).filter((t) => fs.existsSync(path.join(TEMPLATES, t, 'project.json'))).map((t) => {
-  const dir = path.join(TEMPLATES, t); const pj = readProject(dir); const m = readManifest(dir) || {};
-  return {id: t, name: m.name || pj.name, description: m.description || '', category: m.category || 'generic', goal: m.goal || [], tags: m.tags || [], version: m.version || '0', license: m.license || '', author: m.author || '',
+export const listTemplates = () => roots().flatMap(({root, prefix, shared}) => { try { return fs.readdirSync(root).filter((t) => fs.existsSync(path.join(root, t, 'project.json'))).map((f) => {
+  const t = prefix + f; const dir = path.join(root, f);
+  try { const pj = readProject(dir); const m = readManifest(dir) || {};
+  return {id: t, shared, root: shared ? root : null, name: m.name || pj.name, description: m.description || '', category: m.category || 'generic', goal: m.goal || [], tags: m.tags || [], version: m.version || '0', license: m.license || '', author: m.author || '',
     formats: pj.formats, scenes: pj.scenes.length, seconds: +(pj.scenes.at(-1).end / 30).toFixed(1), hasManifest: !!readManifest(dir),
     thumbs: Object.fromEntries(pj.formats.filter((r) => fs.existsSync(path.join(dir, 'preview', thumbName(r)))).map((r) => [r, `/tpl/${t}/preview/${thumbName(r)}`]))};
-});
+  } catch { return null; } }).filter(Boolean); } catch { return []; } }); // an offline NAS / broken template never breaks the gallery
 
 /** import a template folder or .zip into the library */
-export const importTemplate = (from) => {
+export const importTemplate = (from, {shared = false} = {}) => {
+  const root = shared && SHARED[0] ? SHARED[0] : TEMPLATES;
   let src = from; let tmp = null;
   if (/\.zip$/i.test(from)) {
     tmp = path.join(TEMPLATES, '..', '.studio', 'import_' + Date.now()); fs.mkdirSync(tmp, {recursive: true});
@@ -152,20 +171,20 @@ export const importTemplate = (from) => {
   }
   if (!fs.existsSync(path.join(src, 'project.json'))) throw new Error('Thư mục này không phải mẫu (thiếu project.json)');
   const m = readManifest(src);
-  const id = freeId(slug(m?.id || path.basename(src)));
-  copyDir(src, path.join(TEMPLATES, id), SKIP);
+  const id = freeId(slug(m?.id || path.basename(src)), root);
+  copyDir(src, path.join(root, id), SKIP);
   if (tmp) fs.rmSync(tmp, {recursive: true, force: true});
-  return {id, check: checkTemplate(path.join(TEMPLATES, id))};
+  return {id: (root === TEMPLATES ? '' : rootKey(root)) + id, check: checkTemplate(path.join(root, id))};
 };
 
 /** zip a template for sharing → <app>/exports/<id>-<version>.zip */
 export const exportTemplate = (id) => {
-  const dir = path.join(TEMPLATES, id); const m = readManifest(dir) || {};
+  const dir = tplDir(id); const m = readManifest(dir) || {}; id = path.basename(dir);
   const outDir = path.join(ROOT, 'exports'); fs.mkdirSync(outDir, {recursive: true});
   const out = path.join(outDir, `${id}-${m.version || '1.0.0'}.zip`); if (fs.existsSync(out)) fs.rmSync(out);
   const r = process.platform === 'win32'
     ? spawnSync('powershell.exe', ['-NoProfile', '-Command', `Compress-Archive -Path '${dir.replace(/'/g, "''")}' -DestinationPath '${out.replace(/'/g, "''")}' -Force`], {windowsHide: true})
-    : spawnSync('zip', ['-qr', out, id, '-x', `${id}/public/_engine/*`], {cwd: TEMPLATES});
+    : spawnSync('zip', ['-qr', out, id, '-x', `${id}/public/_engine/*`], {cwd: path.dirname(dir)});
   if (r.status !== 0) throw new Error('Không nén được mẫu: ' + String(r.stderr || '').slice(0, 300));
   return {out};
 };

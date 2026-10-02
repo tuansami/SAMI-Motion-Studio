@@ -19,6 +19,39 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [0.5.0] — 2026-10-03 — Làm việc nhóm · Biến thể hàng loạt từ CSV
+Spec: `docs/specs/team-variants.md` · Hướng dẫn: `docs/HUONG_DAN_SU_DUNG.md` mục 11c (Biến thể), 11d (Nhóm)
+
+### Thêm
+- **Tab Biến thể** (CSV → nhiều video):
+  - Nút **Tải CSV mẫu**: file `;`, UTF-8 có BOM để Excel đọc đúng dấu, có sẵn dòng mô tả từng ô chữ và dòng bản gốc.
+  - Nút **Nhập CSV**: lưu vào `brief/variants.csv`, nên bảng cũng có trong Lịch sử.
+  - **Bấm một dòng để xem thử** trên khung xem; không ghi gì vào dự án.
+  - **▶ Xuất N video**: mỗi dòng × mỗi tỉ lệ thành một lượt render, lưu ở `out/variants/`.
+  - Đã thử: 2 dòng (`;`, dấu VI/DE, `""`, xuống dòng trong ô, `;` trong tên) cho ra đúng 3 lượt render với chữ đúng; cột lạ được báo và bỏ qua.
+- **Trạng thái dự án** Nháp / Chờ duyệt / Đã duyệt / Đã đăng: ô chọn trên thanh trên cùng, kèm badge ở trang Dự án. Khi chuyển sang **Đã duyệt / Đã đăng**, Studio tự đặt **mốc ★** trong Lịch sử.
+- **Khoá dự án `.studio-lock`**: người thứ hai mở cùng dự án thấy cảnh báo "X đang mở trên máy Y từ …", và trang Dự án hiện 🔒.
+  - Khoá không bị máy khác ghi đè.
+  - Khoá được xoá khi đóng dự án hoặc tắt Studio, và tự hết hạn sau 3 phút.
+- **Trang Dự án → Nhóm**: đặt tên người dùng, thư mục dự án mặc định, **thư mục mẫu dùng chung** (NAS/Drive).
+  - Mẫu trong thư mục chung có nhãn "dùng chung".
+  - "Lưu thành mẫu" và "Nhập mẫu" có thể ghi thẳng vào thư mục chung.
+- `cli-still … --copy row.json` để xem ảnh tĩnh một biến thể.
+- Selftest: thêm test `applyCopy` và test `tplDir`, gồm cả chặn đường dẫn thoát ra ngoài.
+
+### Thay đổi
+- `project.json` có thêm trường tuỳ chọn `status`, mặc định `draft`.
+- Điểm neo ghi rõ người tạo, dạng `Studio · <tên>` hoặc `Claude Code · <user>`.
+- Skill: thêm hướng dẫn về biến thể và `status`.
+
+### File chính
+Sửa: `server/index.mjs`, `server/template.mjs`, `server/render.mjs`, `server/cli-still.mjs`, `server/cli-snapshot.mjs`, `server/validate.mjs`, `server/selftest.mjs`, `engine/src/core/types.ts`, `ui/index.html`, `ui/app.js`, `ui/style.css`, skill, docs, `package.json`. Mới: `docs/specs/team-variants.md`.
+
+### Roll back
+`git checkout v0.4.0`. Trường `status` và file `brief/variants.csv` vô hại với bản cũ, chỉ bị bỏ qua. `.studio-lock` xoá được.
+
+---
+
 ## [0.4.0] — 2026-10-03 — Gói duyệt khách · So sánh điểm neo · Chuẩn −14 LUFS
 Spec: `docs/specs/review-compare-loudness.md` · Hướng dẫn: `docs/HUONG_DAN_SU_DUNG.md` mục 11 (Gói duyệt, LUFS) và 11b (So sánh)
 
