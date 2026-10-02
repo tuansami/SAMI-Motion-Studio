@@ -1,0 +1,83 @@
+{
+ "name": "Paper Search Ad (mẫu)",
+ "client": "",
+ "version": 1,
+ "formats": ["16:9", "9:16"],
+ "brand": {
+  "colors": {
+   "kraft": "#D8C3A5",
+   "paper": "#FFFFFF",
+   "ink": "#1D3557",
+   "accent": "#E63946"
+  },
+  "fonts": {
+   "display": "\"DM Serif Display\", serif",
+   "body": "\"DM Sans\", sans-serif",
+   "script": "Caveat, cursive"
+  }
+ },
+ "look": {
+  "grain": 0.05,
+  "vignette": 0.28,
+  "background": "#D8C3A5"
+ },
+ "scenes": [
+  {"id": "S01", "label": "Mở đầu – thanh tìm kiếm giấy xé gõ chữ", "start": 0, "end": 121, "animLength": 121},
+  {"id": "S02", "label": "Mẫu quảng cáo ghép từ mảnh giấy", "start": 121, "end": 301, "animLength": 180},
+  {"id": "S03", "label": "Con dấu Klick! + mực loang", "start": 301, "end": 421, "animLength": 120},
+  {"id": "S04", "label": "Ảnh khách và món ăn cắt dán", "start": 421, "end": 601, "animLength": 180, "fadeIn": 4},
+  {"id": "S05", "label": "Giấy note số liệu mẫu", "start": 601, "end": 781, "animLength": 180},
+  {"id": "S06", "label": "Kết – logo SAMI + liên hệ trên giấy kraft", "start": 781, "end": 900, "animLength": 119, "fadeIn": 8}
+ ],
+ "copy": {
+  "S01_note": {"label": "Ghi chú viết tay phía trên thanh tìm kiếm cảnh 1", "scene": "S01", "value": "Freitag, 19:42"},
+  "S01_query": {"label": "Chữ tự gõ trong thanh tìm kiếm cảnh 1", "scene": "S01", "value": "Sushi in der Nähe", "hint": "ngắn, ≤ 24 ký tự"},
+  "S01_kicker": {"label": "Câu cắt dán từng chữ dưới thanh tìm kiếm cảnh 1", "scene": "S01", "value": "Genau jetzt sucht jemand *dich.*", "hint": "*…* = mảnh giấy đỏ · / = xuống dòng"},
+  "S02_label": {"label": "Nhãn nhỏ trên mẫu quảng cáo (cảnh 2 và 3)", "scene": "S02", "value": "Anzeige"},
+  "S02_url": {"label": "Địa chỉ web mẫu cạnh nhãn quảng cáo cảnh 2", "scene": "S02", "value": "beispiel-sushi.de"},
+  "S02_headline": {"label": "Tiêu đề quảng cáo cắt dán từng chữ (cảnh 2 và 3)", "scene": "S02", "value": "Sakura Sushi: Heute *Tisch* reservieren", "hint": "chữ mẫu; *…* = mảnh giấy đỏ"},
+  "S02_desc": {"label": "Dòng mô tả dưới tiêu đề quảng cáo cảnh 2", "scene": "S02", "value": "Frisch gerollt, mitten in der Altstadt. Heute noch Plätze frei."},
+  "S02_rating": {"label": "Chữ viết tay cạnh 5 ngôi sao giấy cảnh 2", "scene": "S02", "value": "4,8 (Beispiel)", "hint": "điểm đánh giá MẪU – thay bằng điểm thật của khách hoặc giữ chữ (Beispiel)"},
+  "S02_link1": {"label": "Mảnh giấy liên kết thứ 1 (viền) cảnh 2", "scene": "S02", "value": "Speisekarte"},
+  "S02_link2": {"label": "Mảnh giấy liên kết thứ 2 (đỏ) cảnh 2", "scene": "S02", "value": "Anrufen"},
+  "S03_stamp": {"label": "Chữ trên con dấu đỏ cảnh 3", "scene": "S03", "value": "Klick!", "hint": "1 từ ngắn"},
+  "S03_bridge": {"label": "Câu chữ trắng trên nền mực cuối cảnh 3", "scene": "S03", "value": "Vom Klick zum Tisch."},
+  "S04_headline": {"label": "Tiêu đề cắt dán từng chữ cảnh 4", "scene": "S04", "value": "Volle *Tische.*"},
+  "S04_note": {"label": "Ghi chú viết tay trắng cảnh 4", "scene": "S04", "value": "Freitag, 20:00 Uhr"},
+  "S04_guests_image": {"label": "Ảnh khách ở bàn (ảnh lớn cắt dán cảnh 4)", "scene": "S04", "value": "img/placeholder_guests.jpg"},
+  "S04_dish_image": {"label": "Ảnh món ăn (ảnh tròn cắt dán cảnh 4)", "scene": "S04", "value": "img/placeholder_dish.jpg"},
+  "S05_title": {"label": "Tiêu đề cắt dán phía trên giấy note cảnh 5", "scene": "S05", "value": "Was die Anzeige *bringt:*"},
+  "S05_n1_value": {"label": "Số trên giấy note 1 (trắng) cảnh 5", "scene": "S05", "value": "1.240", "hint": "Beispielwerte – durch echte Zahlen ersetzen"},
+  "S05_n1_label": {"label": "Chữ viết tay dưới số, giấy note 1 cảnh 5", "scene": "S05", "value": "Klicks im Monat"},
+  "S05_n2_value": {"label": "Số trên giấy note 2 (đỏ) cảnh 5", "scene": "S05", "value": "86", "hint": "Beispielwerte – durch echte Zahlen ersetzen"},
+  "S05_n2_label": {"label": "Chữ viết tay dưới số, giấy note 2 cảnh 5", "scene": "S05", "value": "Reservierungen"},
+  "S05_n3_value": {"label": "Số trên giấy note 3 (xanh đậm) cảnh 5", "scene": "S05", "value": "3,10 €", "hint": "Beispielwerte – durch echte Zahlen ersetzen"},
+  "S05_n3_label": {"label": "Chữ viết tay dưới số, giấy note 3 cảnh 5", "scene": "S05", "value": "pro Reservierung"},
+  "S05_tag": {"label": "Nhãn nhỏ đóng khung trên mỗi giấy note cảnh 5 (xoá khi dùng số thật)", "scene": "S05", "value": "Beispiel"},
+  "S05_disclaimer": {"label": "Chữ viết tay ghi chú số liệu mẫu cảnh 5 (xoá khi dùng số thật)", "scene": "S05", "value": "Beispielwerte"},
+  "S06_tagline": {"label": "Khẩu hiệu SAMI dưới logo cảnh kết", "scene": "S06", "value": "Strategy • Automation • Marketing • Intelligence"},
+  "S06_phone": {"label": "Số WhatsApp (mảnh giấy trắng cảnh kết)", "scene": "S06", "value": "+49 155 60456888"},
+  "S06_url": {"label": "Website (mảnh giấy đỏ cảnh kết)", "scene": "S06", "value": "sami-agency.de"},
+  "S06_note": {"label": "Chữ viết tay đỏ cạnh bảng cảnh kết", "scene": "S06", "value": "Schreib uns!"}
+ },
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {"font": "Be Vietnam Pro", "weight": 700, "color": "#FFFFFF", "highlight": "#E63946", "shadow": true}
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {"src": "", "gain": -4, "edit": [], "fadeOut": 2.5},
+  "cues": [
+   {"t": 0.45, "sfx": "typing_burst", "gain": -16, "label": "gõ tìm kiếm"},
+   {"t": 2.0, "sfx": "key_enter", "gain": -12, "label": "bấm nút tìm"},
+   {"t": 10.45, "sfx": "sub_hit", "gain": -10, "label": "con dấu Klick!"},
+   {"t": 11.2, "sfx": "whoosh_c", "gain": -18, "label": "mực loang"},
+   {"t": 20.7, "sfx": "pop", "gain": -14, "label": "giấy note đầu tiên"},
+   {"t": 26.0, "sfx": "whoosh_b", "gain": -18, "label": "vào thẻ kết SAMI"}
+  ]
+ }
+}

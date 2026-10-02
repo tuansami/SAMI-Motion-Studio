@@ -1,0 +1,17 @@
+{
+  "id": "painted-signature",
+  "name": "Painted Signature",
+  "version": "1.0.0",
+  "studio": ">=0.2.2",
+  "category": "agency",
+  "goal": ["gioi-thieu"],
+  "description": "30 giây, 6 cảnh, bán dịch vụ BRANDING: giấy trắng + nét chì dựng hình → logo nhà hàng được vẽ bằng cọ từng nét → bảng màu quét cọ → logo lên túi, ly, biển hiệu → câu khẩu hiệu serif + chữ viết tay → thẻ kết SAMI.",
+  "formats": ["16:9", "9:16"],
+  "duration": 30,
+  "bpm": 120,
+  "languages": ["de"],
+  "thumbFrame": 560,
+  "author": "SAMI Marketing Agency",
+  "license": "internal",
+  "tags": ["branding", "hand-painted", "paper", "brush", "warm", "logo"]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "agency-promo",
+  "name": "Agency promo – giới thiệu dịch vụ",
+  "version": "1.0.0",
+  "studio": ">=0.2.0",
+  "category": "agency",
+  "goal": ["gioi-thieu", "uu-dai"],
+  "description": "29 giây, 6 cảnh: câu hook → con số ấn tượng → 3 lợi ích → điện thoại trưng bày → ưu đãi → logo + liên hệ. Hợp giới thiệu 1 dịch vụ/gói.",
+  "formats": ["16:9", "9:16", "1:1"],
+  "duration": 29,
+  "bpm": 120,
+  "languages": ["vi"],
+  "thumbFrame": 300,
+  "author": "SAMI Marketing Agency",
+  "license": "internal",
+  "tags": ["clean", "saas", "gradient"]
+}

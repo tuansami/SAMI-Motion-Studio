@@ -1,0 +1,203 @@
+{
+ "name": "Agency promo (mẫu)",
+ "client": "",
+ "version": 1,
+ "formats": [
+  "16:9",
+  "9:16",
+  "1:1"
+ ],
+ "brand": {},
+ "look": {
+  "grain": 0.05,
+  "vignette": 0.4
+ },
+ "scenes": [
+  {
+   "id": "T01",
+   "label": "Mở đầu – câu hook",
+   "start": 0,
+   "end": 121,
+   "animLength": 121
+  },
+  {
+   "id": "T02",
+   "label": "Con số ấn tượng",
+   "start": 121,
+   "end": 241,
+   "animLength": 120
+  },
+  {
+   "id": "T03",
+   "label": "3 lợi ích",
+   "start": 241,
+   "end": 421,
+   "animLength": 180
+  },
+  {
+   "id": "T04",
+   "label": "Trưng bày sản phẩm / website",
+   "start": 421,
+   "end": 601,
+   "animLength": 180
+  },
+  {
+   "id": "T05",
+   "label": "Ưu đãi",
+   "start": 601,
+   "end": 721,
+   "animLength": 120
+  },
+  {
+   "id": "T06",
+   "label": "Kết – logo + liên hệ",
+   "start": 721,
+   "end": 871,
+   "animLength": 150,
+   "fadeIn": 4
+  }
+ ],
+ "copy": {
+  "T01_label": {
+   "label": "Nhãn nhỏ phía trên (tự gõ)",
+   "scene": "T01",
+   "value": "SAMI · MARKETING AGENCY"
+  },
+  "T01_headline": {
+   "label": "Câu hook (dùng *…* để tô màu, / để xuống dòng)",
+   "scene": "T01",
+   "value": "Khách hàng đang / *tìm bạn.*"
+  },
+  "T02_number": {
+   "label": "Con số",
+   "scene": "T02",
+   "value": "69"
+  },
+  "T02_suffix": {
+   "label": "Đơn vị sau số",
+   "scene": "T02",
+   "value": "%"
+  },
+  "T02_ring": {
+   "label": "Vòng tròn đầy bao nhiêu % (0–100)",
+   "scene": "T02",
+   "value": "69"
+  },
+  "T02_caption": {
+   "label": "Chú thích dưới số",
+   "scene": "T02",
+   "value": "khách hàng *chọn quán có website*"
+  },
+  "T03_title": {
+   "label": "Tiêu đề 3 lợi ích",
+   "scene": "T03",
+   "value": "Vì sao chọn *chúng tôi?*"
+  },
+  "T03_item1": {
+   "label": "Lợi ích 1",
+   "scene": "T03",
+   "value": "Nhanh & chuẩn SEO"
+  },
+  "T03_item2": {
+   "label": "Lợi ích 2",
+   "scene": "T03",
+   "value": "Đặt bàn 24/7"
+  },
+  "T03_item3": {
+   "label": "Lợi ích 3",
+   "scene": "T03",
+   "value": "Tăng khách mỗi tháng"
+  },
+  "T04_headline": {
+   "label": "Tiêu đề trưng bày",
+   "scene": "T04",
+   "value": "Thiết kế *theo gu riêng.*"
+  },
+  "T04_sub": {
+   "label": "Dòng phụ",
+   "scene": "T04",
+   "value": "Không template — mỗi thương hiệu một bản sắc."
+  },
+  "T04_image": {
+   "label": "Ảnh trong điện thoại (đường dẫn trong public/)",
+   "scene": "T04",
+   "value": "img/placeholder.jpg"
+  },
+  "T05_offer": {
+   "label": "Câu ưu đãi",
+   "scene": "T05",
+   "value": "Audit *MIỄN PHÍ*"
+  },
+  "T05_chip1": {
+   "label": "Ưu đãi – ô nhỏ thứ 1",
+   "scene": "T05",
+   "value": "Google Maps"
+  },
+  "T05_chip2": {
+   "label": "Ưu đãi – ô nhỏ thứ 2",
+   "scene": "T05",
+   "value": "Website"
+  },
+  "T05_chip3": {
+   "label": "Ưu đãi – ô nhỏ thứ 3",
+   "scene": "T05",
+   "value": "Demo trong 48 giờ"
+  },
+  "T06_logo": {
+   "label": "Logo khách (để trống = logo SAMI)",
+   "scene": "T06",
+   "value": ""
+  },
+  "T06_tagline": {
+   "label": "Khẩu hiệu",
+   "scene": "T06",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "T06_phone": {
+   "label": "Số WhatsApp",
+   "scene": "T06",
+   "value": "+49 155 60456888"
+  },
+  "T06_url": {
+   "label": "Website",
+   "scene": "T06",
+   "value": "sami-agency.de"
+  }
+ },
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {
+   "font": "Be Vietnam Pro",
+   "weight": 700,
+   "color": "#FFFFFF",
+   "highlight": "#08DDA4",
+   "shadow": true
+  }
+ },
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "",
+   "gain": -4,
+   "edit": [],
+   "fadeOut": 2.5
+  },
+  "cues": [
+   {
+    "t": 3.8,
+    "sfx": "whoosh_b",
+    "gain": -18,
+    "label": "chuyển cảnh"
+   },
+   {
+    "t": 28.9,
+    "sfx": "pop",
+    "gain": -10,
+    "label": "CTA"
+   }
+  ]
+ }
+}

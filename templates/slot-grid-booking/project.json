@@ -1,0 +1,69 @@
+{
+ "name": "Slot Grid Booking (mẫu)",
+ "client": "",
+ "version": 1,
+ "formats": [
+  "16:9",
+  "9:16"
+ ],
+ "brand": {
+  "colors": {
+   "sun": "#FFD23F",
+   "ink": "#111111",
+   "paper": "#F4F4F0",
+   "tomato": "#E4572E"
+  },
+  "fonts": {
+   "display": "Anton, sans-serif",
+   "ui": "Inter, sans-serif"
+  }
+ },
+ "look": {
+  "grain": 0.05,
+  "vignette": 0.12,
+  "background": "#F4F4F0"
+ },
+ "scenes": [
+  {"id": "S01", "label": "Mở đầu – lưới tuần bật lên", "start": 0, "end": 61, "animLength": 61},
+  {"id": "S02", "label": "Các ô giờ được đặt theo nhịp", "start": 61, "end": 181, "animLength": 120, "fadeIn": 4},
+  {"id": "S03", "label": "Ô 'Tisch für 4 · 19:30' phóng to, chữ co giãn", "start": 181, "end": 301, "animLength": 120, "fadeIn": 4},
+  {"id": "S04", "label": "Kín chỗ – màu tràn khung 'Ausgebucht.'", "start": 301, "end": 421, "animLength": 120, "fadeIn": 4},
+  {"id": "S05", "label": "Kết – logo SAMI + liên hệ", "start": 421, "end": 541, "animLength": 120, "fadeIn": 4}
+ ],
+ "copy": {
+  "S01_title": {"label": "Câu lớn phía trên lưới (cảnh 1, / để xuống dòng, dòng cuối màu cam)", "scene": "S01", "value": "Freie Tische?"},
+  "S01_days": {"label": "Tên các ngày trên lưới, cách nhau bằng dấu cách (tối đa 7, cảnh 1–5)", "scene": "S01", "value": "Mo Di Mi Do Fr Sa So"},
+  "S01_times": {"label": "Các khung giờ trên lưới, cách nhau bằng dấu cách (tối đa 6, cảnh 1–4)", "scene": "S01", "value": "17:30 18:30 19:30 20:30 21:30"},
+  "S02_title": {"label": "Câu lớn phía trên lưới khi các ô được đặt (cảnh 2, / xuống dòng, dòng cuối màu cam)", "scene": "S02", "value": "Online gebucht. / Rund um die Uhr."},
+  "S02_free": {"label": "Chữ nhỏ trong ô còn trống nhấp nháy (cảnh 2)", "scene": "S02", "value": "frei"},
+  "S03_dayshort": {"label": "Ô được đặt – ngày (phải trùng 1 tên ngày ở ô 'Tên các ngày')", "scene": "S03", "value": "Fr"},
+  "S03_time": {"label": "Ô được đặt – giờ (phải trùng 1 khung giờ ở ô 'Các khung giờ')", "scene": "S03", "value": "19:30"},
+  "S03_booking": {"label": "Chữ lớn trong ô phóng to (cảnh 3, dấu · tách 2 dòng, dòng 2 màu cam)", "scene": "S03", "value": "Tisch für 4 · 19:30"},
+  "S03_day": {"label": "Nhãn ngày góc trên trái ô phóng to (cảnh 3)", "scene": "S03", "value": "Freitag"},
+  "S03_sub": {"label": "Dòng xác nhận góc dưới ô phóng to (cảnh 3)", "scene": "S03", "value": "Bestätigt. Ohne Anruf."},
+  "S04_title": {"label": "Chữ khổng lồ khi kín chỗ (cảnh 4, 1 từ ngắn)", "scene": "S04", "value": "Ausgebucht."},
+  "S04_sub": {"label": "Dòng dưới chữ khổng lồ, trên dải đen (cảnh 4)", "scene": "S04", "value": "Mit Online-Reservierung von SAMI."},
+  "S05_cta": {"label": "Câu kêu gọi lớn màu vàng (cảnh kết)", "scene": "S05", "value": "Volle Abende, ganz online."},
+  "S05_tagline": {"label": "Khẩu hiệu dưới logo (cảnh kết)", "scene": "S05", "value": "Strategy • Automation • Marketing • Intelligence"},
+  "S05_phone": {"label": "Số WhatsApp (cảnh kết)", "scene": "S05", "value": "+49 155 60456888"},
+  "S05_url": {"label": "Website (cảnh kết)", "scene": "S05", "value": "sami-agency.de"}
+ },
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {"font": "Be Vietnam Pro", "weight": 700, "color": "#FFFFFF", "highlight": "#FFD23F", "shadow": true}
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {"src": "", "gain": -4, "edit": [], "fadeOut": 2.5},
+  "cues": [
+   {"t": 0.03, "sfx": "whoosh_c", "gain": -18, "label": "lưới bật lên"},
+   {"t": 6.03, "sfx": "whoosh_a", "gain": -16, "label": "ô phóng to"},
+   {"t": 10.47, "sfx": "sub_hit", "gain": -12, "label": "màu tràn khung"},
+   {"t": 14.03, "sfx": "pop", "gain": -12, "label": "logo SAMI"}
+  ]
+ }
+}

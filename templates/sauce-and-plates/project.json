@@ -1,0 +1,79 @@
+{
+ "name": "Sauce & Plates (mẫu)",
+ "client": "",
+ "version": 1,
+ "formats": [
+  "16:9",
+  "9:16"
+ ],
+ "brand": {
+  "colors": {
+   "cream": "#FFF4E0",
+   "pink": "#FF8FAB",
+   "green": "#7BD389",
+   "ink": "#2D2A32"
+  }
+ },
+ "look": {
+  "grain": 0.03,
+  "vignette": 0.12,
+  "background": "#FFF4E0"
+ },
+ "scenes": [
+  {"id": "S01", "label": "Mở đầu – đĩa xoay giả 3D", "start": 0, "end": 121, "animLength": 121},
+  {"id": "S02", "label": "Sốt chảy phủ màn hình → khung trình duyệt", "start": 121, "end": 241, "animLength": 120, "fadeIn": 2},
+  {"id": "S03", "label": "Đĩa bay vào phần đầu website", "start": 241, "end": 361, "animLength": 120, "fadeIn": 2},
+  {"id": "S04", "label": "Thực đơn – đặt bàn – bản đồ bật ra", "start": 361, "end": 541, "animLength": 180},
+  {"id": "S05", "label": "Giao diện điện thoại", "start": 541, "end": 661, "animLength": 120},
+  {"id": "S06", "label": "Kết – logo SAMI + liên hệ", "start": 661, "end": 781, "animLength": 120}
+ ],
+ "copy": {
+  "S01_image": {"label": "Ảnh món ăn trong đĩa (ảnh vuông, món ở giữa; dùng cho mọi cảnh)", "scene": "S01", "value": "img/placeholder_plate.jpg"},
+  "S01_title": {"label": "Tiêu đề lớn cạnh đĩa xoay cảnh 1 (*…* tô hồng, / xuống dòng)", "scene": "S01", "value": "Euer Essen / ist *der Star.*"},
+  "S02_title": {"label": "Tiêu đề lớn trên nền sốt hồng cảnh 2", "scene": "S02", "value": "Zeit für eine / Website, die / *schmeckt.*"},
+  "S02_url": {"label": "Địa chỉ web mẫu trên thanh trình duyệt", "scene": "S02", "value": "pho-und-co.de"},
+  "S03_brand": {"label": "Tên quán mẫu (logo menu + tiêu đề website)", "scene": "S03", "value": "Pho & Co."},
+  "S03_eyebrow": {"label": "Dòng nhỏ trên tên quán trong website", "scene": "S03", "value": "VIETNAMESISCHE KÜCHE"},
+  "S03_tagline": {"label": "Câu giới thiệu dưới tên quán trong website", "scene": "S03", "value": "Frisch. Hausgemacht. Jeden Tag."},
+  "S03_cta": {"label": "Nút đặt bàn trong website (menu + phần đầu)", "scene": "S03", "value": "Tisch reservieren"},
+  "S03_nav1": {"label": "Mục menu website 1", "scene": "S03", "value": "Speisekarte"},
+  "S03_nav2": {"label": "Mục menu website 2", "scene": "S03", "value": "Über uns"},
+  "S03_nav3": {"label": "Mục menu website 3", "scene": "S03", "value": "Anfahrt"},
+  "S04_title": {"label": "Tiêu đề trên 3 thẻ cảnh 4 (*…* tô hồng)", "scene": "S04", "value": "Speisekarte, Tisch, Anfahrt: / *alles an einem Ort.*"},
+  "S04_menu": {"label": "Tiêu đề thẻ thực đơn", "scene": "S04", "value": "Speisekarte"},
+  "S04_dish1": {"label": "Món 1 trong thẻ thực đơn", "scene": "S04", "value": "Pho Bo"},
+  "S04_dish2": {"label": "Món 2 trong thẻ thực đơn", "scene": "S04", "value": "Bun Cha"},
+  "S04_dish3": {"label": "Món 3 trong thẻ thực đơn", "scene": "S04", "value": "Sommerrollen"},
+  "S04_book": {"label": "Tiêu đề thẻ đặt bàn", "scene": "S04", "value": "Tisch reservieren"},
+  "S04_day": {"label": "Ô ngày trong thẻ đặt bàn", "scene": "S04", "value": "Freitag"},
+  "S04_time": {"label": "Ô giờ trong thẻ đặt bàn", "scene": "S04", "value": "19:00 Uhr"},
+  "S04_people": {"label": "Ô số khách trong thẻ đặt bàn", "scene": "S04", "value": "2 Personen"},
+  "S04_btn": {"label": "Nút trong thẻ đặt bàn (trước khi bấm)", "scene": "S04", "value": "Jetzt reservieren"},
+  "S04_done": {"label": "Nút trong thẻ đặt bàn (sau khi bấm)", "scene": "S04", "value": "Reserviert!"},
+  "S04_map": {"label": "Tiêu đề thẻ bản đồ", "scene": "S04", "value": "So findet ihr uns"},
+  "S04_addr": {"label": "Địa chỉ mẫu dưới bản đồ", "scene": "S04", "value": "Musterstraße 12"},
+  "S05_title": {"label": "Tiêu đề cạnh điện thoại cảnh 5 (*…* tô hồng)", "scene": "S05", "value": "Auch am Handy / *zum Anbeißen.*"},
+  "S06_tagline": {"label": "Khẩu hiệu dưới logo SAMI", "scene": "S06", "value": "Strategy • Automation • Marketing • Intelligence"},
+  "S06_phone": {"label": "Số WhatsApp màn cuối", "scene": "S06", "value": "+49 155 60456888"},
+  "S06_url": {"label": "Website màn cuối", "scene": "S06", "value": "sami-agency.de"}
+ },
+ "titles": [],
+ "overlays": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {"font": "Be Vietnam Pro", "weight": 700, "color": "#FFFFFF", "highlight": "#FF8FAB", "shadow": true}
+ },
+ "audio": {
+  "mode": "layers",
+  "music": {"src": "", "gain": -4, "edit": [], "fadeOut": 2.5},
+  "cues": [
+   {"t": 0.45, "sfx": "pop", "gain": -12, "label": "đĩa rơi xuống"},
+   {"t": 4.03, "sfx": "whoosh_b", "gain": -14, "label": "sốt chảy"},
+   {"t": 8.2, "sfx": "whoosh_a", "gain": -16, "label": "đĩa bay vào website"},
+   {"t": 13.1, "sfx": "pop", "gain": -14, "label": "thẻ bật ra"},
+   {"t": 22.03, "sfx": "sub_hit", "gain": -12, "label": "logo kết"}
+  ]
+ }
+}

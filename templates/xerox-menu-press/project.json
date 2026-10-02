@@ -1,0 +1,90 @@
+{
+ "name": "Xerox Menu Press (mẫu)",
+ "client": "",
+ "version": 1,
+ "formats": [
+  "16:9",
+  "9:16"
+ ],
+ "brand": {
+  "colors": {
+   "paper": "#F2EDE4",
+   "sheet": "#FAF7F1",
+   "ink": "#1B1B1B",
+   "red": "#E8452C",
+   "blue": "#2C5BE8"
+  },
+  "fonts": {
+   "display": "\"Archivo Black\", sans-serif",
+   "mono": "\"IBM Plex Mono\", monospace"
+  }
+ },
+ "look": {
+  "grain": 0.07,
+  "vignette": 0.16,
+  "background": "#F2EDE4"
+ },
+ "scenes": [
+  {"id": "S01", "label": "Mở đầu – tờ giấy chạy ra khỏi máy in", "start": 0, "end": 61, "animLength": 61},
+  {"id": "S02", "label": "Ảnh món qua 3 lần photocopy", "start": 61, "end": 241, "animLength": 180, "fadeIn": 4},
+  {"id": "S03", "label": "Chữ menu dập vào theo nhịp", "start": 241, "end": 421, "animLength": 180, "fadeIn": 4},
+  {"id": "S04", "label": "Bảng giá in riso 2 màu", "start": 421, "end": 541, "animLength": 120, "fadeIn": 4},
+  {"id": "S05", "label": "Menu trước / sau", "start": 541, "end": 661, "animLength": 120, "fadeIn": 4},
+  {"id": "S06", "label": "Kết – logo SAMI + liên hệ", "start": 661, "end": 781, "animLength": 120, "fadeIn": 4}
+ ],
+ "copy": {
+  "S01_label": {"label": "Nhãn nhỏ góc trên trái (cảnh 1)", "scene": "S01", "value": "SAMI PRESS · MENÜ-DESIGN"},
+  "S01_counter": {"label": "Số bản in góc trên phải + chân tờ giấy (cảnh 1)", "scene": "S01", "value": "Nº 001"},
+  "S01_title": {"label": "Chữ lớn in trên tờ giấy (cảnh 1, / để xuống dòng, dòng cuối màu đỏ)", "scene": "S01", "value": "Neue / Karte?"},
+  "S01_foot": {"label": "Dòng chữ nhỏ chân tờ giấy, bên trái (cảnh 1)", "scene": "S01", "value": "PROBEDRUCK"},
+  "S02_image": {"label": "Ảnh món ăn được photocopy (cảnh 2, nên ảnh món chụp gần, nền sáng)", "scene": "S02", "value": "img/placeholder_dish.jpg"},
+  "S02_pass": {"label": "Chữ 'bản sao' cạnh số đếm 1/3 (cảnh 2)", "scene": "S02", "value": "KOPIE"},
+  "S02_dish": {"label": "Tên món nhỏ dưới ảnh trên tờ giấy (cảnh 2)", "scene": "S02", "value": "TAGESGERICHT"},
+  "S02_caption": {"label": "Câu lớn cạnh tờ giấy (cảnh 2, *…* tô đỏ, / xuống dòng)", "scene": "S02", "value": "Aus Foto wird / *Druckkunst.*"},
+  "S03_kicker": {"label": "Nhãn nhỏ phía trên chữ lớn (cảnh 3)", "scene": "S03", "value": "SPEISEKARTE · NEU GESETZT"},
+  "S03_word1": {"label": "Chữ dập thứ 1 (cảnh 3)", "scene": "S03", "value": "FRISCH."},
+  "S03_word2": {"label": "Chữ dập thứ 2 (cảnh 3)", "scene": "S03", "value": "EHRLICH."},
+  "S03_word3": {"label": "Chữ dập thứ 3 – màu đỏ (cảnh 3)", "scene": "S03", "value": "GEDRUCKT."},
+  "S03_badge": {"label": "Chữ trong con dấu tròn đỏ (cảnh 3, ngắn)", "scene": "S03", "value": "NEU"},
+  "S03_sub": {"label": "Dòng chữ nhỏ dưới cùng (cảnh 3)", "scene": "S03", "value": "Menü-Design, das Lust auf Bestellen macht."},
+  "S04_title": {"label": "Tiêu đề bảng giá (cảnh 4)", "scene": "S04", "value": "MITTAGSKARTE"},
+  "S04_item1": {"label": "Bảng giá – món 1 (cảnh 4)", "scene": "S04", "value": "Tagessuppe"},
+  "S04_price1": {"label": "Bảng giá – giá món 1 (cảnh 4)", "scene": "S04", "value": "5,90", "hint": "giá mẫu – thay bằng giá thật"},
+  "S04_item2": {"label": "Bảng giá – món 2, dòng nổi bật (cảnh 4)", "scene": "S04", "value": "Hausgemachte Pasta"},
+  "S04_price2": {"label": "Bảng giá – giá món 2 (cảnh 4)", "scene": "S04", "value": "13,90", "hint": "giá mẫu – thay bằng giá thật"},
+  "S04_item3": {"label": "Bảng giá – món 3 (cảnh 4)", "scene": "S04", "value": "Ofengemüse"},
+  "S04_price3": {"label": "Bảng giá – giá món 3 (cảnh 4)", "scene": "S04", "value": "11,50", "hint": "giá mẫu – thay bằng giá thật"},
+  "S04_item4": {"label": "Bảng giá – món 4 (cảnh 4)", "scene": "S04", "value": "Schokotarte"},
+  "S04_price4": {"label": "Bảng giá – giá món 4 (cảnh 4)", "scene": "S04", "value": "6,50", "hint": "giá mẫu – thay bằng giá thật"},
+  "S04_currency": {"label": "Ký hiệu tiền sau giá (cảnh 4 và 5)", "scene": "S04", "value": "€"},
+  "S04_note": {"label": "Ghi chú nhỏ cuối bảng giá (cảnh 4, xoá khi dùng giá thật)", "scene": "S04", "value": "(Beispielpreise)"},
+  "S05_before": {"label": "Nhãn 'trước' trên menu cũ (cảnh 5)", "scene": "S05", "value": "VORHER"},
+  "S05_after": {"label": "Nhãn 'sau' trên menu mới (cảnh 5)", "scene": "S05", "value": "NACHHER"},
+  "S05_oldtitle": {"label": "Tiêu đề menu cũ, kiểu nhàm chán (cảnh 5)", "scene": "S05", "value": "Speisekarte"},
+  "S05_caption": {"label": "Câu dưới khung so sánh (cảnh 5, *…* tô đỏ)", "scene": "S05", "value": "Gleiche Küche. *Neue Wirkung.*"},
+  "S06_cta": {"label": "Câu kêu gọi phía trên logo (cảnh kết)", "scene": "S06", "value": "Eure Karte, neu gesetzt."},
+  "S06_tagline": {"label": "Khẩu hiệu dưới logo (cảnh kết)", "scene": "S06", "value": "Strategy • Automation • Marketing • Intelligence"},
+  "S06_phone": {"label": "Số WhatsApp (cảnh kết)", "scene": "S06", "value": "+49 155 60456888"},
+  "S06_url": {"label": "Website (cảnh kết)", "scene": "S06", "value": "sami-agency.de"}
+ },
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {"font": "Be Vietnam Pro", "weight": 700, "color": "#FFFFFF", "highlight": "#E8452C", "shadow": true}
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {"src": "", "gain": -4, "edit": [], "fadeOut": 2.5},
+  "cues": [
+   {"t": 3.03, "sfx": "whoosh_c", "gain": -18, "label": "lần copy 1"},
+   {"t": 4.53, "sfx": "whoosh_c", "gain": -18, "label": "lần copy 2"},
+   {"t": 6.03, "sfx": "whoosh_c", "gain": -18, "label": "lần copy 3"},
+   {"t": 8.53, "sfx": "sub_hit", "gain": -14, "label": "chữ dập đầu tiên"},
+   {"t": 17.03, "sfx": "key_single", "gain": -12, "label": "bảng giá khớp màu"},
+   {"t": 22.03, "sfx": "pop", "gain": -12, "label": "logo SAMI"}
+  ]
+ }
+}

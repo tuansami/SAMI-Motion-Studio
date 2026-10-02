@@ -1,0 +1,113 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PROJECT GUIDE</title><style>body{max-width:960px;margin:0 auto;padding:32px 24px 80px;background:#07041A;color:#EEEBFF;font:15.5px/1.65 "Segoe UI",Inter,system-ui,sans-serif}
+h1{font-size:30px;background:linear-gradient(120deg,#08DDA4,#7667FE);-webkit-background-clip:text;color:transparent}h2{margin-top:44px;border-top:1px solid rgba(255,255,255,.1);padding-top:22px;color:#08DDA4}h3{color:#b9b2ff}
+a{color:#08DDA4}code{background:#161039;padding:1px 6px;border-radius:5px;color:#8ff0d2}pre{background:#0F0A2A;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px;overflow:auto}pre code{background:none;color:#EEEBFF}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}th,td{border:1px solid rgba(255,255,255,.12);padding:7px 10px;text-align:left;vertical-align:top}th{background:#161039}
+blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;background:#0F0A2A;border-radius:0 8px 8px 0;color:#cfcaf0}hr{border:0;border-top:1px solid rgba(255,255,255,.1)}
+.toc{background:#0F0A2A;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 18px;margin:18px 0}</style></head><body><div class="toc"><b>Mục lục</b><div class="toc">
+<ul>
+<li><a href="#project_guide-viet-canh-cho-sami-motion-studio-danh-cho-claude-code">PROJECT_GUIDE — viết cảnh cho SAMI Motion Studio (dành cho Claude Code)</a><ul>
+<li><a href="#1-mo-hinh-du-lieu">1. Mô hình dữ liệu</a><ul>
+<li><a href="#projectjson-cac-truong-chinh">project.json (các trường chính)</a></li>
+</ul>
+</li>
+<li><a href="#2-viet-mot-canh">2. Viết một cảnh</a></li>
+<li><a href="#3-luat-cung">3. Luật cứng</a></li>
+<li><a href="#4-kiem-tra">4. Kiểm tra</a></li>
+<li><a href="#5-quy-trinh-video-moi-co-cong-duyet">5. Quy trình video mới (có cổng duyệt ⛔)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div><h1 id="project_guide-viet-canh-cho-sami-motion-studio-danh-cho-claude-code">PROJECT_GUIDE — viết cảnh cho SAMI Motion Studio (dành cho Claude Code)</h1>
+<p>Owner: Tuan (CEO SAMI). Trả lời tiếng Việt, ngắn gọn, phản biện khi yêu cầu hại chuyển đổi hoặc thương hiệu.</p>
+<blockquote>
+<p>Quy trình phiên làm việc, cổng duyệt, câu lệnh mẫu và mẫu <code>brief/TRANG_THAI.md</code>: <strong><code>docs/QUY_TRINH_LAM_VIEC.md</code></strong> (bắt buộc đọc 1 lần). Tài liệu này chỉ nói <em>cách viết cảnh</em>.</p>
+</blockquote>
+<h2 id="1-mo-hinh-du-lieu">1. Mô hình dữ liệu</h2>
+<p>Một dự án = một thư mục:</p>
+<pre><code>project.json   dữ liệu người dùng chỉnh trong Studio (KHÔNG hard-code chữ/thời gian trong scene)
+scenes/        &lt;ID&gt;.tsx + index.ts (export const REG = {S01, S02, …})
+public/        img/ video/ audio/ fonts/  (+ _engine/ do Studio sinh — không sửa)
+brief/         BRIEF.md + tài liệu khách (đọc trước khi lên kịch bản)
+out/           video xuất
+</code></pre>
+<h3 id="projectjson-cac-truong-chinh">project.json (các trường chính)</h3>
+<pre><code class="language-jsonc">{
+  &quot;name&quot;: &quot;…&quot;, &quot;client&quot;: &quot;…&quot;,
+  &quot;formats&quot;: [&quot;16:9&quot;, &quot;9:16&quot;, &quot;1:1&quot;],        // tỉ lệ có bố cục riêng; tỉ lệ khác → chế độ &quot;vừa khung&quot;
+  &quot;brand&quot;: {&quot;colors&quot;: {&quot;mint&quot;: &quot;#08DDA4&quot;, &quot;purple&quot;: &quot;#7667FE&quot;, &quot;navy&quot;: &quot;#0C0628&quot;}},
+  &quot;look&quot;: {&quot;grain&quot;: 0.05, &quot;vignette&quot;: 0.42},
+  &quot;scenes&quot;: [ {&quot;id&quot;: &quot;S01&quot;, &quot;label&quot;: &quot;Mở đầu – …&quot;, &quot;start&quot;: 0, &quot;end&quot;: 121,   // base 30 fps, cắt tại 15n+1
+               &quot;animLength&quot;: 121, &quot;warp&quot;: null, &quot;fadeIn&quot;: 8} ],
+  &quot;copy&quot;: { &quot;S01_title&quot;: {&quot;label&quot;: &quot;Tiêu đề lớn mở đầu&quot;, &quot;scene&quot;: &quot;S01&quot;, &quot;value&quot;: &quot;Khách hàng / *đang đói.*&quot;,
+                           &quot;hint&quot;: &quot;dùng *…* để tô màu&quot;} },
+  &quot;titles&quot;: [], &quot;subtitles&quot;: {&quot;enabled&quot;: false, &quot;items&quot;: []},
+  &quot;overlays&quot;: [ {&quot;id&quot;: &quot;o1&quot;, &quot;kind&quot;: &quot;image&quot;, &quot;src&quot;: &quot;img/logo.png&quot;, &quot;start&quot;: 0, &quot;end&quot;: 5, &quot;whole&quot;: false,
+                 &quot;pos&quot;: {&quot;x&quot;: 0.88, &quot;y&quot;: 0.9}, &quot;width&quot;: 0.12, &quot;opacity&quot;: 0.35, &quot;anim&quot;: &quot;fade&quot;, &quot;layer&quot;: &quot;top&quot;},
+                {&quot;id&quot;: &quot;o2&quot;, &quot;kind&quot;: &quot;sticker&quot;, &quot;sticker&quot;: &quot;arrow-curve&quot;, &quot;color&quot;: &quot;#08DDA4&quot;, &quot;start&quot;: 12, &quot;end&quot;: 15} ],
+                // kind: image | sticker (arrow, arrow-curve, circle, underline, tap, check, cross, star, heart, swipe-up, sparkle, pin) | lottie (src: lottie/x.json)
+                // width = fraction of the frame's SHORT side; pos = centre 0..1
+  &quot;audio&quot;: {&quot;mode&quot;: &quot;layers&quot;, &quot;music&quot;: {&quot;src&quot;: &quot;audio/music.mp3&quot;, &quot;gain&quot;: -4, &quot;edit&quot;: [], &quot;fadeOut&quot;: 2.5},
+            &quot;cues&quot;: [{&quot;t&quot;: 4.03, &quot;sfx&quot;: &quot;whoosh_a&quot;, &quot;gain&quot;: -16, &quot;label&quot;: &quot;chuyển chương&quot;}]}
+}
+</code></pre>
+<ul>
+<li><strong>Mọi chữ hiển thị</strong> phải là một mục <code>copy</code> có <code>label</code> tiếng Việt mô tả VỊ TRÍ (người dùng không đọc code). Key dạng <code>&lt;SceneID&gt;_&lt;tên&gt;</code>; ảnh: hậu tố <code>_image</code>/<code>_logo</code> (Studio hiện ô chọn ảnh).</li>
+<li>Scene đọc chữ bằng <code>COPY.KEY</code> <strong>bên trong component</strong> (không gán vào const cấp module — sẽ không cập nhật live).</li>
+</ul>
+<h2 id="2-viet-mot-canh">2. Viết một cảnh</h2>
+<pre><code class="language-tsx">import React from 'react';
+import {AbsoluteFill} from 'remotion';
+import {NavyBG, Card, Photo} from '@engine/components/Brand';
+import {Words, TypeLabel, Chip, Counter} from '@engine/components/Text';
+import {Phone, Browser} from '@engine/components/Devices';
+import {Icon} from '@engine/components/Icon';
+import {useT} from '@engine/lib/useT';           // thời gian cục bộ của cảnh (đã tính warp, 30 fps chuẩn)
+import {tw, keys, arrive, leave} from '@engine/lib/anim'; // MỘT easing duy nhất
+import {useFormat, usePick} from '@engine/core/format';
+import {COPY} from '@engine/core/copy';
+import {OV} from '@engine/core/constants';        // 8 khung crossfade
+import {C, F, GRAD} from '@engine/theme';
+
+export const S03: React.FC = () =&gt; {
+  const t = useT(); const f = useFormat();
+  const size = usePick({'16:9': 96, '9:16': 104, '1:1': 88});
+  return (
+    &lt;AbsoluteFill&gt;&lt;NavyBG /&gt;
+      &lt;Words text={COPY.S03_title} start={0 + OV} style={{fontSize: size}} /&gt;
+      &lt;div style={arrive(tw(t, 15, 18))}&gt;…&lt;/div&gt;
+    &lt;/AbsoluteFill&gt;
+  );
+};
+</code></pre>
+<p>Đăng ký trong <code>scenes/index.ts</code> và thêm mục vào <code>project.json → scenes</code> (liền mạch: <code>start</code> = <code>end</code> cảnh trước).</p>
+<h2 id="3-luat-cung">3. Luật cứng</h2>
+<ol>
+<li>Chỉ <code>tw/keys/arrive/leave</code> (easing <code>cubic-bezier(0.22,1,0.36,1)</code>). Không spring, CSS transition, <code>Math.random</code>, <code>Date</code> (dùng <code>rnd(seed)</code>).</li>
+<li>Thời gian tính bằng <strong>khung 30 fps</strong> qua <code>useT()</code>/<code>useBaseFrame()</code> — không dùng <code>useCurrentFrame()</code> trực tiếp (sẽ sai ở 24/60 fps).</li>
+<li><code>&lt;Words&gt;/&lt;Counter&gt;/&lt;TypeLabel&gt;</code> chạy theo khung Sequence → cộng <code>OV</code> vào <code>start</code>.</li>
+<li>Cắt cảnh trên nhịp (15n+1 ở 120 BPM). Kéo dài cảnh bằng <code>warp</code> (Studio tự làm khi người dùng đổi thời lượng) — không viết lại animation.</li>
+<li>Bố cục <strong>từng tỉ lệ</strong> bằng <code>usePick</code>/<code>f.portrait|square|landscape</code>; tôn trọng <code>SAFE</code> (vùng an toàn Reels/TikTok).</li>
+<li>Không bịa số liệu/giá/review; không dùng tác phẩm agency khác làm portfolio; không logo nền tảng.</li>
+<li>Chữ tiếng Việt: đọc to phải tự nhiên; tiếng Đức bên trong UI website/Maps.</li>
+<li>Grain + vignette do engine phủ 1 lần — không thêm trong cảnh.</li>
+<li><strong>Âm thanh chỉ ở <code>project.json → audio</code></strong> — không <code>&lt;Audio&gt;</code> trong cảnh; <code>&lt;Video&gt;</code>/<code>&lt;OffthreadVideo&gt;</code> phải <code>muted</code> (khi xuất, lượt âm thanh chỉ dựng AudioTrack).</li>
+<li>Logo/watermark/mũi tên chỉ dẫn/Lottie nên đặt bằng <code>overlays</code> (người dùng tự chỉnh trong tab Ảnh chèn) thay vì code cứng trong cảnh.</li>
+<li>Mẫu để dùng lại: theo <code>docs/TEMPLATE_STANDARD.md</code>; kiểm tra <code>node &lt;app&gt;/server/cli-template.mjs check &lt;thư_mục&gt;</code>.</li>
+</ol>
+<h2 id="4-kiem-tra">4. Kiểm tra</h2>
+<ul>
+<li>Studio tự rebuild preview khi file <code>scenes/</code> đổi; lỗi biên dịch hiện khung đỏ.</li>
+<li>Ảnh tĩnh để tự soát (từ thư mục app):
+  <code>node server/cli-still.mjs &lt;thư_mục_dự_án&gt; out/qa.jpg 60,300,900 9:16</code> (khung ở 30 fps, nhiều khung cách bằng dấu phẩy) → Read ảnh <code>out/qa_&lt;frame&gt;.jpg</code>. Không khẳng định "đẹp" khi chưa xem khung hình.</li>
+<li>Nút <strong>Kiểm tra</strong> trong Studio (hoặc <code>validateProject</code>) phải không còn ✗.</li>
+<li>Không tự chạy render đầy đủ; đề nghị người dùng xuất bản nháp trong Studio.</li>
+</ul>
+<h2 id="5-quy-trinh-video-moi-co-cong-duyet">5. Quy trình video mới (có cổng duyệt ⛔)</h2>
+<ol>
+<li>Đọc <code>brief/</code> ⛔ hỏi tối đa 4 câu còn thiếu (khán giả/ngôn ngữ, CTA + liên hệ, độ dài/tỉ lệ, tài nguyên nào là thật).</li>
+<li>Kịch bản + storyboard (bảng thời gian trên lưới nhịp) ⛔ duyệt.</li>
+<li>Nhạc (ElevenLabs — có phí, hỏi trước) → Studio <em>Phân tích nhịp</em> → đặt DROP/FINAL HIT vào điểm cắt.</li>
+<li>Viết cảnh (≥ 4 cảnh: chia sub-agent, mỗi agent chỉ sửa file của mình).</li>
+<li>QA stills 3 tỉ lệ ⛔ → người dùng chỉnh chữ/tiêu đề/âm thanh trong Studio → xuất.</li>
+</ol></body></html>

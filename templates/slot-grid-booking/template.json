@@ -1,0 +1,18 @@
+{
+  "id": "slot-grid-booking",
+  "name": "Slot Grid Booking",
+  "version": "1.0.0",
+  "studio": ">=0.2.2",
+  "category": "restaurant",
+  "goal": ["gioi-thieu", "uu-dai"],
+  "description": "18 giây, 5 cảnh, phong cách poster lưới đậm: lưới tuần bật lên → các ô giờ được đặt theo nhịp → ô 'Tisch für 4 · 19:30' phóng to, chữ co giãn → kín chỗ, màu tràn khung 'Ausgebucht.' → logo SAMI. Bán dịch vụ đặt bàn online.",
+  "formats": ["16:9", "9:16"],
+  "duration": 18,
+  "bpm": 120,
+  "languages": ["de"],
+  "slots": {"text": 16, "image": 0, "logo": 0},
+  "thumbFrame": 270,
+  "author": "SAMI Marketing Agency",
+  "license": "internal",
+  "tags": ["poster", "grid", "bold", "kinetic-type", "booking", "no-photo"]
+}

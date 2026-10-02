@@ -1,0 +1,16 @@
+# dependencies & local state
+node_modules/
+.studio/
+.claude/
+# user / client data (never commit client media)
+projects/
+**/out/
+**/public/_engine/
+**/.history/
+**/.studio-lock
+.project.backup.json
+# misc
+*.log
+.env*
+Thumbs.db
+.DS_Store

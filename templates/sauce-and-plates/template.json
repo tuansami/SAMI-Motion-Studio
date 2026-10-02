@@ -1,0 +1,17 @@
+{
+  "id": "sauce-and-plates",
+  "name": "Sauce & Plates",
+  "version": "1.0.0",
+  "studio": ">=0.2.2",
+  "category": "agency",
+  "goal": ["gioi-thieu"],
+  "description": "26 giây, 6 cảnh, phong cách vector phẳng vui nhộn: đĩa xoay giả 3D → sốt chảy dẻo phủ màn hình → đĩa bay vào phần đầu website → thực đơn, đặt bàn, bản đồ bật ra → bản điện thoại → logo SAMI. Bán dịch vụ thiết kế website nhà hàng.",
+  "formats": ["16:9", "9:16"],
+  "duration": 26,
+  "bpm": 120,
+  "languages": ["de"],
+  "thumbFrame": 450,
+  "author": "SAMI Marketing Agency",
+  "license": "internal",
+  "tags": ["flat", "playful", "website", "gooey", "food"]
+}

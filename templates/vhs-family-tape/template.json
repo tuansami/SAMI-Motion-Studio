@@ -1,0 +1,17 @@
+{
+  "id": "vhs-family-tape",
+  "name": "Family Tape",
+  "version": "1.0.0",
+  "studio": ">=0.2.2",
+  "category": "agency",
+  "goal": ["gioi-thieu"],
+  "description": "40 giây, 6 cảnh: băng VHS bật lên (REC · 1998) → ảnh gia đình mở quán trên băng (rung, lệch màu RGB, vạch quét, nhiễu tracking) → dừng hình rồi tua nhanh tới 2026 → reel dọc sắc nét xếp quạt → số liệu mẫu (Beispielwerte) → logo SAMI trên màn xanh VHS. Bán dịch vụ Social Content / Reels cho nhà hàng gia đình.",
+  "formats": ["16:9", "9:16"],
+  "duration": 40,
+  "bpm": 120,
+  "languages": ["de"],
+  "thumbFrame": 560,
+  "author": "SAMI Marketing Agency",
+  "license": "internal",
+  "tags": ["vhs", "retro", "social", "reels", "family", "contrast"]
+}

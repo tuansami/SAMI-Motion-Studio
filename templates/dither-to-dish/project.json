@@ -1,0 +1,70 @@
+{
+ "name": "Dither to Dish (mẫu)",
+ "client": "",
+ "version": 1,
+ "formats": [
+  "16:9",
+  "9:16"
+ ],
+ "brand": {
+  "colors": {
+   "night": "#0D0D0D",
+   "cream": "#F5F1E8",
+   "signal": "#FF5A1F",
+   "go": "#34C77B"
+  },
+  "fonts": {
+   "pixel": "Silkscreen, monospace",
+   "sans": "\"Space Grotesk\", sans-serif"
+  }
+ },
+ "look": {
+  "grain": 0.04,
+  "vignette": 0.25,
+  "background": "#0D0D0D"
+ },
+ "scenes": [
+  {"id": "S01", "label": "Mở đầu – bản đồ thành phố 1-bit tự dựng", "start": 0, "end": 121, "animLength": 121},
+  {"id": "S02", "label": "Pixel thô dần + zoom vào con phố", "start": 121, "end": 241, "animLength": 120, "fadeIn": 4},
+  {"id": "S03", "label": "Ghim rơi + ảnh quán từ pixel ra màu thật", "start": 241, "end": 361, "animLength": 120, "fadeIn": 4},
+  {"id": "S04", "label": "Sao đánh giá tăng dần", "start": 361, "end": 481, "animLength": 120, "fadeIn": 4},
+  {"id": "S05", "label": "Kết – logo SAMI + liên hệ", "start": 481, "end": 601, "animLength": 120, "fadeIn": 4}
+ ],
+ "copy": {
+  "S01_search": {"label": "Chữ gõ trong thanh tìm kiếm pixel phía trên (cảnh 1)", "scene": "S01", "value": "essen in der nähe"},
+  "S01_title": {"label": "Câu lớn trong khung tối phía dưới (cảnh 1, *…* tô cam, / xuống dòng)", "scene": "S01", "value": "Jemand hat Hunger. / *Genau jetzt.*"},
+  "S02_title": {"label": "Câu lớn khi zoom vào phố (cảnh 2, *…* tô cam, / xuống dòng)", "scene": "S02", "value": "Wird dein Laden / *gefunden?*"},
+  "S02_lock": {"label": "Nhãn pixel nhỏ cạnh khung ngắm (cảnh 2)", "scene": "S02", "value": "STANDORT ERKANNT"},
+  "S03_image": {"label": "Ảnh mặt tiền / không gian quán (cảnh 3 và 4, ảnh ngang)", "scene": "S03", "value": "img/placeholder_storefront.jpg"},
+  "S03_name": {"label": "Tên quán dưới ảnh (cảnh 3)", "scene": "S03", "value": "Dein Restaurant"},
+  "S03_status": {"label": "Trạng thái cạnh chấm xanh (cảnh 3)", "scene": "S03", "value": "Jetzt geöffnet"},
+  "S03_tag": {"label": "Nhãn pixel nhỏ trên khung ảnh (cảnh 3)", "scene": "S03", "value": "GEFUNDEN"},
+  "S04_label": {"label": "Nhãn pixel nhỏ trên điểm số (cảnh 4)", "scene": "S04", "value": "BEWERTUNG"},
+  "S04_rating": {"label": "Điểm đánh giá, dạng 4,8 (cảnh 4)", "scene": "S04", "value": "4,8", "hint": "điểm mẫu – thay bằng điểm thật của quán"},
+  "S04_quote": {"label": "Câu đánh giá trong ngoặc (cảnh 4)", "scene": "S04", "value": "„Hier will ich wieder hin.“", "hint": "đánh giá mẫu – thay bằng đánh giá thật"},
+  "S04_author": {"label": "Dòng tên người đánh giá dưới câu trích (cảnh 4)", "scene": "S04", "value": "— BEISPIEL-BEWERTUNG", "hint": "thay bằng tên người đánh giá thật"},
+  "S05_cta": {"label": "Câu kêu gọi phía trên logo (cảnh kết, *…* tô cam)", "scene": "S05", "value": "Lass dich *finden.*"},
+  "S05_tagline": {"label": "Khẩu hiệu dưới logo (cảnh kết)", "scene": "S05", "value": "Strategy • Automation • Marketing • Intelligence"},
+  "S05_phone": {"label": "Số WhatsApp (cảnh kết)", "scene": "S05", "value": "+49 155 60456888"},
+  "S05_url": {"label": "Website (cảnh kết)", "scene": "S05", "value": "sami-agency.de"}
+ },
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {"font": "Be Vietnam Pro", "weight": 700, "color": "#FFFFFF", "highlight": "#FF5A1F", "shadow": true}
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {"src": "", "gain": -4, "edit": [], "fadeOut": 2.5},
+  "cues": [
+   {"t": 0.2, "sfx": "typing_burst", "gain": -18, "label": "gõ tìm kiếm"},
+   {"t": 4.53, "sfx": "whoosh_b", "gain": -16, "label": "zoom vào phố"},
+   {"t": 8.53, "sfx": "pop", "gain": -12, "label": "ghim rơi"},
+   {"t": 11.03, "sfx": "whoosh_a", "gain": -18, "label": "ảnh ra màu"},
+   {"t": 16.03, "sfx": "sub_hit", "gain": -14, "label": "logo SAMI"}
+  ]
+ }
+}

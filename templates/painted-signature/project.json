@@ -1,0 +1,76 @@
+{
+ "name": "Painted Signature (mẫu)",
+ "client": "",
+ "version": 1,
+ "formats": ["16:9", "9:16"],
+ "brand": {
+  "colors": {
+   "paper": "#F6EFE3",
+   "terracotta": "#C65D3B",
+   "olive": "#5B6B3A",
+   "ink": "#2A2522"
+  },
+  "fonts": {
+   "display": "Fraunces, serif",
+   "script": "Caveat, cursive"
+  }
+ },
+ "look": {
+  "grain": 0.045,
+  "vignette": 0.22,
+  "background": "#F6EFE3"
+ },
+ "scenes": [
+  {"id": "S01", "label": "Mở đầu – giấy trắng + nét chì dựng hình", "start": 0, "end": 61, "animLength": 61},
+  {"id": "S02", "label": "Logo được vẽ bằng cọ từng nét", "start": 61, "end": 241, "animLength": 180},
+  {"id": "S03", "label": "Bảng màu – 3 vệt cọ", "start": 241, "end": 421, "animLength": 180},
+  {"id": "S04", "label": "Logo lên túi, ly, biển hiệu", "start": 421, "end": 661, "animLength": 240},
+  {"id": "S05", "label": "Câu khẩu hiệu (serif + chữ viết tay)", "start": 661, "end": 781, "animLength": 120},
+  {"id": "S06", "label": "Kết – logo SAMI + liên hệ", "start": 781, "end": 900, "animLength": 119, "fadeIn": 8}
+ ],
+ "copy": {
+  "S01_title": {"label": "Câu mở đầu giữa khung cảnh 1", "scene": "S01", "value": "Jede Marke beginnt / mit einem *Strich.*", "hint": "/ = xuống dòng · *…* = chữ viết tay màu đất nung có gạch chân"},
+  "S01_note": {"label": "Ghi chú viết tay nhỏ góc trên trái cảnh 1", "scene": "S01", "value": "Entwurf Nr. 1"},
+  "S02_tag": {"label": "Nhãn mục nhỏ góc trên trái cảnh 2", "scene": "S02", "value": "01 · Logo"},
+  "S02_brand": {"label": "Tên nhà hàng mẫu – chữ lớn của logo (cảnh 2; cũng in lên túi và biển hiệu cảnh 4)", "scene": "S02", "value": "Mai Lan", "hint": "tên ngắn đẹp nhất (≤ 10 ký tự)"},
+  "S02_brand_sub": {"label": "Chữ viết tay dưới tên trong logo cảnh 2", "scene": "S02", "value": "Küche"},
+  "S02_note": {"label": "Ghi chú viết tay kèm mũi tên chỉ vào logo, cuối cảnh 2", "scene": "S02", "value": "von Hand gemalt"},
+  "S03_tag": {"label": "Nhãn mục nhỏ góc trên trái cảnh 3", "scene": "S03", "value": "02 · Farbwelt"},
+  "S03_c1_name": {"label": "Tên màu dưới vệt cọ thứ 1 (màu terracotta)", "scene": "S03", "value": "Terrakotta"},
+  "S03_c1_hex": {"label": "Mã màu dưới vệt cọ thứ 1 (để trống = tự lấy mã màu terracotta trong Thương hiệu)", "scene": "S03", "value": ""},
+  "S03_c2_name": {"label": "Tên màu dưới vệt cọ thứ 2 (màu olive)", "scene": "S03", "value": "Olive"},
+  "S03_c2_hex": {"label": "Mã màu dưới vệt cọ thứ 2 (để trống = tự lấy mã màu olive trong Thương hiệu)", "scene": "S03", "value": ""},
+  "S03_c3_name": {"label": "Tên màu dưới vệt cọ thứ 3 (màu mực)", "scene": "S03", "value": "Tinte"},
+  "S03_c3_hex": {"label": "Mã màu dưới vệt cọ thứ 3 (để trống = tự lấy mã màu ink trong Thương hiệu)", "scene": "S03", "value": ""},
+  "S03_note": {"label": "Dòng chữ viết tay dưới 3 vệt màu cảnh 3", "scene": "S03", "value": "warm · ehrlich · hausgemacht"},
+  "S04_tag": {"label": "Nhãn mục nhỏ góc trên trái cảnh 4", "scene": "S04", "value": "03 · Auftritt"},
+  "S04_note_bag": {"label": "Chữ viết tay dưới túi giấy cảnh 4", "scene": "S04", "value": "Tüte"},
+  "S04_note_cup": {"label": "Chữ viết tay dưới ly cà phê cảnh 4", "scene": "S04", "value": "Becher"},
+  "S04_note_sign": {"label": "Chữ viết tay dưới biển hiệu treo cảnh 4", "scene": "S04", "value": "Schild"},
+  "S04_image": {"label": "Ảnh nội thất mờ làm nền cảnh 4 (để trống = chỉ nền giấy)", "scene": "S04", "value": "img/placeholder_interior.jpg"},
+  "S05_tagline": {"label": "Câu khẩu hiệu lớn giữa khung cảnh 5", "scene": "S05", "value": "Eine Marke, die man *schmeckt.*", "hint": "*…* = chữ viết tay màu đất nung · / = xuống dòng"},
+  "S05_sub": {"label": "Dòng chữ nhỏ in hoa dưới khẩu hiệu cảnh 5", "scene": "S05", "value": "Logo · Farben · Auftritt"},
+  "S06_kicker": {"label": "Chữ viết tay phía trên logo SAMI cảnh kết", "scene": "S06", "value": "Branding von"},
+  "S06_tagline": {"label": "Khẩu hiệu SAMI dưới logo cảnh kết", "scene": "S06", "value": "Strategy • Automation • Marketing • Intelligence"},
+  "S06_phone": {"label": "Số WhatsApp (ô sáng cảnh kết)", "scene": "S06", "value": "+49 155 60456888"},
+  "S06_url": {"label": "Website (ô viền cảnh kết)", "scene": "S06", "value": "sami-agency.de"}
+ },
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {"font": "Be Vietnam Pro", "weight": 700, "color": "#FFFFFF", "highlight": "#C65D3B", "shadow": true}
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {"src": "", "gain": -4, "edit": [], "fadeOut": 2.5},
+  "cues": [
+   {"t": 2.0, "sfx": "whoosh_c", "gain": -20, "label": "nét cọ đầu tiên của logo"},
+   {"t": 8.3, "sfx": "whoosh_a", "gain": -20, "label": "quét vệt màu"},
+   {"t": 23.9, "sfx": "pop", "gain": -14, "label": "chữ viết tay khẩu hiệu"},
+   {"t": 25.9, "sfx": "whoosh_b", "gain": -18, "label": "vào thẻ kết SAMI"}
+  ]
+ }
+}

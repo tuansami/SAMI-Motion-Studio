@@ -1,0 +1,17 @@
+{
+  "id": "collage-search-ad",
+  "name": "Paper Search Ad",
+  "version": "1.0.0",
+  "studio": ">=0.2.2",
+  "category": "agency",
+  "goal": ["gioi-thieu"],
+  "description": "30 giây, 6 cảnh, bán dịch vụ GOOGLE ADS theo phong cách cắt dán giấy (stop-motion): thanh tìm kiếm giấy xé gõ chữ → mẫu quảng cáo ghép từ mảnh giấy + băng dính → con dấu \"Klick!\" + mực loang → ảnh khách & món ăn cắt dán → giấy note số liệu MẪU → thẻ kết SAMI trên giấy kraft.",
+  "formats": ["16:9", "9:16"],
+  "duration": 30,
+  "bpm": 120,
+  "languages": ["de"],
+  "thumbFrame": 280,
+  "author": "SAMI Marketing Agency",
+  "license": "internal",
+  "tags": ["google-ads", "collage", "paper", "stop-motion", "kraft", "tactile"]
+}

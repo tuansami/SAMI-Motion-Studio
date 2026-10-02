@@ -1,0 +1,18 @@
+{
+  "id": "dither-to-dish",
+  "name": "Dither to Dish",
+  "version": "1.0.0",
+  "studio": ">=0.2.2",
+  "category": "agency",
+  "goal": ["gioi-thieu", "review"],
+  "description": "20 giây, 5 cảnh, phong cách bản đồ pixel 1-bit: thành phố tự dựng → zoom vào con phố, pixel thô dần → ghim rơi, ảnh quán từ pixel 1-bit ra màu thật → sao đánh giá tăng → logo SAMI. Bán dịch vụ Google Maps / Local SEO.",
+  "formats": ["16:9", "9:16"],
+  "duration": 20,
+  "bpm": 120,
+  "languages": ["de"],
+  "slots": {"text": 15, "image": 1, "logo": 0},
+  "thumbFrame": 350,
+  "author": "SAMI Marketing Agency",
+  "license": "internal",
+  "tags": ["pixel", "dither", "1-bit", "maps", "local-seo", "retro"]
+}

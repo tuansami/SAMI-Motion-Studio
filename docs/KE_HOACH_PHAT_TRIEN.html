@@ -1,0 +1,262 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KE HOACH PHAT TRIEN</title><style>body{max-width:960px;margin:0 auto;padding:32px 24px 80px;background:#07041A;color:#EEEBFF;font:15.5px/1.65 "Segoe UI",Inter,system-ui,sans-serif}
+h1{font-size:30px;background:linear-gradient(120deg,#08DDA4,#7667FE);-webkit-background-clip:text;color:transparent}h2{margin-top:44px;border-top:1px solid rgba(255,255,255,.1);padding-top:22px;color:#08DDA4}h3{color:#b9b2ff}
+a{color:#08DDA4}code{background:#161039;padding:1px 6px;border-radius:5px;color:#8ff0d2}pre{background:#0F0A2A;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px;overflow:auto}pre code{background:none;color:#EEEBFF}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}th,td{border:1px solid rgba(255,255,255,.12);padding:7px 10px;text-align:left;vertical-align:top}th{background:#161039}
+blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;background:#0F0A2A;border-radius:0 8px 8px 0;color:#cfcaf0}hr{border:0;border-top:1px solid rgba(255,255,255,.1)}
+.toc{background:#0F0A2A;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 18px;margin:18px 0}</style></head><body><div class="toc"><b>Mục lục</b><div class="toc">
+<ul>
+<li><a href="#sami-motion-studio-ke-hoach-phat-trien">SAMI Motion Studio — Kế hoạch phát triển</a><ul>
+<li><a href="#1-muc-tieu-kinh-doanh-o-uoc">1. Mục tiêu kinh doanh (đo được)</a></li>
+<li><a href="#2-kien-truc-hien-tai-g-1-a-xong">2. Kiến trúc hiện tại (GĐ 1 — đã xong)</a></li>
+<li><a href="#3-lo-trinh">3. Lộ trình</a><ul>
+<li><a href="#g-1-web-app-local-ban-nay">GĐ 1 — Web app local ✅ (bản này)</a></li>
+<li><a href="#g-15-v02-sau-phan-hoi-dung-that-au-tien">GĐ 1.5 — v0.2 ✅ (sau phản hồi dùng thật đầu tiên)</a></li>
+<li><a href="#g-2-dung-that-23-tuan-roi-cung-co-uu-tien-cao">GĐ 2 — Dùng thật 2–3 tuần, rồi củng cố (ưu tiên cao)</a></li>
+<li><a href="#g-3-ong-goi-exe-electron-thu-vien">GĐ 3 — Đóng gói .exe (Electron) + thư viện</a></li>
+<li><a href="#g-4-ai-trong-day-chuyen-khi-g-23-on-inh">GĐ 4 — AI trong dây chuyền (khi GĐ 2–3 ổn định)</a></li>
+<li><a href="#khong-nen-lam-it-nhat-en-g-4">Không nên làm (ít nhất đến GĐ 4)</a></li>
+</ul>
+</li>
+<li><a href="#4-rui-ro-quyet-inh-can-ceo-chot">4. Rủi ro &amp; quyết định cần CEO chốt</a></li>
+<li><a href="#5-cach-phat-trien-tiep-cho-claude-code">5. Cách phát triển tiếp (cho Claude Code)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div><h1 id="sami-motion-studio-ke-hoach-phat-trien">SAMI Motion Studio — Kế hoạch phát triển</h1>
+<h2 id="1-muc-tieu-kinh-doanh-o-uoc">1. Mục tiêu kinh doanh (đo được)</h2>
+<p>Studio không phải "phần mềm dựng video". Nó là <strong>dây chuyền sản xuất motion ad</strong> cho ~50 khách hospitality của SAMI.</p>
+<table>
+<thead>
+<tr>
+<th>KPI</th>
+<th>Hiện tại (làm tay + Claude)</th>
+<th>Mục tiêu sau GĐ 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Thời gian 1 video 30 s mới (từ tài nguyên → bản nháp)</td>
+<td>1–2 ngày</td>
+<td><strong>≤ 3 giờ</strong></td>
+</tr>
+<tr>
+<td>Thời gian 1 biến thể (đổi chữ/giá/ngôn ngữ/tỉ lệ)</td>
+<td>1–2 giờ</td>
+<td><strong>≤ 10 phút, không cần dev</strong></td>
+</tr>
+<tr>
+<td>Số bản xuất / 1 brief</td>
+<td>1</td>
+<td><strong>6–12</strong> (3 tỉ lệ × 2–4 ngôn ngữ/ưu đãi)</td>
+</tr>
+<tr>
+<td>Token Claude / lần sửa nhỏ</td>
+<td>cao (đọc code)</td>
+<td><strong>0</strong> (sửa trong Studio)</td>
+</tr>
+</tbody>
+</table>
+<p>→ Dịch vụ bán được: <em>"Gói Motion Ads hàng tháng: 4 video × 3 tỉ lệ"</em> — biên lợi nhuận đến từ <strong>template + biến thể</strong>, không phải từ làm mới mỗi lần.</p>
+<hr />
+<h2 id="2-kien-truc-hien-tai-g-1-a-xong">2. Kiến trúc hiện tại (GĐ 1 — đã xong)</h2>
+<pre><code>SAMI_Motion_Studio/
+├─ Start-Studio.bat        khởi động (cài lần đầu, mở trình duyệt)
+├─ server/                 Node.js, chỉ chạy trên máy (127.0.0.1:5178)
+│  ├─ index.mjs            API + phục vụ UI + theo dõi file (tự tải lại)
+│  ├─ preview.mjs          esbuild đóng gói preview (~0,3 s)
+│  ├─ render.mjs           hàng đợi render Remotion (CPU/GPU NVENC, scale 2K/4K, fps)
+│  ├─ audio.mjs            phân tích nhịp (BPM, drop, final hit)
+│  ├─ validate.mjs         kiểm tra dự án (tiếng Việt)
+│  ├─ assets.mjs           nhập &amp; phân loại tài nguyên
+│  └─ cli-*.mjs            lệnh cho Claude Code: still (ảnh QA), validate, grid (nhịp nhạc)
+├─ claude-code/            skill + workflow, tự chép vào .claude/ của mỗi dự án
+├─ engine/                 lõi dùng chung mọi dự án
+│  ├─ src/core/            Main (xếp cảnh + crossfade + warp), Titles, Subtitles, AudioTrack,
+│  │                       format (16:9·9:16·1:1), timebase (24/30/60 fps), copy, fonts
+│  ├─ src/components/      Scene, Text/Words, Devices, Icon, Brand (grain/vignette)
+│  └─ preview/entry.tsx    Remotion Player cho UI
+├─ ui/                     giao diện web (không cần build)
+├─ templates/agency-promo/ mẫu 6 cảnh, responsive 3 tỉ lệ
+├─ projects/               dự án (mỗi dự án = 1 thư mục độc lập, có thể để ở bất kỳ đâu)
+└─ docs/                   hướng dẫn, kế hoạch, PROJECT_GUIDE cho Claude Code
+</code></pre>
+<p><strong>Nguyên tắc thiết kế then chốt</strong>
+1. <strong>Dự án = dữ liệu (<code>project.json</code>) + code cảnh (<code>scenes/</code>)</strong>. Người dùng chỉ đụng dữ liệu; Claude Code chỉ đụng code.
+2. <strong>Thời gian chuẩn 30 fps + warp</strong> → đổi fps/thời lượng không phải làm lại animation.
+3. <strong>Một engine, nhiều dự án</strong> → sửa lỗi/nâng cấp engine là mọi dự án hưởng.
+4. Preview và render dùng <strong>cùng một code</strong> → thấy gì xuất nấy.</p>
+<hr />
+<h2 id="3-lo-trinh">3. Lộ trình</h2>
+<h3 id="g-1-web-app-local-ban-nay">GĐ 1 — Web app local ✅ (bản này)</h3>
+<p>Chữ có tên · thời lượng + warp + khớp nhịp · preview 3 tỉ lệ · tiêu đề/phụ đề đầy đủ kiểu · âm thanh 3 chế độ + phân tích nhịp · xuất FHD/2K/4K, 24/30/60, H.264/H.265/ProRes, CPU threads, NVENC, ưu tiên, hàng đợi, xuất 3 tỉ lệ · tạo dự án từ thư mục tài nguyên · tự tải lại khi Claude Code sửa.</p>
+<h3 id="g-15-v02-sau-phan-hoi-dung-that-au-tien">GĐ 1.5 — v0.2 ✅ (sau phản hồi dùng thật đầu tiên)</h3>
+<p>Render chống treo (chia đoạn ~15 s, mỗi đoạn 1 tiến trình, watchdog tự thử lại, Huỷ/Dừng tất cả tắt hẳn, <strong>Tiếp tục</strong> sau lỗi/tắt máy) · sửa phát hiện NVENC + nút Chẩn đoán GPU · ước tính dung lượng · tab <strong>Ảnh chèn</strong> (ảnh/logo/watermark/12 sticker chỉ dẫn/Lottie, kéo thả trên khung xem) · <strong>Thư viện mẫu</strong> + chuẩn mẫu v1 + Lưu thành mẫu / Kiểm tra / Nhập–Xuất .zip.</p>
+<h3 id="g-2-dung-that-23-tuan-roi-cung-co-uu-tien-cao">GĐ 2 — Dùng thật 2–3 tuần, rồi củng cố (ưu tiên cao)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tính năng</th>
+<th>Giá trị</th>
+<th>Công</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.1</td>
+<td><strong>Brand Kit</strong> theo khách (logo, màu, font, CTA, WhatsApp, địa chỉ) lưu 1 lần, áp cho mọi video của khách</td>
+<td>Nhất quán, giảm nhập lại</td>
+<td>S</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td><strong>Biến thể hàng loạt</strong>: bảng (CSV/Sheet) → mỗi dòng 1 video (ngôn ngữ VI/DE/EN, món, giá, ưu đãi) × 3 tỉ lệ</td>
+<td><strong>Nhân sản lượng</strong> — lõi của gói tháng</td>
+<td>M</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td><strong>Mix âm thanh tự động khi xuất</strong> (ghép lớp → chuẩn −14 LUFS, −1 dBTP)</td>
+<td>Không phải mix tay, âm lượng đều trên mọi nền tảng</td>
+<td>S</td>
+</tr>
+<tr>
+<td>2.4</td>
+<td><strong>Preset nền tảng</strong>: Reels/TikTok (9:16, vùng an toàn), YouTube, Meta Ads 1:1/4:5, Google Ads 16:9</td>
+<td>Không nhầm thông số</td>
+<td>S</td>
+</tr>
+<tr>
+<td>2.5</td>
+<td><strong>Contact sheet &amp; link duyệt</strong>: xuất ảnh lưới 1 khung/cảnh + bản nháp nhẹ để gửi khách</td>
+<td>Duyệt nhanh, ít vòng sửa</td>
+<td>S</td>
+</tr>
+<tr>
+<td>2.6</td>
+<td><strong>Lịch sử phiên bản</strong> (snapshot mỗi lần Lưu, so sánh, khôi phục)</td>
+<td>An toàn khi nhiều người sửa</td>
+<td>S</td>
+</tr>
+</tbody>
+</table>
+<h3 id="g-3-ong-goi-exe-electron-thu-vien">GĐ 3 — Đóng gói .exe (Electron) + thư viện</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tính năng</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.1</td>
+<td><strong>Ứng dụng Windows .exe</strong> (Electron): cài 1 click, kèm sẵn Node + Chromium, icon, tự cập nhật</td>
+<td>Giữ nguyên server + UI hiện tại → rủi ro thấp</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td><strong>Nội dung thư viện mẫu</strong> theo ngành: nhà hàng, nail, spa, khách sạn — mỗi ngành 3–5 mẫu (khai trương, menu mới, ưu đãi, tuyển dụng, review). Khung thư viện + chuẩn đã có ở v0.2</td>
+<td>Tài sản tăng giá trị theo thời gian</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td>Kéo-thả <strong>đổi kích thước/xoay</strong> trên khung xem (di chuyển đã có ở v0.2)</td>
+<td>Dễ dùng hơn thanh trượt</td>
+</tr>
+<tr>
+<td>3.4</td>
+<td><strong>Timeline nhiều lớp</strong> (kéo mép tiêu đề/SFX/cảnh)</td>
+<td>Tốc độ chỉnh</td>
+</tr>
+<tr>
+<td>3.5</td>
+<td><strong>Auto-reframe</strong> 16:9 → 9:16 bằng điểm nhấn (focal point) cho ảnh/video thật</td>
+<td>Bớt công bố cục dọc</td>
+</tr>
+</tbody>
+</table>
+<h3 id="g-4-ai-trong-day-chuyen-khi-g-23-on-inh">GĐ 4 — AI trong dây chuyền (khi GĐ 2–3 ổn định)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tính năng</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.1</td>
+<td><strong>Phụ đề tự động</strong> (ElevenLabs Scribe / Whisper) cho video có lời</td>
+<td>Tốn phí API — bật theo dự án</td>
+</tr>
+<tr>
+<td>4.2</td>
+<td><strong>Voice-over AI</strong> tiếng Việt/Đức từ kịch bản</td>
+<td>Cân nhắc brand: nhiều khách thích không lời</td>
+</tr>
+<tr>
+<td>4.3</td>
+<td><strong>Nhạc AI</strong> 120 BPM theo độ dài + tự tìm drop</td>
+<td>Đã có quy trình tay; tự động hoá</td>
+</tr>
+<tr>
+<td>4.4</td>
+<td><strong>Ảnh món AI / nâng cấp ảnh</strong> (khớp dịch vụ Food Photography AI)</td>
+<td>Chỉ dùng ảnh khách duyệt; ghi rõ ảnh AI</td>
+</tr>
+<tr>
+<td>4.5</td>
+<td><strong>"Brief → storyboard"</strong> trong Studio (gọi Claude, đưa bảng cảnh để duyệt)</td>
+<td>Rút ngắn bước 1–2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="khong-nen-lam-it-nhat-en-g-4">Không nên làm (ít nhất đến GĐ 4)</h3>
+<ul>
+<li>Trình dựng tự do kiểu After Effects — đốt thời gian, cạnh tranh sai sân. Lợi thế SAMI là <strong>template chuẩn ngành + tốc độ biến thể</strong>.</li>
+<li>Render trên cloud — máy RTX tại văn phòng rẻ và nhanh hơn ở quy mô 50 khách.</li>
+<li>Nhiều người dùng / đăng nhập — chưa cần khi chỉ 1–3 người vận hành.</li>
+</ul>
+<hr />
+<h2 id="4-rui-ro-quyet-inh-can-ceo-chot">4. Rủi ro &amp; quyết định cần CEO chốt</h2>
+<table>
+<thead>
+<tr>
+<th>Vấn đề</th>
+<th>Đề xuất</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Giấy phép Remotion</strong>: miễn phí cho cá nhân/công ty ≤ 3 nhân sự; công ty lớn hơn cần <em>Company License</em></td>
+<td>Kiểm tra số nhân sự SAMI và điều khoản mới nhất tại remotion.pro trước khi dùng thương mại rộng</td>
+</tr>
+<tr>
+<td>Ai là "chủ" template?</td>
+<td>1 người (designer/motion lead) duyệt mọi template mới trước khi vào thư viện</td>
+</tr>
+<tr>
+<td>Phạm vi GĐ 2</td>
+<td>Chọn tối đa <strong>3 tính năng</strong> sau 2 tuần dùng thật — đề xuất 2.1 Brand Kit, 2.2 Biến thể hàng loạt, 2.3 Mix tự động</td>
+</tr>
+<tr>
+<td>Định giá gói Motion Ads</td>
+<td>Tính theo <strong>số biến thể</strong>, không theo giờ — Studio làm biến thể gần như miễn phí</td>
+</tr>
+<tr>
+<td>Khoá GPU "80 %"</td>
+<td>Không khả thi kỹ thuật ở mọi công cụ render; dùng NVENC + số luồng + ưu tiên (đã có)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-cach-phat-trien-tiep-cho-claude-code">5. Cách phát triển tiếp (cho Claude Code)</h2>
+<ul>
+<li>Mở thư mục <code>SAMI_Motion_Studio</code> bằng Claude Code → đọc <code>CLAUDE.md</code>.</li>
+<li>Mỗi tính năng: viết spec ngắn trong <code>docs/specs/&lt;ten&gt;.md</code> → duyệt → code → test bằng <code>node server/cli-still.mjs</code> và mở Studio.</li>
+<li>Không phá tương thích <code>project.json</code>: thêm trường mới phải có mặc định; tăng <code>version</code> trong <code>package.json</code>.</li>
+</ul></body></html>

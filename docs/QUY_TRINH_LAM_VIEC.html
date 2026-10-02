@@ -1,0 +1,443 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>QUY TRINH LAM VIEC</title><style>body{max-width:960px;margin:0 auto;padding:32px 24px 80px;background:#07041A;color:#EEEBFF;font:15.5px/1.65 "Segoe UI",Inter,system-ui,sans-serif}
+h1{font-size:30px;background:linear-gradient(120deg,#08DDA4,#7667FE);-webkit-background-clip:text;color:transparent}h2{margin-top:44px;border-top:1px solid rgba(255,255,255,.1);padding-top:22px;color:#08DDA4}h3{color:#b9b2ff}
+a{color:#08DDA4}code{background:#161039;padding:1px 6px;border-radius:5px;color:#8ff0d2}pre{background:#0F0A2A;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px;overflow:auto}pre code{background:none;color:#EEEBFF}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}th,td{border:1px solid rgba(255,255,255,.12);padding:7px 10px;text-align:left;vertical-align:top}th{background:#161039}
+blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;background:#0F0A2A;border-radius:0 8px 8px 0;color:#cfcaf0}hr{border:0;border-top:1px solid rgba(255,255,255,.1)}
+.toc{background:#0F0A2A;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 18px;margin:18px 0}</style></head><body><div class="toc"><b>Mục lục</b><div class="toc">
+<ul>
+<li><a href="#quy-trinh-lam-video-chuan-sami-motion-studio">Quy trình làm video chuẩn — SAMI Motion Studio</a><ul>
+<li><a href="#0-tom-tat-30-giay">0. Tóm tắt 30 giây</a></li>
+<li><a href="#1-vai-tro-cong-cu">1. Vai trò &amp; công cụ</a></li>
+<li><a href="#2-ban-o-file-nguon-su-that-cua-tung-thu">2. Bản đồ file — "nguồn sự thật" của từng thứ</a></li>
+<li><a href="#3-luong-chuan-video-moi">3. Luồng chuẩn: video mới</a></li>
+<li><a href="#4-luong-chuan-sua-video-phan-hoi-khach">4. Luồng chuẩn: sửa video (phản hồi khách)</a></li>
+<li><a href="#5-quy-tac-phien-lam-viec-tiet-kiem-token">5. Quy tắc phiên làm việc &amp; tiết kiệm token</a><ul>
+<li><a href="#cho-nguoi-dung">Cho người dùng</a></li>
+<li><a href="#cho-agent-bat-buoc">Cho agent (bắt buộc)</a></li>
+</ul>
+</li>
+<li><a href="#6-bo-cau-lenh-mau">6. Bộ câu lệnh mẫu</a></li>
+<li><a href="#7-mau-brieftrang_thaimd">7. Mẫu brief/TRANG_THAI.md</a></li>
+<li><a href="#8-checklist-truoc-khi-giao-khach">8. Checklist trước khi giao khách</a></li>
+<li><a href="#9-at-ten-luu-tru">9. Đặt tên &amp; lưu trữ</a></li>
+<li><a href="#10-nguoi-moi-ngay-au-tien">10. Người mới — ngày đầu tiên</a></li>
+<li><a href="#11-khi-gap-su-co">11. Khi gặp sự cố</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div><h1 id="quy-trinh-lam-video-chuan-sami-motion-studio">Quy trình làm video chuẩn — SAMI Motion Studio</h1>
+<blockquote>
+<p>Tài liệu chung cho <strong>người mới</strong> và <strong>agent</strong> (Claude Code, Cowork). Đọc hết trong 10 phút. Mục tiêu: làm video đúng chất lượng SAMI, ít vòng sửa, <strong>không tốn token vì nạp dự án cũ</strong>.
+Tài liệu liên quan: <code>HUONG_DAN_SU_DUNG</code> (cách dùng Studio) · <code>PROJECT_GUIDE</code> (luật viết cảnh cho agent) · <code>TEMPLATE_STANDARD</code> (chuẩn mẫu) · <code>KE_HOACH_PHAT_TRIEN</code> (lộ trình).</p>
+</blockquote>
+<hr />
+<h2 id="0-tom-tat-30-giay">0. Tóm tắt 30 giây</h2>
+<ol>
+<li><strong>1 video = 1 thư mục dự án = 1 phiên làm việc mới.</strong> Không làm tiếp video mới trong chat cũ, không sao chép thư mục dự án cũ.</li>
+<li><strong>Mọi quyết định ghi vào file trong thư mục dự án</strong> (<code>brief/</code>), không để trong lịch sử chat. Phiên sau đọc file là đủ ngữ cảnh.</li>
+<li><strong>Chữ, thời lượng, tiêu đề, phụ đề, ảnh chèn, âm thanh, màu, xuất video → người làm trong Studio (0 token).</strong> Claude chỉ viết/sửa <strong>code cảnh</strong>.</li>
+<li><strong>Duyệt kịch bản trước khi code.</strong> Sửa trên giấy rẻ gấp 10 lần sửa trên code.</li>
+<li><strong>Agent chỉ đọc đúng file được nêu tên.</strong> Kiểm tra bằng ảnh tĩnh, không xem video.</li>
+</ol>
+<hr />
+<h2 id="1-vai-tro-cong-cu">1. Vai trò &amp; công cụ</h2>
+<table>
+<thead>
+<tr>
+<th>Việc</th>
+<th>Ai / công cụ</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nhận yêu cầu, thu tài nguyên, điền brief</td>
+<td><strong>Account / người phụ trách</strong></td>
+<td>Brief chưa đủ thì chưa bắt đầu</td>
+</tr>
+<tr>
+<td>Chiến lược thông điệp, nghiên cứu khách, tạo nhạc (ElevenLabs), viết lời</td>
+<td><strong>Cowork</strong> (claude.ai, 1 phiên / chiến dịch)</td>
+<td>Nhạc tạo xong lưu vào <code>public/audio/</code> của dự án</td>
+</tr>
+<tr>
+<td>Kịch bản + storyboard, viết code cảnh, bố cục 16:9 / 9:16 / 1:1, QA ảnh tĩnh</td>
+<td><strong>Claude Code</strong> mở <strong>tại thư mục dự án</strong> trên máy có Studio</td>
+<td>Tự nạp <code>CLAUDE.md</code> + skill của dự án</td>
+</tr>
+<tr>
+<td>Sửa chữ, thời lượng, tiêu đề, phụ đề, ảnh/logo/watermark/mũi tên/Lottie, âm thanh, màu</td>
+<td><strong>Người dùng Studio</strong></td>
+<td>Không gọi Claude cho các việc này</td>
+</tr>
+<tr>
+<td>Xuất bản nháp / bản cuối, ba tỉ lệ</td>
+<td><strong>Studio → tab Xuất</strong></td>
+<td>Render chạy trên máy văn phòng, không trên cloud</td>
+</tr>
+<tr>
+<td>Duyệt kịch bản, duyệt bản nháp, duyệt giao khách</td>
+<td><strong>Motion lead / CEO</strong></td>
+<td>3 cổng duyệt ⛔ ở mục 3</td>
+</tr>
+<tr>
+<td>Đưa video tốt vào thư viện mẫu</td>
+<td><strong>Motion lead</strong></td>
+<td>Theo <code>TEMPLATE_STANDARD</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-ban-o-file-nguon-su-that-cua-tung-thu">2. Bản đồ file — "nguồn sự thật" của từng thứ</h2>
+<pre><code>SAMI_Motion_Studio/            ← APP (dùng chung, KHÔNG làm video ở đây)
+├─ Start-Studio.bat
+├─ docs/                       ← tài liệu này + hướng dẫn + chuẩn
+├─ templates/                  ← thư viện mẫu
+└─ projects/                   ← nơi chứa các dự án (mặc định)
+
+&lt;dự-án&gt;/                       ← 1 VIDEO (mở Claude Code tại đây)
+├─ CLAUDE.md                   ← luật cho agent (Studio tự tạo)
+├─ .claude/                    ← skill + workflow SAMI (Studio tự đồng bộ)
+├─ brief/
+│  ├─ BRIEF.md                 ← yêu cầu của khách (người điền)
+│  ├─ TRANG_THAI.md            ← trạng thái + quyết định đã chốt (cập nhật cuối MỖI phiên)
+│  ├─ SCRIPT_STORYBOARD.md     ← kịch bản đã duyệt
+│  └─ (guideline, logo gốc, tài liệu khách…)
+├─ project.json                ← chữ, thời lượng, tiêu đề, phụ đề, ảnh chèn, âm thanh, màu
+├─ scenes/                     ← code cảnh (chỉ agent sửa)
+├─ public/img|video|audio|lottie|fonts   ← tài nguyên dùng trong video
+└─ out/                        ← video đã xuất (agent không đọc)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Muốn biết…</th>
+<th>Xem file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Khách cần gì</td>
+<td><code>brief/BRIEF.md</code></td>
+</tr>
+<tr>
+<td>Đang ở bước nào, đã chốt gì, việc tiếp theo</td>
+<td><code>brief/TRANG_THAI.md</code></td>
+</tr>
+<tr>
+<td>Nội dung, nhịp từng cảnh</td>
+<td><code>brief/SCRIPT_STORYBOARD.md</code></td>
+</tr>
+<tr>
+<td>Chữ, thời gian thực tế trên video</td>
+<td><code>project.json</code> (sửa qua Studio)</td>
+</tr>
+<tr>
+<td>Hình ảnh, chuyển động của cảnh</td>
+<td><code>scenes/&lt;ID&gt;.tsx</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-luong-chuan-video-moi">3. Luồng chuẩn: video mới</h2>
+<table>
+<thead>
+<tr>
+<th>Bước</th>
+<th>Ai</th>
+<th>Làm gì</th>
+<th>Đầu ra</th>
+<th>Cổng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Khởi tạo</td>
+<td>Người</td>
+<td>Studio → <strong>Tạo dự án mới từ mẫu</strong> gần nhất + thư mục tài nguyên của khách. Đặt tên theo mục 9</td>
+<td>Thư mục dự án</td>
+<td></td>
+</tr>
+<tr>
+<td>2. Brief</td>
+<td>Người</td>
+<td>Điền <code>brief/BRIEF.md</code>: mục tiêu, khán giả, ngôn ngữ, thông điệp chính, CTA + liên hệ, độ dài, tỉ lệ, <strong>ảnh nào là thật</strong>, hạn giao</td>
+<td>BRIEF.md đủ 9 mục</td>
+<td></td>
+</tr>
+<tr>
+<td>3. Kịch bản</td>
+<td>Claude Code</td>
+<td>Đọc CLAUDE.md + brief → viết <code>brief/SCRIPT_STORYBOARD.md</code> (bảng: cảnh · giây · chữ · chuyển động · SFX), <strong>chưa code</strong></td>
+<td>Storyboard</td>
+<td>⛔ <strong>Duyệt 1</strong>: nội dung, thông điệp, độ dài</td>
+</tr>
+<tr>
+<td>4. Nhạc (nếu cần)</td>
+<td>Cowork / người</td>
+<td>Tạo hoặc chọn nhạc 120 BPM → lưu <code>public/audio/</code> → Studio <em>Phân tích nhịp</em> → báo DROP / FINAL HIT cho agent</td>
+<td>File nhạc + mốc nhịp</td>
+<td></td>
+</tr>
+<tr>
+<td>5. Dựng cảnh</td>
+<td>Claude Code</td>
+<td>Viết <code>scenes/</code>, cập nhật <code>project.json</code> (cảnh, ô chữ có tên tiếng Việt), đủ bố cục các tỉ lệ; <code>cli-validate</code> phải đạt; tự soát ảnh tĩnh</td>
+<td>Video xem được trong Studio</td>
+<td></td>
+</tr>
+<tr>
+<td>6. Tinh chỉnh</td>
+<td>Người</td>
+<td>Studio: chữ, thời lượng, tiêu đề, phụ đề, logo/watermark/mũi tên, âm thanh</td>
+<td>project.json</td>
+<td></td>
+</tr>
+<tr>
+<td>7. Bản nháp</td>
+<td>Người</td>
+<td>Xuất <em>Preset: bản nháp nhanh</em> (hoặc chỉ 1 cảnh) → xem trên điện thoại</td>
+<td>MP4 nháp</td>
+<td>⛔ <strong>Duyệt 2</strong>: nội bộ theo checklist mục 8</td>
+</tr>
+<tr>
+<td>8. Bản cuối</td>
+<td>Người</td>
+<td>Xuất đủ tỉ lệ (MP4 H.264 + GPU; ProRes chỉ khi cần dựng tiếp) → gửi khách</td>
+<td>MP4 cuối</td>
+<td>⛔ <strong>Duyệt 3</strong>: khách</td>
+</tr>
+<tr>
+<td>9. Đóng dự án</td>
+<td>Người + agent</td>
+<td>Cập nhật <code>TRANG_THAI.md</code> = <em>Xong</em>; video tốt → <strong>Lưu thành mẫu</strong></td>
+<td>Lưu trữ / mẫu</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Không được bỏ cổng ⛔.</strong> Agent phải dừng và chờ "OK" ở bước 3 trước khi code.</p>
+<hr />
+<h2 id="4-luong-chuan-sua-video-phan-hoi-khach">4. Luồng chuẩn: sửa video (phản hồi khách)</h2>
+<ol>
+<li><strong>Gom hết phản hồi của một vòng</strong> vào <code>brief/TRANG_THAI.md</code> → mục <em>Phản hồi khách (vòng N)</em>, mỗi ý một dòng, ghi rõ cảnh + thời điểm (VD: <code>S04 · 0:15 — đổi ảnh điện thoại sang ảnh món phở</code>).</li>
+<li><strong>Phân loại từng dòng:</strong></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Loại yêu cầu</th>
+<th>Làm ở đâu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Đổi chữ, lỗi chính tả, giá, số điện thoại</td>
+<td>Studio → tab <strong>Chữ</strong></td>
+</tr>
+<tr>
+<td>Nhanh/chậm hơn, cắt ngắn</td>
+<td>Studio → cột <strong>Cảnh</strong> (− / +)</td>
+</tr>
+<tr>
+<td>Thêm tiêu đề, phụ đề</td>
+<td>Studio → tab <strong>Tiêu đề / Phụ đề</strong></td>
+</tr>
+<tr>
+<td>Thêm logo, watermark, mũi tên chỉ dẫn, sticker</td>
+<td>Studio → tab <strong>Ảnh chèn</strong></td>
+</tr>
+<tr>
+<td>Đổi ảnh trong cảnh</td>
+<td>Studio → tab <strong>Chữ</strong> (ô ảnh)</td>
+</tr>
+<tr>
+<td>Nhạc, tiếng động</td>
+<td>Studio → tab <strong>Âm thanh</strong></td>
+</tr>
+<tr>
+<td>Đổi bố cục, hiệu ứng, thêm/bớt cảnh, cảnh mới</td>
+<td><strong>Claude Code</strong>, nêu đúng tên cảnh</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Chỉ các dòng ở hàng cuối mới gửi Claude Code, <strong>gom vào 1 phiên</strong>, câu lệnh ở mục 6.</li>
+<li>Xuất lại → gửi khách → ghi kết quả vào <code>TRANG_THAI.md</code>.</li>
+</ol>
+<blockquote>
+<p>Đề xuất chính sách: báo giá gồm <strong>2 vòng sửa</strong>. Từ vòng 3 tính phí. Gom phản hồi theo vòng giúp giữ đúng phạm vi.</p>
+</blockquote>
+<hr />
+<h2 id="5-quy-tac-phien-lam-viec-tiet-kiem-token">5. Quy tắc phiên làm việc &amp; tiết kiệm token</h2>
+<h3 id="cho-nguoi-dung">Cho người dùng</h3>
+<ul>
+<li><strong>Phiên mới cho mỗi video và mỗi vòng sửa.</strong> Trong Claude Code: <code>/clear</code> giữa các việc không liên quan. Chat càng dài, mỗi câu càng đắt.</li>
+<li><strong>Mở Claude Code tại thư mục dự án</strong>, không ở thư mục app hay thư mục cha chứa nhiều dự án.</li>
+<li><strong>Nêu tên cảnh cụ thể</strong> ("S04"), không mô tả chung chung ("cảnh điện thoại").</li>
+<li><strong>Kết thúc phiên luôn bằng câu:</strong> <em>"Cập nhật brief/TRANG_THAI.md."</em></li>
+<li><strong>Chọn model theo việc:</strong> Opus cho kịch bản, thiết kế cảnh mới, bố cục khó. Sonnet cho sửa nhỏ, lặp lại, chuyển đổi mẫu.</li>
+<li><strong>Workflow nhiều agent</strong> (<code>sami-motion-video</code>) chỉ dùng khi dựng mới từ 6 cảnh trở lên và cần nhanh; tổng token cao hơn làm tuần tự.</li>
+<li><strong>Không:</strong> "đọc toàn bộ dự án cho hiểu" · gửi hàng loạt ảnh chụp màn hình · nhờ Claude sửa chữ/thời gian (Studio làm được) · nhờ Claude render video · dùng lại một chat dài của video khác.</li>
+</ul>
+<h3 id="cho-agent-bat-buoc">Cho agent (bắt buộc)</h3>
+<ul>
+<li><strong>Thứ tự đọc khi bắt đầu phiên:</strong> <code>CLAUDE.md</code> → <code>brief/TRANG_THAI.md</code> → chỉ những file mà việc hiện tại cần (<code>BRIEF.md</code> / <code>SCRIPT_STORYBOARD.md</code> / <code>project.json</code> / <code>scenes/&lt;ID&gt;.tsx</code> được nêu tên).</li>
+<li><strong>Không đọc:</strong> <code>node_modules/</code>, <code>out/</code>, <code>public/_engine/</code>, dự án khác, file render/log lớn, code engine của app (trừ khi thông báo lỗi chỉ vào đó).</li>
+<li><strong>Ảnh:</strong> chỉ xem ảnh cần cho việc hiện tại; QA bằng <code>cli-still</code> (vài khung / 1 tờ ảnh ghép), không trích cả video.</li>
+<li><strong>Không tự:</strong> render video đầy đủ · dùng API tốn phí (ElevenLabs…) khi chưa hỏi · sửa file ngoài thư mục dự án · bịa số liệu, giá, review.</li>
+<li><strong>Dừng và hỏi</strong> khi: brief thiếu thông tin quyết định (CTA, ngôn ngữ, tỉ lệ, ảnh thật hay không) · yêu cầu mâu thuẫn brief đã chốt · cần tài nguyên chưa có.</li>
+<li><strong>Trước khi báo "xong":</strong> <code>cli-validate</code> không còn ✗ <strong>và</strong> đã tự xem ảnh tĩnh của phần vừa sửa ở các tỉ lệ liên quan.</li>
+<li><strong>Cuối phiên:</strong> cập nhật <code>brief/TRANG_THAI.md</code> theo mẫu mục 7 (ngắn, chỉ điều phiên sau cần biết).</li>
+</ul>
+<hr />
+<h2 id="6-bo-cau-lenh-mau">6. Bộ câu lệnh mẫu</h2>
+<p><strong>Bắt đầu video mới (bước 3):</strong></p>
+<pre><code>Đọc CLAUDE.md và brief/. Chỉ lên kịch bản + storyboard, ghi vào brief/SCRIPT_STORYBOARD.md,
+chưa code. Hỏi tôi tối đa 3 câu nếu brief thiếu. Cập nhật brief/TRANG_THAI.md.
+</code></pre>
+<p><strong>Sau khi duyệt kịch bản (bước 5):</strong></p>
+<pre><code>Kịch bản đã duyệt. Dựng các cảnh theo storyboard, đủ bố cục cho các tỉ lệ trong project.json.
+Mọi chữ vào project.json → copy (label tiếng Việt ghi rõ vị trí). Kiểm tra bằng cli-validate + ảnh tĩnh.
+Không đọc file ngoài thư mục này. Xong thì cập nhật brief/TRANG_THAI.md.
+</code></pre>
+<p><strong>Có nhạc mới:</strong></p>
+<pre><code>Nhạc mới ở public/audio/&lt;file&gt;. Chạy cli-grid, đặt cảnh logo/thông điệp chính đúng DROP
+và cảnh kết đúng FINAL HIT, chuyển âm thanh sang chế độ layers. Chỉ sửa project.json.
+</code></pre>
+<p><strong>Sửa theo phản hồi (bước 4 của mục 4):</strong></p>
+<pre><code>Đọc brief/TRANG_THAI.md → mục &quot;Phản hồi khách vòng N&quot;, làm các dòng gắn nhãn Claude.
+Chỉ đọc/sửa các cảnh được nêu. Xuất ảnh tĩnh các cảnh đã sửa để tôi xem. Cập nhật TRANG_THAI.md.
+</code></pre>
+<p><strong>Sửa một cảnh cụ thể:</strong></p>
+<pre><code>Chỉ sửa S04: &lt;mô tả thay đổi&gt;. Không đọc cảnh khác. Xuất 3 ảnh tĩnh S04 ở &lt;tỉ lệ&gt; để kiểm tra.
+</code></pre>
+<p><strong>Tiếp tục hôm sau:</strong></p>
+<pre><code>Đọc brief/TRANG_THAI.md rồi làm tiếp mục &quot;Việc tiếp theo&quot;.
+</code></pre>
+<p><strong>Biến video thành mẫu:</strong></p>
+<pre><code>Chuyển dự án này thành template theo docs/TEMPLATE_STANDARD.md của Studio.
+Thay ảnh/số liệu thật của khách bằng placeholder. Chạy cli-template check đến khi không còn ✗.
+</code></pre>
+<hr />
+<h2 id="7-mau-brieftrang_thaimd">7. Mẫu <code>brief/TRANG_THAI.md</code></h2>
+<pre><code class="language-markdown"># TRẠNG THÁI — &lt;tên dự án&gt;
+Cập nhật: 2026-10-02 · bởi: &lt;tên người / Claude Code (Opus)&gt;
+
+## Giai đoạn
+Brief ▢ · Kịch bản ⛔ ▢ · Dựng cảnh ▢ · Tinh chỉnh ▢ · Nháp ⛔ ▢ · Khách duyệt ⛔ ▢ · Xong ▢
+
+## Đã chốt (không bàn lại nếu khách không yêu cầu)
+- Khán giả / ngôn ngữ / CTA: …
+- Độ dài, tỉ lệ: …
+- Nhạc: &lt;file&gt;, DROP 20.0s, FINAL HIT 60.0s
+
+## Việc tiếp theo
+- [ ] …
+
+## Phản hồi khách
+### Vòng 1 (ngày …)
+- [ ] S04 · 0:15 — … → [Studio] / [Claude]
+
+## Ghi chú kỹ thuật
+- (lỗi đã gặp + cách xử lý, để phiên sau không lặp lại)
+</code></pre>
+<p>Quy tắc: tối đa khoảng 1 trang. Xoá việc đã xong khỏi "Việc tiếp theo", giữ lại quyết định đã chốt.</p>
+<hr />
+<h2 id="8-checklist-truoc-khi-giao-khach">8. Checklist trước khi giao khách</h2>
+<ul>
+<li>[ ] Chữ tiếng Việt đúng chính tả, <strong>không mất dấu</strong>, không bị cắt ở 9:16.</li>
+<li>[ ] Số điện thoại, WhatsApp, địa chỉ, URL, giá, ưu đãi <strong>đúng với brief</strong> (đọc to từng số).</li>
+<li>[ ] Không số liệu, review bịa; không logo Google/Meta; không tác phẩm agency khác.</li>
+<li>[ ] Mỗi câu đủ thời gian đọc (6–10 chữ ≥ 1,5 s; con số ≥ 2 s; thông điệp chính ≥ 3 s).</li>
+<li>[ ] 9:16: nội dung quan trọng không nằm ở 10 % trên và 15 % dưới (nút của app che).</li>
+<li>[ ] Âm lượng đều, không bị rè; nhạc có giấy phép.</li>
+<li>[ ] Kết thúc có logo + CTA rõ ràng.</li>
+<li>[ ] Studio → <strong>Kiểm tra</strong> không còn ✗; xem bản xuất trên <strong>điện thoại thật</strong>.</li>
+<li>[ ] Đúng các tỉ lệ khách cần; đặt tên file theo mục 9.</li>
+</ul>
+<hr />
+<h2 id="9-at-ten-luu-tru">9. Đặt tên &amp; lưu trữ</h2>
+<table>
+<thead>
+<tr>
+<th>Thứ</th>
+<th>Quy ước</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Thư mục dự án</td>
+<td><code>&lt;khach&gt;-&lt;noi-dung&gt;-&lt;yyyymm&gt;</code> (không dấu)</td>
+<td><code>lotus-nails-uu-dai-202610</code></td>
+</tr>
+<tr>
+<td>Tên dự án trong Studio</td>
+<td>Có dấu, dễ đọc</td>
+<td><code>Lotus Nails – Ưu đãi tháng 10</code></td>
+</tr>
+<tr>
+<td>File giao khách</td>
+<td><code>&lt;Khach&gt;_&lt;NoiDung&gt;_v&lt;vòng&gt;_&lt;tỉ lệ&gt;.mp4</code> (đổi tên từ file Studio xuất)</td>
+<td><code>LotusNails_UuDai_v2_9x16.mp4</code></td>
+</tr>
+<tr>
+<td>Tài nguyên</td>
+<td>Tên có nghĩa, không dấu</td>
+<td><code>pho-bo.jpg</code>, <code>logo-trang.png</code></td>
+</tr>
+<tr>
+<td>Mẫu</td>
+<td><code>&lt;nganh&gt;-&lt;muc-dich&gt;</code></td>
+<td><code>restaurant-khai-truong</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Dự án đã xong quá 30 ngày: xoá <code>out/</code> bản nháp, giữ bản cuối + <code>brief/</code>, rồi lưu trữ.</li>
+<li>Không để thư mục dự án trong OneDrive/Google Drive đang đồng bộ khi render.</li>
+</ul>
+<hr />
+<h2 id="10-nguoi-moi-ngay-au-tien">10. Người mới — ngày đầu tiên</h2>
+<ol>
+<li>Đọc tài liệu này + <code>HUONG_DAN_SU_DUNG</code> (mục 3–11).</li>
+<li>Mở Studio → dự án mẫu <em>SAMI – Website nhà hàng</em>: đổi 3 ô chữ, kéo dài 1 cảnh, thêm 1 tiêu đề, 1 watermark, 1 mũi tên → <strong>Hoàn tác</strong> hết.</li>
+<li>Tạo dự án thử từ mẫu <em>Agency promo</em> → điền brief giả → xuất bản nháp 9:16.</li>
+<li>Mở Claude Code tại dự án thử → dùng câu lệnh "Sửa một cảnh cụ thể" → xem ảnh tĩnh.</li>
+<li>Ghi <code>TRANG_THAI.md</code> cho dự án thử theo mẫu mục 7 → motion lead xem.</li>
+</ol>
+<hr />
+<h2 id="11-khi-gap-su-co">11. Khi gặp sự cố</h2>
+<table>
+<thead>
+<tr>
+<th>Sự cố</th>
+<th>Làm gì</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Render đứng im / không huỷ được</td>
+<td>Tab Xuất → <strong>⛔ Dừng tất cả</strong>; nếu vẫn kẹt, đóng cửa sổ đen → mở lại → <strong>↻ Tiếp tục</strong></td>
+</tr>
+<tr>
+<td>GPU không chạy</td>
+<td>Tab Xuất → <strong>🩺 Chẩn đoán GPU</strong> → làm theo hướng dẫn (ProRes luôn dùng CPU)</td>
+</tr>
+<tr>
+<td>Khung xem báo lỗi code (khung đỏ)</td>
+<td>Chép lỗi → Claude Code: <em>"Sửa lỗi này, chỉ trong file được nêu trong lỗi"</em></td>
+</tr>
+<tr>
+<td>Agent đọc lan man, tốn token</td>
+<td>Dừng lại → <code>/clear</code> → dùng câu lệnh mẫu có nêu tên file cụ thể</td>
+</tr>
+<tr>
+<td>Agent quên quyết định cũ</td>
+<td>Quyết định chưa được ghi vào <code>TRANG_THAI.md</code> → ghi vào, mở phiên mới</td>
+</tr>
+</tbody>
+</table>
+<p>Chi tiết: <code>HUONG_DAN_SU_DUNG</code> mục 13.</p></body></html>

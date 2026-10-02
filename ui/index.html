@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAMI Motion Studio</title>
+<link rel="stylesheet" href="/ui/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="mark"></span><b>SAMI</b> Motion Studio <small id="ver"></small></div>
+  <div class="proj" id="projTitle"></div>
+  <div class="actions" id="topActions" hidden>
+    <span class="dirty" id="dirty" hidden>● Chưa lưu</span>
+    <button id="btnUndo" title="Hoàn tác (Ctrl+Z)">↶</button>
+    <button id="btnRedo" title="Làm lại (Ctrl+Y)">↷</button>
+    <button id="btnSave" class="primary" title="Lưu (Ctrl+S)">Lưu</button>
+    <button id="btnCheck" title="Kiểm tra lỗi dự án">Kiểm tra</button>
+    <button id="btnFolder" title="Mở thư mục dự án">📁</button>
+    <button id="btnHome" title="Về trang dự án">Dự án</button>
+  </div>
+  <a class="help" href="/docs/QUY_TRINH_LAM_VIEC.html" target="_blank" title="Quy trình làm video chuẩn cho nhóm và Claude">Quy trình</a>
+  <a class="help" href="/docs/HUONG_DAN_SU_DUNG.html" target="_blank" title="Hướng dẫn sử dụng">? Hướng dẫn</a>
+</header>
+
+<!-- HOME ------------------------------------------------------------ -->
+<main id="home" class="home">
+  <section>
+    <h2>Dự án gần đây</h2>
+    <div id="recent" class="cards"></div>
+    <div class="row gap">
+      <button id="btnOpenFolder" class="primary">📂 Mở thư mục dự án…</button>
+      <input id="openPath" placeholder="hoặc dán đường dẫn thư mục, ví dụ D:\Video\du-an-a" style="flex:1">
+      <button id="btnOpenPath">Mở</button>
+    </div>
+  </section>
+  <section>
+    <h2 class="row" style="justify-content:space-between">Thư viện mẫu <span class="row"><button id="btnImportTpl" class="small" title="Thêm mẫu từ thư mục hoặc file .zip (đồng nghiệp gửi)">⤓ Nhập mẫu…</button> <a class="help" style="font-size:13px" href="/docs/TEMPLATE_STANDARD.html" target="_blank">Chuẩn mẫu</a></span></h2>
+    <div id="tplFilters" class="chips"></div>
+    <div id="tplGrid" class="tplGrid"></div>
+  </section>
+  <section id="newProj">
+    <h2>Tạo dự án mới</h2>
+    <div class="form grid2">
+      <label>Tên dự án <input id="npName" placeholder="VD: Nail Studio Berlin – Reels tháng 10"></label>
+      <label>Khách hàng <input id="npClient" placeholder="VD: Lotus Nails"></label>
+      <label>Mẫu (template) <select id="npTemplate"></select></label>
+      <label>Lưu trong thư mục <div class="row"><input id="npLocation"><button id="npPickLoc">…</button></div></label>
+      <label class="span2">Thư mục tài nguyên của khách (ảnh, video, nhạc, logo, guideline…) — tuỳ chọn
+        <div class="row"><input id="npAssets" placeholder="D:\Khach\LotusNails\tai-nguyen"><button id="npPickAssets">…</button></div></label>
+      <label>Màu chính <input id="npC1" type="color" value="#08DDA4"></label>
+      <label>Màu phụ <input id="npC2" type="color" value="#7667FE"></label>
+      <div class="span2 row gap"><button id="btnCreate" class="primary">＋ Tạo dự án</button><span class="muted" id="npMsg"></span></div>
+    </div>
+  </section>
+  <section class="sys" id="sysInfo"></section>
+</main>
+
+<!-- EDITOR ---------------------------------------------------------- -->
+<main id="editor" class="editor" hidden>
+  <aside class="scenes">
+    <div class="panelHead"><b>Cảnh</b><span id="totalDur" class="muted"></span></div>
+    <div id="sceneList"></div>
+    <div class="scFoot">
+      <label class="chk"><input type="checkbox" id="rippleAll" checked> Dời tiêu đề/SFX theo khi đổi thời lượng</label>
+      <button id="btnSnap" title="Làm tròn mọi điểm cắt về nhịp nhạc (0,5 giây)">Khớp nhịp</button>
+    </div>
+  </aside>
+
+  <section class="stage">
+    <div class="ratioBar">
+      <div class="seg" id="ratioSeg"></div>
+      <span id="fitBadge" class="badge" hidden title="Dự án chưa có bố cục riêng cho tỉ lệ này — đang đặt bản 16:9 vào giữa khung">Chế độ vừa khung</span>
+      <label class="chk"><input type="checkbox" id="tgTitles" checked> Tiêu đề</label>
+      <label class="chk"><input type="checkbox" id="tgSubs" checked> Phụ đề</label>
+      <label class="chk"><input type="checkbox" id="tgAudio" checked> Âm thanh</label>
+      <label class="chk"><input type="checkbox" id="tgScene"> Chỉ xem cảnh đang chọn</label>
+    </div>
+    <div class="viewport" id="viewport"><div id="stageWrap" class="stageWrap"><div id="playerBox" class="playerBox"></div><div id="dragLayer" class="dragLayer"></div></div><div id="bundleErr" class="bundleErr" hidden></div></div>
+    <div class="transport">
+      <button id="btnPlay" class="play" title="Phát / dừng (phím cách)">▶</button>
+      <span id="tc" class="tc">0:00.0 / 0:00.0</span>
+      <div class="scrub" id="scrub"><div class="segs" id="scrubSegs"></div><div class="marks" id="scrubMarks"></div><div class="head" id="scrubHead"></div></div>
+    </div>
+  </section>
+
+  <aside class="inspector">
+    <nav class="tabs" id="tabs">
+      <button data-tab="text" class="on">Chữ</button>
+      <button data-tab="titles">Tiêu đề</button>
+      <button data-tab="overlays" title="Chèn ảnh, logo, watermark, mũi tên chỉ dẫn, Lottie">Ảnh chèn</button>
+      <button data-tab="subs">Phụ đề</button>
+      <button data-tab="audio">Âm thanh</button>
+      <button data-tab="look">Giao diện</button>
+      <button data-tab="render">Xuất</button>
+    </nav>
+    <div class="tabBody" id="tabBody"></div>
+  </aside>
+</main>
+
+<div id="toast" class="toast" hidden></div>
+<div id="modal" class="modal" hidden><div class="box"><div id="modalBody"></div><div class="row end"><button id="modalClose">Đóng</button></div></div></div>
+<input type="file" id="filePick" hidden>
+<script src="/ui/app.js"></script>
+</body>
+</html>

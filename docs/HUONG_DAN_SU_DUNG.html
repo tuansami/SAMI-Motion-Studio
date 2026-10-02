@@ -1,0 +1,588 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HUONG DAN SU DUNG</title><style>body{max-width:960px;margin:0 auto;padding:32px 24px 80px;background:#07041A;color:#EEEBFF;font:15.5px/1.65 "Segoe UI",Inter,system-ui,sans-serif}
+h1{font-size:30px;background:linear-gradient(120deg,#08DDA4,#7667FE);-webkit-background-clip:text;color:transparent}h2{margin-top:44px;border-top:1px solid rgba(255,255,255,.1);padding-top:22px;color:#08DDA4}h3{color:#b9b2ff}
+a{color:#08DDA4}code{background:#161039;padding:1px 6px;border-radius:5px;color:#8ff0d2}pre{background:#0F0A2A;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px;overflow:auto}pre code{background:none;color:#EEEBFF}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}th,td{border:1px solid rgba(255,255,255,.12);padding:7px 10px;text-align:left;vertical-align:top}th{background:#161039}
+blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;background:#0F0A2A;border-radius:0 8px 8px 0;color:#cfcaf0}hr{border:0;border-top:1px solid rgba(255,255,255,.1)}
+.toc{background:#0F0A2A;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 18px;margin:18px 0}</style></head><body><div class="toc"><b>Mục lục</b><div class="toc">
+<ul>
+<li><a href="#sami-motion-studio-huong-dan-su-dung">SAMI Motion Studio — Hướng dẫn sử dụng</a><ul>
+<li><a href="#1-studio-la-gi-khac-gi-sami-renderbat">1. Studio là gì — khác gì SAMI-Render.bat?</a></li>
+<li><a href="#2-cai-at-khoi-ong">2. Cài đặt &amp; khởi động</a></li>
+<li><a href="#3-man-hinh-du-an">3. Màn hình "Dự án"</a></li>
+<li><a href="#4-man-hinh-bien-tap-bo-cuc">4. Màn hình biên tập — bố cục</a><ul>
+<li><a href="#thanh-tren-cung">Thanh trên cùng</a></li>
+<li><a href="#cot-trai-canh">Cột trái — Cảnh</a></li>
+<li><a href="#giua-khung-xem-truoc">Giữa — Khung xem trước</a></li>
+</ul>
+</li>
+<li><a href="#5-tab-chu-sua-noi-dung-tren-video">5. Tab Chữ — sửa nội dung trên video</a></li>
+<li><a href="#6-tab-tieu-e-chu-phu-len-video">6. Tab Tiêu đề — chữ phủ lên video</a></li>
+<li><a href="#7-tab-anh-chen-anh-logo-watermark-chi-dan-lottie">7. Tab Ảnh chèn — ảnh, logo, watermark, chỉ dẫn, Lottie</a></li>
+<li><a href="#8-tab-phu-e">8. Tab Phụ đề</a></li>
+<li><a href="#9-tab-am-thanh">9. Tab Âm thanh</a><ul>
+<li><a href="#ba-che-o">Ba chế độ</a></li>
+<li><a href="#nhac-nen-che-o-ghep-lop">Nhạc nền (chế độ Ghép lớp)</a></li>
+<li><a href="#phan-tich-nhip-thay-cho-muc-6-cua-sami-renderbat-a-sua-loi">♫ Phân tích nhịp (thay cho mục 6 của SAMI-Render.bat — đã sửa lỗi)</a></li>
+<li><a href="#tieng-ong-sfx">Tiếng động (SFX)</a></li>
+</ul>
+</li>
+<li><a href="#10-tab-giao-dien">10. Tab Giao diện</a></li>
+<li><a href="#11-tab-xuat-video">11. Tab Xuất video</a><ul>
+<li><a href="#render-chong-treo-moi-o-02">Render chống treo (mới ở 0.2)</a></li>
+<li><a href="#gpu-nvidia-nvenc">GPU NVIDIA (NVENC)</a></li>
+<li><a href="#ve-gpu-en-80">Về "GPU đến 80 %"</a></li>
+<li><a href="#thoi-gian-render-tham-khao-video-60-s-full-hd-30-fps-uoc-tinh-tho-tuy-o-nang-canh">Thời gian render tham khảo (video 60 s, Full HD 30 fps — ước tính thô, tuỳ độ nặng cảnh)</a></li>
+</ul>
+</li>
+<li><a href="#12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</a><ul>
+<li><a href="#cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</a></li>
+<li><a href="#cac-buoc">Các bước</a></li>
+<li><a href="#muon-bo-cuc-rieng-cho-916-11-o-du-an-cu">Muốn bố cục riêng cho 9:16 / 1:1 ở dự án cũ</a></li>
+<li><a href="#sua-gi-o-au-e-o-ton-token">Sửa gì ở đâu (để đỡ tốn token)</a></li>
+</ul>
+</li>
+<li><a href="#13-xu-ly-su-co">13. Xử lý sự cố</a></li>
+<li><a href="#14-phim-tat">14. Phím tắt</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div><h1 id="sami-motion-studio-huong-dan-su-dung">SAMI Motion Studio — Hướng dẫn sử dụng</h1>
+<blockquote>
+<p>Phiên bản 0.2 (giai đoạn 1: web app chạy trên máy). Mới ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
+<p><strong>Làm việc theo nhóm / với Claude:</strong> đọc <code>docs/QUY_TRINH_LAM_VIEC.md</code> (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).</p>
+</blockquote>
+<hr />
+<h2 id="1-studio-la-gi-khac-gi-sami-renderbat">1. Studio là gì — khác gì SAMI-Render.bat?</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SAMI Motion Kit (SAMI-Render.bat)</th>
+<th><strong>SAMI Motion Studio</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phạm vi</td>
+<td>1 video duy nhất</td>
+<td><strong>Mọi dự án</strong>, mỗi dự án 1 thư mục</td>
+</tr>
+<tr>
+<td>Sửa chữ</td>
+<td>Mở file <code>copy.ts</code></td>
+<td>Ô nhập có <strong>tên tiếng Việt rõ ràng</strong>, thấy kết quả ngay</td>
+</tr>
+<tr>
+<td>Thời lượng cảnh</td>
+<td>Sửa code <code>timeline.ts</code></td>
+<td>Nút <strong>− / +</strong> hoặc gõ số giây</td>
+</tr>
+<tr>
+<td>Tỉ lệ</td>
+<td>16:9</td>
+<td><strong>16:9 · 9:16 · 1:1</strong> (bố cục riêng cho từng tỉ lệ)</td>
+</tr>
+<tr>
+<td>Chất lượng</td>
+<td>1080p 30fps</td>
+<td><strong>Full HD / 2K / 4K · 24 / 30 / 60 fps</strong></td>
+</tr>
+<tr>
+<td>Tiêu đề, phụ đề</td>
+<td>Không</td>
+<td><strong>Có</strong> — chọn font, màu, cỡ, viền, nền, hiệu ứng</td>
+</tr>
+<tr>
+<td>Render</td>
+<td>CPU cố định</td>
+<td>Chọn <strong>số luồng CPU</strong>, <strong>GPU NVIDIA</strong>, mức ưu tiên, hàng đợi</td>
+</tr>
+</tbody>
+</table>
+<p>Kit cũ vẫn dùng được bình thường; Studio là bản nâng cấp nằm ở thư mục riêng. Video "Website nhà hàng 66s" đã được chuyển sẵn vào Studio (<code>projects/sami-website-nha-hang</code>).</p>
+<hr />
+<h2 id="2-cai-at-khoi-ong">2. Cài đặt &amp; khởi động</h2>
+<ol>
+<li>Cài <strong>Node.js bản LTS</strong> (nếu máy chưa có): https://nodejs.org → Next liên tục.</li>
+<li>Chép cả thư mục <code>SAMI_Motion_Studio</code> vào ổ đĩa có nhiều dung lượng trống (ví dụ <code>D:\SAMI_Video\SAMI_Motion_Studio</code>). Không đặt trong OneDrive/Google Drive đang đồng bộ (render sẽ chậm và dễ lỗi).</li>
+<li>Nhấp đúp <strong><code>Start-Studio.bat</code></strong>.</li>
+<li>Lần đầu: tự cài thư viện (2–5 phút, cần Internet).</li>
+<li>Sau đó trình duyệt tự mở <strong>http://localhost:5178</strong>.</li>
+<li><strong>Giữ cửa sổ đen mở</strong> trong khi dùng. Đóng cửa sổ = tắt Studio (video đang render sẽ dừng).</li>
+</ol>
+<blockquote>
+<p>Mẹo: tạo shortcut của <code>Start-Studio.bat</code> ra Desktop. Nên dùng Chrome hoặc Edge.</p>
+</blockquote>
+<hr />
+<h2 id="3-man-hinh-du-an">3. Màn hình "Dự án"</h2>
+<p><strong>Dự án gần đây</strong> — bấm thẻ để mở.</p>
+<p><strong>Mở thư mục dự án…</strong> — chọn thư mục có file <code>project.json</code> (hoặc dán đường dẫn rồi bấm <em>Mở</em>).</p>
+<p><strong>Tạo dự án mới</strong></p>
+<table>
+<thead>
+<tr>
+<th>Ô</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tên dự án</td>
+<td>Tên hiển thị + tên thư mục (bỏ dấu tự động)</td>
+</tr>
+<tr>
+<td>Khách hàng</td>
+<td>Để quản lý</td>
+</tr>
+<tr>
+<td>Mẫu (template)</td>
+<td>Khung video có sẵn. Hiện có <strong>Agency promo</strong> (6 cảnh, 29 s, đủ 16:9 / 9:16 / 1:1)</td>
+</tr>
+<tr>
+<td>Lưu trong thư mục</td>
+<td>Nơi tạo thư mục dự án (mặc định <code>SAMI_Motion_Studio\projects</code>)</td>
+</tr>
+<tr>
+<td>Thư mục tài nguyên của khách</td>
+<td><em>Tuỳ chọn.</em> Studio tự chép và phân loại: ảnh → <code>public/img</code>, video → <code>public/video</code>, nhạc → <code>public/audio</code>, font → <code>public/fonts</code>, PDF/Word/guideline/srt → <code>brief/</code></td>
+</tr>
+<tr>
+<td>Màu chính / phụ</td>
+<td>Màu gradient thương hiệu của khách</td>
+</tr>
+</tbody>
+</table>
+<p>Sau khi tạo, Studio mở ngay màn hình biên tập.</p>
+<p><strong>Thư viện mẫu</strong> (trên form Tạo dự án mới): lọc theo ngành, xem ảnh bìa 3 tỉ lệ, <strong>Dùng mẫu này</strong> · <strong>Kiểm tra</strong> (theo chuẩn mẫu) · <strong>Xuất .zip</strong> (gửi đồng nghiệp) · <strong>⤓ Nhập mẫu…</strong> (từ thư mục hoặc .zip). Tạo mẫu mới từ một video đã làm: tab <strong>Giao diện → Lưu thành mẫu</strong>. Tiêu chuẩn chi tiết: <code>docs/TEMPLATE_STANDARD.md</code> (link <em>Chuẩn mẫu</em>).</p>
+<p>Dòng cuối trang cho biết cấu hình máy: số luồng CPU, có phát hiện <strong>NVIDIA NVENC</strong> không, ffmpeg.</p>
+<hr />
+<h2 id="4-man-hinh-bien-tap-bo-cuc">4. Màn hình biên tập — bố cục</h2>
+<pre><code>┌─────────────┬────────────────────────────────┬──────────────────────┐
+│  CẢNH       │  [16:9][9:16][1:1]  ☑Tiêu đề…  │ Chữ│Tiêu đề│Phụ đề… │
+│  S01 …  4s  │                                │                      │
+│  S02 …  6s  │        KHUNG XEM TRƯỚC         │   bảng chỉnh sửa     │
+│  …          │                                │   của tab đang chọn  │
+│ Khớp nhịp   │  ▶ 0:12.3 / 1:06  ▮S01▮S02▮…   │                      │
+└─────────────┴────────────────────────────────┴──────────────────────┘
+</code></pre>
+<h3 id="thanh-tren-cung">Thanh trên cùng</h3>
+<ul>
+<li><strong>● Chưa lưu</strong> — có thay đổi chưa ghi vào <code>project.json</code>.</li>
+<li><strong>↶ / ↷</strong> — hoàn tác / làm lại (Ctrl+Z / Ctrl+Y), tối đa 80 bước.</li>
+<li><strong>Lưu</strong> (Ctrl+S) — ghi file, đồng thời tự kiểm tra lỗi. Bản trước được giữ ở <code>.project.backup.json</code>.</li>
+<li><strong>Kiểm tra</strong> — liệt kê ✓ đạt / ⚠ lưu ý / ✗ lỗi (thiếu ảnh, cảnh hở, nhạc ngắn hơn video, chữ sai cú pháp…). Có lỗi ✗ thì không cho render.</li>
+<li><strong>📁</strong> — mở thư mục dự án trong Explorer.</li>
+<li><strong>Dự án</strong> — về màn hình dự án.</li>
+</ul>
+<p>Nếu lỡ đóng trình duyệt khi chưa lưu, lần mở sau Studio hỏi <strong>khôi phục bản nháp</strong>.</p>
+<h3 id="cot-trai-canh">Cột trái — Cảnh</h3>
+<ul>
+<li>Bấm một cảnh → khung xem nhảy tới cảnh đó, tab <em>Chữ</em> hiện đúng chữ của cảnh đó.</li>
+<li><strong>− / +</strong> = bớt / thêm <strong>0,5 giây (1 nhịp nhạc 120 BPM)</strong>. Có thể gõ số giây trực tiếp.</li>
+<li>Khi đổi thời lượng, animation của cảnh được <strong>giãn/nén tự động</strong> (không phải làm lại hiệu ứng), các cảnh sau tự dời theo.</li>
+<li>☑ <strong>Dời tiêu đề/SFX theo…</strong> — tiêu đề, phụ đề, tiếng động nằm sau điểm cắt cũng dời theo (nên bật).</li>
+<li><strong>Khớp nhịp</strong> — làm tròn mọi điểm cắt về đúng nhịp nhạc. Bấm sau khi đã chỉnh tay nhiều cảnh.</li>
+</ul>
+<blockquote>
+<p>⚠ Nếu dự án đang dùng <strong>file nhạc mix sẵn</strong> (như video 66 s), đổi thời lượng không làm file nhạc dài/ngắn theo → xem mục 9.</p>
+</blockquote>
+<h3 id="giua-khung-xem-truoc">Giữa — Khung xem trước</h3>
+<ul>
+<li><strong>16:9 Ngang / 9:16 Dọc / 1:1 Vuông</strong> — đổi tỉ lệ xem. Nhãn <strong>"Chế độ vừa khung"</strong> = dự án chưa có bố cục riêng cho tỉ lệ này, Studio đặt bản 16:9 vào giữa khung (xem mục 12 để có bố cục riêng).</li>
+<li>Bật/tắt <strong>Tiêu đề · Phụ đề · Âm thanh</strong> để xem riêng từng lớp.</li>
+<li><strong>Chỉ xem cảnh đang chọn</strong> — lặp lại riêng 1 cảnh khi tinh chỉnh.</li>
+<li><strong>▶</strong> hoặc <strong>phím cách</strong> = phát/dừng. Kéo/bấm trên thanh tua để nhảy.</li>
+<li>Thanh tua: ô xám = cảnh, vạch <strong>xanh</strong> = tiêu đề, vạch <strong>vàng</strong> = tiếng động (SFX).</li>
+</ul>
+<p>Xem trước chạy ngay trong trình duyệt, có thể hơi giật trên máy yếu — <strong>bản xuất luôn mượt</strong>.</p>
+<hr />
+<h2 id="5-tab-chu-sua-noi-dung-tren-video">5. Tab <strong>Chữ</strong> — sửa nội dung trên video</h2>
+<ul>
+<li>Mỗi ô có <strong>tên tiếng Việt</strong> mô tả vị trí (VD: <em>"Tiêu đề lớn mở đầu"</em>, <em>"Chữ gõ trong ô tìm kiếm (tiếng Đức)"</em>). Gõ đến đâu, khung xem cập nhật đến đó.</li>
+<li>Cú pháp (ở ô có ghi chú hỗ trợ):</li>
+<li><code>*chữ*</code> → tô màu gradient/nhấn. VD: <code>Khách hàng / *đang đói.*</code></li>
+<li><code>/</code> (có dấu cách hai bên) → xuống dòng.</li>
+<li>Ô ảnh/logo (VD <em>"Ảnh trong điện thoại"</em>) có danh sách chọn ảnh + nút <strong>Tải ảnh…</strong>.</li>
+<li><strong>Tên cảnh</strong> chỉ để quản lý, không hiện trên video.</li>
+<li><strong>Tất cả chữ trong video</strong> — xem toàn bộ để soát chính tả; bấm 1 dòng để nhảy tới cảnh.</li>
+</ul>
+<blockquote>
+<p>Quy tắc thời gian đọc: 6–10 chữ cần ≥ 1,5 s; con số ≥ 2 s; thông điệp chính ≥ 3 s. Chữ dài hơn → tăng thời lượng cảnh.</p>
+</blockquote>
+<hr />
+<h2 id="6-tab-tieu-e-chu-phu-len-video">6. Tab <strong>Tiêu đề</strong> — chữ phủ lên video</h2>
+<p>Dùng cho: tiêu đề chương, chú thích, giá khuyến mãi, CTA, tên món…</p>
+<ol>
+<li>Tua tới thời điểm muốn hiện → <strong>＋ Thêm tiêu đề tại vị trí đang xem</strong> (mặc định dài 2,5 s).</li>
+<li>Sửa <strong>Nội dung</strong> (hỗ trợ <code>*nhấn*</code> và <code>/</code>).</li>
+<li><strong>Bắt đầu / Kết thúc</strong> (giây) — nút <strong>⌖</strong> lấy thời điểm đang xem.</li>
+<li><strong>Hiệu ứng vào</strong>: Từng chữ trồi lên · Từng chữ hiện dần · Mờ dần · Bật (pop) · Trượt vào · Đánh máy · Karaoke · Nền highlight từng chữ · Không. <strong>Hiệu ứng ra</strong>: Mờ dần · Bay lên · Cắt.</li>
+<li><strong>Kiểu chữ</strong>: Font (Be Vietnam Pro, Inter, Montserrat, Roboto, Oswald, Nunito, Lora, Playfair Display, Cormorant, JetBrains Mono — đều hỗ trợ tiếng Việt), Độ đậm, Cỡ chữ (px, tính trên khung Full HD), Màu chữ, Màu nhấn, Căn lề, Giãn chữ, Giãn dòng, IN HOA, Nghiêng, Đổ bóng, Viền chữ (màu + độ dày), Nền hộp (màu, độ đậm, bo góc).</li>
+<li><strong>Vị trí</strong>: nút nhanh <em>Trên / Giữa / Dưới / Sát đáy</em> hoặc kéo X/Y (%). Vị trí tính theo % nên tự vừa cả 3 tỉ lệ.</li>
+<li><strong>Chiều rộng tối đa</strong> — chữ tự xuống dòng khi vượt.</li>
+<li><strong>Chỉ hiện ở</strong> 16:9 / 9:16 / 1:1 — VD tiêu đề chỉ cho bản dọc.</li>
+<li><strong>Xoá</strong> — góc phải khung sửa.</li>
+</ol>
+<blockquote>
+<p>Lưu ý Reels/TikTok (9:16): tránh 15 % dưới cùng và 10 % trên cùng (nút, caption của app che mất). Nút <em>Dưới</em> (82 %) là an toàn; <em>Sát đáy</em> chỉ dùng cho YouTube/16:9.</p>
+</blockquote>
+<hr />
+<h2 id="7-tab-anh-chen-anh-logo-watermark-chi-dan-lottie">7. Tab <strong>Ảnh chèn</strong> — ảnh, logo, watermark, chỉ dẫn, Lottie</h2>
+<table>
+<thead>
+<tr>
+<th>Nút</th>
+<th>Dùng cho</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>＋ Ảnh / logo</strong></td>
+<td>Ảnh bất kỳ, logo khách, ảnh món, QR code… hiện trong một khoảng thời gian</td>
+</tr>
+<tr>
+<td><strong>＋ Watermark</strong></td>
+<td>Logo mờ ở góc, <strong>hiện suốt video</strong> (mặc định góc dưới phải, độ đậm 35 %, nằm trên cùng)</td>
+</tr>
+<tr>
+<td><strong>＋ Chỉ dẫn</strong></td>
+<td>Hình vẽ vector đổi màu được, có hiệu ứng <strong>vẽ nét</strong>: mũi tên thẳng/cong, vòng khoanh, gạch chân, chạm/bấm, tick, X, sao, tim, vuốt lên, lấp lánh, ghim vị trí</td>
+</tr>
+<tr>
+<td><strong>＋ Lottie</strong></td>
+<td>Animation <code>.json</code> tải từ LottieFiles.com (biểu tượng động, confetti, sticker…)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Chỉnh một lớp ảnh</strong>
+1. Chọn file (danh sách ảnh trong dự án) hoặc <strong>Tải lên…</strong> — logo/watermark nên dùng <strong>PNG hoặc SVG nền trong suốt</strong>.
+2. <strong>Thời gian</strong>: bắt đầu / kết thúc (nút ⌖ lấy thời điểm đang xem) hoặc ☑ <em>Hiện suốt video</em>.
+3. <strong>Vị trí</strong>: <strong>kéo chấm xanh trên khung xem</strong>, hoặc nháy đúp vào khung xem để đặt nhanh, hoặc bấm lưới 9 ô (↖ ↑ ↗ …), hoặc kéo X/Y.
+4. <strong>Kích thước</strong> (px trên khung Full HD, tính theo cạnh ngắn → logo giữ đúng cỡ ở cả 16:9, 9:16, 1:1), <strong>Độ đậm</strong>, <strong>Xoay</strong>, <strong>Bo góc</strong>, <strong>Đổ bóng</strong>, <strong>Lật ngang</strong>, <strong>Nhịp đập</strong> (phập phồng theo nhịp nhạc).
+5. <strong>Hiệu ứng vào</strong>: Mờ dần · Bật · Trồi lên · Trượt · Thu nhỏ vào · Vẽ nét (chỉ dẫn) · Không. <strong>Ra</strong>: Mờ dần / Cắt.
+6. <strong>Lớp</strong>: <em>Dưới tiêu đề</em> (mặc định) hoặc <em>Trên cùng</em> (watermark). <strong>Chỉ hiện ở</strong> 16:9 / 9:16 / 1:1.
+7. <strong>Nhân bản</strong> để làm nhiều mũi tên giống nhau; <strong>Xoá</strong>.</p>
+<blockquote>
+<p>Mẹo chỉ dẫn: mũi tên + vòng khoanh màu mint vào nút "Đặt bàn", "Chỉ đường" trên ảnh chụp website/Maps → người xem biết bấm vào đâu. Lottie: chỉ dùng file có giấy phép thương mại (LottieFiles ghi rõ "Free for commercial use" hay không).</p>
+</blockquote>
+<h2 id="8-tab-phu-e">8. Tab <strong>Phụ đề</strong></h2>
+<ul>
+<li>☑ <strong>Bật phụ đề</strong>.</li>
+<li><strong>Nhập .srt…</strong> — file phụ đề từ CapCut, Premiere, Whisper, ElevenLabs Scribe…</li>
+<li><strong>＋ Thêm dòng tại vị trí đang xem</strong> để gõ tay. Mỗi dòng: bắt đầu, kết thúc (giây), nội dung, ▶ xem, ✕ xoá.</li>
+<li><strong>Hiệu ứng</strong>: Karaoke (tô từng chữ theo thời gian) · Nền highlight từng chữ · Từng chữ hiện dần · Mờ dần · Bật · Không.</li>
+<li><strong>Kiểu chữ &amp; vị trí</strong>: giống tab Tiêu đề.</li>
+</ul>
+<p>Phụ đề nằm trên cùng mọi lớp, có thể tắt khi xuất (tab Xuất video → <em>Kèm phụ đề</em>).</p>
+<hr />
+<h2 id="9-tab-am-thanh">9. Tab <strong>Âm thanh</strong></h2>
+<h3 id="ba-che-o">Ba chế độ</h3>
+<table>
+<thead>
+<tr>
+<th>Chế độ</th>
+<th>Khi nào dùng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>File mix sẵn</strong></td>
+<td>Đã có 1 file hoàn chỉnh (nhạc + SFX), VD <code>audio/mix.wav</code> của video 66 s. Đổi thời lượng cảnh → phải mix lại.</td>
+</tr>
+<tr>
+<td><strong>Ghép lớp (live)</strong></td>
+<td><strong>Khuyên dùng cho dự án mới.</strong> Studio tự ghép nhạc nền + tiếng động theo thời gian, đổi cảnh là âm thanh đi theo.</td>
+</tr>
+<tr>
+<td><strong>Tắt tiếng</strong></td>
+<td>Xuất bản không tiếng (để dựng tiếp ở app khác).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="nhac-nen-che-o-ghep-lop">Nhạc nền (chế độ Ghép lớp)</h3>
+<ul>
+<li><strong>File nhạc</strong>: chọn hoặc <strong>Tải lên…</strong> (mp3/wav/m4a).</li>
+<li><strong>Âm lượng</strong> (dB) và <strong>Nhỏ dần cuối video</strong> (giây).</li>
+<li><strong>Cắt/ghép nhạc</strong>: mỗi dòng <code>bắt_đầu, kết_thúc, crossfade</code> (giây trong file gốc). VD nhạc dài 88 s mà video 66 s:
+  <code>0, 52.03, 0.02
+  68.03, 77.03, 0.02</code>
+  = phát 0→52 s, rồi nhảy tới đoạn 68→77 s. Luôn cắt ở <strong>đầu ô nhịp</strong> (xem phân tích bên dưới) để không bị giật.</li>
+</ul>
+<h3 id="phan-tich-nhip-thay-cho-muc-6-cua-sami-renderbat-a-sua-loi">♫ Phân tích nhịp (thay cho mục 6 của SAMI-Render.bat — đã sửa lỗi)</h3>
+<p>Bấm để Studio đo file nhạc: <strong>BPM</strong>, phách đầu, <strong>DROP</strong> (điểm bùng nổ), <strong>Break</strong>, <strong>FINAL HIT</strong> (nốt kết), và biểu đồ năng lượng từng ô nhịp (cột xanh = có trống kick).
+- Đặt cảnh "logo / thông điệp chính" bắt đầu đúng <strong>DROP</strong>, cảnh kết đúng <strong>FINAL HIT</strong>.
+- "khung" = số khung hình ở 30 fps (chia 30 ra giây).</p>
+<blockquote>
+<p>Lỗi cũ của mục 6: bản ffmpeg đi kèm Remotion không có bộ ghi <code>f32le</code>. Studio đã đổi sang đọc WAV 16-bit nên chạy được trên mọi máy.</p>
+</blockquote>
+<h3 id="tieng-ong-sfx">Tiếng động (SFX)</h3>
+<ul>
+<li><strong>＋ Thêm tại vị trí đang xem</strong> → chọn âm (whoosh_a/b/c, pop, sub_hit, key_single, key_enter, typing_burst), âm lượng (dB), ghi chú, 🔊 nghe thử, ✕ xoá.</li>
+<li>Nguyên tắc SAMI: <strong>whoosh chỉ ở chuyển chương</strong>, typing ở đoạn mở, pop ở CTA, sub_hit ở logo cuối. Ít mà đắt.</li>
+</ul>
+<hr />
+<h2 id="10-tab-giao-dien">10. Tab <strong>Giao diện</strong></h2>
+<ul>
+<li><strong>Màu thương hiệu</strong>: màu chính/phụ (gradient), nền, nền sâu, chữ, chữ phụ, màu cảnh báo. <em>Về màu mặc định SAMI</em> để reset.</li>
+<li><strong>Hạt phim (grain)</strong> và <strong>Tối viền (vignette)</strong> — lớp "chất điện ảnh" phủ toàn video. Khuyên dùng: grain 4–6 %, vignette 35–45 %.</li>
+<li><strong>Lưu thành mẫu (template)</strong>: biến video đã làm thành mẫu dùng lại cho khách khác (tên, ngành, mục đích, mô tả) → Studio sao chép vào thư viện, tạo ảnh bìa, kiểm tra theo chuẩn và liệt kê việc cần sửa. ⚠ Thay ảnh/logo/số liệu thật của khách bằng ảnh minh hoạ trước khi chia sẻ.</li>
+<li><strong>Thông tin dự án</strong>: tên, khách hàng, các tỉ lệ đã có bố cục riêng, đường dẫn thư mục.</li>
+</ul>
+<hr />
+<h2 id="11-tab-xuat-video">11. Tab <strong>Xuất video</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Cài đặt</th>
+<th>Lựa chọn</th>
+<th>Gợi ý</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tỉ lệ khung</strong></td>
+<td>16:9 Ngang · 9:16 Dọc · 1:1 Vuông</td>
+<td>YouTube/web: 16:9 · Reels/TikTok/Shorts: 9:16 · Feed FB/IG: 1:1</td>
+</tr>
+<tr>
+<td><strong>Độ phân giải</strong></td>
+<td>Full HD · 2K · 4K (hiện số px)</td>
+<td>Mạng xã hội: Full HD là đủ. 4K cho màn hình lớn/khách yêu cầu.</td>
+</tr>
+<tr>
+<td><strong>FPS</strong></td>
+<td>24 · 30 · 60</td>
+<td>30 = chuẩn. 24 = cảm giác điện ảnh. 60 = siêu mượt nhưng render ≈ ×2 thời gian</td>
+</tr>
+<tr>
+<td><strong>Định dạng</strong></td>
+<td>MP4 H.264 · MP4 H.265 · ProRes .mov</td>
+<td>H.264 để đăng/gửi khách. H.265 nhẹ hơn ~40 %. ProRes để dựng tiếp trong Premiere/DaVinci</td>
+</tr>
+<tr>
+<td><strong>Chất lượng (CRF)</strong></td>
+<td>12–28</td>
+<td>18 = rất đẹp (mặc định). 23–26 = bản nháp. Khi dùng GPU, Studio tự đặt bitrate</td>
+</tr>
+<tr>
+<td><strong>Số luồng CPU</strong></td>
+<td>1 → tối đa của máy</td>
+<td>Mặc định <strong>8</strong>. Máy 16 luồng muốn vừa render vừa làm việc: 8. Render qua đêm: tối đa</td>
+</tr>
+<tr>
+<td><strong>Tăng tốc GPU</strong></td>
+<td>Tự động · Tắt</td>
+<td>Tự động: dùng NVIDIA NVENC để mã hoá + GPU vẽ hiệu ứng</td>
+</tr>
+<tr>
+<td><strong>Mức ưu tiên</strong></td>
+<td>Thấp · Bình thường · Cao</td>
+<td><em>Thấp</em> = máy vẫn mượt khi render</td>
+</tr>
+<tr>
+<td>Kèm tiêu đề / phụ đề / âm thanh</td>
+<td>bật/tắt</td>
+<td>VD xuất bản không phụ đề cho khách tự thêm</td>
+</tr>
+<tr>
+<td><strong>Tên file</strong></td>
+<td>tuỳ ý</td>
+<td>File lưu ở <code>&lt;dự án&gt;\out\Ten_9x16_FHD_30fps_&lt;ngày_giờ&gt;.mp4</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Các nút</strong>
+- <strong>▶ Xuất video</strong> — thêm vào hàng đợi.
+- <strong>Xuất cả 3 tỉ lệ</strong> — 3 bản 16:9 + 9:16 + 1:1 cùng cài đặt, chạy lần lượt.
+- <strong>Chỉ cảnh Sxx</strong> — xuất riêng cảnh đang chọn (duyệt nhanh 1 cảnh).
+- <strong>Preset: bản nháp nhanh</strong> — Full HD, 30 fps, CRF 26.</p>
+<p><strong>Dung lượng ước tính</strong> hiện ngay dưới tên file (vàng = cảnh báo). Ví dụ ProRes 2K 60 fps ≈ 780 Mbps → 66 s ≈ 6,4 GB.</p>
+<p><strong>Hàng đợi render</strong>: thanh tiến độ, số khung đã vẽ / đã mã hoá, thời gian còn lại, bộ mã hoá đang dùng (GPU NVENC hay CPU), nút <strong>Huỷ</strong>, <strong>Mở video</strong>, <strong>Mở thư mục out</strong>, <strong>Dọn xong</strong>. Có thể tiếp tục chỉnh dự án khác khi đang render (mỗi bản render dùng dữ liệu <strong>đã Lưu</strong> tại lúc nó bắt đầu chạy — Studio tự lưu khi bấm Xuất).</p>
+<h3 id="render-chong-treo-moi-o-02">Render chống treo (mới ở 0.2)</h3>
+<ul>
+<li>Video được chia thành <strong>các đoạn ~15 giây</strong>, mỗi đoạn render ở một tiến trình riêng. Studio (cửa sổ đen + trang web) <strong>không bao giờ bị đơ theo</strong> render.</li>
+<li><strong>Tự phát hiện treo</strong>: 2,5 phút không có khung hình mới → Studio tự tắt tiến trình đó và <strong>thử lại đoạn đó</strong> với ít luồng hơn (tối đa 3 lần). Dòng vàng trong hàng đợi cho biết đang thử lại.</li>
+<li><strong>Huỷ</strong> luôn có tác dụng ngay (tắt hẳn Chrome + ffmpeg của lượt đó). <strong>⛔ Dừng tất cả</strong> = huỷ mọi lượt và dọn sạch tiến trình render còn sót.</li>
+<li><strong>↻ Tiếp tục</strong>: lượt bị lỗi / bị huỷ / bị ngắt (lỡ đóng cửa sổ đen, mất điện) giữ lại các đoạn đã xong → bấm Tiếp tục để làm nốt, không render lại từ đầu. Chỉ tiếp tục được khi <strong>chưa sửa</strong> dự án (sửa rồi thì phải xuất lại).</li>
+<li>Nếu trang web báo <em>"Mất kết nối với Studio"</em>: kiểm tra cửa sổ đen còn mở không. Đóng hẳn và mở lại <code>Start-Studio.bat</code> → các lượt đang chạy hiện trạng thái <em>Bị ngắt</em> → bấm <strong>Tiếp tục</strong>.</li>
+</ul>
+<h3 id="gpu-nvidia-nvenc">GPU NVIDIA (NVENC)</h3>
+<ul>
+<li>Bản 0.1 <strong>luôn báo nhầm "không có NVENC"</strong> do lỗi bài kiểm tra → GPU không bao giờ được dùng. Bản 0.2 đã sửa.</li>
+<li>Bấm <strong>🩺 Chẩn đoán GPU</strong> (tab Xuất) để xem: tên card + phiên bản driver, NVENC chạy được không, lý do và cách sửa (thường là <strong>cập nhật driver NVIDIA</strong> mới nhất rồi khởi động lại máy).</li>
+<li><strong>ProRes luôn mã hoá bằng CPU</strong> — NVIDIA không có bộ mã hoá ProRes. Muốn GPU làm việc: chọn <strong>MP4 H.264 / H.265</strong>.</li>
+<li>GPU chỉ làm phần <em>mã hoá</em> (nén video). Phần <em>vẽ từng khung hình</em> vẫn do CPU + Chrome — nên số luồng CPU vẫn quyết định tốc độ chính.</li>
+</ul>
+<h3 id="ve-gpu-en-80">Về "GPU đến 80 %"</h3>
+<p>Không có công cụ render nào (Remotion, Premiere, DaVinci) cho phép khoá GPU đúng 80 %. Studio làm cách thực tế hơn:
+- <strong>Mã hoá bằng NVENC</strong> — chip mã hoá riêng trên card NVIDIA, gần như không chiếm phần GPU dùng cho việc khác.
+- <strong>GPU vẽ hiệu ứng</strong> (Chrome/ANGLE) — phần nặng nhất vẫn là vẽ từng khung; tải phụ thuộc số luồng.
+- Điều tiết tải bằng <strong>số luồng CPU</strong> (ít luồng = ít khung vẽ song song = GPU/CPU nhẹ hơn) và <strong>mức ưu tiên Thấp</strong>.</p>
+<p>Tham khảo: 8 luồng + Ưu tiên thấp ≈ máy vẫn làm việc được; tối đa luồng + Cao = nhanh nhất.</p>
+<h3 id="thoi-gian-render-tham-khao-video-60-s-full-hd-30-fps-uoc-tinh-tho-tuy-o-nang-canh">Thời gian render tham khảo (video 60 s, Full HD 30 fps — ước tính thô, tuỳ độ nặng cảnh)</h3>
+<table>
+<thead>
+<tr>
+<th>Máy</th>
+<th>Ước tính</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8 luồng, không NVENC</td>
+<td>8–15 phút</td>
+</tr>
+<tr>
+<td>16 luồng + RTX (NVENC)</td>
+<td>4–8 phút</td>
+</tr>
+<tr>
+<td>4K hoặc 60 fps</td>
+<td>× 2–4</td>
+</tr>
+</tbody>
+</table>
+<p>Luôn <strong>xuất bản nháp / 1 cảnh trước</strong>, duyệt xong mới xuất 4K.</p>
+<hr />
+<h2 id="12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</h2>
+<h3 id="cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</h3>
+<pre><code>du-an-cua-khach/
+├─ project.json      ← MỌI THỨ bạn chỉnh trong Studio (chữ, thời lượng, tiêu đề, phụ đề, âm thanh, màu)
+├─ scenes/           ← code từng cảnh (Claude Code viết) — S01.tsx, S02.tsx… + index.ts
+├─ public/
+│  ├─ img/  video/  audio/  fonts/   ← tài nguyên dùng trong video
+│  └─ _engine/       ← Studio tự tạo, đừng sửa
+├─ brief/            ← BRIEF.md + guideline, logo gốc, tài liệu khách, file mẫu
+├─ out/              ← video đã xuất
+└─ CLAUDE.md         ← quy tắc cho Claude Code (tự tạo)
+   .claude/          ← skill + workflow SAMI cho Claude Code (tự tạo khi mở dự án)
+</code></pre>
+<h3 id="cac-buoc">Các bước</h3>
+<ol>
+<li><strong>Studio → Tạo dự án mới</strong>, chỉ tới thư mục tài nguyên của khách (ảnh món, video quán, logo SVG/PNG, nhạc, guideline PDF…).</li>
+<li>Mở <code>brief/BRIEF.md</code>, điền: mục tiêu, khán giả, ngôn ngữ, thông điệp, CTA, độ dài, tỉ lệ cần có. <strong>Brief càng rõ, video càng ít sửa.</strong></li>
+<li>Mở <strong>Claude Code</strong> tại thư mục dự án, dán yêu cầu, ví dụ:<blockquote>
+<p>Đọc CLAUDE.md và brief/. Lên kịch bản + storyboard 30 s cho Reels 9:16 và bản 16:9, đưa tôi duyệt trước khi code. Dùng ảnh trong public/img, giữ màu thương hiệu trong brief.
+   Video ≥ 4 cảnh: nói <em>"chạy workflow sami-motion-video, stage plan"</em> → duyệt → <em>"stage build"</em> (mỗi cảnh 1 designer + QA riêng).</p>
+</blockquote>
+</li>
+<li>Duyệt kịch bản → Claude Code viết cảnh trong <code>scenes/</code>. <strong>Studio tự tải lại khung xem</strong> mỗi khi file cảnh thay đổi — bạn xem ngay.</li>
+<li>Tự chỉnh chữ / thời lượng / tiêu đề / phụ đề / âm thanh trong Studio → <strong>Lưu</strong>.</li>
+<li><strong>Kiểm tra</strong> → xuất bản nháp → gửi khách → xuất bản cuối (có thể cả 3 tỉ lệ).</li>
+</ol>
+<h3 id="muon-bo-cuc-rieng-cho-916-11-o-du-an-cu">Muốn bố cục riêng cho 9:16 / 1:1 ở dự án cũ</h3>
+<p>Nhắn Claude Code: <em>"Thêm bố cục riêng 9:16 và 1:1 cho các cảnh (dùng useFormat/usePick), thêm '9:16','1:1' vào formats trong project.json."</em> Mẫu <em>Agency promo</em> đã làm sẵn kiểu này — dùng làm ví dụ.</p>
+<h3 id="sua-gi-o-au-e-o-ton-token">Sửa gì ở đâu (để đỡ tốn token)</h3>
+<table>
+<thead>
+<tr>
+<th>Muốn</th>
+<th>Làm ở</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Đổi chữ, thời lượng, tiêu đề, phụ đề, SFX, màu</td>
+<td><strong>Studio</strong> (không cần Claude)</td>
+</tr>
+<tr>
+<td>Thêm/đổi hiệu ứng, bố cục, cảnh mới</td>
+<td>Claude Code → <code>scenes/</code></td>
+</tr>
+<tr>
+<td>Ô chữ mới có tên rõ ràng</td>
+<td>Claude Code thêm vào <code>project.json → copy</code> (có <code>label</code> tiếng Việt)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="13-xu-ly-su-co">13. Xử lý sự cố</h2>
+<table>
+<thead>
+<tr>
+<th>Hiện tượng</th>
+<th>Cách xử lý</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cửa sổ đen báo "Chua cai Node.js"</td>
+<td>Cài Node.js LTS, chạy lại</td>
+</tr>
+<tr>
+<td>Trình duyệt không tự mở</td>
+<td>Mở tay http://localhost:5178</td>
+</tr>
+<tr>
+<td>"port 5178 đang dùng" / không mở được</td>
+<td>Studio đã chạy ở cửa sổ khác — dùng cửa sổ đó, hoặc đóng hết rồi mở lại</td>
+</tr>
+<tr>
+<td>Khung xem báo <strong>Lỗi code cảnh</strong> (khung đỏ)</td>
+<td>Code trong <code>scenes/</code> sai. Chép nội dung lỗi gửi Claude Code; sửa xong Studio tự tải lại</td>
+</tr>
+<tr>
+<td>Khung xem trống / đen</td>
+<td>Bấm ▶ hoặc tua; kiểm tra tab Chữ có ô ảnh bị "(không thấy)"</td>
+</tr>
+<tr>
+<td>Không nghe tiếng khi xem</td>
+<td>Bấm vào trang 1 lần (trình duyệt chặn tự phát âm thanh); kiểm tra ☑ Âm thanh</td>
+</tr>
+<tr>
+<td>Render báo "Dự án còn lỗi"</td>
+<td>Bấm <strong>Kiểm tra</strong>, sửa các dòng ✗</td>
+</tr>
+<tr>
+<td>Render đứng im ở một % , không huỷ được (bản 0.1)</td>
+<td>Đóng hẳn cửa sổ đen → mở lại <code>Start-Studio.bat</code> (Studio tự dọn Chrome còn sót). Bản 0.2 không còn bị: có tự phát hiện treo, Huỷ tắt hẳn tiến trình, và nút Tiếp tục</td>
+</tr>
+<tr>
+<td>Render lỗi "Ổ đĩa đầy"</td>
+<td>ProRes/4K rất nặng — giải phóng ổ đĩa rồi bấm <strong>Tiếp tục</strong></td>
+</tr>
+<tr>
+<td>Render chậm</td>
+<td>Tăng số luồng, chọn MP4 H.264 + GPU Tự động, dùng Full HD 30 fps cho bản nháp</td>
+</tr>
+<tr>
+<td>Bộ mã hoá hiện "CPU" dù có card NVIDIA</td>
+<td>Tab Xuất → <strong>🩺 Chẩn đoán GPU</strong> → làm theo hướng dẫn hiện ra (thường: cập nhật driver NVIDIA, tắt OBS/app ghi màn hình). Nhớ: ProRes luôn dùng CPU</td>
+</tr>
+<tr>
+<td>Chữ tiếng Việt bị cắt dấu</td>
+<td>Tăng <em>Giãn dòng</em> hoặc báo Claude Code (cảnh dùng mask)</td>
+</tr>
+<tr>
+<td>Muốn quay về bản trước</td>
+<td>Undo; hoặc đổi tên <code>.project.backup.json</code> thành <code>project.json</code> (bản trước lần lưu gần nhất)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="14-phim-tat">14. Phím tắt</h2>
+<table>
+<thead>
+<tr>
+<th>Phím</th>
+<th>Tác dụng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Phím cách</strong></td>
+<td>Phát / dừng</td>
+</tr>
+<tr>
+<td><strong>Ctrl + S</strong></td>
+<td>Lưu</td>
+</tr>
+<tr>
+<td><strong>Ctrl + Z / Ctrl + Y</strong></td>
+<td>Hoàn tác / làm lại</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Kế hoạch các phiên bản tiếp theo (ứng dụng .exe, thư viện mẫu, brand kit, xuất hàng loạt theo khách/ngôn ngữ…): xem <code>docs/KE_HOACH_PHAT_TRIEN.md</code>.</em></p></body></html>

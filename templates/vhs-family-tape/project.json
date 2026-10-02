@@ -1,0 +1,128 @@
+{
+ "name": "Family Tape (mẫu)",
+ "client": "",
+ "version": 1,
+ "formats": [
+  "16:9",
+  "9:16"
+ ],
+ "brand": {
+  "colors": {
+   "tapeBlack": "#1A1410",
+   "tungsten": "#FFB45C",
+   "cream": "#E0DCCF",
+   "sky": "#3FA7D6",
+   "vhsBlue": "#1F2FB8"
+  }
+ },
+ "look": {
+  "grain": 0.07,
+  "vignette": 0.45,
+  "background": "#1A1410"
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Mở đầu – băng VHS bật lên (REC · 1998 · PLAY)",
+   "start": 0,
+   "end": 121,
+   "animLength": 121
+  },
+  {
+   "id": "S02",
+   "label": "Ảnh gia đình xưa trên băng VHS",
+   "start": 121,
+   "end": 361,
+   "animLength": 240,
+   "fadeIn": 2
+  },
+  {
+   "id": "S03",
+   "label": "Dừng hình rồi tua nhanh tới hôm nay",
+   "start": 361,
+   "end": 481,
+   "animLength": 120,
+   "fadeIn": 2
+  },
+  {
+   "id": "S04",
+   "label": "Reel hiện đại sắc nét (xếp quạt)",
+   "start": 481,
+   "end": 721,
+   "animLength": 240,
+   "fadeIn": 2
+  },
+  {
+   "id": "S05",
+   "label": "Số liệu mẫu – follower / like",
+   "start": 721,
+   "end": 961,
+   "animLength": 240
+  },
+  {
+   "id": "S06",
+   "label": "Kết – logo SAMI trên màn xanh VHS",
+   "start": 961,
+   "end": 1201,
+   "animLength": 240,
+   "fadeIn": 2
+  }
+ ],
+ "copy": {
+  "S01_play": {"label": "Chữ máy VHS góc trên trái cảnh 1 (vd PLAY ▶)", "scene": "S01", "value": "PLAY ▶"},
+  "S01_rec": {"label": "Chữ REC nhấp nháy góc trên phải cảnh 1", "scene": "S01", "value": "REC"},
+  "S01_year": {"label": "Năm thành lập – số lớn giữa màn hình cảnh 1", "scene": "S01", "value": "1998"},
+  "S01_title": {"label": "Dòng chữ dưới năm lớn cảnh 1 (/ để xuống dòng)", "scene": "S01", "value": "Eine Familie. / Ein Rezept."},
+  "S01_date": {"label": "Ngày tháng kiểu máy quay (góc dưới phải cảnh 1, góc dưới cảnh 2)", "scene": "S01", "value": "MAI 12 1998"},
+  "S02_image": {"label": "Ảnh gia đình / ngày đầu mở quán (dùng lại 3 khung cắt khác nhau ở cảnh 2 và 3)", "scene": "S02", "value": "img/placeholder_family.jpg"},
+  "S02_cap1": {"label": "Chú thích VHS ảnh 1 (góc dưới trái cảnh 2)", "scene": "S02", "value": "Der erste Tag."},
+  "S02_cap2": {"label": "Chú thích VHS ảnh 2 (góc dưới trái cảnh 2)", "scene": "S02", "value": "Omas Rezept."},
+  "S02_cap3": {"label": "Chú thích VHS ảnh 3 (góc dưới trái cảnh 2)", "scene": "S02", "value": "Bis heute am Herd."},
+  "S02_osd": {"label": "Chữ máy VHS góc trên trái cảnh 2", "scene": "S02", "value": "PLAY ▶"},
+  "S03_pause": {"label": "Chữ dừng hình góc trên trái cảnh 3", "scene": "S03", "value": "PAUSE ▮▮"},
+  "S03_ff": {"label": "Ký hiệu tua nhanh cạnh năm lớn cảnh 3", "scene": "S03", "value": "▶▶"},
+  "S03_from": {"label": "Năm bắt đầu tua (số, cảnh 3)", "scene": "S03", "value": "1998"},
+  "S03_to": {"label": "Năm hiện tại – tua tới (số, cảnh 3)", "scene": "S03", "value": "2026"},
+  "S03_line": {"label": "Câu hỏi dưới năm lớn cuối cảnh 3", "scene": "S03", "value": "Und heute?"},
+  "S04_image": {"label": "Ảnh trong các khung Reel (dùng 3 khung cắt khác nhau, cảnh 4)", "scene": "S04", "value": "img/placeholder_reel.jpg"},
+  "S04_title": {"label": "Tiêu đề lớn cảnh 4 (*…* tô màu, / xuống dòng)", "scene": "S04", "value": "Eure Geschichte. / *Jetzt als Reel.*"},
+  "S04_sub": {"label": "Dòng phụ dưới tiêu đề cảnh 4", "scene": "S04", "value": "Reels · Stories · Fotos – gedreht, geschnitten, gepostet."},
+  "S04_handle": {"label": "Tên tài khoản trong khung Reel (góc dưới)", "scene": "S04", "value": "@familienrestaurant"},
+  "S04_cap1": {"label": "Chú thích Reel giữa (trước nhất)", "scene": "S04", "value": "28 Jahre. Ein Rezept."},
+  "S04_cap2": {"label": "Chú thích Reel bên trái", "scene": "S04", "value": "Hinter den Kulissen"},
+  "S04_cap3": {"label": "Chú thích Reel bên phải", "scene": "S04", "value": "Omas Pho, neu erzählt"},
+  "S05_title": {"label": "Tiêu đề trên các con số cảnh 5 (*…* tô màu)", "scene": "S05", "value": "So kann ein Monat / *aussehen.*"},
+  "S05_note": {"label": "Nhãn cảnh báo số liệu mẫu (giữ lại nếu số chưa thật)", "scene": "S05", "value": "Beispielwerte"},
+  "S05_n1": {"label": "Con số ô 1 (chỉ ghi số)", "scene": "S05", "value": "2400"},
+  "S05_p1": {"label": "Dấu trước con số ô 1 (vd +)", "scene": "S05", "value": "+"},
+  "S05_l1": {"label": "Chú thích ô số 1", "scene": "S05", "value": "neue Follower"},
+  "S05_n2": {"label": "Con số ô 2 (chỉ ghi số)", "scene": "S05", "value": "18600"},
+  "S05_l2": {"label": "Chú thích ô số 2", "scene": "S05", "value": "Likes"},
+  "S05_n3": {"label": "Con số ô 3 (chỉ ghi số)", "scene": "S05", "value": "1250"},
+  "S05_l3": {"label": "Chú thích ô số 3", "scene": "S05", "value": "Mal gespeichert"},
+  "S06_osd": {"label": "Chữ máy VHS góc trên trái màn xanh cuối", "scene": "S06", "value": "PLAY ▶"},
+  "S06_cta": {"label": "Nút kêu gọi trên màn cuối", "scene": "S06", "value": "Jetzt Termin sichern"},
+  "S06_tagline": {"label": "Khẩu hiệu dưới logo SAMI", "scene": "S06", "value": "Strategy • Automation • Marketing • Intelligence"},
+  "S06_phone": {"label": "Số WhatsApp màn cuối", "scene": "S06", "value": "+49 155 60456888"},
+  "S06_url": {"label": "Website màn cuối", "scene": "S06", "value": "sami-agency.de"}
+ },
+ "titles": [],
+ "overlays": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {"font": "Be Vietnam Pro", "weight": 700, "color": "#FFFFFF", "highlight": "#FFB45C", "shadow": true}
+ },
+ "audio": {
+  "mode": "layers",
+  "music": {"src": "", "gain": -4, "edit": [], "fadeOut": 2.5},
+  "cues": [
+   {"t": 0.1, "sfx": "key_enter", "gain": -12, "label": "bấm PLAY"},
+   {"t": 12.6, "sfx": "whoosh_c", "gain": -14, "label": "tua băng"},
+   {"t": 16.03, "sfx": "sub_hit", "gain": -10, "label": "cắt sang hình sắc nét"},
+   {"t": 32.03, "sfx": "whoosh_a", "gain": -16, "label": "màn xanh kết"},
+   {"t": 34.5, "sfx": "pop", "gain": -12, "label": "nút CTA"}
+  ]
+ }
+}
