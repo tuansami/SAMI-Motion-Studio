@@ -19,3 +19,6 @@ Thumbs.db
 vendor/
 **/public/_hf/
 **/public/_lib/
+
+# machine-specific ComfyUI workflows (providers/workflows/README.md)
+providers/workflows/*.json

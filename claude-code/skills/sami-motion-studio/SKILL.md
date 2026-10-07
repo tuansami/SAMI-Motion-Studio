@@ -35,7 +35,7 @@ Both engines live in one timeline: crossfades, warp (TSX only), titles, subtitle
 | New/changed visual, new scene | `hf/<ID>.html` (default) or `scenes/<ID>.tsx`, plus `project.json → scenes/copy` |
 | New text field | `project.json → copy.<ID>_<name>` with a Vietnamese `label` saying WHERE it appears |
 | Music / SFX / voice | `references/audio-sfx.md` — library first (`lib:sfx/…`), cue on the beat grid |
-| Images / video / music to generate or find | `references/assets.md` — stock first, cost OK before paid generation |
+| Images / video / music / voice to find or generate | `references/providers.md` (MCP `sami-media`): library → stock → browser subscriptions → paid API only after estimate + Tuấn's OK |
 | Reusable template | `<app>/docs/TEMPLATE_STANDARD.md`; `node <app>/server/cli-template.mjs check templates/<id>` without ✗ |
 | Motion carousel (Instagram/Facebook slides that move) | skill **sami-carousel** (`type: "carousel"`, one loop MP4 per slide) |
 | Whole new video | Studio "Tạo dự án mới" from a template (`hf-starter` for HTML scenes) + client asset folder; never copy an old project |

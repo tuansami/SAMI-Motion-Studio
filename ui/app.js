@@ -266,7 +266,7 @@ function renderRatios() {
 // ─────────────────────────── INSPECTOR TABS ───────────────────────────
 $$('#tabs button').forEach((b) => (b.onclick = () => { S.tab = b.dataset.tab; $$('#tabs button').forEach((x) => x.classList.toggle('on', x === b)); renderTab(); }));
 function renderAll() { renderRatios(); renderScenes(); renderScrub(); renderTab(); $('#dirty').hidden = !isDirty(); $('#projStatus').value = S.project.status || 'draft'; }
-function renderTab() { setTimeout(renderHandles, 0); const B = $('#tabBody'); B.innerHTML = ''; ({text: tabText, titles: tabTitles, overlays: tabOverlays, subs: tabSubs, audio: tabAudio, look: tabLook, render: tabRender, history: tabHistory, variants: tabVariants})[S.tab](B); }
+function renderTab() { setTimeout(renderHandles, 0); const B = $('#tabBody'); B.innerHTML = ''; ({text: tabText, titles: tabTitles, overlays: tabOverlays, subs: tabSubs, audio: tabAudio, look: tabLook, render: tabRender, history: tabHistory, variants: tabVariants, ai: tabAI})[S.tab](B); }
 
 const field = (label, input, hint) => h('label', {}, label, input, hint ? h('div', {class: 'hint'}, hint) : null);
 const assetSelect = (value, type, onchange) => {
@@ -692,6 +692,109 @@ async function diagnoseGpu() {
   } catch (e) { modal(h('div', {}, h('h3', {}, 'Chẩn đoán GPU'), h('p', {class: 'v-fail'}, e.message))); }
 }
 
+// ─────────────────────────── NGUỒN & AI (providers/gateway.mjs) ───────────────────────────
+const KIND_LABEL = {img: 'Ảnh', video: 'Video', music: 'Nhạc', sfx: 'Hiệu ứng âm thanh', voice: 'Giọng đọc'};
+const usdT = (x) => (+x || 0).toFixed(3).replace(/0+$/, '').replace(/\.$/, '') + ' USD';
+S.ai = {q: '', kind: 'img', provider: 'auto', orientation: '', items: null, errors: [], gen: {kind: 'img', provider: '', prompt: '', n: 1, ratio: '9:16', seconds: 30, voice: '', model: ''}, est: null, to: 'project', busy: false};
+async function tabAI(B) {
+  const A = S.ai;
+  let P; try { P = await api('/api/providers'); } catch (e) { B.append(h('div', {class: 'v-fail'}, e.message)); return; }
+  if (S.tab !== 'ai') return;
+  const L = P.ledger;
+  B.append(h('div', {class: 'hint', style: 'margin:0 0 10px'}, `Thứ tự: thư viện SAMI → stock miễn phí → gói web (ChatGPT, Gemini, Flow, Suno qua Claude Code) → API trả tiền. Hôm nay đã dùng ${usdT(L.day)} / ${P.caps.dailyUsd} USD · tháng ${usdT(L.month)} / ${P.caps.monthlyUsd} USD.`));
+  const dest = h('div', {class: 'seg', style: 'margin-bottom:12px'}, ...[['project', 'Lưu vào dự án'], ['library', 'Lưu vào thư viện SAMI']].map(([v, t]) => h('button', {class: A.to === v ? 'on' : '', onclick: () => { A.to = v; renderTab(); }}, t)));
+  B.append(dest);
+  const afterSave = async (r) => { if (r.rel) { S.assets = await api('/api/project/assets?id=' + S.id); toast(`Đã lưu ${r.rel}${r.duplicate ? ' (đã có sẵn)' : ''}`); } else toast(`Đã lưu vào thư viện: ${r.uri}${r.duplicate ? ' (đã có sẵn)' : ''}`, false, 5000); };
+
+  // — stock —
+  const stock = P.providers.filter((p) => p.stock);
+  const sg = h('div', {class: 'group'}, h('h4', {}, 'Tìm ảnh / video stock (miễn phí)'));
+  const q = h('input', {value: A.q, placeholder: 'VD: pho bo, restaurant interior, chef cooking…', onkeydown: (e) => { if (e.key === 'Enter') go(); }});
+  const go = async () => { A.q = q.value.trim(); if (!A.q) return; A.items = null; A.errors = []; renderTab(); try { const r = await api(`/api/providers/stock?q=${encodeURIComponent(A.q)}&kind=${A.kind}&provider=${A.provider}&orientation=${A.orientation}`); A.items = r.items; A.errors = r.errors; } catch (e) { A.items = []; A.errors = [e.message]; } if (S.tab === 'ai') renderTab(); };
+  sg.append(h('div', {class: 'row'}, q, h('button', {class: 'primary', onclick: go}, 'Tìm')),
+    h('div', {class: 'cols3', style: 'margin-top:8px'},
+      h('select', {onchange: (e) => { A.kind = e.target.value; }}, ...['img', 'video'].map((k) => h('option', {value: k, selected: A.kind === k}, KIND_LABEL[k]))),
+      h('select', {onchange: (e) => { A.provider = e.target.value; }}, h('option', {value: 'auto'}, 'Mọi nguồn có khoá'), ...stock.map((p) => h('option', {value: p.id, selected: A.provider === p.id, disabled: !p.available}, p.label + (p.available ? '' : ' (chưa có khoá)')))),
+      h('select', {onchange: (e) => { A.orientation = e.target.value; }}, ...[['', 'Mọi hướng'], ['portrait', 'Dọc'], ['landscape', 'Ngang'], ['square', 'Vuông']].map(([v, t]) => h('option', {value: v, selected: A.orientation === v}, t)))));
+  if (A.items === null && A.q) sg.append(h('div', {class: 'muted', style: 'margin-top:8px'}, 'Đang tìm…'));
+  for (const e of A.errors) sg.append(h('div', {class: 'v-warn', style: 'font-size:12px;margin-top:6px'}, e));
+  if (A.items?.length) sg.append(h('div', {class: 'stockGrid'}, ...A.items.map((it) => h('div', {class: 'stk', title: `${it.title}\n${it.author || ''} · ${it.provider}\n${it.licence?.name || ''}`},
+    it.thumb ? h('img', {src: it.thumb, loading: 'lazy', referrerpolicy: 'no-referrer'}) : h('div', {class: 'ph'}, it.title),
+    h('div', {class: 'meta'}, `${it.provider}${it.duration ? ' · ' + it.duration + ' s' : ''} · ${it.w}×${it.h}`),
+    h('button', {class: 'small', onclick: async (ev) => { ev.target.disabled = true; ev.target.textContent = '…'; try { await afterSave(await api('/api/providers/stock/fetch', {item: it, id: S.id, to: A.to})); ev.target.textContent = '✓'; } catch (e) { ev.target.disabled = false; ev.target.textContent = 'Lấy'; toast(e.message, true, 6000); } }}, 'Lấy')))));
+  else if (A.items) sg.append(h('div', {class: 'muted', style: 'margin-top:8px'}, 'Không có kết quả.'));
+  B.append(sg);
+
+  // — generate —
+  const G = A.gen; const gens = P.providers.filter((p) => !p.stock && p.kinds.includes(G.kind));
+  if (!gens.some((p) => p.id === G.provider)) G.provider = (gens.find((p) => p.available && !p.paid) || gens.find((p) => p.available) || gens[0])?.id || '';
+  const pv = P.providers.find((p) => p.id === G.provider);
+  const gg = h('div', {class: 'group'}, h('h4', {}, 'Tạo bằng AI'));
+  const setG = (k, v, re = false) => { G[k] = v; A.est = null; if (re) renderTab(); };
+  gg.append(h('div', {class: 'cols2'},
+    field('Loại', h('select', {onchange: (e) => setG('kind', e.target.value, true)}, ...['img', 'voice', 'music', 'sfx', 'video'].map((k) => h('option', {value: k, selected: G.kind === k}, KIND_LABEL[k])))),
+    field('Nguồn', h('select', {onchange: (e) => { setG('provider', e.target.value, true); G.model = ''; G.voice = ''; }}, ...gens.map((p) => h('option', {value: p.id, selected: p.id === G.provider}, `${p.label}${p.paid ? ' · trả tiền' : p.web ? ' · gói web' : ' · miễn phí'}${p.available ? '' : ' (chưa sẵn sàng)'}`))))));
+  if (pv && !pv.available) gg.append(h('div', {class: 'v-warn', style: 'font-size:12px;margin:-4px 0 8px'}, pv.reason));
+  if (pv?.web) gg.append(h('div', {class: 'hint'}, `Gói web chạy bằng trình duyệt thật của bạn: nhờ Claude Code "tạo bằng ${pv.label}" (kịch bản ${pv.recipe}). Bạn cần có mặt và đã đăng nhập.`));
+  const prompt = h('textarea', {rows: 4, placeholder: G.kind === 'voice' ? 'Lời thoại…' : G.kind === 'sfx' && G.provider === 'synth-sfx' ? 'Tên hiệu ứng: whoosh, pop, chime, riser, impact…' : 'Mô tả (tiếng Anh cho kết quả tốt nhất). Không cần chữ trên ảnh: chữ nằm ở tab Chữ.', oninput: (e) => setG('prompt', e.target.value)}, G.prompt);
+  gg.append(field(G.kind === 'voice' ? 'Lời thoại' : 'Prompt', prompt));
+  const row = h('div', {class: 'cols3'});
+  if (['img', 'sfx'].includes(G.kind)) row.append(field('Số lượng', h('input', {type: 'number', min: 1, max: G.kind === 'img' ? 8 : 4, value: G.n, oninput: (e) => setG('n', +e.target.value)})));
+  if (['img', 'video'].includes(G.kind)) row.append(field('Tỉ lệ', h('select', {onchange: (e) => setG('ratio', e.target.value)}, ...['9:16', '4:5', '1:1', '16:9', '3:2', '2:3'].map((r) => h('option', {value: r, selected: G.ratio === r}, r)))));
+  if (['music', 'sfx'].includes(G.kind)) row.append(field('Độ dài (s)', h('input', {type: 'number', min: 0.5, max: 300, step: 0.5, value: G.seconds, oninput: (e) => setG('seconds', +e.target.value)})));
+  if (pv?.models) row.append(field('Model', h('select', {onchange: (e) => setG('model', e.target.value)}, ...pv.models.map((m) => h('option', {value: m, selected: (G.model || pv.defaults.model) === m}, m)))));
+  if (G.kind === 'voice' && pv?.voices) row.append(field('Giọng', h('select', {onchange: (e) => setG('voice', e.target.value)}, ...Object.entries(pv.voices).map(([v, t]) => h('option', {value: v, selected: (G.voice || pv.defaults.voice) === v}, t)))));
+  if (row.childNodes.length) gg.append(row);
+  const reqNow = () => ({provider: G.provider, kind: G.kind, prompt: G.prompt, n: ['img', 'sfx'].includes(G.kind) ? G.n : 1, ratio: ['img', 'video'].includes(G.kind) ? G.ratio : undefined, seconds: ['music', 'sfx'].includes(G.kind) ? G.seconds : undefined, model: G.model || undefined, voice: G.kind === 'voice' ? G.voice || undefined : undefined});
+  const run = async (token) => {
+    A.busy = true; renderTab();
+    try { const r = await api('/api/providers/generate', {req: reqNow(), token, id: S.id, to: A.to}); A.est = null; for (const f of r.files) await afterSave(f); toast(`Xong ${r.files.length} file · ${usdT(r.usd)}`, false, 5000); }
+    catch (e) { A.est = null; modal(h('div', {}, h('h3', {}, 'Tạo không thành công'), h('p', {class: 'v-fail', style: 'white-space:pre-wrap'}, e.message), h('p', {class: 'muted'}, 'Studio không tự chạy lại. Kiểm tra rồi bấm Ước tính lại.'))); }
+    A.busy = false; if (S.tab === 'ai') renderTab();
+  };
+  const actions = h('div', {class: 'row', style: 'flex-wrap:wrap'});
+  actions.append(h('button', {disabled: A.busy || !pv?.available || pv?.web, onclick: async () => { try { A.est = await api('/api/providers/estimate', {req: reqNow(), id: S.id, to: A.to}); } catch (e) { A.est = {error: e.message}; } renderTab(); }}, 'Ước tính chi phí'));
+  gg.append(actions);
+  const E = A.est;
+  if (A.busy) gg.append(h('div', {class: 'muted', style: 'margin-top:8px', id: 'aiProgress'}, 'Đang tạo… (không đóng Studio)'));
+  else if (E?.error) gg.append(h('div', {class: 'v-fail', style: 'margin-top:8px;white-space:pre-wrap'}, E.error));
+  else if (E) {
+    const box = h('div', {class: 'estBox'}, h('div', {}, h('b', {}, E.label), ` · ${E.units}`), h('div', {class: 'big'}, E.paid ? '≈ ' + usdT(E.usd) : 'Miễn phí'), E.notes ? h('div', {class: 'hint', style: 'margin:4px 0 0'}, E.notes) : null,
+      E.paid ? h('div', {class: 'muted', style: 'font-size:12px;margin-top:4px'}, `Sau lệnh này: hôm nay ${usdT(E.spent.day + E.usd)} / ${E.caps.dailyUsd} USD · tháng ${usdT(E.spent.month + E.usd)} / ${E.caps.monthlyUsd} USD`) : null);
+    if (E.blocked) box.append(h('div', {class: 'v-fail', style: 'margin-top:6px'}, E.blocked));
+    else if (E.paid) box.append(h('div', {class: 'row', style: 'margin-top:8px'}, h('button', {class: 'primary', onclick: () => run(E.token)}, `Xác nhận chạy · ≈ ${usdT(E.usd)}`), h('button', {onclick: () => { A.est = null; renderTab(); }}, 'Huỷ'), h('span', {class: 'muted', style: 'font-size:12px'}, 'Mã dùng 1 lần, hết hạn 10 phút')));
+    else box.append(h('div', {class: 'row', style: 'margin-top:8px'}, h('button', {class: 'primary', onclick: () => run(null)}, 'Chạy')));
+    gg.append(box);
+  }
+  B.append(gg);
+
+  // — keys —
+  const kg = h('div', {class: 'group'}, h('h4', {}, 'Khoá API'), h('div', {class: 'hint', style: 'margin:0 0 8px'}, 'Khoá được mã hoá bằng DPAPI của Windows trong %APPDATA%\\SAMI\\providers.json: chỉ tài khoản Windows này đọc được. Studio và Claude Code không bao giờ hiện lại khoá.'));
+  for (const [id, k] of Object.entries(P.keys)) {
+    const inp = h('input', {type: 'password', autocomplete: 'off', placeholder: k.source ? '••••••••  (dán khoá mới để thay)' : 'Dán khoá…'});
+    kg.append(h('div', {class: 'keyRow'}, h('div', {class: 'kl'}, h('b', {}, k.label), h('span', {class: k.source ? 'v-ok' : 'muted', style: 'font-size:12px'}, k.source === 'ui' ? ' ✓ đã đặt' : k.source === 'env' ? ' ✓ từ biến môi trường' : ' chưa đặt'), k.free ? h('span', {class: 'muted', style: 'font-size:12px'}, ' · miễn phí') : null, h('a', {href: k.url, target: '_blank', class: 'help', style: 'font-size:12px;margin-left:6px'}, 'lấy khoá ↗')),
+      h('div', {class: 'row'}, inp, h('button', {class: 'small', onclick: async () => { if (!inp.value.trim()) return; try { await api('/api/providers/key', {keyId: id, key: inp.value}); inp.value = ''; toast('Đã lưu khoá ' + k.label); renderTab(); } catch (e) { toast(e.message, true); } }}, 'Lưu'),
+        k.source === 'ui' ? h('button', {class: 'small danger', onclick: async () => { if (!confirm('Xoá khoá ' + k.label + '?')) return; await api('/api/providers/key', {keyId: id, delete: true}); renderTab(); }}, 'Xoá') : null)));
+  }
+  B.append(kg);
+
+  // — caps + ledger + local gateways —
+  const d = h('input', {type: 'number', min: 0, step: 0.5, value: P.caps.dailyUsd}), m = h('input', {type: 'number', min: 0, step: 1, value: P.caps.monthlyUsd});
+  const cg = h('div', {class: 'group'}, h('h4', {}, 'Trần chi phí & sổ chi phí'),
+    h('div', {class: 'cols3'}, field('USD / ngày', d), field('USD / tháng', m), h('label', {}, ' ', h('button', {onclick: async () => { try { await api('/api/providers/caps', {dailyUsd: d.value, monthlyUsd: m.value}); toast('Đã lưu trần chi phí'); renderTab(); } catch (e) { toast(e.message, true); } }}, 'Lưu trần'))));
+  let LG = null; try { LG = await api('/api/providers/ledger?limit=20'); } catch {}
+  if (LG?.recent?.length) cg.append(h('table', {class: 'ledger'}, h('tr', {}, h('th', {}, 'Lúc'), h('th', {}, 'Nguồn'), h('th', {}, 'Kết quả'), h('th', {}, 'USD')),
+    ...LG.recent.map((r) => h('tr', {title: r.note || ''}, h('td', {}, new Date(r.ts).toLocaleString('vi-VN', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'})), h('td', {}, r.provider), h('td', {class: r.status === 'ok' ? '' : 'v-fail'}, r.status === 'ok' ? 'ok' : 'lỗi'), h('td', {}, r.charged ? usdT(r.charged) : '0')))));
+  else cg.append(h('div', {class: 'muted'}, 'Chưa có lệnh nào.'));
+  B.append(cg);
+  const lg = h('div', {class: 'group'}, h('h4', {}, 'Cổng AI cục bộ (tuỳ chọn)'), h('div', {class: 'hint', style: 'margin:0 0 8px'}, 'Kokoro-FastAPI (giọng, không có tiếng Việt) và ComfyUI (ACE-Step nhạc, Stable Audio SFX) chạy trên máy này. Studio không tự cài model.'));
+  for (const id of ['kokoro', 'comfyui']) {
+    const pp = P.providers.find((x) => x.id === id); const inp = h('input', {value: P.opts[id]?.url || '', placeholder: pp.defaults.url});
+    lg.append(field(`${pp.label} · ${pp.available ? '✓ đang chạy' : pp.reason}`, h('div', {class: 'row'}, inp, h('button', {class: 'small', onclick: async () => { try { await api('/api/providers/opts', {id, opts: {url: inp.value.trim()}}); renderTab(); } catch (e) { toast(e.message, true); } }}, 'Lưu'))));
+  }
+  B.append(lg);
+}
+
 // ─────────────────────────── HISTORY (điểm neo) ───────────────────────────
 const keepUndo = () => { try { sessionStorage.setItem('undo_' + S.id, JSON.stringify({hist: S.hist.slice(-40), fut: S.fut.slice(-40)})); } catch {} };
 const HKIND = {ai: ['AI', 'Trước một lượt chat với Claude Code'], save: ['Lưu', 'Khi bấm Lưu trong Studio'], open: ['Mở', 'Khi mở dự án'], manual: ['Mốc', 'Mốc bạn tự đặt'], 'before-restore': ['Trước khôi phục', 'Tự lưu ngay trước một lần khôi phục — khôi phục điểm này để hoàn tác'], 'before-upload': ['Trước thay media', 'Tự lưu trước khi một file trùng tên bị ghi đè']};
@@ -898,6 +1001,7 @@ function connectEvents() {
   es.addEventListener('ping', beat);
   es.addEventListener('template', (e) => { const d = JSON.parse(e.data); toast(d.thumbs ? `Đã tạo ảnh bìa cho mẫu ${d.tpl}` : `Tạo ảnh bìa mẫu ${d.tpl} lỗi: ${d.error || ''}`, !d.thumbs, 6000); });
   es.addEventListener('task', (e) => onTask(JSON.parse(e.data)));
+  es.addEventListener('provider', (e) => { const d = JSON.parse(e.data); const el = $('#aiProgress'); if (el && d.id === S.id) el.textContent = d.msg; });
   es.addEventListener('jobs', (e) => { beat(); onJobsData(JSON.parse(e.data)); });
   es.addEventListener('code', (e) => { const d = JSON.parse(e.data); if (d.id !== S.id) return; if (d.error) showBundleError(d.error); else { toast('Code cảnh vừa thay đổi — đang tải lại preview…'); keepUndo(); setTimeout(() => location.reload(), 600); } });
   es.addEventListener('hf', (e) => { const d = JSON.parse(e.data); if (d.id !== S.id) return; S.hfRev = d.rev; pushPreview(); toast('Cảnh HTML (Hyperframes) vừa thay đổi — đã tải lại khung preview'); });

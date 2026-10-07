@@ -1,6 +1,6 @@
 # HAND-OFF — Nâng cấp SAMI Motion Studio (v0.6 → v1.0)
 
-Cập nhật: 2026-10-08 · Người làm: Claude Code (phiên trước) · Chủ dự án: Tuấn (CEO SAMI)
+Cập nhật: 2026-10-08 (sau v0.8.0) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
 
 Đọc file này đầu tiên khi mở phiên mới. Trả lời Tuấn bằng tiếng Việt, ngắn gọn; viết "SAMI" in hoa; không dùng em-dash trong copy hiển thị.
 
@@ -13,17 +13,17 @@ Cập nhật: 2026-10-08 · Người làm: Claude Code (phiên trước) · Ch�
 | Kế hoạch tổng (đã duyệt 2026-10-08) | `C:\Users\Tuan\.claude\plans\y-desktop-live-carousel-skill-zip-y-des-smooth-haven.md` |
 | **v0.6.0 Nền móng** | ✅ commit `e7306a8` |
 | **v0.7.0 Carousel động** | ✅ commit `88604e6` |
-| v0.8.0 Cổng AI | ⏳ **việc tiếp theo** (cần Tuấn trả lời mục 3) |
-| v0.9.0 Footage / PiP / B-roll | chưa làm |
+| **v0.8.0 Cổng AI** | ✅ commit trên cùng nhánh (xem `git log`); còn 2 phép thử cần Tuấn, mục 3 |
+| v0.9.0 Footage / PiP / B-roll | ⏳ **việc tiếp theo** |
 | v1.0.0 Hoàn thiện | chưa làm |
 
 - **Git:**
   - Nhánh `feat/v0.6-nen-mong` (tách từ `main` @ v0.5.0), working tree sạch.
   - **Chưa push, chưa tag, chưa tạo GitHub Release.** Tuấn chọn "chưa đẩy". Phải hỏi lại trước khi push.
   - `gh` đã đăng nhập tài khoản `tuansami`.
-- **Chi tiết từng bản:** `CHANGELOG.md` mục 0.6.0 và 0.7.0. Spec v0.6: `docs/specs/v0.6-nen-mong.md`. Lộ trình: `docs/KE_HOACH_PHAT_TRIEN.md`.
+- **Chi tiết từng bản:** `CHANGELOG.md` mục 0.6.0, 0.7.0, 0.8.0. Spec: `docs/specs/v0.6-nen-mong.md`, `docs/specs/v0.8-cong-ai.md`. Lộ trình: `docs/KE_HOACH_PHAT_TRIEN.md`.
 - **Skill đã cài** (nguồn: `claude-code/skills/`, cài bằng `node tools/install-skills.mjs --apply`):
-  - `~/.claude/skills/sami-motion-studio`: router + 9 references;
+  - `~/.claude/skills/sami-motion-studio`: router + 10 references (thêm `providers.md`);
   - `~/.claude/skills/sami-carousel`.
 - **Memory:** `motion-studio-upgrade-2026-10.md` và `motion-studio-lives-on-z.md`.
 
@@ -63,55 +63,17 @@ Cập nhật: 2026-10-08 · Người làm: Claude Code (phiên trước) · Ch�
 - **Chế độ ảnh carousel là bản gọn.** Chưa tách lớp chữ / bầu trời bằng OpenCV, chưa cắt chủ thể.
 - **17 nhóm helper `.tsx` chép trùng giữa các dự án** (liệt kê bằng `node tools/migrate.mjs`) chưa gom vào `lib/remotion`.
 
-## 3. Việc tiếp theo: v0.8.0 Cổng AI
+## 3. v0.8.0 Cổng AI (đã làm 2026-10-08)
 
-### Cần Tuấn trả lời trước khi code (hỏi bằng AskUserQuestion, tối đa 4 câu)
-1. **Ưu tiên đấu nối dịch vụ nào trước?** Tuấn có cả gói web lẫn khoá API trả tiền.
-   - Ảnh: OpenAI gpt-image, Gemini nano banana, Flux (BFL), fal, Replicate.
-   - Video: Veo / Flow, fal.
-   - Nhạc: Suno (web), ElevenLabs music, ACE-Step (chạy cục bộ).
-   - Giọng: ElevenLabs, edge-tts, Kokoro.
-   - Stock: Pexels, Pixabay, Unsplash, Wikimedia.
-2. **Khoá API:** Tuấn tự nhập trong UI Studio (lưu `%APPDATA%\SAMI\providers.json`, mã hoá DPAPI), hay muốn được hướng dẫn từng bước?
-3. **Trần chi phí:** bao nhiêu USD/ngày và USD/tháng?
-4. **Cài thêm:** cho phép cài `@modelcontextprotocol/sdk` (npm) và đăng ký MCP server `sami-media` vào Claude Code không?
+Tuấn đã trả lời: làm cả 4 nhóm (stock + cục bộ → ElevenLabs → API ảnh → trình duyệt); khoá tự nhập trong UI; trần **2 USD/ngày, 20 USD/tháng**; đã cài `@modelcontextprotocol/sdk@1.32.1` và đăng ký MCP `sami-media` cấp user (`claude mcp get sami-media`).
 
-### Luật cứng (từ memory và kế hoạch)
-- **KHÔNG** tạo ảnh bằng connector ElevenLabs trừ khi Tuấn yêu cầu bằng chữ.
-- Ưu tiên stock trước. Tạo ảnh hàng loạt thì dùng ChatGPT (5 ảnh một lệnh) hoặc Gemini nano banana qua trình duyệt, Tuấn tự đăng nhập.
-- Mọi lệnh tốn tiền:
-  - ước tính → mã xác nhận (dùng một lần, hết hạn 10 phút) → mới chạy;
-  - **không** tự chạy lại khi lỗi;
-  - **không** gửi nhiều yêu cầu cùng lúc.
-- Tự động hoá trình duyệt (ChatGPT / Gemini / Flow / Suno) chỉ chạy khi Tuấn có mặt và đã đăng nhập. Không vượt CAPTCHA. Ưu tiên skill browser-harness (Chrome thật của Tuấn), rồi tới Jev, rồi Claude in Chrome.
-- Mọi file sinh ra phải có `.meta.json` ghi prompt, model, chi phí và giấy phép.
-
-### Thiết kế (theo kế hoạch đã duyệt)
-```
-providers/
-  gateway.mjs      estimate → confirm token → run; trần ngày/tháng; ledger; ingest(file, meta) → SAMI_Library hoặc <project>/public
-  config.mjs       %APPDATA%\SAMI\providers.json (DPAPI qua PowerShell ConvertTo/From-SecureString), env fallback; UI chỉ thấy set/unset
-  ledger.mjs       %APPDATA%\SAMI\ledger.jsonl {ts, provider, model, est, actual, project, file, confirmedBy}
-  adapters/<id>.mjs  {id, kind, caps, local?, web?, estimate(req), run(req,{signal,onProgress}) → {files, meta}}
-  recipes/{chatgpt-image,gemini-image,flow-veo,suno}.md   kịch bản browser-harness → tải về → gateway.ingest
-  cli.mjs          node providers/cli.mjs gen image --provider … --prompt … --n 4 [--confirm <token>]
-  mcp.mjs          MCP stdio: list_providers, estimate, generate(confirm_token), search_stock, library_search, ledger
-```
-- Server: route `/api/providers/*`. UI: tab mới **"Nguồn & AI"**: tìm stock, sinh ảnh/nhạc/giọng, bảng chi phí từ ledger.
-- **Thứ tự làm:**
-  1. stock (Pexels, Pixabay: cần khoá miễn phí; Wikimedia: không cần khoá);
-  2. edge-tts và synth (`lib/py/sami_audio.py`) cục bộ;
-  3. ElevenLabs TTS / music (Tuấn đã lên gói Pro, model eleven_v4; giọng Anh Thu `FRYq6nepIbR0lbu7Lus4`, Ái Hạnh `pGapy9MNHCukzJtjavF0`);
-  4. OpenAI / Gemini / Flux / fal / Replicate;
-  5. kịch bản trình duyệt;
-  6. cổng cục bộ: ACE-Step (HTTP API, MIT), Stable Audio Open qua ComfyUI, Kokoro-FastAPI. **Chỉ dựng cổng, không tải model.** Ghi chú: GTX 1070 có 8 GB VRAM. Tránh MusicGen và F5-TTS vì trọng số không cho dùng thương mại.
-- **Kiểm tra:**
-  - `generate` không kèm token thì bị từ chối;
-  - adapter giả lập chạy trong selftest;
-  - lấy một ảnh stock thật có đủ meta giấy phép;
-  - một lệnh trả tiền chỉ chạy sau khi Tuấn OK trong chat;
-  - một lượt ChatGPT web sinh 5 ảnh.
-- **Release:** bump 0.8.0, viết CHANGELOG, `npm run check`, commit. Push / tag / Release **chỉ khi Tuấn đồng ý**.
+- Code: `providers/` (gateway, config DPAPI, ledger, tokens, adapters, recipes, cli, mcp, selftest). Tab UI "Nguồn & AI". Chi tiết: CHANGELOG 0.8.0, spec `docs/specs/v0.8-cong-ai.md`, skill `references/providers.md`.
+- Dữ liệu người dùng: `%APPDATA%\SAMI\{providers.json, ledger.jsonl, tokens.json, run.lock}`. Lúc bàn giao chưa có khoá nào, sổ trống.
+- **Còn 2 phép thử chờ Tuấn:**
+  1. Lệnh trả tiền thật đầu tiên: Tuấn nhập khoá (vd ElevenLabs) trong tab "Nguồn & AI", Claude `estimate`, Tuấn OK trong chat, rồi `generate`. Kiểm số `character-cost` ElevenLabs trả về khớp ước tính; model mặc định `eleven_v4` (nếu API báo sai model thì đổi mặc định ở `providers/adapters/elevenlabs.mjs`).
+  2. Một lượt ChatGPT web 5 ảnh theo `providers/recipes/chatgpt-image.md` (Tuấn có mặt, đã đăng nhập Chrome).
+- Giá trong `providers/pricing.mjs` là ước tính (2026-10); sửa không cần release qua `providers.json → opts.pricing`.
+- Không có adapter Veo API (trần 2 USD/ngày không đủ); video AI đi qua Flow web.
 
 ## 4. v0.9.0 Footage / B-roll / PiP / trim
 - **Nhập footage:** `media/` của dự án. Route `/api/media/import` → ffprobe → proxy NVENC 540p (`-g 15`) vào `media/.cache/proxy`.

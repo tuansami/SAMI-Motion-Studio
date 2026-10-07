@@ -81,3 +81,8 @@ label>input[type=color]{display:block}
 .stb{font-size:11px;border:1px solid;border-radius:20px;padding:0 8px;white-space:nowrap;font-weight:600}
 /* 0.6 — badge for Hyperframes (HTML) scenes in the scene list */
 .sc .eng { margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: .06em; padding: 1px 6px; border-radius: 6px; background: rgba(8, 221, 164, .15); color: var(--mint, #08DDA4); }
+/* Nguồn & AI */
+.stockGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}.stk{background:#0A0722;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}.stk img,.stk .ph{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#140f33}.stk .ph{font-size:11px;color:var(--muted);padding:6px;overflow:hidden}.stk .meta{font-size:10.5px;color:var(--muted);padding:3px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stk button{margin:0 5px 5px}
+.estBox{margin-top:10px;border:1px solid var(--purple);border-radius:10px;padding:10px;background:rgba(118,103,254,.08)}.estBox .big{font-size:20px;font-weight:700;color:var(--mint);margin-top:2px}
+.keyRow{border-top:1px solid var(--line);padding:8px 0}.keyRow .kl{margin-bottom:4px;font-size:13px}
+.ledger{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}.ledger th,.ledger td{text-align:left;padding:3px 4px;border-bottom:1px solid var(--line)}.ledger th{color:var(--muted);font-weight:500}

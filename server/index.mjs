@@ -18,6 +18,8 @@ import {stageHtml, resolveStaged, isHf, lintScene, HF_VERSION} from './hf.mjs';
 import * as library from './library.mjs';
 import * as history from './history.mjs';
 import {CMP_ROOT} from './review.mjs';
+import * as providers from '../providers/gateway.mjs';
+import * as pcfg from '../providers/config.mjs';
 
 const PORT = +(process.env.STUDIO_PORT || 5178);
 if (!caps()) refreshCaps(); // async NVENC/filter probe → .studio/caps.json (0.5 probed synchronously on the first request)
@@ -275,6 +277,23 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/library/brands') return json(res, library.listBrands().map((id) => ({id, ...library.readBrand(id)})));
     m = p.match(/^\/lib\/(.+)$/);
     if (m) { const f = library.resolveLib('lib:' + m[1]); if (!f) { res.writeHead(403); return res.end(); } return sendFile(req, res, f); }
+    // ── Nguồn & AI (providers/gateway.mjs): keys never leave config.mjs, paid runs need the one-time token ──
+    if (p.startsWith('/api/providers')) {
+      const b = req.method === 'POST' ? await jbody(req) : {};
+      const destFor = (x) => (x.to === 'project' ? dirs.get(x.id) || (() => { throw new Error('Chưa mở dự án'); })() : 'library');
+      if (p === '/api/providers') return json(res, {providers: await providers.listProviders(), keys: pcfg.keyStatus(), caps: pcfg.getCaps(), opts: {kokoro: pcfg.getOpts('kokoro'), comfyui: pcfg.getOpts('comfyui')}, ledger: providers.ledgerSummary({limit: 0})});
+      if (p === '/api/providers/key' && req.method === 'POST') return json(res, b.delete ? pcfg.deleteKey(b.keyId) : await pcfg.setKey(b.keyId, b.key));
+      if (p === '/api/providers/caps' && req.method === 'POST') return json(res, pcfg.setCaps(b));
+      if (p === '/api/providers/opts' && req.method === 'POST') { if (!['kokoro', 'comfyui'].includes(b.id)) return json(res, {error: 'không đổi được'}, 400); const url = String(b.opts?.url || ''); if (url && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/?$/.test(url)) return json(res, {error: 'Chỉ nhận địa chỉ cục bộ http://127.0.0.1:<cổng>'}, 400); return json(res, pcfg.setOpts(b.id, {url: url || undefined})); }
+      if (p === '/api/providers/stock') return json(res, await providers.searchStock({provider: u.searchParams.get('provider') || 'auto', q: u.searchParams.get('q'), kind: u.searchParams.get('kind') || 'img', orientation: u.searchParams.get('orientation') || undefined, page: +(u.searchParams.get('page') || 1), perPage: 24}));
+      if (p === '/api/providers/stock/fetch' && req.method === 'POST') { const r = await providers.fetchStock(b.item, {dest: destFor(b), confirmedBy: 'Studio · ' + userName()}); return json(res, {uri: r.uri, rel: r.rel, path: r.path, duplicate: r.duplicate, licence: r.meta.licence}); }
+      if (p === '/api/providers/estimate' && req.method === 'POST') return json(res, await providers.estimate({...b.req, dest: destFor(b)}));
+      if (p === '/api/providers/generate' && req.method === 'POST') {
+        const r = await providers.generate({...b.req, dest: destFor(b)}, {token: b.token, confirmedBy: 'Studio · ' + userName(), onProgress: (x) => broadcast('provider', {id: b.id, ...x})});
+        return json(res, {usd: r.usd, files: r.files.map((f) => ({uri: f.uri, rel: f.rel, path: f.path, duplicate: f.duplicate}))});
+      }
+      if (p === '/api/providers/ledger') return json(res, providers.ledgerSummary({limit: +(u.searchParams.get('limit') || 30)}));
+    }
     // preview bundle
     m = p.match(/^\/bundle\/([0-9a-f]{10})\/(.+)$/);
     if (m) {

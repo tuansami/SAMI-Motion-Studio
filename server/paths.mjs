@@ -21,5 +21,5 @@ export const LIBRARY = path.resolve(process.env.SAMI_LIBRARY || cfg.libraryRoot 
 /** caches that can always be deleted (bundles, previews, Hyperframes staging, temp) — Z:\SAMI_Video\.sami-cache */
 export const CACHE = path.resolve(process.env.SAMI_CACHE || cfg.cacheRoot || path.join(ROOT, '..', '.sami-cache'));
 /** per-user secrets + cost ledger (API keys never live in the repo or in projects) */
-export const USERDATA = path.join(process.env.APPDATA || path.join(os.homedir(), '.config'), 'SAMI');
+export const USERDATA = path.resolve(process.env.SAMI_USERDATA || path.join(process.env.APPDATA || path.join(os.homedir(), '.config'), 'SAMI'));
 export const cacheDir = (...p) => { const d = path.join(CACHE, ...p); fs.mkdirSync(d, {recursive: true}); return d; };

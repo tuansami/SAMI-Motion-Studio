@@ -19,6 +19,50 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [0.8.0] — 2026-10-08 — Cổng AI: stock, tạo ảnh / giọng / nhạc, chi phí có trần
+Lộ trình: v0.6 Nền móng ✅ → v0.7 Carousel ✅ → **v0.8 Cổng AI** → v0.9 Footage → v1.0. Spec: `docs/specs/v0.8-cong-ai.md`.
+
+### Thêm
+- **Cổng `providers/`**: mọi việc tìm, tạo, tải media đi qua một chỗ (`gateway.mjs`), dùng chung cho UI, CLI và MCP.
+  - **Stock miễn phí:** Pexels, Pixabay, Unsplash (cần khoá miễn phí), Wikimedia Commons (không cần khoá, chỉ lấy CC0 / PD / CC BY / CC BY-SA). Ảnh và video.
+  - **Miễn phí:** edge-tts (giọng nháp), SFX tổng hợp (`sami_audio.py`), cổng cục bộ Kokoro-FastAPI và ComfyUI (ACE-Step nhạc, Stable Audio SFX). Chỉ dựng cổng, không tải model.
+  - **Trả tiền:** ElevenLabs giọng / nhạc / hiệu ứng (có sẵn giọng Anh Thu, Ái Hạnh), OpenAI gpt-image, Gemini nano banana, Flux (BFL), fal, Replicate. fal và Replicate chỉ chạy model có trong bảng giá.
+  - **Gói web:** ChatGPT (5 ảnh một lệnh), Gemini, Google Flow / Veo, Suno. Claude chạy theo kịch bản `providers/recipes/*.md` bằng browser-harness, file tải về được ghi meta qua `ingest`.
+  - Không có adapter tạo ảnh ElevenLabs (luật cứng).
+- **Luật chi phí do gateway tự áp, không phụ thuộc người gọi:**
+  - lệnh trả tiền cần **mã xác nhận**: gắn với đúng yêu cầu, dùng 1 lần, hết hạn 10 phút, bị huỷ ngay khi chạy;
+  - **trần 2 USD/ngày, 20 USD/tháng** (Tuấn chốt; sửa trong UI); vượt trần thì không cấp mã;
+  - chỉ một lệnh trả tiền chạy một lúc (khoá dùng chung giữa UI, CLI, MCP); lỗi thì không tự chạy lại;
+  - lệnh lỗi sau khi đã gửi vẫn tính tiền ước tính vào sổ (phòng nhà cung cấp vẫn trừ).
+- **Khoá API** lưu ở `%APPDATA%\SAMI\providers.json`, mã hoá DPAPI (chỉ tài khoản Windows này giải được). UI và API chỉ trả "đã đặt / chưa". Có thể dùng biến môi trường thay thế.
+- **Sổ chi phí** `%APPDATA%\SAMI\ledger.jsonl`: mỗi lệnh một dòng (ước tính, thực tế nếu nhà cung cấp báo, người xác nhận).
+- **Meta cho mọi file:** `<file>.meta.json` ghi provider, model, prompt, tham số, chi phí, giấy phép (tên, link, ghi công, dùng thương mại được không), nguồn, tác giả, sha256. Mặc định lưu vào `SAMI_Library/assets/<kind>/<provider>/` (URI `lib:`), hoặc vào `public/<img|video|audio>/<provider>/` của dự án.
+- **Tab "Nguồn & AI"** trong trình soạn: tìm stock có ảnh thu nhỏ và nút Lấy, tạo bằng AI (Ước tính → nút Xác nhận chạy), khoá API, trần chi phí, sổ chi phí, địa chỉ cổng cục bộ.
+- **CLI** `node providers/cli.mjs list | stock | fetch | estimate | gen | ingest | ledger`.
+- **MCP server `sami-media`** (`providers/mcp.mjs`, đã đăng ký cấp user): `list_providers`, `search_stock`, `fetch_stock`, `estimate`, `generate` (cần `confirm_token`), `ingest_file`, `library_search`, `ledger`. Mã xác nhận không bao giờ lộ qua `ledger`.
+- Skill `sami-motion-studio`: thêm `references/providers.md`; bảng chọn việc trỏ tới đó.
+
+### Thay đổi
+- `server/paths.mjs`: `USERDATA` đổi được qua `SAMI_USERDATA` (dùng cho selftest).
+- `server/assets.mjs`: danh sách tài nguyên dự án bỏ qua file `.meta.json`.
+- Thêm gói `@modelcontextprotocol/sdk@1.32.1` (ghim phiên bản).
+
+### Đã kiểm
+- `npm run check`: 14 mục mới cho gateway (adapter giả lập, thư mục tạm, không mạng): không mã bị từ chối, mã sai yêu cầu bị từ chối, mã dùng lại bị từ chối, vượt trần bị chặn, lỗi vẫn tính tiền và không chạy lại, thiếu khoá thì không cấp mã, meta đủ trường, lọc giấy phép Wikimedia.
+- Stock thật: Wikimedia "pho bo" → ảnh CC0 có đủ tác giả, link, giấy phép; lấy trong UI vào dự án thử.
+- edge-tts tiếng Việt và SFX tổng hợp chạy thật.
+- MCP qua client SDK: đủ 8 tool; `generate` không mã báo lỗi; có mã thì chạy.
+- **Chưa kiểm với dịch vụ trả tiền thật** (chờ Tuấn nhập khoá và OK lệnh đầu tiên) và **chưa chạy lượt ChatGPT web 5 ảnh** (chờ Tuấn có mặt).
+
+### File chính
+- **Mới:** `providers/{gateway, config, ledger, tokens, net, pricing, cli, mcp, selftest}.mjs`, `providers/adapters/{stock, local, elevenlabs, images, web, mock}.mjs`, `providers/recipes/*.md`, `providers/workflows/README.md`, `docs/specs/v0.8-cong-ai.md`, `claude-code/skills/sami-motion-studio/references/providers.md`.
+- **Sửa:** `server/{index, paths, assets, selftest}.mjs`, `ui/{app.js, index.html, style.css}`, `package.json`, `CLAUDE.md`, skill `sami-motion-studio`.
+
+### Roll back
+`git checkout v0.7.0`. Gỡ MCP: `claude mcp remove sami-media -s user`. Khoá, sổ chi phí trong `%APPDATA%\SAMI` và file đã tải vào thư viện vẫn giữ nguyên.
+
+---
+
 ## [0.7.0] — 2026-10-08 — Carousel động (live carousel)
 Lộ trình: v0.6 Nền móng ✅ → **v0.7 Carousel** → v0.8 Cổng AI → v0.9 Footage → v1.0
 

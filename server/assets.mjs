@@ -23,5 +23,5 @@ export const importAssets = (srcDir, projDir) => {
 export const listAssets = (projDir) => {
   const pub = path.join(projDir, 'public');
   const walk = (d) => fs.existsSync(d) ? fs.readdirSync(d, {withFileTypes: true}).flatMap((e) => (e.isDirectory() ? (e.name === '_engine' ? [] : walk(path.join(d, e.name))) : [path.join(d, e.name)])) : [];
-  return walk(pub).map((f) => ({path: path.relative(pub, f).replace(/\\/g, '/'), type: typeOf(f), size: fs.statSync(f).size}));
+  return walk(pub).filter((f) => !f.endsWith('.meta.json')).map((f) => ({path: path.relative(pub, f).replace(/\\/g, '/'), type: typeOf(f), size: fs.statSync(f).size}));
 };

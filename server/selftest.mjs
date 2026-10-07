@@ -80,6 +80,16 @@ await t('python audio synth (numpy): seamless 2 s mix', async () => {
     const n = fs.statSync(path.join(d, 'm.wav')).size; if (Math.abs(n - (44 + 2 * 48000 * 4)) > 64) throw new Error('length ' + n);
   } finally { fs.rmSync(d, {recursive: true, force: true}); }
 });
+// ── 0.8: AI gateway (mock adapters, throw-away key/ledger/library folders, no network) ──
+await t('providers/* parse', () => { const d = path.join(ROOT, 'providers'); for (const f of [...fs.readdirSync(d).filter((x) => x.endsWith('.mjs')).map((x) => path.join(d, x)), ...fs.readdirSync(path.join(d, 'adapters')).map((x) => path.join(d, 'adapters', x))]) { const r = spawnSync(process.execPath, ['--check', f], {encoding: 'utf8'}); if (r.status) throw new Error(path.basename(f) + ': ' + r.stderr.split('\n').slice(0, 3).join(' ')); } });
+{
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-gw-'));
+  try {
+    const r = spawnSync(process.execPath, [path.join(ROOT, 'providers', 'selftest.mjs')], {encoding: 'utf8', env: {...process.env, SAMI_PROVIDERS_TEST: '1', SAMI_USERDATA: path.join(d, 'ud'), SAMI_LIBRARY: path.join(d, 'lib')}});
+    for (const line of (r.stdout || '').split('\n').filter(Boolean)) line.startsWith('✗') ? fail('gateway: ' + line.slice(2)) : ok('gateway: ' + line.slice(2));
+    if (r.status && !/✗/.test(r.stdout || '')) fail('gateway selftest — ' + (r.stderr || '').slice(-300));
+  } finally { fs.rmSync(d, {recursive: true, force: true}); }
+}
 await t('encoder caps (async probe, NVENC/QSV/AMF)', async () => { const {capsReady} = await import('./ffmpeg.mjs'); const c = await capsReady(); return `Remotion NVENC ${c.remotion.nvenc ? '✓' : '–'} · ffmpeg ${c.full.full ? 'đầy đủ' : 'đi kèm'} NVENC ${c.full.nvenc ? '✓' : '–'}`; });
 
 // version history round trip on a throw-away copy of a template
