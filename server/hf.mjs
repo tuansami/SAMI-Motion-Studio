@@ -30,7 +30,9 @@ export const ratioTag = (r) => String(r).replace(':', 'x');
 const projKey = (dir) => crypto.createHash('sha1').update(path.resolve(dir).toLowerCase()).digest('hex').slice(0, 10);
 
 /** time span of the scene's Sequence in base frames (same maths as Main.tsx SceneStack) */
+export const isCarousel = (p) => p?.type === 'carousel';
 export const sceneSpan = (p, s) => {
+  if (isCarousel(p)) return {a: s.start, b: s.end, dur: (s.end - s.start) / 30}; // carousel slide = exact seamless loop, no crossfade
   const S = p.scenes; const i = S.findIndex((x) => x.id === s.id); const T = S.length ? S[S.length - 1].end : 30;
   const a = i === 0 ? -OV : s.start - OV; const b = Math.min(T, s.end + OV);
   return {a, b, dur: (b - a) / 30};
@@ -41,7 +43,14 @@ export const sceneData = (p, s, ratio, fps) => {
   const st = STAGES[ratio] || STAGES['16:9'];
   const copy = {}; for (const [k, v] of Object.entries(p.copy || {})) copy[k] = v?.value;
   return {copy, brand: {colors: {...DEFAULT_COLORS, ...(p.brand?.colors || {})}, gradient: p.brand?.gradient || null, fonts: p.brand?.fonts || {}},
-    ratio, w: st.w, h: st.h, fps, scene: s.id, dur: +sceneSpan(p, s).dur.toFixed(4), t0: OV / 30, project: p.name || ''};
+    ratio, w: st.w, h: st.h, fps, scene: s.id, dur: +sceneSpan(p, s).dur.toFixed(4), t0: isCarousel(p) ? 0 : OV / 30, project: p.name || '',
+    ...(isCarousel(p) ? carouselData(p, s) : {})};
+};
+/** carousel: slide index/count + where this slide sits in the whole carousel (for continuing progress / protagonist) */
+const carouselData = (p, s) => {
+  const S = p.scenes || []; const i = S.findIndex((x) => x.id === s.id); const c = p.carousel || {};
+  return {slide: {index: i, count: S.length, start: s.start / 30, total: (S.at(-1)?.end || 0) / 30},
+    carousel: {series: c.series || '', handle: c.handle || '', theme: c.theme || 'sami', swipe: c.swipe || 'Swipe'}, photo: s.photo || null};
 };
 
 const setAttr = (tag, name, value) => {
@@ -50,7 +59,7 @@ const setAttr = (tag, name, value) => {
 };
 
 /** scene HTML → staged HTML (root sized/timed for this ratio, SAMI data + runtime injected) */
-export const stageHtml = (dir, p, s, ratio, fps, {preview = false} = {}) => {
+export const stageHtml = (dir, p, s, ratio, fps, {preview = false, audio = null} = {}) => {
   const src = path.join(dir, s.src || `hf/${s.id}.html`);
   if (!fs.existsSync(src)) throw new Error(`Thiếu file cảnh ${path.relative(dir, src)}`);
   let html = fs.readFileSync(src, 'utf8');
@@ -69,8 +78,11 @@ export const stageHtml = (dir, p, s, ratio, fps, {preview = false} = {}) => {
     ? `window.__samiData=${liveStr};window.SAMI=${data};(function(S){try{var o=JSON.parse(sessionStorage.getItem('sami:'+S.scene+':'+S.ratio)||'null');if(o){S.copy=o.copy||S.copy;var b=o.brand||{};S.brand={colors:Object.assign({},S.brand.colors,b.colors||{}),gradient:b.gradient||S.brand.gradient,fonts:b.fonts||S.brand.fonts};}}catch(e){}})(window.SAMI);`
     : `window.SAMI=${data};`;
   const head = `<meta charset="utf-8"><script>${dataJs}</script><link rel="stylesheet" href="_sami/sami.css">` +
-    (/_gsap\/gsap(\.min)?\.js/.test(html) ? '' : '<script src="_gsap/gsap.min.js"></script>') + '<script src="_sami/sami-hf.js"></script>';
+    (/_gsap\/gsap(\.min)?\.js/.test(html) ? '' : '<script src="_gsap/gsap.min.js"></script>') + '<script src="_sami/sami-hf.js"></script>' +
+    (isCarousel(p) ? '<link rel="stylesheet" href="_sami/carousel.css"><script src="_sami/carousel.js"></script>' : '');
   html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, (h) => h + head) : html.replace(/<html[^>]*>/i, (h) => h + '<head>' + head + '</head>');
+  // carousel slides carry their own sound (seamless-loop mix) → Hyperframes muxes it into the slide MP4
+  if (audio) html = html.replace(tag, tag + `<audio id="sami-mix" src="${audio}" data-start="0" data-duration="${dur}" data-volume="1"></audio>`);
   if (preview) {
     const tail = '<script src="_hfrt.js"></script><script src="_sami/shim.js"></script>';
     html = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, tail + '</body>') : html + tail;
@@ -90,20 +102,22 @@ export const resolveStaged = (dir, rel) => {
   if (rel.startsWith('_gsap/')) return pick(GSAP_DIST, rel.slice(6));
   if (rel.startsWith('_fonts/')) return pick(FONTS, rel.slice(7));
   if (rel.startsWith('lib/')) return pick(ASSETS, rel.slice(4));
-  if (rel.startsWith('public/') || rel.startsWith('hf/')) return pick(dir, rel);
+  if (rel.startsWith('public/') || rel.startsWith('hf/') || rel.startsWith('slides/')) return pick(dir, rel);
   return pick(path.join(dir, 'hf'), rel); // bare relative refs → next to the scene file
 };
 
 /** staging folder for the Hyperframes CLI: index.html + junctions (no media is copied) */
-export const stageDir = (dir, p, s, ratio, fps) => {
+export const stageDir = (dir, p, s, ratio, fps, {audio = null} = {}) => {
   dir = path.resolve(dir);
   const out = cacheDir('hf-stage', projKey(dir), `${s.id}_${ratioTag(ratio)}`);
-  const html = stageHtml(dir, p, s, ratio, fps);
+  if (audio) { fs.mkdirSync(path.join(out, '_audio'), {recursive: true}); fs.copyFileSync(audio, path.join(out, '_audio', 'mix.wav')); }
+  else fs.rmSync(path.join(out, '_audio'), {recursive: true, force: true});
+  const html = stageHtml(dir, p, s, ratio, fps, {audio: audio ? '_audio/mix.wav' : null});
   fs.writeFileSync(path.join(out, 'index.html'), html);
   junction(path.join(LIB, 'hf'), path.join(out, '_sami'));
   junction(GSAP_DIST, path.join(out, '_gsap'));
   if (fs.existsSync(path.join(dir, 'public'))) junction(path.join(dir, 'public'), path.join(out, 'public'));
-  if (fs.existsSync(path.join(dir, 'hf'))) junction(path.join(dir, 'hf'), path.join(out, 'hf'));
+  for (const sub of ['hf', 'slides']) if (fs.existsSync(path.join(dir, sub))) junction(path.join(dir, sub), path.join(out, sub));
   if (fs.existsSync(ASSETS) && /["'(]lib\//.test(html)) junction(ASSETS, path.join(out, 'lib'));
   const fam = fontRefs(html);
   if (fam.length) { const fd = path.join(out, '_fonts'); fs.mkdirSync(fd, {recursive: true}); for (const f of fam) if (fs.existsSync(path.join(FONTS, f))) junction(path.join(FONTS, f), path.join(fd, f)); }

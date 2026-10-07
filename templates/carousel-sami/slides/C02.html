@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="slides/_shared.css">
+<style>
+  /* C02 · Hebel 1: Fotos — ba thẻ ảnh (đĩa món vẽ bằng SVG), ghim đáp lên thẻ giữa → các thẻ xoè ra rồi về chỗ, đèn flash quét qua. */
+  .photo { position: absolute; top: 40px; width: 300px; height: 360px; left: 318px; border-radius: 28px; overflow: hidden; transform-origin: 50% 100%; box-shadow: 0 30px 60px rgba(0, 0, 0, .35); }
+  .photo svg { width: 100%; height: 100%; display: block; }
+  .flash { position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%); transform: translateX(-120%); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="C02">
+  <div id="frame">
+    <canvas id="grid" class="cx-grid" width="1080" height="1350"></canvas>
+    <div id="kick" class="cx-kicker" data-copy="C02_kicker"></div>
+    <div id="big" class="cx-big" data-copy="C02_big"></div>
+    <div id="small" class="cx-small" data-copy="C02_small"></div>
+    <div id="demo"></div>
+    <div class="cx-triplet" data-copy="C02_triplet"></div>
+    <div id="fx"></div>
+  </div>
+</div>
+<script src="slides/_pin.js"></script>
+<script>
+  const S = window.SAMI, X = window.CX;
+  S.bindCopy();
+  const frame = document.getElementById('frame'), demo = document.getElementById('demo');
+  const chrome = X.chrome(frame);
+  const grid = X.grid(document.getElementById('grid'), {color: '#ffffff', alpha: 0.16});
+  // three "photos": plate + food drawn in code (placeholder look, real photos go in public/img when needed)
+  const plate = (hue) => `<svg viewBox="0 0 300 360"><rect width="300" height="360" fill="hsl(${hue},45%,22%)"/>
+    <circle cx="150" cy="180" r="112" fill="hsl(${hue},20%,92%)"/><circle cx="150" cy="180" r="86" fill="hsl(${hue + 20},55%,58%)"/>
+    <circle cx="122" cy="160" r="22" fill="hsl(${hue + 90},50%,45%)"/><circle cx="176" cy="196" r="18" fill="hsl(${hue + 140},45%,50%)"/><circle cx="160" cy="150" r="12" fill="hsl(${hue - 20},70%,60%)"/>
+    <rect x="0" y="300" width="300" height="60" fill="rgba(0,0,0,.25)"/></svg>`;
+  const cards = [-1, 0, 1].map((k, i) => { const d = document.createElement('div'); d.className = 'photo'; d.innerHTML = plate([18, 140, 32][i]) + '<i class="flash"></i>'; demo.appendChild(d); return {el: d, k}; });
+  const pin = makePin(frame);
+  let land = {t: 1.0, x: 540, y: 730}, path = pinPath({land, entryY: 640, hops: [{t: 2.0, x: 540, y: 730, h: 90}], exit: 4.9, exitY: 640});
+  let chars = [];
+  const layout = X.ready(() => { chars = bigWord(document.getElementById('big'), 936); });
+  X.loop((t) => {
+    layout(); chrome(t);
+    drawPin(pin, path, t, 730);
+    grid(t, [{t: 1.0, x: 540, y: 730}, {t: 2.0, x: 540, y: 730, a: 0.6}], 1);
+    // fan out on the landing, settle back to the frame-0 layout well before the loop point
+    const fan = 0.55 + 0.45 * X.settle(t - 1.0, 1.8, 5) - 0.45 * X.tw(t, 4.2, 5.4) * X.settle(t - 1.0, 1.8, 5);
+    cards.forEach((c, i) => {
+      const rot = c.k * (6 + 10 * fan), x = c.k * (150 + 120 * fan), y = Math.abs(c.k) * 22 - X.kick(t - 1.0 - i * 0.05, 3, 6) * 30;
+      c.el.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+      c.el.style.zIndex = c.k === 0 ? 3 : 2;
+      c.el.querySelector('.flash').style.transform = `translateX(${-120 + 240 * X.prog(t, 2.0 + i * 0.12, 2.7 + i * 0.12)}%)`;
+    });
+    chars.forEach((c, i) => { const k = X.kick(t - 2.0 - i * 0.04, 3, 7) * 0.12; c.style.transform = `translateY(${-k * 50}px)`; });
+  });
+</script>
+</body>
+</html>

@@ -26,16 +26,17 @@ const SceneStack: React.FC<{p: ProjectJSON; fps: number}> = ({p, fps}) => {
     <>
       {p.scenes.map((s, i) => {
         const first = i === 0, last = i === p.scenes.length - 1;
-        const a = first ? -OV : s.start - OV;
-        const b = Math.min(T, s.end + OV);
+        const car = p.type === 'carousel'; // carousel: slides are separate loops → no overlap/crossfade between them
+        const a = car ? s.start : first ? -OV : s.start - OV;
+        const b = car ? s.end : Math.min(T, s.end + OV);
         const from = toReal(a, fps);
         const dur = Math.max(1, toReal(b, fps) - from);
         const Comp = REG[s.id];
         const hf = isHfScene(s);
-        const fadeIn = first ? 0 : s.fadeIn ?? 2 * OV;
+        const fadeIn = first || car ? 0 : s.fadeIn ?? 2 * OV;
         return (
           <Sequence key={s.id} from={from} durationInFrames={dur} name={`${s.id} · ${s.label}`}>
-            <Scene dur={b - a} fadeIn={fadeIn} delay={s.fadeDelay ?? (fadeIn < 2 * OV ? OV - Math.round(fadeIn / 2) : 0)} fadeOut={last ? 0 : 2 * OV}>
+            <Scene dur={b - a} fadeIn={fadeIn} delay={s.fadeDelay ?? (fadeIn < 2 * OV ? OV - Math.round(fadeIn / 2) : 0)} fadeOut={last || car ? 0 : 2 * OV}>
               {hf ? <HfScene scene={s} project={p} /> : <Warp knots={s.warp}>{Comp ? <Comp /> : <Missing id={s.id} />}</Warp>}
             </Scene>
           </Sequence>
@@ -92,7 +93,7 @@ export const Main: React.FC<MainProps & {audioOnly?: boolean}> = ({project: p, r
  *  keeps titles, subtitles, audio, crossfades and fit mode identical to the full render. */
 export const SceneOnly: React.FC<MainProps & {sceneId: string}> = (props) => {
   const s = props.project.scenes.find((x) => x.id === props.sceneId) || props.project.scenes[0];
-  const off = toReal(Math.max(0, s.start - OV), props.fps);
+  const off = toReal(Math.max(0, props.project.type === 'carousel' ? s.start : s.start - OV), props.fps);
   return (
     <Sequence from={-off}>
       <Main {...props} />

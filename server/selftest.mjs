@@ -63,6 +63,23 @@ await t('hardlink helper: same file, 0 extra bytes (same drive)', async () => {
     return r;
   } finally { fs.rmSync(d, {recursive: true, force: true}); }
 });
+await t('carousel: slide = exact loop, toolkit + audio injected, template valid', async () => {
+  const {stageHtml, sceneSpan} = await import('./hf.mjs');
+  const dir = path.join(TEMPLATES, 'carousel-sami'); const p = JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8'));
+  const s = p.scenes[1]; const sp = sceneSpan(p, s);
+  if (sp.a !== s.start || sp.b !== s.end) throw new Error('span');
+  const h = stageHtml(dir, p, s, '4:5', 30, {audio: '_audio/mix.wav'});
+  if (!h.includes('_sami/carousel.js') || !h.includes('id="sami-mix"') || !h.includes('"slide":{"index":1')) throw new Error('staging');
+  const v = validateProject(dir); if (v.fail.length) throw new Error(v.fail.join(' | '));
+});
+await t('python audio synth (numpy): seamless 2 s mix', async () => {
+  const d = fs.mkdtempSync(path.join(ROOT, '.studio', 'au-')); try {
+    fs.writeFileSync(path.join(d, 's.json'), JSON.stringify({dur: 2, out: 'm.wav', groove: {intensity: 0.7}, events: [{t: 0.5, fx: 'pop'}, {t: 1.9, fx: 'chime'}]}));
+    const r = spawnSync(process.env.SAMI_PYTHON || 'python', [path.join(ROOT, 'lib', 'py', 'sami_audio.py'), 'mix', path.join(d, 's.json')], {encoding: 'utf8'});
+    if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'python?').slice(-200));
+    const n = fs.statSync(path.join(d, 'm.wav')).size; if (Math.abs(n - (44 + 2 * 48000 * 4)) > 64) throw new Error('length ' + n);
+  } finally { fs.rmSync(d, {recursive: true, force: true}); }
+});
 await t('encoder caps (async probe, NVENC/QSV/AMF)', async () => { const {capsReady} = await import('./ffmpeg.mjs'); const c = await capsReady(); return `Remotion NVENC ${c.remotion.nvenc ? '✓' : '–'} · ffmpeg ${c.full.full ? 'đầy đủ' : 'đi kèm'} NVENC ${c.full.nvenc ? '✓' : '–'}`; });
 
 // version history round trip on a throw-away copy of a template

@@ -59,7 +59,7 @@ Render chống treo (chia đoạn ~15 s, mỗi đoạn 1 tiến trình, watchdog
 | Bản | Nội dung | Trạng thái |
 |---|---|---|
 | **0.6 Nền móng** | Engine kép (Hyperframes HTML/GSAP mặc định cho cảnh mới + Remotion), thư viện `SAMI_Library` + `lib:` hardlink, ffmpeg đầy đủ (vendor), cache chung `.sami-cache`, dọn bộ nhớ, chuyển dự án cũ, skill viết lại, sửa NVENC | ✅ 2026-10-08 |
-| **0.7 Carousel động** | Dự án `type: "carousel"` 1080×1350, mỗi slide 1 MP4 lặp 4/6/8 s trên lưới 120 BPM; port live-carousel (LC/PH toolkit, prep_photo, lc_audio, QA seam/frame0/contact sheet), trang vuốt kiểu Instagram, skill `sami-carousel` | tiếp theo |
+| **0.7 Carousel động** | Dự án `type: "carousel"` 1080×1350, mỗi slide 1 MP4 lặp 4/6/8 s trên lưới 120 BPM; port live-carousel (LC/PH toolkit, prep_photo, lc_audio, QA seam/frame0/contact sheet), trang vuốt kiểu Instagram, skill `sami-carousel` | ✅ 2026-10-08 (tự viết lại, không chép mã mẫu; chế độ ảnh bản gọn) |
 | **0.8 Cổng AI** | `providers/`: adapter chung (ảnh, video, nhạc, SFX, giọng, stock), ước tính → mã xác nhận → tạo, trần chi phí, sổ chi phí, khoá DPAPI, MCP server, kịch bản browser-harness cho ChatGPT/Gemini/Flow/Suno; cổng AI cục bộ (ACE-Step, Stable Audio qua ComfyUI, Kokoro) | |
 | **0.9 Footage** | Nhập video + proxy NVENC, cắt/tốc độ/B-roll/PiP/mask (`tracks.video`), bản ghi màn hình VFR→CFR, SFX Python, khối "vẽ bằng code" | |
 | **1.0** | Xuất Hyperframes thuần (không Remotion) cho đóng gói khách, preset nền tảng, tài liệu | |

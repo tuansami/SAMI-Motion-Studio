@@ -11,20 +11,22 @@ export const validateProject = (dir) => {
   let p;
   try { p = readProject(dir); } catch (e) { return {ok, warn, fail: ['Không đọc được project.json: ' + e.message]}; }
   const S = p.scenes || [];
+  // media path → file on disk ('lib:…' = shared SAMI_Library)
+  const has = (rel) => (isLib(rel) ? !!resolveLib(rel) && fs.existsSync(resolveLib(rel)) : fs.existsSync(path.join(dir, 'public', rel || '')));
   if (p.status && !['draft', 'review', 'approved', 'published'].includes(p.status)) warn.push(`Trạng thái "${p.status}" không hợp lệ (draft / review / approved / published) — coi như Nháp.`);
   if (!S.length) fail.push('Dự án chưa có cảnh nào.');
   S.forEach((s, i) => {
     if (i === 0 && s.start !== 0) fail.push(`Cảnh đầu (${s.id}) phải bắt đầu ở 0.`);
     if (i > 0 && s.start !== S[i - 1].end) fail.push(`Hở/chồng giữa ${S[i - 1].id} và ${s.id}.`);
     if (s.end <= s.start) fail.push(`${s.id} có thời lượng ≤ 0.`);
-    if (i > 0 && (s.start - 1) % 15 !== 0) warn.push(`Điểm cắt vào ${s.id} (${(s.start / 30).toFixed(2)}s) lệch nhịp nhạc — nên là 15n+1 khung (bấm "Khớp nhịp").`);
+    if (i > 0 && p.type !== 'carousel' && (s.start - 1) % 15 !== 0) warn.push(`Điểm cắt vào ${s.id} (${(s.start / 30).toFixed(2)}s) lệch nhịp nhạc — nên là 15n+1 khung (bấm "Khớp nhịp").`);
     if (isHf(s)) {
       const f = path.join(dir, s.src || `hf/${s.id}.html`);
       if (!fs.existsSync(f)) { fail.push(`Thiếu file cảnh HTML ${s.src || `hf/${s.id}.html`}`); return; }
       const t = fs.readFileSync(f, 'utf8');
       if (!/data-composition-id\s*=/.test(t)) fail.push(`${s.src}: thiếu phần tử gốc có data-composition-id (Hyperframes).`);
       if (/Math\.random\(|Date\.now\(|new Date\(|requestAnimationFrame\(|setInterval\(/.test(t)) fail.push(`${s.src} dùng Math.random/Date/requestAnimationFrame/setInterval → không tua được, video không ổn định (dùng SAMI.rnd() và timeline GSAP).`);
-      if (!/__timelines|\.timeline\(/.test(t)) warn.push(`${s.src}: chưa đăng ký timeline (SAMI.timeline() hoặc window.__timelines) — cảnh sẽ đứng yên.`);
+      if (!/__timelines|\.timeline\(|\.loop\(/.test(t)) warn.push(`${s.src}: chưa đăng ký timeline (SAMI.timeline() hoặc window.__timelines) — cảnh sẽ đứng yên.`);
       if (/cdn\.jsdelivr|unpkg\.com|cdnjs|fonts\.googleapis/.test(t)) warn.push(`${s.src} tải thư viện/font từ Internet — dùng _gsap/gsap.min.js và _fonts/<family>/<weight>.css để render offline ổn định.`);
       if (s.warp?.length) warn.push(`${s.id}: cảnh HTML chưa hỗ trợ kéo giãn (warp) — đổi thời lượng trong timeline của cảnh.`);
       for (const m of t.matchAll(/(?:src|href)\s*=\s*["']((?:public|hf)\/[^"'?#]+)["']/g)) if (!fs.existsSync(path.join(dir, m[1]))) fail.push(`${s.src}: thiếu ${m[1]}`);
@@ -34,6 +36,18 @@ export const validateProject = (dir) => {
   });
   const reg = fs.existsSync(path.join(dir, 'scenes', 'index.ts')) ? fs.readFileSync(path.join(dir, 'scenes', 'index.ts'), 'utf8') : '';
   S.forEach((s) => { if (!isHf(s) && !reg.includes(s.id)) fail.push(`${s.id} chưa đăng ký trong scenes/index.ts`); });
+  if (p.type === 'carousel') {
+    if (!(p.formats || []).includes('4:5')) fail.push('Carousel phải có tỉ lệ 4:5 (1080×1350) trong formats.');
+    S.forEach((s) => {
+      if (!isHf(s)) fail.push(`Slide ${s.id} phải là cảnh HTML (engine "hyperframes", src "slides/${s.id}.html").`);
+      const len = s.end - s.start;
+      if (len % 60) warn.push(`Slide ${s.id} dài ${(len / 30).toFixed(2)}s — nên là số ô nhịp chẵn (4 / 6 / 8 s = 120 / 180 / 240 khung) để nhạc nối vòng liền.`);
+      if (len > 60 * 30) fail.push(`Slide ${s.id} dài quá 60 s (giới hạn video trong carousel Instagram).`);
+      (s.cues || []).forEach((c) => { if (c.t < 0 || c.t > len / 30) warn.push(`Slide ${s.id}: SFX ở ${c.t}s nằm ngoài slide.`); if (c.src && !has(c.src)) fail.push(`Slide ${s.id}: không thấy SFX ${c.src}`); if (c.t > len / 30 - 0.8 && c.t <= len / 30) warn.push(`Slide ${s.id}: SFX ở ${c.t}s quá sát cuối — tiếng dội sẽ vòng về đầu slide.`); });
+    });
+    if (S.length > 20) fail.push(`Carousel có ${S.length} slide — Instagram cho tối đa 20.`);
+    const m = p.carousel?.audio?.music; if (p.carousel?.audio?.mode === 'music' && (!m?.src || !has(m.src))) fail.push('Carousel chọn nhạc nhưng không thấy file ' + (m?.src || '(chưa chọn)'));
+  }
   const total = S.length ? S[S.length - 1].end : 0;
   if (S.length && !fail.length) ok.push(`Timeline: ${S.length} cảnh, ${(total / 30).toFixed(2)}s, liền mạch.`);
   // assets referenced in scenes
@@ -50,8 +64,6 @@ export const validateProject = (dir) => {
   if (!miss.size) ok.push('Tài nguyên: đủ.');
   // copy markup
   for (const [k, v] of Object.entries(p.copy || {})) if (typeof v.value === 'string' && (v.value.match(/\*/g) || []).length % 2) fail.push(`Chữ "${v.label || k}" thiếu dấu * đóng tô màu.`);
-  // media path → file on disk ('lib:…' = shared SAMI_Library)
-  const has = (rel) => (isLib(rel) ? !!resolveLib(rel) && fs.existsSync(resolveLib(rel)) : fs.existsSync(path.join(dir, 'public', rel || '')));
   // audio
   const a = p.audio;
   if (a?.mode === 'premix' && a.premix) {

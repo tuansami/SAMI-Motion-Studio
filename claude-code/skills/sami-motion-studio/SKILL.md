@@ -37,6 +37,7 @@ Both engines live in one timeline: crossfades, warp (TSX only), titles, subtitle
 | Music / SFX / voice | `references/audio-sfx.md` — library first (`lib:sfx/…`), cue on the beat grid |
 | Images / video / music to generate or find | `references/assets.md` — stock first, cost OK before paid generation |
 | Reusable template | `<app>/docs/TEMPLATE_STANDARD.md`; `node <app>/server/cli-template.mjs check templates/<id>` without ✗ |
+| Motion carousel (Instagram/Facebook slides that move) | skill **sami-carousel** (`type: "carousel"`, one loop MP4 per slide) |
 | Whole new video | Studio "Tạo dự án mới" from a template (`hf-starter` for HTML scenes) + client asset folder; never copy an old project |
 | Client feedback round | `brief/TRANG_THAI.md → Phản hồi khách (vòng N)`: do [Claude] lines, point [Studio] lines to the tab |
 

@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="slides/_shared.css">
+<style>
+  /* C04 · Hebel 3: Zeiten — mặt đồng hồ vẽ bằng code, kim quay đúng một vòng mỗi slide (nối vòng liền), nhãn "Jetzt geöffnet" bật theo nhịp. */
+  #clock { position: absolute; left: 60px; top: 10px; width: 380px; height: 380px; }
+  #badge { position: absolute; left: 500px; top: 140px; display: flex; align-items: center; gap: 18px; padding: 24px 34px; border-radius: 999px; background: var(--k-bg2); border: 2px solid var(--k-line); font: 700 44px/1 var(--f-head); }
+  #badge i { width: 22px; height: 22px; border-radius: 50%; background: var(--k-accent); box-shadow: 0 0 0 0 var(--k-accent); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="C04">
+  <div id="frame">
+    <canvas id="grid" class="cx-grid" width="1080" height="1350"></canvas>
+    <div id="kick" class="cx-kicker" data-copy="C04_kicker"></div>
+    <div id="big" class="cx-big" data-copy="C04_big"></div>
+    <div id="small" class="cx-small" data-copy="C04_small"></div>
+    <div id="demo">
+      <svg id="clock" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="92" style="fill:var(--k-bg2);stroke:var(--k-line)" stroke-width="4"/>
+        <g id="ticks"></g>
+        <line id="hh" x1="100" y1="100" x2="100" y2="58" style="stroke:var(--k-ink)" stroke-width="9" stroke-linecap="round"/>
+        <line id="mh" x1="100" y1="100" x2="100" y2="30" style="stroke:var(--k-accent)" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="100" cy="100" r="8" style="fill:var(--k-ink)"/>
+      </svg>
+      <div id="badge"><i></i><span data-copy="C04_badge"></span></div>
+    </div>
+    <div id="fx"></div>
+  </div>
+</div>
+<script src="slides/_pin.js"></script>
+<script>
+  const S = window.SAMI, X = window.CX;
+  S.bindCopy();
+  const frame = document.getElementById('frame');
+  const chrome = X.chrome(frame);
+  const grid = X.grid(document.getElementById('grid'), {color: '#ffffff', alpha: 0.16});
+  const ticks = document.getElementById('ticks');
+  for (let i = 0; i < 12; i++) ticks.insertAdjacentHTML('beforeend', `<line x1="100" y1="16" x2="100" y2="${i % 3 ? 26 : 32}" transform="rotate(${i * 30} 100 100)" style="stroke:var(--k-dim)" stroke-width="${i % 3 ? 3 : 5}" stroke-linecap="round"/>`);
+  const mh = document.getElementById('mh'), hh = document.getElementById('hh'), badge = document.getElementById('badge'), dot = badge.querySelector('i');
+  const pin = makePin(frame);
+  let land = {t: 1.0, x: 250, y: 700}, path = pinPath({land, entryY: 640, hops: [{t: 3.0, x: 760, y: 830, h: 150}], exit: 4.9, exitY: 640});
+  let chars = [];
+  const layout = X.ready(() => { chars = bigWord(document.getElementById('big'), 936); });
+  X.loop((t) => {
+    layout(); chrome(t);
+    drawPin(pin, path, t, null);
+    grid(t, [{t: 1.0, x: 250, y: 700}, {t: 3.0, x: 760, y: 830, a: 0.9}], 1);
+    // minute hand: one full turn per slide (periodic → seamless), ticks on beats 2.0/2.5 with a little overshoot
+    const turn = t / S.dur * 360 + X.kick(t - 2.0, 4, 9) * 6 + X.kick(t - 2.5, 4, 9) * 6;
+    mh.setAttribute('transform', `rotate(${turn} 100 100)`);
+    hh.setAttribute('transform', `rotate(${120 + turn / 12} 100 100)`);
+    const k = X.kick(t - 3.0, 2.6, 5);
+    badge.style.transform = `scale(${1 + k * 0.1})`;
+    dot.style.boxShadow = `0 0 0 ${X.prog(t, 3.0, 4.0) < 1 ? 26 * X.prog(t, 3.0, 4.0) : 0}px rgba(8,221,164,${0.5 * (1 - X.prog(t, 3.0, 4.0))})`;
+    chars.forEach((c, i) => { const q = X.kick(t - 3.0 - i * 0.03, 3, 7) * 0.1; c.style.transform = `translateY(${-q * 50}px)`; });
+  });
+</script>
+</body>
+</html>

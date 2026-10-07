@@ -8,7 +8,7 @@ import {readProject, renderBundle} from './project.mjs';
 import {TEMPLATES, ROOT} from './paths.mjs';
 
 export const CATEGORIES = {restaurant: 'Nhà hàng', nail: 'Nail', spa: 'Spa', hotel: 'Khách sạn', agency: 'Agency / SAMI', generic: 'Chung'};
-export const GOALS = {'khai-truong': 'Khai trương', 'menu-moi': 'Menu mới', 'uu-dai': 'Ưu đãi', 'tuyen-dung': 'Tuyển dụng', review: 'Review / cảm nhận', 'gioi-thieu': 'Giới thiệu dịch vụ', 'su-kien': 'Sự kiện / lễ'};
+export const GOALS = {'khai-truong': 'Khai trương', 'menu-moi': 'Menu mới', 'uu-dai': 'Ưu đãi', 'tuyen-dung': 'Tuyển dụng', review: 'Review / cảm nhận', 'gioi-thieu': 'Giới thiệu dịch vụ', 'su-kien': 'Sự kiện / lễ', 'meo-hay': 'Mẹo / kiến thức (carousel)'};
 const FORBIDDEN = ['out', 'brief', '.claude', 'node_modules', 'CLAUDE.md', '.project.backup.json'];
 const REQUIRED = ['id', 'name', 'version', 'category', 'description', 'formats'];
 const IMG_SLOT = /(_image|_logo|_img|_photo)$/i;

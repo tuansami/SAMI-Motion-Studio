@@ -25,6 +25,9 @@ const clone = (o) => JSON.parse(JSON.stringify(o));
 const ANIMS = {rise: 'Từng chữ trồi lên', words: 'Từng chữ hiện dần', fade: 'Mờ dần', pop: 'Bật (pop)', slide: 'Trượt vào', typewriter: 'Đánh máy', karaoke: 'Karaoke (tô từng chữ)', highlight: 'Nền highlight từng chữ', none: 'Không hiệu ứng'};
 const SFX = ['whoosh_a', 'whoosh_b', 'whoosh_c', 'pop', 'sub_hit', 'key_single', 'key_enter', 'typing_burst'];
 const RATIOS = ['16:9', '9:16', '1:1'];
+const RATIO_LABEL = {'16:9': '16:9 Ngang', '9:16': '9:16 Dọc', '1:1': '1:1 Vuông', '4:5': '4:5 Feed'};
+// carousel projects are 4:5 only; 4:5 is offered whenever a project has a 4:5 layout
+const ratioList = () => (S.project?.type === 'carousel' ? ['4:5'] : [...RATIOS, ...((S.project?.formats || []).includes('4:5') ? ['4:5'] : [])]);
 
 const S = {state: null, id: null, dir: null, project: null, saved: null, hist: [], fut: [], scene: null, ratio: '16:9', playerApi: null, frame: 0, total: 1, playing: false, tab: 'text', titleSel: null, subSel: null, assets: [], analysis: null, jobs: [], fps: 30};
 
@@ -256,7 +259,7 @@ function renderScrub() {
 }
 function renderRatios() {
   const seg = $('#ratioSeg'); seg.innerHTML = '';
-  for (const r of RATIOS) seg.append(h('button', {class: r === S.ratio ? 'on' : '', onclick: () => { S.ratio = r; if (S.render) S.render.ratio = r; renderRatios(); sizePlayer(); pushPreview(); if (S.tab === 'render') renderTab(); }}, r === '16:9' ? '16:9 Ngang' : r === '9:16' ? '9:16 Dọc' : '1:1 Vuông'));
+  for (const r of ratioList()) seg.append(h('button', {class: r === S.ratio ? 'on' : '', onclick: () => { S.ratio = r; if (S.render) S.render.ratio = r; renderRatios(); sizePlayer(); pushPreview(); if (S.tab === 'render') renderTab(); }}, RATIO_LABEL[r] || r));
   $('#fitBadge').hidden = S.project.formats.includes(S.ratio);
 }
 
@@ -600,7 +603,7 @@ function tabRender(B) {
   const seg = (k, opts) => h('div', {class: 'seg'}, ...opts.map(([v, l]) => h('button', {class: r[k] === v ? 'on' : '', onclick: () => set(k, v)}, l)));
   const cpus = S.state.cpus; const g = S.state.gpu;
   const box = h('div', {class: 'group'}, h('h4', {}, 'Cài đặt xuất'));
-  box.append(field('Tỉ lệ khung', seg('ratio', [['16:9', '16:9 Ngang'], ['9:16', '9:16 Dọc'], ['1:1', '1:1 Vuông']]), S.project.formats.includes(r.ratio) ? null : '⚠ Dự án chưa có bố cục riêng cho tỉ lệ này → xuất ở chế độ "vừa khung".'));
+  box.append(field('Tỉ lệ khung', seg('ratio', ratioList().map((x) => [x, RATIO_LABEL[x]])), S.project.formats.includes(r.ratio) ? null : '⚠ Dự án chưa có bố cục riêng cho tỉ lệ này → xuất ở chế độ "vừa khung".'));
   box.append(field('Độ phân giải', seg('res', Object.entries(RES)), dims(r.ratio, r.res) + ' px'));
   box.append(field('Số khung hình / giây (FPS)', seg('fps', [[24, '24 (điện ảnh)'], [30, '30 (chuẩn)'], [60, '60 (siêu mượt)']]), r.fps === 60 ? 'Thời gian render ≈ gấp đôi 30 fps.' : null));
   box.append(field('Định dạng', seg('codec', [['h264', 'MP4 H.264 (phổ biến)'], ['h265', 'MP4 H.265 (nhẹ hơn)'], ['prores', 'ProRes .mov (dựng tiếp)']])));
@@ -627,7 +630,7 @@ function tabRender(B) {
   };
   box.append(h('div', {class: 'row', style: 'flex-wrap:wrap;margin-top:6px'},
     h('button', {class: 'primary', onclick: () => go([r.ratio])}, '▶ Xuất video'),
-    h('button', {onclick: () => go(RATIOS), title: 'Xuất 16:9 + 9:16 + 1:1 với cùng cài đặt'}, 'Xuất cả 3 tỉ lệ'),
+    S.project.type === 'carousel' ? null : h('button', {onclick: () => go(RATIOS), title: 'Xuất 16:9 + 9:16 + 1:1 với cùng cài đặt'}, 'Xuất cả 3 tỉ lệ'), // carousel: one export = every slide
     h('button', {onclick: () => go([r.ratio], S.scene), title: 'Chỉ xuất cảnh đang chọn'}, `Chỉ cảnh ${S.scene}`),
     h('button', {onclick: () => { r.res = 'FHD'; r.fps = 30; r.crf = 26; r.threads = Math.min(8, cpus); renderTab(); }, title: 'Cài nhanh để xem thử'}, 'Preset: bản nháp nhanh')));
   B.append(box, reviewGroup());

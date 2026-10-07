@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<style>
+  /* Photo slide: brings a FINISHED carousel image to life without changing the design.
+   * Frame 0 = the original image exactly (thumbnail). Motion: slow breathing push (periodic → seamless loop),
+   * one light sweep on the hit beat, floating motes, optional camera kick on the hit. Settings: project.json → scene.photo
+   *   {"img": "img/C01.jpg", "hit": 2.0, "push": 0.035, "shine": true, "motes": 14, "kick": true, "focus": [0.5, 0.45]} */
+  #frame { position: absolute; inset: 0; overflow: hidden; background: #000; }
+  #ph { position: absolute; inset: 0; background-size: cover; background-position: center; transform-origin: 50% 45%; will-change: transform; }
+  #shine { position: absolute; inset: -20%; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .28) 48%, rgba(255, 255, 255, .5) 50%, rgba(255, 255, 255, .28) 52%, transparent 62%); mix-blend-mode: soft-light; transform: translateX(-100%); }
+  .mote { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, .85); box-shadow: 0 0 12px rgba(255, 255, 255, .8); opacity: 0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="photo">
+  <div id="frame"><div id="ph"></div><div id="shine"></div><div id="motes"></div></div>
+</div>
+<script>
+  const S = window.SAMI, X = window.CX;
+  const cfg = Object.assign({hit: 2.0, push: 0.035, shine: true, motes: 14, kick: true, focus: [0.5, 0.45]}, (S.photo || {}));
+  const ph = document.getElementById('ph'), shine = document.getElementById('shine'), motes = document.getElementById('motes');
+  ph.style.backgroundImage = `url("public/${cfg.img || ('img/' + S.scene + '.jpg')}")`;
+  ph.style.transformOrigin = `${cfg.focus[0] * 100}% ${cfg.focus[1] * 100}%`;
+  const ms = Array.from({length: cfg.motes}, (_, i) => { const d = document.createElement('i'); d.className = 'mote'; motes.appendChild(d); return {el: d, x: X.hash(i * 3.1 + 1) * 1080, y: 200 + X.hash(i * 7.7 + 2) * 1000, s: 0.5 + X.hash(i * 5.3) * 1.2, ph: X.hash(i * 9.1)}; });
+  X.loop((t) => {
+    const D = S.dur;
+    // breathing push: 0 at t=0 and t=D (sin² of one period) → frame 0 = original, loop seamless
+    const push = cfg.push * Math.pow(Math.sin(Math.PI * t / D), 2);
+    const k = cfg.kick ? X.kick(t - cfg.hit, 2.6, 6) * 0.012 : 0;
+    ph.style.transform = `scale(${1 + push + k})`;
+    if (cfg.shine) shine.style.transform = `translateX(${-100 + 200 * X.inOut(X.prog(t, cfg.hit - 0.15, cfg.hit + 0.9))}%)`;
+    ms.forEach((m) => {
+      const life = X.prog(t, cfg.hit - 0.2 + m.ph * 0.6, cfg.hit + 2.2 + m.ph * 0.6);
+      m.el.style.opacity = life > 0 && life < 1 ? Math.sin(Math.PI * life) * 0.8 : 0;
+      m.el.style.transform = `translate(${m.x + Math.sin(life * 6 + m.ph * 6) * 20}px, ${m.y - life * 160}px) scale(${m.s})`;
+    });
+  });
+</script>
+</body>
+</html>

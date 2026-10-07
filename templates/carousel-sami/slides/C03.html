@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="slides/_shared.css">
+<style>
+  /* C03 · Hebel 2: Antworten — đánh giá 5 sao của khách, quán trả lời (dấu nháy gõ), ✓ đã gửi bật ra đúng nhịp. Chữ luôn hiện đủ (khung 0). */
+  .bub { position: absolute; padding: 30px 36px; border-radius: 34px; font: 700 40px/1.25 var(--f-head); max-width: 760px; }
+  #rev { left: 0; top: 0; background: var(--k-bg2); border: 2px solid var(--k-line); border-bottom-left-radius: 8px; }
+  #stars { display: flex; gap: 8px; margin-bottom: 14px; }
+  #stars svg { width: 44px; height: 44px; }
+  #rep { right: 0; top: 230px; background: linear-gradient(120deg, var(--k-accent), var(--k-accent2)); color: var(--k-bg); border-bottom-right-radius: 8px; }
+  #caret { display: inline-block; width: 4px; height: 1em; background: currentColor; margin-left: 6px; vertical-align: -0.12em; }
+  #sent { position: absolute; right: 0; top: 380px; font: 600 26px/1 var(--f-mono); letter-spacing: .1em; color: var(--k-accent); text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="C03">
+  <div id="frame">
+    <canvas id="grid" class="cx-grid" width="1080" height="1350"></canvas>
+    <div id="kick" class="cx-kicker" data-copy="C03_kicker"></div>
+    <div id="big" class="cx-big" data-copy="C03_big"></div>
+    <div id="small" class="cx-small" data-copy="C03_small"></div>
+    <div id="demo">
+      <div id="rev" class="bub"><div id="stars"></div><span data-copy="C03_review"></span></div>
+      <div id="rep" class="bub"><span data-copy="C03_reply"></span><i id="caret"></i></div>
+      <div id="sent">✓ gesendet</div>
+    </div>
+    <div id="fx"></div>
+  </div>
+</div>
+<script src="slides/_pin.js"></script>
+<script>
+  const S = window.SAMI, X = window.CX;
+  S.bindCopy();
+  const frame = document.getElementById('frame');
+  const chrome = X.chrome(frame);
+  const grid = X.grid(document.getElementById('grid'), {color: '#ffffff', alpha: 0.16});
+  const starsEl = document.getElementById('stars');
+  const stars = [0, 1, 2, 3, 4].map(() => { starsEl.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" style="fill:#FFC531"/></svg>'); return starsEl.lastChild; });
+  const pin = makePin(frame);
+  let land = {t: 1.0, x: 300, y: 690}, path = pinPath({land, entryY: 640, hops: [{t: 3.0, x: 820, y: 920, h: 160}], exit: 4.9, exitY: 640});
+  let chars = [];
+  const layout = X.ready(() => { chars = bigWord(document.getElementById('big'), 936); });
+  const caret = document.getElementById('caret'), sent = document.getElementById('sent'), rep = document.getElementById('rep');
+  X.loop((t) => {
+    layout(); chrome(t);
+    drawPin(pin, path, t, null);
+    grid(t, [{t: 1.0, x: 300, y: 690}, {t: 3.0, x: 820, y: 920, a: 0.8}], 1);
+    stars.forEach((s, i) => { const k = X.kick(t - 1.05 - i * 0.09, 3, 6); s.style.transform = `scale(${1 + k * 0.35}) rotate(${k * 20}deg)`; });
+    caret.style.opacity = t > 1.5 && t < 3.0 ? (Math.floor(t * 4) % 2 ? 0 : 1) : 0; // "typing" between 1.5 and 3.0 s
+    const ks = X.kick(t - 3.0, 2.5, 5);
+    rep.style.transform = `scale(${1 + ks * 0.06})`;
+    sent.style.opacity = X.prog(t, 3.0, 3.15) * (1 - X.prog(t, 4.6, 5.2));
+    sent.style.transform = `translateY(${(1 - X.tw(t, 3.0, 3.4)) * 20}px)`;
+    chars.forEach((c, i) => { const k = X.kick(t - 3.0 - i * 0.03, 3, 7) * 0.1; c.style.transform = `translateY(${-k * 50}px)`; });
+  });
+</script>
+</body>
+</html>

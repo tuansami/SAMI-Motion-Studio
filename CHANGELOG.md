@@ -19,6 +19,74 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [0.7.0] — 2026-10-08 — Carousel động (live carousel)
+Lộ trình: v0.6 Nền móng ✅ → **v0.7 Carousel** → v0.8 Cổng AI → v0.9 Footage → v1.0
+
+### Thêm
+- **Dự án `type: "carousel"`**: mỗi slide là một MP4 lặp liền mạch, 1080×1350, 30 fps, có tiếng riêng. Slide viết bằng HTML (Hyperframes, `slides/<ID>.html`), dài theo ô nhịp 120 BPM (4, 6 hoặc 8 s).
+  - Studio dùng như dự án thường: preview (slide nối tiếp, không crossfade), tab Chữ, nút tỉ lệ **4:5 Feed**.
+  - Nút **Xuất** render cả bộ carousel. Mục "Xuất cả 3 tỉ lệ" được ẩn với dự án carousel.
+  - Kết quả nằm ở `out/carousel/<thời điểm>/`:
+    - `NN-<ID>.mp4`;
+    - `covers/`: khung 0, cũng là ảnh bìa;
+    - `seams/`: khung cuối và khung đầu đặt cạnh nhau, kèm điểm PSNR để soát đường nối vòng;
+    - `contact-sheet.jpg`;
+    - `qa.json`;
+    - `preview.html`: khung điện thoại vuốt như Instagram, có nút bật tiếng.
+- **Âm thanh tự tổng hợp** `lib/py/sami_audio.py` (chỉ cần numpy, không mất phí, không lo giấy phép):
+  - 18 SFX: pop, click, tick, whoosh / in / out, riser, impact, chime, ping, notification, boop, sparkle, typing, thump, swoosh_reverse, glitch, cash;
+  - groove 120 BPM;
+  - phần đuôi tiếng được gấp về đầu slide nên vòng lặp không bị khựng;
+  - chuẩn −14 LUFS cho mọi slide, nên vuốt qua lại âm lượng không nhảy.
+  - Ba chế độ: `groove`, `music` (một bài hát chạy tiếp qua các slide) và `sfx`. SFX đặt theo từng slide trong `scenes[].cues` (tên hiệu ứng, hoặc file `lib:`/dự án).
+  - Dùng trực tiếp được: `python lib/py/sami_audio.py sfx whoosh out.wav`.
+- **Bộ công cụ carousel `CX`** (`lib/hf/carousel.js` + `carousel.css`):
+  - khung slide chuẩn: topbar series · 0N/0M, thanh tiến độ chạy liền qua cả carousel, nút Swipe tự ẩn ở slide cuối;
+  - đường nhảy có nén/giãn (`X.path`), lưới chấm gợn sóng, hạt tất định, lò xo `kick/settle`, `X.wave` lặp an toàn, `X.fit`, `X.ready`;
+  - 5 theme: sami, cream, tomato, forest, noir.
+- **Mẫu `carousel-sami`**: 5 slide tiếng Đức về Google Maps cho nhà hàng (hook → 3 hebel → CTA bình luận "MAPS"). Chiếc ghim Maps đi xuyên các slide: ra phải ở slide trước, vào trái ở slide sau. Có ảnh bìa và đạt chuẩn mẫu.
+- **Chế độ ảnh**: biến ảnh carousel đã thiết kế xong thành slide động.
+  - `tools/carousel-new.mjs <dir> --images a.png b.png …` cắt giữa về 4:5 và tạo `slides/photo.html` (`lib/hf/photo-slide.html`).
+  - Khung 0 giữ nguyên ảnh gốc. Chuyển động gồm: đẩy nhẹ kiểu thở (tuần hoàn), một vệt sáng quét qua đúng nhịp, hạt bay, rung nhẹ khi chạm nhịp.
+  - Chỉnh theo từng slide trong `scenes[].photo`.
+  - Bản gọn: chưa tách lớp chữ/bầu trời bằng OpenCV như mẫu tham khảo.
+- `server/cli-carousel.mjs <dir> [render|audio|stills] [--only C01,C03] [--cpu]`.
+- `tools/carousel-new.mjs`: tạo carousel mới theo chế độ motion (chép mẫu) hoặc chế độ ảnh.
+- **Skill mới `sami-carousel`** (SKILL.md, `references/cx-api.md`, `references/design.md`). Skill `sami-motion-studio` chuyển việc carousel sang skill này.
+- Mục tiêu mẫu mới: "Mẹo / kiến thức (carousel)".
+- Selftest kiểm thêm: dàn dựng slide carousel (loop chính xác, toolkit, tiếng) và bộ tổng hợp âm thanh Python.
+
+### Thay đổi
+- Cảnh trong dự án carousel không có khoảng chồng 8 khung và không crossfade, thời gian slide bắt đầu đúng 0 (`sceneSpan`, `Main.tsx`).
+- `window.SAMI` có thêm `slide {index, count, start, total}`, `carousel {series, handle, theme, swipe}` và `photo`.
+- Bộ kiểm tra hiểu dự án carousel:
+  - bắt buộc có 4:5;
+  - slide phải là HTML;
+  - nhắc khi độ dài slide không tròn ô nhịp, khi SFX quá sát cuối slide, hoặc thiếu file nhạc/SFX;
+  - tối đa 20 slide, mỗi slide tối đa 60 s;
+  - nhận diện timeline qua `X.loop`.
+
+### Đã kiểm
+- Mẫu `carousel-sami`: 5 slide × 6 s render trong 3 phút 24 giây (GTX 1070, NVENC).
+  - Mọi slide 1080×1350, có tiếng.
+  - Đường nối vòng 28,8–38,8 dB.
+  - Âm lượng sau chuẩn hoá −14,4 LUFS.
+- Xuất qua hàng đợi Studio (1 slide): "QA đạt".
+- Chế độ ảnh: khung 0 trùng ảnh gốc, khung giữa có chuyển động.
+- `npm run check` đạt.
+
+### File chính
+- **Mới:** `server/carousel.mjs`, `server/cli-carousel.mjs`, `lib/hf/{carousel.js, carousel.css, photo-slide.html}`, `lib/py/sami_audio.py`, `tools/carousel-new.mjs`, `templates/carousel-sami/`, `claude-code/skills/sami-carousel/`.
+- **Sửa:** `server/{hf, render, validate, template, selftest}.mjs`, `engine/src/core/Main.tsx`, `ui/app.js`, skill `sami-motion-studio`, `CLAUDE.md`, docs.
+
+### Ghi chú
+Mẫu tham khảo (live-carousel, carousel-studio) không có giấy phép cho phần mã, nên toàn bộ phần carousel được **viết lại** theo cùng ý tưởng, không chép mã. Studio vì vậy giữ được giấy phép sạch khi sau này giao cho khách.
+
+### Roll back
+`git checkout v0.6.0`. Dự án carousel sẽ mở như video thường (slide nối nhau có crossfade). `out/carousel/` vẫn giữ nguyên.
+
+---
+
 ## [0.6.0] — 2026-10-08 — Nền móng: engine kép Hyperframes + Remotion · thư viện dùng chung · ffmpeg đầy đủ · dọn bộ nhớ
 Spec: `docs/specs/v0.6-nen-mong.md` · Lộ trình: v0.6 Nền móng → v0.7 Carousel động → v0.8 Cổng AI → v0.9 Footage → v1.0
 

@@ -11,6 +11,7 @@ import path from 'path';
 import crypto from 'crypto';
 import {fork, spawnSync} from 'child_process';
 import {hfScenes, ensureClip} from './hf.mjs';
+import {isCarousel, renderCarousel} from './carousel.mjs';
 import {childEnv} from './env.mjs';
 import {fileURLToPath} from 'url';
 import {readProject, codeHash} from './project.mjs';
@@ -175,9 +176,24 @@ const renderHfClips = async (j, project, {ratio, fps, scene}) => {
   return clips;
 };
 
+/** carousel project: one seamless-loop MP4 per slide + QA + swipe preview (out/carousel/<stamp>/) */
+const runCarouselJob = async (j, project) => {
+  const o = j.opts;
+  const threads = Math.max(1, Math.min(+o.threads || 8, os.cpus().length));
+  const r = await renderCarousel(o.dir, {project: applyCopy(project, o.copyOverride), only: o.scope && o.scope !== 'all' ? [o.scope] : null, gpu: o.gpu !== 'off',
+    workers: Math.max(1, Math.min(4, Math.floor(threads / 2))), onChild: (c) => { j.child = c; }, cancelled: () => j.status === 'cancelled',
+    onStage: (msg, p) => { j.stage = msg; j.progress = Math.min(0.99, p); emit(); }});
+  if (j.status === 'cancelled') return;
+  j.out = r.preview; j.encoder = 'Hyperframes (carousel)';
+  const bad = r.slides.filter((s) => !s.audio || (s.seamPsnr != null && s.seamPsnr < 22));
+  j.note = `${r.slides.length} slide MP4 · ${path.basename(r.outDir)}` + (bad.length ? ` · cần xem: ${bad.map((s) => s.id + (!s.audio ? ' (không tiếng)' : ' (nối vòng)')).join(', ')}` : ' · QA đạt');
+  j.status = 'done'; j.progress = 1; j.stage = 'Hoàn tất'; j.eta = null;
+};
+
 const run = async (j) => {
   const o = j.opts;
   j.status = 'running'; j.started = Date.now(); j.stage = 'Chuẩn bị'; j.note = null; emit();
+  { const pj = readProject(o.dir); if (isCarousel(pj)) return runCarouselJob(j, pj); }
   const scene = o.scope && o.scope !== 'all' ? o.scope : null;
   const fps = +o.fps;
   const hfClips = await renderHfClips(j, applyCopy(readProject(o.dir), o.copyOverride), {ratio: o.ratio, fps, scene});

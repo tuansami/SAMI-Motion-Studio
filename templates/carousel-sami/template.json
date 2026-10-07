@@ -1,0 +1,17 @@
+{
+  "id": "carousel-sami",
+  "name": "Carousel động SAMI – 5 slide (Google Maps)",
+  "version": "1.0.0",
+  "studio": ">=0.7.0",
+  "category": "agency",
+  "goal": ["gioi-thieu", "meo-hay"],
+  "description": "Carousel Instagram/Facebook 4:5, 5 slide × 6 s, mỗi slide là video lặp liền mạch có tiếng riêng. Hook → 3 hebel → CTA bình luận từ khoá. Chiếc ghim Google Maps đi xuyên các slide. Chữ tiếng Đức.",
+  "formats": ["4:5"],
+  "duration": 30,
+  "bpm": 120,
+  "languages": ["de"],
+  "thumbFrame": 0,
+  "author": "SAMI Marketing Agency",
+  "license": "internal",
+  "tags": ["carousel", "hyperframes", "instagram", "loop", "maps"]
+}

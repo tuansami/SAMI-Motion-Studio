@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="slides/_shared.css">
+<style>
+  /* C01 · Hook — ghim rơi từ trên xuống chữ lớn, chữ nảy, lưới chấm gợn sóng từ điểm đáp. Khung 0 = thiết kế hoàn chỉnh. */
+  #glow { position: absolute; left: 50%; top: 40%; width: 900px; height: 900px; margin: -450px; border-radius: 50%; background: radial-gradient(closest-side, rgba(118, 103, 254, .28), transparent); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="C01">
+  <div id="frame">
+    <canvas id="grid" class="cx-grid" width="1080" height="1350"></canvas>
+    <div id="glow"></div>
+    <div id="kick" class="cx-kicker" data-copy="C01_kicker"></div>
+    <div id="big" class="cx-big" data-copy="C01_big"></div>
+    <div id="small" class="cx-small" data-copy="C01_small"></div>
+    <div class="cx-triplet" data-copy="C01_triplet"></div>
+    <div id="fx"></div>
+  </div>
+</div>
+<script src="slides/_pin.js"></script>
+<script>
+  const S = window.SAMI, X = window.CX;
+  S.bindCopy();
+  const frame = document.getElementById('frame');
+  const chrome = X.chrome(frame);
+  const grid = X.grid(document.getElementById('grid'), {color: '#ffffff', alpha: 0.18});
+  const pin = makePin(frame);
+  const burst = X.burst(document.getElementById('fx'), 14, 11);
+  let chars = [], land = {t: 1.0, x: 540, y: 262};
+  const layout = X.ready(() => {
+    chars = bigWord(document.getElementById('big'), 936);
+    const r = document.getElementById('big').getBoundingClientRect();
+    land = {t: 1.0, x: r.left + r.width * 0.64, y: r.top + 18}; // pin tip lands on top of the big word, right of the kicker
+    path = pinPath({entry: 'drop', land, hops: [{t: 1.5, x: Math.min(990, r.right - 30), y: land.y + 6, h: 120}], exit: 4.9, exitY: 640});
+  });
+  let path = pinPath({entry: 'drop', land, exit: 4.9, exitY: 640});
+  X.loop((t) => {
+    layout();
+    chrome(t);
+    const b = drawPin(pin, path, t, null);
+    grid(t, [{t: 1.0, x: land.x, y: land.y, a: 1.2}, {t: 1.5, x: path.pts[2] ? path.pts[2].x : land.x, y: land.y + 6, a: 0.7}], 1);
+    burst(t, 1.0, land.x, land.y, 1.0);
+    // letters squash under the landings, then ring out (back to rest long before the loop point)
+    chars.forEach((c, i) => {
+      const d = Math.abs(i - (chars.length - 1) * 0.64);
+      const k = X.kick(t - 1.0 - d * 0.03, 3, 6) * 0.18 + X.kick(t - 1.5 - d * 0.02, 3, 7) * 0.1;
+      c.style.transform = `translateY(${-k * 60}px) scale(${1 + k * 0.4}, ${1 - k * 0.3})`;
+    });
+    document.getElementById('glow').style.transform = `scale(${1 + 0.06 * X.wave(t, 3)})`;
+  });
+</script>
+</body>
+</html>
