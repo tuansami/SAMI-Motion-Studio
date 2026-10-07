@@ -19,6 +19,99 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [0.6.0] — 2026-10-08 — Nền móng: engine kép Hyperframes + Remotion · thư viện dùng chung · ffmpeg đầy đủ · dọn bộ nhớ
+Spec: `docs/specs/v0.6-nen-mong.md` · Lộ trình: v0.6 Nền móng → v0.7 Carousel động → v0.8 Cổng AI → v0.9 Footage → v1.0
+
+### Thêm
+- **Engine Hyperframes (HTML + CSS + GSAP) — mặc định cho cảnh mới.** Một cảnh trong `project.json → scenes[]` có thể là:
+  - Remotion (`scenes/<ID>.tsx`, như cũ);
+  - HTML: `{"engine": "hyperframes", "src": "hf/<ID>.html"}`.
+
+  Hai loại cảnh trộn được trong một video. Crossfade, tiêu đề, phụ đề, ảnh chèn, âm thanh và grain/vignette vẫn do Studio dựng chung cho mọi cảnh.
+  - **Preview:** cảnh HTML chạy trực tiếp trong khung xem (iframe được tua theo từng khung).
+    - Sửa file trong `hf/` chỉ nạp lại cảnh đó, không phải đóng gói lại.
+    - Sửa chữ ở tab Chữ hiện ngay, kể cả khi chưa lưu.
+  - **Xuất:** mỗi cảnh HTML render một lần bằng CLI Hyperframes thành clip `public/_hf/<ID>_<tỉ lệ>_<fps>_<scale>x_<hash>.mp4`, rồi Remotion ghép như một cảnh bình thường.
+    - Clip lưu theo hash nội dung, nên đổi nhạc, tiêu đề hay chữ của cảnh khác thì không render lại.
+    - 4K render 2× cho 16:9, 9:16 và 1:1.
+  - **Runtime `window.SAMI`** (`lib/hf/sami-hf.js` + `sami.css`):
+    - chữ: `data-copy`, `SAMI.text/html` (`*tô màu*`, ` / ` xuống dòng);
+    - thời gian: `SAMI.timeline()`, `SAMI.EASE` (một easing), `SAMI.beat(n)`;
+    - hiệu ứng: `SAMI.arrive/leave/words/fit`;
+    - bố cục theo tỉ lệ: `[data-ratio="9x16"]`, `SAMI.pick`, vùng an toàn;
+    - màu brand qua biến CSS `--c-*`;
+    - font và GSAP chạy cục bộ: `_fonts/<family>/<weight>.css`, `_gsap/…`.
+  - **Mẫu mới `hf-starter`:** 3 cảnh HTML, 3 tỉ lệ, gồm lưới, icon và vòng tròn vẽ bằng code (SVG stroke).
+  - **Ảnh QA:** `cli-still` tự chụp nhanh khung nằm trong cảnh HTML (`hyperframes snapshot`). Thêm `--exact` để render clip rồi ghép đúng như bản xuất.
+  - Route mới: `/hfp/<id>/<cảnh>/<tỉ lệ>/…` (preview cảnh HTML) và `POST /api/hf/lint` (bộ kiểm tra của Hyperframes). Thêm sự kiện SSE `hf`.
+  - Danh sách cảnh có nhãn **HTML** cho cảnh Hyperframes.
+- **Thư viện dùng chung `Z:\SAMI_Video\SAMI_Library`** (đổi được qua `SAMI_LIBRARY` hoặc `.studio/config.json → libraryRoot`).
+  - Nội dung: `assets/<sfx|music|voice|img|video|lottie|fonts|luts|masks>/…`, mỗi file kèm `.meta.json` (giấy phép, nguồn, prompt, thời lượng…), cùng `brands/` và `index.json`.
+  - Dự án tham chiếu bằng `lib:<kind>/<file>`. Studio **hardlink** file cần dùng vào `public/_lib/`: không tốn thêm dung lượng, và chạy được cả preview lẫn xuất khi không có mạng.
+  - Route mới: `/api/library/search`, `/api/library/reindex`, `/api/library/brands`, `/lib/…`.
+  - Đã nạp sẵn 68 SFX (8 SFX engine và 60 SFX ElevenLabs của series 2610, có prompt và ghi chú giấy phép) bằng `tools/lib-seed.mjs`.
+- **ffmpeg đầy đủ** trong `vendor/ffmpeg` (`tools/get-ffmpeg.mjs`, kiểm SHA-256). Bản mặc định là BtbN 8.1: có NVENC, QSV, AMF, VP9, ProRes, GIF, xfade, loudnorm.
+  - Bản gyan 8.1 trở lên đòi driver NVIDIA ≥ 610, mà GTX 10xx dừng ở nhánh 580, nên không dùng được.
+  - Bản đầy đủ dùng cho Hyperframes, ghép, chuẩn âm lượng và footage sau này. Remotion vẫn dùng ffmpeg đi kèm của nó.
+- **Cache chung `Z:\SAMI_Video\.sami-cache`** gồm `bundles/`, `preview/`, `hf-stage/`, `hf-frames/`, `tmp/`. TEMP của tiến trình con trỏ về đây, nên ổ C không còn phình.
+- **Công cụ** (đều mặc định chạy thử, `--apply` mới làm thật):
+  - `tools/cleanup.mjs`: lần đầu báo ~13 GB có thể giải phóng.
+  - `tools/migrate.mjs`: đổi `_engine` và media trùng thành hardlink (~268 MB trên 31 dự án), xoá bản skill cũ chép trong dự án, liệt kê helper `.tsx` bị chép trùng; chụp điểm neo trước khi động vào dự án.
+  - `tools/install-skills.mjs`: cài skill từ `claude-code/skills/` vào `~/.claude/skills`, có sao lưu bản cũ.
+- **Skill `sami-motion-studio` viết lại**: bộ điều hướng gồm bảng chọn engine và 9 tài liệu `references/` (hyperframes, remotion, mixing, schema, library, audio-sfx, assets, qa, render-ffmpeg).
+- **Selftest**: thêm kiểm tra Hyperframes, dàn dựng cảnh HTML, mẫu `hf-starter`, URI `lib:`, hardlink và dò khả năng mã hoá.
+
+### Thay đổi
+- **Dò khả năng ffmpeg bất đồng bộ**, chạy một lần rồi lưu vào `.studio/caps.json`, nên server không còn bị chặn. Từng bộ mã hoá được thử lần lượt, vì card dân dụng giới hạn số phiên NVENC.
+- Ghép đoạn và ffprobe khi xuất đổi sang chạy bất đồng bộ.
+- Bundle render chuyển từ `%TEMP%` (ổ C) sang `.sami-cache/bundles`.
+- Preview chuyển sang `.sami-cache/preview` và chỉ giữ 3 bản mới nhất mỗi dự án (bản 0.5 giữ mãi, ~1,3 GB).
+- `public/_engine` dùng hardlink thay vì chép (~5,5 MB × mỗi dự án).
+- Alias `@lib` → `lib/remotion` cho code TSX dùng chung, có cả khi preview lẫn khi xuất.
+- `media()` (`@engine/core/media`) cho file người dùng chọn, hiểu cả `lib:…`. AudioTrack, Overlays và Photo đã chuyển sang dùng nó.
+- Dự án chỉ gồm cảnh HTML không cần `scenes/index.ts` (bundler tự dùng danh sách rỗng).
+- Không chép skill vào từng dự án nữa (chỉ một bản chung). Workflow vẫn đồng bộ như cũ.
+- Bộ kiểm tra dự án hiểu cảnh HTML (thiếu file, thiếu `data-composition-id`, chưa có timeline, tải CDN, dùng `Math.random`/`Date`/rAF, warp) và URI `lib:`.
+- Bộ kiểm tra mẫu chấp nhận bố cục theo tỉ lệ viết trong HTML. Ảnh bìa mẫu chụp được cả cảnh HTML.
+- `project.json` có thêm trường tuỳ chọn: `schemaVersion`, `type`, `engine`, `scenes[].engine`, `scenes[].src`.
+
+### Sửa lỗi
+- **NVENC chưa bao giờ được dùng khi xuất** (0.2 đến 0.5). Phép thử cũ `-f lavfi nullsrc … -f null -` luôn lỗi với ffmpeg rút gọn của Remotion (thiếu lavfi, rawvideo, wrapped_avframe), nên Studio luôn chọn CPU.
+  - Phép thử mới mã hoá một ảnh thật ra mp4, giống cách Remotion làm.
+  - Kết quả trên GTX 1070: NVENC H.264/H.265 ✓.
+- `/api/variants/save` trả 404 vì lệnh `return` nằm trong dòng comment. Bảng biến thể vẫn được lưu nhưng UI báo lỗi.
+- Đường dẫn D:\ trong skill và workflow.
+
+### Đã kiểm
+- `npm run check` đạt toàn bộ.
+- 12 ảnh tĩnh của 3 dự án v1 (V04, V23, 261001) giống hệt pixel trước và sau nâng cấp (PSNR ∞).
+- Xuất trọn đường dự án từ mẫu `hf-starter`: 9:16 FHD, 3 cảnh HTML → clip → ghép → âm thanh −28,1 → −14,1 LUFS → NVENC H.264. Kết quả 421 khung, 14,03 s, đúng crossfade và bố cục dọc.
+- Preview cảnh HTML trong Studio: tua đúng cảnh, sửa chữ chưa lưu hiện ngay.
+- Tốc độ Hyperframes trên máy này: ~6 khung/giây ở 1080×1920 với 4 worker. Phần chậm là chụp khung bằng Chrome, không phải mã hoá.
+
+### File chính
+- **Mới:**
+  - server: `server/hf.mjs`, `server/library.mjs`, `server/fslink.mjs`, `server/env.mjs`, `server/still.mjs`;
+  - engine: `engine/src/core/HfScene.tsx`, `engine/src/core/media.ts`, `engine/src/core/emptyScenes.ts`;
+  - runtime: `lib/hf/{sami-hf.js, sami.css, shim.js}`;
+  - công cụ: `tools/{get-ffmpeg, cleanup, migrate, lib-seed, install-skills}.mjs`;
+  - mẫu: `templates/hf-starter/`;
+  - tài liệu: `docs/specs/v0.6-nen-mong.md`, `claude-code/skills/sami-motion-studio/references/*`.
+- **Sửa:**
+  - server: `server/{index, render, project, preview, ffmpeg, paths, validate, template, cli-still, selftest}.mjs`;
+  - engine: `engine/src/core/{Main.tsx, types.ts, AudioTrack.tsx, Overlays.tsx}`, `engine/src/components/Brand.tsx`;
+  - giao diện: `ui/app.js`, `ui/style.css`;
+  - skill và workflow; `package.json`, với `hyperframes` 0.8.140 và `gsap` 3.15.0 ghim đúng phiên bản.
+
+### Roll back
+`git checkout v0.5.0` rồi `npm install`.
+- Cảnh HTML (`engine: "hyperframes"`) sẽ hiện "Thiếu scene" ở bản cũ.
+- Các trường mới và `public/_lib`, `public/_hf` vô hại và xoá được.
+- Hardlink do `migrate.mjs` tạo vẫn là file bình thường với bản cũ.
+- `vendor/` và `.sami-cache/` xoá được.
+
+---
+
 ## [0.5.0] — 2026-10-03 — Làm việc nhóm · Biến thể hàng loạt từ CSV
 Spec: `docs/specs/team-variants.md` · Hướng dẫn: `docs/HUONG_DAN_SU_DUNG.md` mục 11c (Biến thể), 11d (Nhóm)
 

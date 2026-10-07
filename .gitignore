@@ -14,3 +14,8 @@ projects/
 .env*
 Thumbs.db
 .DS_Store
+
+# vendor binaries (tools/get-ffmpeg.mjs, py venv)
+vendor/
+**/public/_hf/
+**/public/_lib/

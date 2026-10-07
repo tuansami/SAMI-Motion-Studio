@@ -9,11 +9,11 @@ export const meta = {
   ],
 }
 
-// args: { stage: 'plan'|'build', app?: 'D:/…/SAMI_Motion_Studio', brief?: string, scenes?: [{id:'S04', change:'...'}], music?: 'public/audio/music.mp3' }
+// args: { stage: 'plan'|'build', app?: 'Z:/SAMI_Video/SAMI_Motion_Studio', brief?: string, scenes?: [{id:'S04', change:'...'}], music?: 'public/audio/music.mp3' }
 const A = args || {}
 const stage = A.stage || 'build'
 const APP = A.app || '(absolute app path — see CLAUDE.md in this folder)'
-const RULES = `Follow CLAUDE.md in this folder and ${APP}/docs/PROJECT_GUIDE.md. One easing (tw/keys/arrive from @engine/lib/anim), time via useT(), beat grid 15n+1, every on-screen string in project.json → copy (with a Vietnamese label describing where it appears), layouts per ratio with usePick/useFormat for every ratio in project.json formats. Touch only the files your task names.`
+const RULES = `Follow CLAUDE.md in this folder and ${APP}/docs/PROJECT_GUIDE.md. New scenes default to Hyperframes HTML (hf/<ID>.html, project.json scene {engine:'hyperframes', src}) — see the sami-motion-studio skill references/hyperframes.md: SAMI.timeline(), SAMI.beat(n), SAMI.arrive, data-copy, [data-ratio] layouts; TSX scenes: one easing (tw/keys/arrive from @engine/lib/anim), time via useT(); beat grid 15n+1, every on-screen string in project.json → copy (with a Vietnamese label describing where it appears), layouts per ratio with usePick/useFormat for every ratio in project.json formats. Touch only the files your task names.`
 
 const PLAN = {type: 'object', properties: {
   scenes: {type: 'array', items: {type: 'object', properties: {id: {type: 'string'}, start: {type: 'number'}, end: {type: 'number'}, spec: {type: 'string'}}, required: ['id', 'start', 'end', 'spec']}},

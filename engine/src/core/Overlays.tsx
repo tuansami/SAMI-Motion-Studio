@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {AbsoluteFill, Img, Sequence, staticFile, useVideoConfig, delayRender, continueRender, cancelRender} from 'remotion';
+import {AbsoluteFill, Img, Sequence, useVideoConfig, delayRender, continueRender, cancelRender} from 'remotion';
+import {media} from './media';
 import {Lottie, type LottieAnimationData} from '@remotion/lottie';
 import {tw} from '../lib/anim';
 import {useBaseFrame, toReal} from './timebase';
@@ -54,7 +55,7 @@ const OverlayOne: React.FC<{o: OverlayItem; len: number}> = ({o, len}) => {
       <div style={style}>
         {o.kind === 'sticker' ? <Sticker id={o.sticker || 'arrow'} p={anim === 'draw' ? inP : 1} color={o.color || '#08DDA4'} stroke={o.stroke ?? 6} />
           : o.kind === 'lottie' ? <LottieFile src={o.src || ''} loop={o.loop !== false} speed={o.speed ?? 1} />
-          : o.src ? <Img src={staticFile(o.src)} style={{width: '100%', height: 'auto', display: 'block', borderRadius: o.radius || 0}} /> : null}
+          : o.src ? <Img src={media(o.src)} style={{width: '100%', height: 'auto', display: 'block', borderRadius: o.radius || 0}} /> : null}
       </div>
     </AbsoluteFill>
   );
@@ -66,7 +67,7 @@ const LottieFile: React.FC<{src: string; loop: boolean; speed: number}> = ({src,
   const [handle] = useState(() => (cache.has(src) || !src ? null : delayRender('Lottie ' + src)));
   useEffect(() => {
     if (!src || cache.has(src)) return;
-    fetch(staticFile(src)).then((r) => r.json()).then((j) => { cache.set(src, j); setData(j); if (handle !== null) continueRender(handle); })
+    fetch(media(src)).then((r) => r.json()).then((j) => { cache.set(src, j); setData(j); if (handle !== null) continueRender(handle); })
       .catch((e) => { if (handle !== null) cancelRender(new Error('Không đọc được Lottie ' + src + ': ' + e)); });
   }, [src, handle]);
   if (!data) return null;

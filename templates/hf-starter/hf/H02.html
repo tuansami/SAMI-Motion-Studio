@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<style>
+  /* H02 · 3 lợi ích — icon nét vẽ bằng SVG (stroke-dash), thẻ vào theo nhịp, vạch tiến độ chạy dưới. */
+  #stage { position: absolute; inset: 0; background: var(--c-navy); }
+  #title { position: absolute; left: 0; right: 0; top: 150px; text-align: center; font-weight: 800; font-size: 84px; letter-spacing: -0.03em; }
+  [data-ratio="9x16"] #title { top: calc(var(--safe-top) + 40px); font-size: 76px; padding: 0 var(--safe-side); }
+  [data-ratio="1x1"] #title { top: 110px; font-size: 68px; }
+  #cards { position: absolute; left: var(--safe-side); right: var(--safe-side); top: 360px; display: flex; gap: 40px; justify-content: center; }
+  [data-ratio="9x16"] #cards { flex-direction: column; top: 560px; gap: 48px; }
+  [data-ratio="1x1"] #cards { top: 300px; gap: 28px; }
+  .card { flex: 1; max-width: 520px; padding: 54px 44px; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+  [data-ratio="9x16"] .card { max-width: none; flex-direction: row; padding: 40px 48px; gap: 40px; }
+  [data-ratio="1x1"] .card { padding: 36px 24px; }
+  .card svg { width: 150px; height: 150px; flex: none; }
+  [data-ratio="1x1"] .card svg { width: 116px; height: 116px; }
+  .card path, .card circle, .card rect { fill: none; stroke: var(--c-mint); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+  .card p { margin: 0; font-weight: 700; font-size: 44px; line-height: 1.15; text-align: center; }
+  [data-ratio="9x16"] .card p { font-size: 52px; text-align: left; }
+  [data-ratio="1x1"] .card p { font-size: 34px; }
+  #bar { position: absolute; left: var(--safe-side); right: var(--safe-side); bottom: calc(var(--safe-bottom) + 30px); height: 8px; border-radius: 8px; background: var(--c-line); overflow: hidden; }
+  #bar i { display: block; height: 100%; width: 100%; background: var(--grad); transform-origin: 0 50%; transform: scaleX(0); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="H02">
+  <div id="stage" class="clip">
+    <div id="title" data-copy="H02_title"></div>
+    <div id="cards">
+      <div class="card"><svg viewBox="0 0 100 100"><path d="M18 58 L42 80 L84 24"/></svg><p data-copy="H02_b1"></p></div>
+      <div class="card"><svg viewBox="0 0 100 100"><path d="M30 34 A26 26 0 1 1 22 62"/><path d="M14 46 L22 62 L38 56"/></svg><p data-copy="H02_b2"></p></div>
+      <div class="card"><svg viewBox="0 0 100 100"><rect x="12" y="26" width="46" height="30" rx="5"/><rect x="66" y="16" width="22" height="40" rx="5"/><rect x="34" y="64" width="28" height="28" rx="5"/></svg><p data-copy="H02_b3"></p></div>
+    </div>
+    <div id="bar"><i></i></div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, tl = S.timeline();
+  S.arrive(tl, '#title', S.beat(0.25));
+  const cards = document.querySelectorAll('.card');
+  cards.forEach((c, i) => {
+    const at = S.beat(1.5 + i * 2); // một lợi ích mỗi 2 nhịp
+    S.arrive(tl, c, at, {dist: 60});
+    c.querySelectorAll('path,circle,rect').forEach((el) => {
+      const len = el.getTotalLength ? el.getTotalLength() : 300;
+      el.style.strokeDasharray = len; el.style.strokeDashoffset = len;
+      tl.to(el, {strokeDashoffset: 0, duration: 0.8}, at + 0.15);
+    });
+    tl.fromTo(c.querySelector('svg'), {scale: 0.7, rotate: -12}, {scale: 1, rotate: 0, duration: 0.7}, at);
+  });
+  tl.to('#bar i', {scaleX: 1, duration: S.dur - S.t0 - 0.3, ease: 'none'}, S.t0);
+</script>
+</body>
+</html>

@@ -73,7 +73,8 @@ export const checkTemplate = (dir) => {
   // 4 · per-ratio layouts
   const fm = m?.formats || p.formats;
   if (fm.some((r) => !p.formats.includes(r))) fail.push('template.json khai tỉ lệ mà project.json chưa có: ' + fm.filter((r) => !p.formats.includes(r)).join(', '));
-  if (p.formats.length > 1 && !files.some((f) => /useFormat|usePick/.test(fs.readFileSync(f, 'utf8')))) fail.push('Khai nhiều tỉ lệ nhưng không cảnh nào dùng useFormat/usePick (chưa có bố cục riêng).');
+  const hfFiles = walk(path.join(dir, 'hf')).filter((f) => /\.html?$/.test(f));
+  if (p.formats.length > 1 && !files.some((f) => /useFormat|usePick/.test(fs.readFileSync(f, 'utf8'))) && !hfFiles.some((f) => /data-ratio|SAMI\.pick|SAMI\.portrait|SAMI\.landscape/.test(fs.readFileSync(f, 'utf8')))) fail.push('Khai nhiều tỉ lệ nhưng không cảnh nào dùng useFormat/usePick (chưa có bố cục riêng).');
   else if (p.formats.length > 1) ok.push('Có bố cục riêng: ' + p.formats.join(' · '));
   // 8 · beat grid · 9 · reading time
   const off = p.scenes.filter((s, i) => i > 0 && (s.start - 1) % 15 !== 0 && s.start % 15 !== 0);
@@ -103,18 +104,14 @@ export const checkTemplate = (dir) => {
 
 /** render small cover images for each format (runs Chrome — call from a child process / CLI) */
 export const makeThumbs = async (dir, onLog = () => {}) => {
-  const {renderStill, selectComposition} = await import('@remotion/renderer');
+  const {stills} = await import('./still.mjs'); // Remotion scenes → renderStill, Hyperframes scenes → snapshot
   const m = readManifest(dir) || {}; const p = readProject(dir);
   const hadEngine = fs.existsSync(path.join(dir, 'public', '_engine'));
-  const serveUrl = await renderBundle(dir);
   fs.mkdirSync(path.join(dir, 'preview'), {recursive: true});
-  const opts = {browserExecutable: process.env.REMOTION_BROWSER || null, chromiumOptions: {gl: process.env.REMOTION_GL || 'angle'}};
   const total = p.scenes.at(-1)?.end || 30;
   const frame = Math.min(total - 1, Math.max(0, m.thumbFrame ?? Math.round(total * 0.35)));
   for (const ratio of m.formats || p.formats) {
-    const inputProps = {project: p, ratio, fps: 30, titles: true, subtitles: false, audio: false};
-    const comp = await selectComposition({serveUrl, id: 'Main', inputProps, ...opts});
-    await renderStill({composition: comp, serveUrl, inputProps, frame, output: path.join(dir, 'preview', thumbName(ratio)), imageFormat: 'jpeg', jpegQuality: 82, scale: ratio === '16:9' ? 0.34 : 0.36, ...opts});
+    await stills(dir, [frame], () => path.join(dir, 'preview', thumbName(ratio)), {ratio, fps: 30, project: p, titles: true, subtitles: false, jpegQuality: 82, scale: ratio === '16:9' ? 0.34 : 0.36});
     onLog('ok ' + ratio);
   }
   if (!hadEngine && isTemplateDir(dir)) fs.rmSync(path.join(dir, 'public', '_engine'), {recursive: true, force: true});

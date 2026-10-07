@@ -128,7 +128,7 @@ async function mountPreview() {
   S.playerApi = await window.StudioPreview.mount($('#playerBox'), previewOpts(), (f, total, playing) => { S.frame = f; S.total = total; S.playing = playing; updateTransport(); });
 }
 function showBundleError(msg) { const e = $('#bundleErr'); e.hidden = false; e.textContent = 'Lỗi code cảnh (sửa file rồi lưu, Studio sẽ tự tải lại):\n\n' + msg; }
-const previewOpts = () => ({project: S.varPreview != null && S.varCsv ? withCopy(S.project, readVariants(S.varCsv).variants[S.varPreview]?.copy) : S.project, ratio: S.ratio, fps: S.fps, titles: $('#tgTitles').checked, subtitles: $('#tgSubs').checked, audio: $('#tgAudio').checked, sceneId: $('#tgScene').checked ? S.scene : null});
+const previewOpts = () => ({project: S.varPreview != null && S.varCsv ? withCopy(S.project, readVariants(S.varCsv).variants[S.varPreview]?.copy) : S.project, ratio: S.ratio, fps: S.fps, titles: $('#tgTitles').checked, subtitles: $('#tgSubs').checked, audio: $('#tgAudio').checked, sceneId: $('#tgScene').checked ? S.scene : null, hfBase: `/hfp/${S.id}/`, hfRev: S.hfRev || 0});
 let upT;
 function pushPreview() { clearTimeout(upT); upT = setTimeout(() => S.playerApi?.update(previewOpts()), 120); }
 function sizePlayer() {
@@ -224,7 +224,7 @@ function renderScenes() {
     const len = (s.end - s.start) / BASE;
     const inp = h('input', {type: 'number', step: '0.5', min: '0.5', value: len.toFixed(2), title: 'Thời lượng (giây)', onclick: (e) => e.stopPropagation(), onchange: (e) => setSceneLength(s.id, parseFloat(e.target.value) * BASE)});
     L.append(h('div', {class: 'sc' + (s.id === S.scene ? ' on' : ''), onclick: () => selectScene(s.id)},
-      h('div', {class: 'l1'}, h('span', {class: 'id'}, s.id), h('span', {class: 'nm'}, s.label || '')),
+      h('div', {class: 'l1'}, h('span', {class: 'id'}, s.id), h('span', {class: 'nm'}, s.label || ''), (s.engine === 'hyperframes' || /\.html?$/i.test(s.src || '')) ? h('span', {class: 'eng', title: 'Cảnh HTML + CSS + GSAP (Hyperframes) — ' + (s.src || '')}, 'HTML') : null),
       h('div', {class: 'l2'}, h('span', {}, fmtT(s.start / BASE)), h('span', {style: 'flex:1'}), h('button', {class: 'small', title: '−0,5 giây', onclick: (e) => { e.stopPropagation(); setSceneLength(s.id, s.end - s.start - 15); }}, '−'), inp, h('span', {}, 's'), h('button', {class: 'small', title: '+0,5 giây', onclick: (e) => { e.stopPropagation(); setSceneLength(s.id, s.end - s.start + 15); }}, '+'))));
   });
   $('#totalDur').textContent = 'Tổng ' + fmtT(totalSec());
@@ -897,6 +897,7 @@ function connectEvents() {
   es.addEventListener('task', (e) => onTask(JSON.parse(e.data)));
   es.addEventListener('jobs', (e) => { beat(); onJobsData(JSON.parse(e.data)); });
   es.addEventListener('code', (e) => { const d = JSON.parse(e.data); if (d.id !== S.id) return; if (d.error) showBundleError(d.error); else { toast('Code cảnh vừa thay đổi — đang tải lại preview…'); keepUndo(); setTimeout(() => location.reload(), 600); } });
+  es.addEventListener('hf', (e) => { const d = JSON.parse(e.data); if (d.id !== S.id) return; S.hfRev = d.rev; pushPreview(); toast('Cảnh HTML (Hyperframes) vừa thay đổi — đã tải lại khung preview'); });
   es.addEventListener('restored', (e) => { const d = JSON.parse(e.data); if (d.id !== S.id || S.restoring) return; if (!isDirty()) { toast('Dự án vừa được khôi phục về điểm neo cũ — đang tải lại…'); setTimeout(() => location.reload(), 600); } else toast('Dự án vừa được khôi phục ở nơi khác — lưu ý: bạn đang có thay đổi chưa lưu', true, 8000); });
   es.addEventListener('project', async (e) => { const d = JSON.parse(e.data); if (d.id !== S.id || isDirty()) return; const r = await api('/api/project/open', {id: S.id}); if (JSON.stringify(r.project) !== S.saved) { S.project = r.project; S.saved = JSON.stringify(r.project); pushPreview(); renderAll(); toast('project.json được cập nhật từ bên ngoài (Claude Code?) — đã tải lại'); } });
   clearInterval(pollT);

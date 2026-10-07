@@ -68,8 +68,32 @@ export const S03: React.FC = () => {
 ```
 Đăng ký trong `scenes/index.ts` và thêm mục vào `project.json → scenes` (liền mạch: `start` = `end` cảnh trước).
 
+## 2b. Viết một cảnh HTML (Hyperframes) — mặc định cho cảnh mới từ 0.6
+Khai báo trong `project.json → scenes`: `{"id": "S03", "label": "…", "start": 241, "end": 361, "engine": "hyperframes", "src": "hf/S03.html"}` (không cần `scenes/index.ts`).
+```html
+<!doctype html><html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<style>
+  #stage { position: absolute; inset: 0; background: var(--c-navy); }
+  #head { position: absolute; left: var(--safe-side); right: var(--safe-side); top: 40%; font-weight: 800; font-size: 150px; text-align: center; }
+  [data-ratio="9x16"] #head { font-size: 120px; }
+</style></head><body>
+<div id="root" data-composition-id="S03">
+  <div id="stage" class="clip"><div id="head" data-copy="S03_headline"></div></div>
+</div>
+<script>
+  const S = window.SAMI, tl = S.timeline();              // timeline đã đăng ký, easing chuẩn, dài đúng bằng clip
+  S.arrive(tl, S.words(document.getElementById('head')), S.beat(0.5), {stagger: 0.2}); // vào theo nhịp
+</script></body></html>
+```
+- **Thời gian:** clip bắt đầu 8 khung **trước** điểm cắt; nhịp cắt = `SAMI.t0`, nhịp n = `SAMI.beat(n)` (0,5 s/nhịp). Studio tự đặt kích thước và thời lượng của phần tử gốc theo tỉ lệ đang xuất.
+- **Chữ:** `data-copy="KEY"` (sửa trực tiếp trong tab Chữ) hoặc `SAMI.text/html(KEY)`. Quy ước giống TSX: `*tô màu*`, ` / ` xuống dòng.
+- **Đường dẫn** tính từ gốc dự án: `public/…`, `hf/…`, `lib/<kind>/…` (thư viện chung), `_fonts/<family>/<weight>.css`, `_gsap/…`, `_sami/…`.
+- **Bố cục theo tỉ lệ:** `[data-ratio="9x16"] …`, `SAMI.pick({…})`, biến `--safe-top/bottom/side`. Màu brand: `--c-navy`, `--c-mint`, `--grad`…
+- Đầy đủ API: skill `sami-motion-studio` → `references/hyperframes.md`. Mẫu tham khảo: `templates/hf-starter/hf/`.
+
 ## 3. Luật cứng
-1. Chỉ `tw/keys/arrive/leave` (easing `cubic-bezier(0.22,1,0.36,1)`). Không spring, CSS transition, `Math.random`, `Date` (dùng `rnd(seed)`).
+1. Chỉ `tw/keys/arrive/leave` (easing `cubic-bezier(0.22,1,0.36,1)`), trong HTML là `SAMI.EASE`/`SAMI.arrive`. Không spring, CSS transition/animation, `Math.random`, `Date`, `requestAnimationFrame`, `setInterval` (dùng `rnd(seed)` / `SAMI.rnd(seed)` và timeline).
 2. Thời gian tính bằng **khung 30 fps** qua `useT()`/`useBaseFrame()` — không dùng `useCurrentFrame()` trực tiếp (sẽ sai ở 24/60 fps).
 3. `<Words>/<Counter>/<TypeLabel>` chạy theo khung Sequence → cộng `OV` vào `start`.
 4. Cắt cảnh trên nhịp (15n+1 ở 120 BPM). Kéo dài cảnh bằng `warp` (Studio tự làm khi người dùng đổi thời lượng) — không viết lại animation.
@@ -85,6 +109,7 @@ export const S03: React.FC = () => {
 - Studio tự rebuild preview khi file `scenes/` đổi; lỗi biên dịch hiện khung đỏ.
 - Ảnh tĩnh để tự soát (từ thư mục app):
   `node server/cli-still.mjs <thư_mục_dự_án> out/qa.jpg 60,300,900 9:16` (khung ở 30 fps, nhiều khung cách bằng dấu phẩy) → Read ảnh `out/qa_<frame>.jpg`. Không khẳng định "đẹp" khi chưa xem khung hình.
+  Khung nằm trong cảnh HTML được chụp nhanh bằng Hyperframes (chỉ cảnh, chưa có tiêu đề/ảnh chèn). Thêm `--exact` để render clip rồi ghép đầy đủ như bản xuất.
 - Nút **Kiểm tra** trong Studio (hoặc `validateProject`) phải không còn ✗.
 - Không tự chạy render đầy đủ; đề nghị người dùng xuất bản nháp trong Studio.
 

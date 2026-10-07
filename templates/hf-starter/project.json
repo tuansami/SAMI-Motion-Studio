@@ -1,0 +1,34 @@
+{
+ "name": "Hyperframes starter (mẫu)",
+ "client": "",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": ["16:9", "9:16", "1:1"],
+ "brand": {},
+ "look": {"grain": 0.05, "vignette": 0.4},
+ "scenes": [
+  {"id": "H01", "label": "Mở đầu – câu hook", "start": 0, "end": 121, "engine": "hyperframes", "src": "hf/H01.html"},
+  {"id": "H02", "label": "3 lợi ích (vẽ bằng code)", "start": 121, "end": 301, "engine": "hyperframes", "src": "hf/H02.html"},
+  {"id": "H03", "label": "Kêu gọi + liên hệ", "start": 301, "end": 421, "engine": "hyperframes", "src": "hf/H03.html"}
+ ],
+ "copy": {
+  "H01_label": {"label": "Nhãn nhỏ phía trên", "scene": "H01", "value": "SAMI · MOTION STUDIO"},
+  "H01_headline": {"label": "Câu hook (dùng *…* để tô màu, / để xuống dòng)", "scene": "H01", "value": "Video đẹp / *viết bằng web.*"},
+  "H02_title": {"label": "Tiêu đề cảnh lợi ích", "scene": "H02", "value": "Ba điều bạn nhận được"},
+  "H02_b1": {"label": "Lợi ích 1", "scene": "H02", "value": "Dựng nhanh hơn"},
+  "H02_b2": {"label": "Lợi ích 2", "scene": "H02", "value": "Dùng lại mọi tài sản"},
+  "H02_b3": {"label": "Lợi ích 3", "scene": "H02", "value": "Xuất mọi tỉ lệ"},
+  "H03_cta": {"label": "Câu kêu gọi (dùng *…* để tô màu)", "scene": "H03", "value": "Bắt đầu *ngay hôm nay.*"},
+  "H03_contact": {"label": "Liên hệ (web / số điện thoại)", "scene": "H03", "value": "sami-agency.de"}
+ },
+ "titles": [],
+ "subtitles": {"enabled": false, "items": [], "anim": "karaoke", "style": {"font": "Be Vietnam Pro", "weight": 700, "color": "#FFFFFF", "highlight": "#08DDA4", "shadow": true}},
+ "audio": {"mode": "layers", "music": {"src": "", "gain": -4, "edit": [], "fadeOut": 2.5}, "cues": [
+  {"t": 0.53, "sfx": "pop", "gain": -16, "label": "hook"},
+  {"t": 4.03, "sfx": "whoosh_b", "gain": -18, "label": "chuyển cảnh"},
+  {"t": 10.03, "sfx": "whoosh_b", "gain": -18, "label": "chuyển cảnh"},
+  {"t": 11.03, "sfx": "pop", "gain": -10, "label": "CTA"}
+ ]}
+}

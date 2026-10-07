@@ -10,9 +10,11 @@ import os from 'os';
 import path from 'path';
 import crypto from 'crypto';
 import {fork, spawnSync} from 'child_process';
+import {hfScenes, ensureClip} from './hf.mjs';
+import {childEnv} from './env.mjs';
 import {fileURLToPath} from 'url';
 import {readProject, codeHash} from './project.mjs';
-import {gpuEncoders, ff, fprobe, normalizeLoudness} from './ffmpeg.mjs';
+import {gpuEncoders, capsReady, ffAsync, fprobeAsync, normalizeLoudness} from './ffmpeg.mjs';
 import {DATA} from './paths.mjs';
 
 export const SCALE = {'540p': 0.5, FHD: 1, '2K': 4 / 3, '4K': 2};
@@ -106,7 +108,7 @@ const humanError = (m) => {
 
 /** run one part in a child process with a watchdog */
 const runPart = (j, payload, label, onProg) => new Promise((resolve, reject) => {
-  const child = fork(WORKER, [], {stdio: ['ignore', 'pipe', 'pipe', 'ipc'], detached: !WIN, windowsHide: true, env: process.env});
+  const child = fork(WORKER, [], {stdio: ['ignore', 'pipe', 'pipe', 'ipc'], detached: !WIN, windowsHide: true, env: childEnv()});
   j.child = child;
   try { os.setPriority(child.pid, PRIORITY[j.opts.priority || 'normal']); } catch {}
   let log = '';
@@ -131,7 +133,7 @@ const runPart = (j, payload, label, onProg) => new Promise((resolve, reject) => 
 
 /** webpack bundle in a child process (can be killed by Huỷ; never blocks the server) */
 const bundleInChild = (j, dir, onProg) => new Promise((resolve, reject) => {
-  const child = fork(BUNDLER, [dir], {stdio: ['ignore', 'ignore', 'pipe', 'ipc'], detached: !WIN, windowsHide: true});
+  const child = fork(BUNDLER, [dir], {stdio: ['ignore', 'ignore', 'pipe', 'ipc'], detached: !WIN, windowsHide: true, env: childEnv()});
   j.child = child; let log = '', done = false;
   child.stderr.on('data', (d) => { log = (log + d).slice(-2000); });
   child.on('message', (m) => { if (m.type === 'progress') onProg(m.p); else if (m.type === 'done') { done = true; resolve(m.out); } else if (m.type === 'error') { done = true; reject(new Error('Đóng gói lỗi (code cảnh?):\n' + m.message)); } });
@@ -152,15 +154,39 @@ export const applyCopy = (project, over) => {
   return p;
 };
 
+/** Hyperframes scenes → clips (cached by content hash) BEFORE bundling, so Remotion composites them like any scene */
+const renderHfClips = async (j, project, {ratio, fps, scene}) => {
+  const all = hfScenes(project); if (!all.length) return {};
+  const o = j.opts; const S = project.scenes;
+  const layout = project.formats.includes(ratio) ? ratio : project.formats[0]; // fit mode lays out the primary ratio
+  let want = all;
+  if (scene) { const i = S.findIndex((x) => x.id === scene); const near = new Set([S[i - 1]?.id, S[i]?.id, S[i + 1]?.id]); want = all.filter((s) => near.has(s.id)); }
+  const caps = await capsReady();
+  const gpu = o.gpu !== 'off' && !!caps.full?.nvenc;
+  const threads = Math.max(1, Math.min(+o.threads || 8, os.cpus().length));
+  const clips = {};
+  for (const [k, s] of want.entries()) {
+    if (j.status === 'cancelled') return clips;
+    j.stage = `Cảnh HTML ${s.id} (Hyperframes) ${k + 1}/${want.length}`; j.progress = 0.01; emit();
+    const r = await ensureClip(o.dir, project, s, {ratio: layout, fps, scale: SCALE[o.res] || 1, gpu, workers: Math.max(1, Math.min(4, Math.floor(threads / 2))),
+      onChild: (c) => { j.child = c; }, onProgress: (p) => { j.stage = `Cảnh HTML ${s.id} (Hyperframes) ${k + 1}/${want.length} · ${Math.round(p * 100)}%`; emit(); }});
+    clips[s.id] = r.rel;
+  }
+  return clips;
+};
+
 const run = async (j) => {
   const o = j.opts;
-  j.status = 'running'; j.started = Date.now(); j.stage = 'Đóng gói dự án'; j.note = null; emit();
+  j.status = 'running'; j.started = Date.now(); j.stage = 'Chuẩn bị'; j.note = null; emit();
+  const scene = o.scope && o.scope !== 'all' ? o.scope : null;
+  const fps = +o.fps;
+  const hfClips = await renderHfClips(j, applyCopy(readProject(o.dir), o.copyOverride), {ratio: o.ratio, fps, scene});
+  if (j.status === 'cancelled') return;
+  j.stage = 'Đóng gói dự án'; emit();
   const serveUrl = await bundleInChild(j, o.dir, (p) => { j.progress = p / 100 * 0.03; j.stage = `Đóng gói dự án ${p}%`; emit(); });
   if (j.status === 'cancelled') return;
   const project = applyCopy(readProject(o.dir), o.copyOverride);
-  const scene = o.scope && o.scope !== 'all' ? o.scope : null;
-  const fps = +o.fps;
-  const inputProps = {project, ratio: o.ratio, fps, titles: o.titles !== false, subtitles: o.subtitles !== false, audio: o.audio !== false, ...(scene ? {sceneId: scene} : {})};
+  const inputProps = {project, ratio: o.ratio, fps, titles: o.titles !== false, subtitles: o.subtitles !== false, audio: o.audio !== false, hfClips, ...(scene ? {sceneId: scene} : {})};
   const browserExecutable = process.env.REMOTION_BROWSER || null;
   const wantGpu = o.gpu !== 'off';
   const chromiumOptions = {gl: process.env.REMOTION_GL || (wantGpu ? 'angle' : 'swangle')};
@@ -180,6 +206,7 @@ const run = async (j) => {
     j.out = path.join(dest, `${safe}_${o.ratio.replace(':', 'x')}_${o.res}_${fps}fps${scene ? '_' + scene : ''}_${stamp}.${ext}`);
   }
 
+  await capsReady();
   const enc = gpuEncoders();
   let useNvenc = wantGpu && (o.codec === 'h264' ? enc.nvenc : o.codec === 'h265' ? enc.hevc_nvenc : false);
   if (fs.existsSync(path.join(partsDir, 'encoder.txt'))) useNvenc = fs.readFileSync(path.join(partsDir, 'encoder.txt'), 'utf8') === 'nvenc'; // keep parts consistent
@@ -274,9 +301,9 @@ const run = async (j) => {
   const args = ['-hide_banner', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', list];
   if (wantAudio) args.push('-i', muxAudio, '-map', '0:v:0', '-map', '1:a:0', '-c:a', prores ? 'pcm_s16le' : 'aac', ...(prores ? [] : ['-b:a', '320k']));
   args.push('-c:v', 'copy', '-t', dur, ...(prores ? [] : ['-movflags', '+faststart']), j.out);
-  const r = ff(args);
-  if (r.status !== 0) throw new Error('Ghép video lỗi: ' + String(r.stderr).slice(-800));
-  const probe = fprobe(['-v', 'error', '-count_packets', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_packets', '-of', 'csv=p=0', j.out]);
+  const r = await ffAsync(args);
+  if (r.code !== 0) throw new Error('Ghép video lỗi: ' + String(r.stderr).slice(-800));
+  const probe = await fprobeAsync(['-v', 'error', '-count_packets', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_packets', '-of', 'csv=p=0', j.out]);
   const got = parseInt(String(probe.stdout)); if (got && Math.abs(got - N) > 2) j.note = `Cảnh báo: video có ${got}/${N} khung`;
   fs.rmSync(partsDir, {recursive: true, force: true}); j.partsDir = null;
   j.status = 'done'; j.progress = 1; j.stage = 'Hoàn tất'; j.eta = null; if (j.loudNote && !j.note) j.note = j.loudNote;

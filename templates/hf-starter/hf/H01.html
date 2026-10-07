@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<style>
+  /* H01 · Hook — lưới vẽ bằng SVG tự kẻ, nhãn gõ chữ, câu hook vào từng từ theo nhịp, đẩy máy chậm. */
+  #stage { position: absolute; inset: 0; background: radial-gradient(90% 70% at 50% 40%, var(--c-navyLift), var(--c-navy) 70%); }
+  #grid { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .55; }
+  #grid line { stroke: var(--c-line); stroke-width: 2; }
+  #wrap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 0 var(--safe-side); }
+  #label { font-family: var(--f-mono); color: var(--c-mint); font-size: 30px; letter-spacing: .14em; margin-bottom: 40px; white-space: nowrap; }
+  #head { font-weight: 800; font-size: 168px; line-height: 1.02; letter-spacing: -0.045em; color: var(--c-text); }
+  [data-ratio="9x16"] #head { font-size: 132px; }
+  [data-ratio="1x1"] #head { font-size: 124px; }
+  #dot { position: absolute; width: 22px; height: 22px; border-radius: 50%; background: var(--c-mint); box-shadow: 0 0 40px var(--c-mint); left: 50%; top: 50%; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="H01">
+  <div id="stage" class="clip">
+    <svg id="grid"></svg>
+    <div id="wrap">
+      <div id="label" data-copy="H01_label"></div>
+      <div id="head" data-copy="H01_headline"></div>
+    </div>
+    <div id="dot"></div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, tl = S.timeline();
+  // lưới: đường kẻ dọc/ngang tự vẽ (stroke-dash), toạ độ theo khung hiện tại
+  const svg = document.getElementById('grid'), step = 120;
+  for (let x = step; x < S.w; x += step) svg.insertAdjacentHTML('beforeend', `<line x1="${x}" y1="0" x2="${x}" y2="${S.h}"/>`);
+  for (let y = step; y < S.h; y += step) svg.insertAdjacentHTML('beforeend', `<line x1="0" y1="${y}" x2="${S.w}" y2="${y}"/>`);
+  svg.querySelectorAll('line').forEach((l, i) => {
+    const len = l.getAttribute('x1') === l.getAttribute('x2') ? S.h : S.w;
+    l.style.strokeDasharray = len; l.style.strokeDashoffset = len;
+    tl.to(l, {strokeDashoffset: 0, duration: 1.2}, S.t0 + (i % 12) * 0.04);
+  });
+  // nhãn: gõ từng ký tự
+  const label = document.getElementById('label'), txt = label.textContent; label.textContent = '';
+  const typer = {n: 0};
+  tl.to(typer, {n: txt.length, duration: txt.length / 26, ease: 'none', onUpdate: () => { label.textContent = txt.slice(0, Math.round(typer.n)); }}, S.beat(0.25));
+  // câu hook: từng từ vào theo nhịp
+  const words = S.words(document.getElementById('head'));
+  S.arrive(tl, words, S.beat(1), {stagger: 0.23, dur: 0.55});
+  // chấm sáng đi theo nhịp rồi tắt
+  tl.fromTo('#dot', {scale: 0, x: -S.w * 0.3, y: S.h * 0.28}, {scale: 1, duration: 0.4}, S.beat(0.5));
+  tl.to('#dot', {x: S.w * 0.3, duration: 2.4, ease: 'none'}, S.beat(1));
+  tl.to('#dot', {scale: 0, duration: 0.4}, S.beat(6));
+  // đẩy máy chậm cả cảnh
+  tl.fromTo('#wrap', {scale: 1}, {scale: 1.05, duration: S.dur, ease: 'none'}, 0);
+</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 import React from 'react';
 import {Audio, Sequence, staticFile, useVideoConfig, interpolate} from 'remotion';
+import {media} from './media';
 import {BASE_FPS} from './timebase';
 import type {ProjectJSON} from './types';
 
@@ -15,7 +16,7 @@ export const AudioTrack: React.FC<{audio?: ProjectJSON['audio']; totalBase: numb
   if (!audio || audio.mode === 'none') return null;
   const totalReal = Math.round((totalBase * fps) / BASE_FPS);
   if (audio.mode === 'premix' && audio.premix) {
-    return <Audio src={staticFile(audio.premix)} volume={db(audio.premixGain)} />;
+    return <Audio src={media(audio.premix)} volume={db(audio.premixGain)} />;
   }
   const out: React.ReactNode[] = [];
   const m = audio.music;
@@ -47,7 +48,7 @@ export const AudioTrack: React.FC<{audio?: ProjectJSON['audio']; totalBase: numb
       out.push(
         <Sequence key={'m' + i} from={from} durationInFrames={dur} layout="none">
           <Audio
-            src={staticFile(m.src)}
+            src={media(m.src)}
             startFrom={Math.max(0, trimBefore)}
             endAt={Math.max(0, trimBefore) + dur}
             volume={(f) => {
@@ -66,14 +67,14 @@ export const AudioTrack: React.FC<{audio?: ProjectJSON['audio']; totalBase: numb
     const from = Math.max(0, Math.round(c.t * fps));
     out.push(
       <Sequence key={'c' + i} from={from} durationInFrames={Math.round(Math.max(4, (c.len || 0) + 0.5) * fps)} layout="none">
-        <Audio src={staticFile(c.src || `_engine/sfx/${c.sfx}.wav`)} volume={db(c.gain ?? -10)} />
+        <Audio src={c.src ? media(c.src) : staticFile(`_engine/sfx/${c.sfx}.wav`)} volume={db(c.gain ?? -10)} />
       </Sequence>,
     );
   });
   voice.forEach((v, i) => {
     out.push(
       <Sequence key={'v' + i} from={Math.max(0, Math.round(v.t * fps))} durationInFrames={Math.max(1, Math.round(((v.len || 8) + 0.5) * fps))} layout="none">
-        <Audio src={staticFile(v.src)} volume={db(v.gain ?? 0)} />
+        <Audio src={media(v.src)} volume={db(v.gain ?? 0)} />
       </Sequence>,
     );
   });

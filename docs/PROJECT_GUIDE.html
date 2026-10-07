@@ -11,6 +11,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </ul>
 </li>
 <li><a href="#2-viet-mot-canh">2. Viết một cảnh</a></li>
+<li><a href="#2b-viet-mot-canh-html-hyperframes-mac-inh-cho-canh-moi-tu-06">2b. Viết một cảnh HTML (Hyperframes) — mặc định cho cảnh mới từ 0.6</a></li>
 <li><a href="#3-luat-cung">3. Luật cứng</a></li>
 <li><a href="#4-kiem-tra">4. Kiểm tra</a></li>
 <li><a href="#5-quy-trinh-video-moi-co-cong-duyet">5. Quy trình video mới (có cổng duyệt ⛔)</a></li>
@@ -83,9 +84,33 @@ export const S03: React.FC = () =&gt; {
 };
 </code></pre>
 <p>Đăng ký trong <code>scenes/index.ts</code> và thêm mục vào <code>project.json → scenes</code> (liền mạch: <code>start</code> = <code>end</code> cảnh trước).</p>
+<h2 id="2b-viet-mot-canh-html-hyperframes-mac-inh-cho-canh-moi-tu-06">2b. Viết một cảnh HTML (Hyperframes) — mặc định cho cảnh mới từ 0.6</h2>
+<p>Khai báo trong <code>project.json → scenes</code>: <code>{"id": "S03", "label": "…", "start": 241, "end": 361, "engine": "hyperframes", "src": "hf/S03.html"}</code> (không cần <code>scenes/index.ts</code>).</p>
+<pre><code class="language-html">&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;_fonts/be-vietnam-pro/800.css&quot;&gt;
+&lt;style&gt;
+  #stage { position: absolute; inset: 0; background: var(--c-navy); }
+  #head { position: absolute; left: var(--safe-side); right: var(--safe-side); top: 40%; font-weight: 800; font-size: 150px; text-align: center; }
+  [data-ratio=&quot;9x16&quot;] #head { font-size: 120px; }
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;
+&lt;div id=&quot;root&quot; data-composition-id=&quot;S03&quot;&gt;
+  &lt;div id=&quot;stage&quot; class=&quot;clip&quot;&gt;&lt;div id=&quot;head&quot; data-copy=&quot;S03_headline&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;script&gt;
+  const S = window.SAMI, tl = S.timeline();              // timeline đã đăng ký, easing chuẩn, dài đúng bằng clip
+  S.arrive(tl, S.words(document.getElementById('head')), S.beat(0.5), {stagger: 0.2}); // vào theo nhịp
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+</code></pre>
+<ul>
+<li><strong>Thời gian:</strong> clip bắt đầu 8 khung <strong>trước</strong> điểm cắt; nhịp cắt = <code>SAMI.t0</code>, nhịp n = <code>SAMI.beat(n)</code> (0,5 s/nhịp). Studio tự đặt kích thước và thời lượng của phần tử gốc theo tỉ lệ đang xuất.</li>
+<li><strong>Chữ:</strong> <code>data-copy="KEY"</code> (sửa trực tiếp trong tab Chữ) hoặc <code>SAMI.text/html(KEY)</code>. Quy ước giống TSX: <code>*tô màu*</code>, <code>/</code> xuống dòng.</li>
+<li><strong>Đường dẫn</strong> tính từ gốc dự án: <code>public/…</code>, <code>hf/…</code>, <code>lib/&lt;kind&gt;/…</code> (thư viện chung), <code>_fonts/&lt;family&gt;/&lt;weight&gt;.css</code>, <code>_gsap/…</code>, <code>_sami/…</code>.</li>
+<li><strong>Bố cục theo tỉ lệ:</strong> <code>[data-ratio="9x16"] …</code>, <code>SAMI.pick({…})</code>, biến <code>--safe-top/bottom/side</code>. Màu brand: <code>--c-navy</code>, <code>--c-mint</code>, <code>--grad</code>…</li>
+<li>Đầy đủ API: skill <code>sami-motion-studio</code> → <code>references/hyperframes.md</code>. Mẫu tham khảo: <code>templates/hf-starter/hf/</code>.</li>
+</ul>
 <h2 id="3-luat-cung">3. Luật cứng</h2>
 <ol>
-<li>Chỉ <code>tw/keys/arrive/leave</code> (easing <code>cubic-bezier(0.22,1,0.36,1)</code>). Không spring, CSS transition, <code>Math.random</code>, <code>Date</code> (dùng <code>rnd(seed)</code>).</li>
+<li>Chỉ <code>tw/keys/arrive/leave</code> (easing <code>cubic-bezier(0.22,1,0.36,1)</code>), trong HTML là <code>SAMI.EASE</code>/<code>SAMI.arrive</code>. Không spring, CSS transition/animation, <code>Math.random</code>, <code>Date</code>, <code>requestAnimationFrame</code>, <code>setInterval</code> (dùng <code>rnd(seed)</code> / <code>SAMI.rnd(seed)</code> và timeline).</li>
 <li>Thời gian tính bằng <strong>khung 30 fps</strong> qua <code>useT()</code>/<code>useBaseFrame()</code> — không dùng <code>useCurrentFrame()</code> trực tiếp (sẽ sai ở 24/60 fps).</li>
 <li><code>&lt;Words&gt;/&lt;Counter&gt;/&lt;TypeLabel&gt;</code> chạy theo khung Sequence → cộng <code>OV</code> vào <code>start</code>.</li>
 <li>Cắt cảnh trên nhịp (15n+1 ở 120 BPM). Kéo dài cảnh bằng <code>warp</code> (Studio tự làm khi người dùng đổi thời lượng) — không viết lại animation.</li>
@@ -101,7 +126,8 @@ export const S03: React.FC = () =&gt; {
 <ul>
 <li>Studio tự rebuild preview khi file <code>scenes/</code> đổi; lỗi biên dịch hiện khung đỏ.</li>
 <li>Ảnh tĩnh để tự soát (từ thư mục app):
-  <code>node server/cli-still.mjs &lt;thư_mục_dự_án&gt; out/qa.jpg 60,300,900 9:16</code> (khung ở 30 fps, nhiều khung cách bằng dấu phẩy) → Read ảnh <code>out/qa_&lt;frame&gt;.jpg</code>. Không khẳng định "đẹp" khi chưa xem khung hình.</li>
+  <code>node server/cli-still.mjs &lt;thư_mục_dự_án&gt; out/qa.jpg 60,300,900 9:16</code> (khung ở 30 fps, nhiều khung cách bằng dấu phẩy) → Read ảnh <code>out/qa_&lt;frame&gt;.jpg</code>. Không khẳng định "đẹp" khi chưa xem khung hình.
+  Khung nằm trong cảnh HTML được chụp nhanh bằng Hyperframes (chỉ cảnh, chưa có tiêu đề/ảnh chèn). Thêm <code>--exact</code> để render clip rồi ghép đầy đủ như bản xuất.</li>
 <li>Nút <strong>Kiểm tra</strong> trong Studio (hoặc <code>validateProject</code>) phải không còn ✗.</li>
 <li>Không tự chạy render đầy đủ; đề nghị người dùng xuất bản nháp trong Studio.</li>
 </ul>

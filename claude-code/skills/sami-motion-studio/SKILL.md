@@ -1,59 +1,65 @@
 ---
 name: sami-motion-studio
-description: Make or revise SAMI motion-graphics videos in a SAMI Motion Studio project folder (project.json + scenes/) — brief, script/storyboard, scenes for 16:9/9:16/1:1, music grid, SFX cues, stills QA; the user edits text/titles and renders in the Studio app.
+description: Make or revise SAMI motion-graphics videos in a SAMI Motion Studio project (project.json + hf/ HTML scenes or scenes/ TSX) for 16:9/9:16/1:1/4:5 — brief, storyboard on the 120 BPM grid, Hyperframes (HTML+CSS+GSAP, default) or Remotion scenes, shared SAMI_Library assets, SFX/music cues, stills QA, Studio export (NVENC). Use for any Studio video project, template or scene.
 ---
 
-# SAMI Motion Studio — video projects
+# SAMI Motion Studio (v0.6+)
 
-Premium motion ads for SAMI Marketing Agency and its hospitality clients (restaurants, nail, spa, hotels). Owner Tuan (CEO): Vietnamese replies, concise, push back when a request hurts conversion or brand.
+Premium motion ads for SAMI Marketing Agency and its hospitality clients (restaurants, nail, spa, hotels). Owner Tuấn (CEO): reply in Vietnamese, concise, push back when a request hurts conversion or brand. Write "SAMI" in capitals.
 
 ## Where things are
-- App: folder with `Start-Studio.bat` (default `D:\Downloads\SAMI_Video\SAMI_Motion_Studio`). UI at http://localhost:5178. Full rules: `<app>/docs/PROJECT_GUIDE.md`.
-- Project = any folder with `project.json`, `scenes/`, `public/{img,video,audio,fonts}`, `brief/`, `out/`, `CLAUDE.md` (has absolute CLI paths).
-- Cowork (cloud): edit files in place on the PC with device_bash; stage only stills/images you must look at. Never copy node_modules.
+- **App:** `Z:\SAMI_Video\SAMI_Motion_Studio` only (never a D: copy). UI http://localhost:5178 (user starts it with `Start-Studio.bat`; don't start the server yourself). Check `package.json` version + top of `CHANGELOG.md` before relying on this file.
+- **Shared library:** `Z:\SAMI_Video\SAMI_Library` (music, SFX, voice, img, video, lottie, fonts, luts, masks, brands) → reference as `lib:<kind>/<file.ext>`. See `references/library.md`.
+- **Cache (always deletable):** `Z:\SAMI_Video\.sami-cache`. `node <app>/tools/cleanup.mjs` (dry run) / `--apply`.
+- **Project** = folder with `project.json`, `hf/` (HTML scenes) and/or `scenes/` (TSX), `public/{img,video,audio,lottie,fonts}`, `brief/` (BRIEF, TRANG_THAI, SCRIPT_STORYBOARD, GOP_Y), `out/`, `CLAUDE.md`.
+- **Naming:** folder, `project.json name` and exports = `YYMMDD-V<NN>-<tieu-de-khong-dau>-v.<n>` (e.g. `261007-V22-maps-cuoi-nam-berlin-v.1`). Next free V-number from `<app>/projects`; a new version keeps V and bumps `v.N`.
 
-## Session protocol (token-safe, mandatory) — full: `<app>/docs/QUY_TRINH_LAM_VIEC.md`
-1. One video = one project folder = one fresh session. Work only inside the project folder you were opened in.
-2. Read in order: `CLAUDE.md` → `brief/TRANG_THAI.md` → only the files the current task needs (named `scenes/<ID>.tsx`, `project.json`, `brief/BRIEF.md`, `brief/SCRIPT_STORYBOARD.md`).
-3. Never read: `node_modules/`, `out/`, `public/_engine/`, other projects, app engine code (unless an error points there), whole videos. Look only at images you need; QA with `cli-still`.
-4. Decisions live in files, not chat: end every session by updating `brief/TRANG_THAI.md` (stage · locked decisions · next steps · client feedback by round · technical notes), ≤ 1 page.
-5. Stop and ask when the brief lacks a deciding fact or a request contradicts "Đã chốt".
+## Session protocol (token-safe, mandatory)
+1. One video = one project folder = one fresh session; work only inside it.
+2. Read in order: `CLAUDE.md` → `brief/TRANG_THAI.md` → only the files the task names.
+3. Never read `node_modules/`, `out/`, `public/_engine|_lib|_hf/`, other projects, app engine code (unless an error points there), whole videos. Look only at stills you need.
+4. End every session by updating `brief/TRANG_THAI.md` (stage · locked decisions · next · client feedback by round · tech notes), ≤ 1 page.
+5. Stop and ask when the brief lacks a deciding fact (CTA, language, ratios, which assets are real) or contradicts "Đã chốt".
+
+## Pick the engine (per scene)
+| Scene needs | Engine | File |
+|---|---|---|
+| Kinetic type, cards, icons, charts, drawn-in-code SVG/Canvas, transitions, carousel slides — **default for every NEW scene** | **Hyperframes** (HTML + CSS + GSAP, web-core, Apache-2.0) | `hf/<ID>.html` + `{"engine":"hyperframes","src":"hf/<ID>.html"}` |
+| Existing v1 projects; scene already in TSX; heavy React logic or reuse of TSX helpers in `lib/remotion` | **Remotion** | `scenes/<ID>.tsx` + `scenes/index.ts` |
+Both engines live in one timeline: crossfades, warp (TSX only), titles, subtitles, overlays, audio and film look are applied by the Studio to every scene. Details: `references/hyperframes.md`, `references/remotion.md`, `references/mixing.md`.
 
 ## Decide the job
 | Request | Who / where |
 |---|---|
-| Wording, scene length, titles, subtitles, SFX, colours, logo/watermark/arrows/Lottie (tab Ảnh chèn), export | **User in Studio** — tell them which tab; don't spend tokens |
-| Make a reusable template | follow `<app>/docs/TEMPLATE_STANDARD.md`; `node <app>/server/cli-template.mjs check templates/<id>` must have no ✗ |
-| New/changed visual, layout per ratio, new scene | `scenes/<ID>.tsx` (+ `scenes/index.ts`, `project.json → scenes/copy`) |
-| New text field | add `project.json → copy.<ID>_<name>` with Vietnamese `label` describing WHERE it appears |
-| New music | `node <app>/server/cli-grid.mjs <file>` → put DROP / FINAL HIT on cuts; `audio.mode: "layers"` |
-| Whole new video | Studio "Tạo dự án mới" from a template + client asset folder, then the workflow below |
+| Wording, scene length, titles, subtitles, SFX, colours, logo/watermark/arrows/Lottie, export | **User in Studio** (tell them the tab) |
+| New/changed visual, new scene | `hf/<ID>.html` (default) or `scenes/<ID>.tsx`, plus `project.json → scenes/copy` |
+| New text field | `project.json → copy.<ID>_<name>` with a Vietnamese `label` saying WHERE it appears |
+| Music / SFX / voice | `references/audio-sfx.md` — library first (`lib:sfx/…`), cue on the beat grid |
+| Images / video / music to generate or find | `references/assets.md` — stock first, cost OK before paid generation |
+| Reusable template | `<app>/docs/TEMPLATE_STANDARD.md`; `node <app>/server/cli-template.mjs check templates/<id>` without ✗ |
+| Whole new video | Studio "Tạo dự án mới" from a template (`hf-starter` for HTML scenes) + client asset folder; never copy an old project |
+| Client feedback round | `brief/TRANG_THAI.md → Phản hồi khách (vòng N)`: do [Claude] lines, point [Studio] lines to the tab |
 
 ## Workflow (⛔ = wait for OK)
-1. **Brief** ⛔ — read `brief/`; ≤4 questions (audience/language, CTA + contact, length + ratios, which assets are real).
-2. **Script + storyboard** ⛔ — table on the 120 BPM grid (beat 15 f, cuts 15n+1): scene · seconds · on-screen copy · motion · SFX. Reading time: 6–10 words ≥1.5 s, stat ≥2 s, key offer ≥3 s. Copy must sound spoken.
-3. **Data** — `project.json`: scenes (contiguous), labelled copy, `formats`, audio cues (whoosh only on chapter cuts, typing in hook, pop on CTA, sub_hit on final logo).
-4. **Scenes** — one file each, `useT()`, `tw/keys/arrive`, `<Words start={x + OV}>`, `usePick` per ratio, respect `SAFE`. Build scenes sequentially by default; only when ≥6 new scenes AND the user wants speed use workflow `.claude/workflows/sami-motion-video.js` (one designer per scene — costs more tokens overall).
-5. **QA** ⛔ — `node <app>/server/cli-validate.mjs .` must pass; stills in every ratio `node <app>/server/cli-still.mjs . out/qa/S03.jpg 20,60,110 9:16` → Read. Check clipping, diacritics, <20 px text, dead frames, beat landings, invented numbers.
-6. **Hand-off** — user reviews in Studio, tweaks text/titles, exports draft → final (FHD/2K/4K, 24/30/60, NVENC). Don't render finals in the cloud (2 cores).
+1. **Brief** ⛔: read `brief/`; ≤ 4 questions (audience/language, CTA + contact, length + ratios, which assets are real).
+2. **Script + storyboard** ⛔: `brief/SCRIPT_STORYBOARD.md`, table on the 120 BPM grid (beat = 15 base frames = 0.5 s, cuts at 15n+1): scene · seconds · on-screen copy · motion · engine · SFX. Reading time: 6–10 words ≥ 1.5 s, stat ≥ 2 s, key offer ≥ 3 s. Copy must sound spoken. No code before approval.
+3. **Data**: `project.json` scenes (contiguous, `engine`/`src` for HTML scenes), labelled copy, `formats`, audio cues (whoosh only on chapter cuts, typing in hook, pop on CTA, sub_hit on final logo).
+4. **Scenes**: one file each, rules per engine (references). Sequential by default; ≥ 6 new scenes AND user wants speed → workflow `.claude/workflows/sami-motion-video.js`.
+5. **QA** ⛔: `node <app>/server/cli-validate.mjs .` without ✗ → stills in every ratio `node <app>/server/cli-still.mjs . out/qa/S03.jpg 20,60,110 9:16` (HTML scenes use a fast snapshot; add `--exact` to see the final composite with titles) → Read them. Check clipping, diacritics, < 20 px text, dead frames, beat landings, invented numbers. `references/qa.md`.
+6. **Hand-off**: user exports in Studio (FHD/2K/4K, 24/30/60, NVENC). HTML scenes render once into cached clips (`public/_hf`). Don't render finals in the cloud. Update `TRANG_THAI.md`.
 
 ## House rules
-One easing `cubic-bezier(0.22,1,0.36,1)` · crossfade every cut (engine) · grain + vignette once (engine) · few SFX · cut ruthlessly · no raw screenshots as content · no invented stats · no other agencies' work · no platform/Google logos · SAMI end card: lockup + "Strategy • Automation • Marketing • Intelligence" + WhatsApp + URL (client videos: client logo + CTA).
-
-## Version history (điểm neo)
-- Studio snapshots the WHOLE project (json, scenes, brief, all media; not out/) before every chat turn via the `.claude/settings.json` UserPromptSubmit hook, on open and on save. Users restore in Studio → tab **Lịch sử**.
-- Before a big or risky change (replacing media, rewriting several scenes, new music) also set a named anchor: `node <app>/server/cli-snapshot.mjs . snapshot --label "Trước khi <việc>"`. List / restore: `… list`, `… restore <id> [scenes/S03.tsx public/audio]` (restore always snapshots the current state first).
-- Never delete or edit `.history/`.
-- Batch variants: `brief/variants.csv` (header = `name;formats;<copy keys>`, `#` row = labels). Users export them in Studio → tab Biến thể. Keep scene text in `COPY.*` so variants can replace it; preview one: `node <app>/server/cli-still.mjs . out/qa/v.jpg 120 9:16 --copy row.json`.
-- `project.json → status` (draft/review/approved/published) is the team's workflow label — don't change it unless asked.
-- Client feedback lands in `brief/GOP_Y.md` (Studio → Xuất → Gói duyệt khách → "Lưu vào brief/GOP_Y.md"). On "sửa theo góp ý": read it, fix, tick `[x]`, note the round in TRANG_THAI.md.
+One easing `cubic-bezier(0.22,1,0.36,1)` (`tw/keys/arrive` in TSX, `SAMI.EASE`/`S.arrive` in HTML) · crossfade every cut (engine) · grain + vignette once (engine) · few SFX · cut ruthlessly · no raw screenshots as content (exception: videos about Google services may show real Maps/Ads UI in a phone frame, approved 2026-10-07) · no invented stats · no other agencies' work · no platform logos (exception: real Google logo in videos about Google services) · German on-screen text for the DE market, Southern Vietnamese female voice when there is VO · SAMI end card: lockup + "Strategy • Automation • Marketing • Intelligence" + WhatsApp + URL (client videos: client logo + CTA) · no em-dash in on-screen copy.
 
 ## Gotchas
-- Never `useCurrentFrame()` in scenes (breaks 24/60 fps) — use `useT()` / `useBaseFrame()`.
-- Read `COPY.X` inside the component, never in a module-level const (live edits won't show).
-- `<Words>/<Counter>/<TypeLabel>` run on Sequence frames → add `OV`.
-- Vietnamese stacked diacritics clip in masks — keep engine padding.
-- Stretching is `warp` (Studio does it on duration change) — don't rewrite animation for timing.
-- Premix audio doesn't follow duration changes — prefer `layers`. All sound lives in `project.json → audio`; no `<Audio>` in scenes, videos `muted`.
-- Render hang/slow: Studio renders ~15 s parts in child processes with a watchdog + resume; GPU problems → tab Xuất → Chẩn đoán GPU. ProRes is always CPU.
-- Paid generation (ElevenLabs music/voice/images) → state cost, get OK.
+- Never `Math.random`/`Date`/`requestAnimationFrame`/`setInterval` in scenes (HTML or TSX): renders are seeked frame by frame. Use `rnd()` / `SAMI.rnd()` and timelines.
+- TSX: never `useCurrentFrame()` (breaks 24/60 fps) → `useT()`; read `COPY.X` inside the component; `<Words>/<Counter>/<TypeLabel>` + `OV`.
+- HTML: register the timeline (`SAMI.timeline()`), bind text with `data-copy="KEY"` (live-editable in Studio), lay out per ratio with `[data-ratio="9x16"] …`, load fonts/GSAP locally (`_fonts/…`, `_gsap/…`), never from a CDN.
+- All sound lives in `project.json → audio` (no `<Audio>`/unmuted video in scenes). Logos/watermarks/arrows/Lottie belong in `overlays`.
+- User-pickable media in TSX: `media('img/x.jpg' | 'lib:img/x.jpg')` from `@engine/core/media`, not `staticFile`.
+- Vietnamese stacked diacritics clip in masks: keep padding/line-height.
+- Paid generation (ElevenLabs music/voice, image/video APIs) → state cost, get OK. NEVER generate images with the ElevenLabs connector unless Tuấn asks in text; stock first; batches via ChatGPT (5 images per prompt) or Gemini nano banana in the browser (Tuấn logs in).
+- GPU: Studio 0.6 probes NVENC correctly (0.5's probe always failed → CPU). Diagnose: tab Xuất → Chẩn đoán GPU. ProRes is CPU.
+
+## References (read only what the task needs)
+`references/hyperframes.md` (HTML scene API + skeleton) · `references/remotion.md` (TSX scenes) · `references/mixing.md` (both engines, clips, stills) · `references/schema.md` (project.json fields) · `references/library.md` (SAMI_Library, `lib:` URIs, licences) · `references/audio-sfx.md` (grid, cues, music edit, voice ducking) · `references/assets.md` (stock/AI generation rules) · `references/qa.md` (validate, stills, lint, export checks) · `references/render-ffmpeg.md` (GPU, formats, cache cleanup).

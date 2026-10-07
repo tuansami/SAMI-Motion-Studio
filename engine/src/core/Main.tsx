@@ -12,6 +12,7 @@ import {FilmFinish} from '../components/Brand';
 import {Titles, Subtitles} from './Titles';
 import {AudioTrack} from './AudioTrack';
 import {Overlays} from './Overlays';
+import {HfCtx, HfScene, isHfScene} from './HfScene';
 import type {MainProps, ProjectJSON} from './types';
 // @ts-ignore — provided by the Studio bundler alias
 import {REG} from '@project/scenes/index';
@@ -30,11 +31,12 @@ const SceneStack: React.FC<{p: ProjectJSON; fps: number}> = ({p, fps}) => {
         const from = toReal(a, fps);
         const dur = Math.max(1, toReal(b, fps) - from);
         const Comp = REG[s.id];
+        const hf = isHfScene(s);
         const fadeIn = first ? 0 : s.fadeIn ?? 2 * OV;
         return (
           <Sequence key={s.id} from={from} durationInFrames={dur} name={`${s.id} · ${s.label}`}>
             <Scene dur={b - a} fadeIn={fadeIn} delay={s.fadeDelay ?? (fadeIn < 2 * OV ? OV - Math.round(fadeIn / 2) : 0)} fadeOut={last ? 0 : 2 * OV}>
-              <Warp knots={s.warp}>{Comp ? <Comp /> : <Missing id={s.id} />}</Warp>
+              {hf ? <HfScene scene={s} project={p} /> : <Warp knots={s.warp}>{Comp ? <Comp /> : <Missing id={s.id} />}</Warp>}
             </Scene>
           </Sequence>
         );
@@ -46,7 +48,7 @@ const Missing: React.FC<{id: string}> = ({id}) => (
   <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', background: '#300', color: '#fff', fontSize: 60, fontFamily: 'Inter'}}>Thiếu scene {id}</AbsoluteFill>
 );
 
-export const Main: React.FC<MainProps & {audioOnly?: boolean}> = ({project: p, ratio, fps, titles = true, audio = true, subtitles = true, audioOnly = false}) => {
+export const Main: React.FC<MainProps & {audioOnly?: boolean}> = ({project: p, ratio, fps, titles = true, audio = true, subtitles = true, audioOnly = false, hfClips, hfBase, hfRev}) => {
   // audio pass of the export: only the sound layer (all sound lives in project.json → audio), no pixels → fast
   if (audioOnly) return <TimebaseProvider fps={fps}><AudioTrack audio={p.audio} totalBase={totalBase(p)} /></TimebaseProvider>;
   setCopy(p.copy);
@@ -57,6 +59,7 @@ export const Main: React.FC<MainProps & {audioOnly?: boolean}> = ({project: p, r
   const fit = Math.min(stage.w / base.w, stage.h / base.h);
   return (
     <TimebaseProvider fps={fps}>
+     <HfCtx.Provider value={{clips: hfClips, base: hfBase, rev: hfRev}}>
       <AbsoluteFill style={{background: p.look?.background || C.navyDeep, overflow: 'hidden'}}>
         {native ? (
           <FormatProvider ratio={ratio} native>
@@ -80,6 +83,7 @@ export const Main: React.FC<MainProps & {audioOnly?: boolean}> = ({project: p, r
         <FilmFinish grain={p.look?.grain ?? 0.05} vignette={p.look?.vignette ?? 0.42} />
         {audio && <AudioTrack audio={p.audio} totalBase={totalBase(p)} />}
       </AbsoluteFill>
+     </HfCtx.Provider>
     </TimebaseProvider>
   );
 };

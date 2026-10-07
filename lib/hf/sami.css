@@ -1,0 +1,23 @@
+/* SAMI base cho cảnh Hyperframes. Màu thật lấy từ project.json → brand (sami-hf.js đặt --c-*). */
+:root {
+  --c-navy: #0C0628; --c-navyDeep: #06031A; --c-navyLift: #16103A; --c-mint: #08DDA4; --c-purple: #7667FE;
+  --c-white: #FFFFFF; --c-text: #F4F2FF; --c-muted: #A8A3C9; --c-dim: #6E6893; --c-red: #FF5A5F;
+  --c-line: rgba(255, 255, 255, 0.10);
+  --grad: linear-gradient(120deg, var(--c-mint) 0%, var(--c-purple) 100%);
+  --f-head: "Be Vietnam Pro", Inter, sans-serif;
+  --f-ui: Inter, "Be Vietnam Pro", sans-serif;
+  --f-mono: "JetBrains Mono", monospace;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+html, body { margin: 0; padding: 0; background: transparent; }
+body { -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+[data-composition-id] { position: relative; overflow: hidden; width: var(--w); height: var(--h); background: var(--c-navy); color: var(--c-text); font-family: var(--f-head); }
+.clip { position: absolute; inset: 0; }
+.safe { position: absolute; top: var(--safe-top); bottom: var(--safe-bottom); left: var(--safe-side); right: var(--safe-side); }
+.center { display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
+em.hl { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.mono { font-family: var(--f-mono); }
+.card { background: var(--c-navyLift); border: 1px solid var(--c-line); border-radius: 28px; }
+/* chọn bố cục theo tỉ lệ: [data-ratio="9x16"] .x { … } */
+/* SAMI.words() tách chữ thành span inline-block → background-clip:text của <em> không phủ con → tô gradient cho từng từ */
+em.hl .w { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }

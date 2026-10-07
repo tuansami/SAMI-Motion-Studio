@@ -1,5 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Img, staticFile, useCurrentFrame} from 'remotion';
+import {media} from '../core/media';
 import {C, F} from '../theme';
 import {tw} from '../lib/anim';
 import {useF} from '../lib/warp';
@@ -140,7 +141,7 @@ export const Photo: React.FC<{src: string; p?: number; zoom?: number; style?: Re
     dir === 'up' ? `inset(${(1 - p) * 100}% 0 0 0 round ${radius}px)` : dir === 'left' ? `inset(0 ${(1 - p) * 100}% 0 0 round ${radius}px)` : `inset(0 0 0 ${(1 - p) * 100}% round ${radius}px)`;
   return (
     <div style={{overflow: 'hidden', clipPath: clip, borderRadius: radius, ...style}}>
-      <Img src={staticFile(src)} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: pos, transform: `scale(${1.12 - p * 0.08 + zoom})`}} />
+      <Img src={media(src)} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: pos, transform: `scale(${1.12 - p * 0.08 + zoom})`}} />
     </div>
   );
 };

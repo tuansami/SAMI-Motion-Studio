@@ -11,6 +11,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <li><a href="#3-lo-trinh">3. Lộ trình</a><ul>
 <li><a href="#g-1-web-app-local-ban-nay">GĐ 1 — Web app local ✅ (bản này)</a></li>
 <li><a href="#g-15-v02-sau-phan-hoi-dung-that-au-tien">GĐ 1.5 — v0.2 ✅ (sau phản hồi dùng thật đầu tiên)</a></li>
+<li><a href="#nang-cap-toan-dien-2026-10-tuan-duyet-2026-10-08-v06-v10">Nâng cấp toàn diện 2026-10 (Tuấn duyệt 2026-10-08) — v0.6 → v1.0</a></li>
 <li><a href="#g-2-dung-that-23-tuan-roi-cung-co-uu-tien-cao">GĐ 2 — Dùng thật 2–3 tuần, rồi củng cố (ưu tiên cao)</a></li>
 <li><a href="#g-3-ong-goi-exe-electron-thu-vien">GĐ 3 — Đóng gói .exe (Electron) + thư viện</a></li>
 <li><a href="#g-4-ai-trong-day-chuyen-khi-g-23-on-inh">GĐ 4 — AI trong dây chuyền (khi GĐ 2–3 ổn định)</a></li>
@@ -92,6 +93,43 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <p>Chữ có tên · thời lượng + warp + khớp nhịp · preview 3 tỉ lệ · tiêu đề/phụ đề đầy đủ kiểu · âm thanh 3 chế độ + phân tích nhịp · xuất FHD/2K/4K, 24/30/60, H.264/H.265/ProRes, CPU threads, NVENC, ưu tiên, hàng đợi, xuất 3 tỉ lệ · tạo dự án từ thư mục tài nguyên · tự tải lại khi Claude Code sửa.</p>
 <h3 id="g-15-v02-sau-phan-hoi-dung-that-au-tien">GĐ 1.5 — v0.2 ✅ (sau phản hồi dùng thật đầu tiên)</h3>
 <p>Render chống treo (chia đoạn ~15 s, mỗi đoạn 1 tiến trình, watchdog tự thử lại, Huỷ/Dừng tất cả tắt hẳn, <strong>Tiếp tục</strong> sau lỗi/tắt máy) · sửa phát hiện NVENC + nút Chẩn đoán GPU · ước tính dung lượng · tab <strong>Ảnh chèn</strong> (ảnh/logo/watermark/12 sticker chỉ dẫn/Lottie, kéo thả trên khung xem) · <strong>Thư viện mẫu</strong> + chuẩn mẫu v1 + Lưu thành mẫu / Kiểm tra / Nhập–Xuất .zip.</p>
+<h3 id="nang-cap-toan-dien-2026-10-tuan-duyet-2026-10-08-v06-v10">Nâng cấp toàn diện 2026-10 (Tuấn duyệt 2026-10-08) — v0.6 → v1.0</h3>
+<table>
+<thead>
+<tr>
+<th>Bản</th>
+<th>Nội dung</th>
+<th>Trạng thái</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>0.6 Nền móng</strong></td>
+<td>Engine kép (Hyperframes HTML/GSAP mặc định cho cảnh mới + Remotion), thư viện <code>SAMI_Library</code> + <code>lib:</code> hardlink, ffmpeg đầy đủ (vendor), cache chung <code>.sami-cache</code>, dọn bộ nhớ, chuyển dự án cũ, skill viết lại, sửa NVENC</td>
+<td>✅ 2026-10-08</td>
+</tr>
+<tr>
+<td><strong>0.7 Carousel động</strong></td>
+<td>Dự án <code>type: "carousel"</code> 1080×1350, mỗi slide 1 MP4 lặp 4/6/8 s trên lưới 120 BPM; port live-carousel (LC/PH toolkit, prep_photo, lc_audio, QA seam/frame0/contact sheet), trang vuốt kiểu Instagram, skill <code>sami-carousel</code></td>
+<td>tiếp theo</td>
+</tr>
+<tr>
+<td><strong>0.8 Cổng AI</strong></td>
+<td><code>providers/</code>: adapter chung (ảnh, video, nhạc, SFX, giọng, stock), ước tính → mã xác nhận → tạo, trần chi phí, sổ chi phí, khoá DPAPI, MCP server, kịch bản browser-harness cho ChatGPT/Gemini/Flow/Suno; cổng AI cục bộ (ACE-Step, Stable Audio qua ComfyUI, Kokoro)</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>0.9 Footage</strong></td>
+<td>Nhập video + proxy NVENC, cắt/tốc độ/B-roll/PiP/mask (<code>tracks.video</code>), bản ghi màn hình VFR→CFR, SFX Python, khối "vẽ bằng code"</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>1.0</strong></td>
+<td>Xuất Hyperframes thuần (không Remotion) cho đóng gói khách, preset nền tảng, tài liệu</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h3 id="g-2-dung-that-23-tuan-roi-cung-co-uu-tien-cao">GĐ 2 — Dùng thật 2–3 tuần, rồi củng cố (ưu tiên cao)</h3>
 <table>
 <thead>

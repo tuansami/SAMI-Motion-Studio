@@ -34,6 +34,37 @@ await t('shared template ids resolve', async () => {
   if (!tplDir('../../etc').startsWith(TEMPLATES)) throw new Error('path escape');
 });
 
+// ── 0.6: engines, library, links, caps ──
+await t('hyperframes installed + runtime present', async () => { const {HF_VERSION, HF_RUNTIME, HF_BIN} = await import('./hf.mjs'); if (!HF_VERSION || !fs.existsSync(HF_RUNTIME) || !fs.existsSync(HF_BIN)) throw new Error('npm install'); return HF_VERSION; });
+await t('HTML scene staging (hf-starter): root sized/timed + SAMI data + runtime only in preview', async () => {
+  const {stageHtml, sceneSpan} = await import('./hf.mjs');
+  const dir = path.join(TEMPLATES, 'hf-starter'); const p = JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8'));
+  const s = p.scenes[0]; const r = stageHtml(dir, p, s, '9:16', 30); const pv = stageHtml(dir, p, s, '9:16', 30, {preview: true});
+  const dur = sceneSpan(p, s).dur.toFixed(4);
+  if (!/data-width="1080"/.test(r) || !/data-height="1920"/.test(r) || !r.includes(`data-duration="${dur}"`)) throw new Error('root attrs');
+  if (!r.includes('window.SAMI=') || !r.includes('_sami/sami-hf.js') || r.includes('_hfrt.js')) throw new Error('render staging');
+  if (!pv.includes('_hfrt.js') || !pv.includes('_sami/shim.js') || !pv.includes('__samiData')) throw new Error('preview staging');
+});
+await t('validate: hf-starter has no ✗', async () => { const v = validateProject(path.join(TEMPLATES, 'hf-starter')); if (v.fail.length) throw new Error(v.fail.join(' | ')); });
+await t('library: lib: URIs resolve inside SAMI_Library only', async () => {
+  const L = await import('./library.mjs');
+  if (!L.resolveLib('lib:sfx/a.mp3')?.endsWith(path.join('sfx', 'a.mp3'))) throw new Error('resolve');
+  if (L.resolveLib('lib:../../etc/passwd') !== null || L.resolveLib('img/a.jpg') !== null) throw new Error('escape');
+  const refs = [...'{"src":"lib:sfx/eleven/pop.mp3"} media(\'lib:img/a b.jpg\') lib:music/x.wav'.matchAll(L.LIB_RE)].map((m) => m[1]);
+  if (refs.join('|') !== 'sfx/eleven/pop.mp3|music/x.wav') throw new Error('regex: ' + refs.join('|'));
+});
+await t('hardlink helper: same file, 0 extra bytes (same drive)', async () => {
+  const {linkOrCopy} = await import('./fslink.mjs');
+  const d = fs.mkdtempSync(path.join(ROOT, '.studio', 'lt-')); try {
+    fs.writeFileSync(path.join(d, 'a.bin'), crypto.randomBytes(1000));
+    const r = linkOrCopy(path.join(d, 'a.bin'), path.join(d, 'sub', 'b.bin'));
+    const [x, y] = [fs.statSync(path.join(d, 'a.bin')), fs.statSync(path.join(d, 'sub', 'b.bin'))];
+    if (r === 'link' && x.ino !== y.ino) throw new Error('not a link'); if (sha(path.join(d, 'a.bin')) !== sha(path.join(d, 'sub', 'b.bin'))) throw new Error('content');
+    return r;
+  } finally { fs.rmSync(d, {recursive: true, force: true}); }
+});
+await t('encoder caps (async probe, NVENC/QSV/AMF)', async () => { const {capsReady} = await import('./ffmpeg.mjs'); const c = await capsReady(); return `Remotion NVENC ${c.remotion.nvenc ? '✓' : '–'} · ffmpeg ${c.full.full ? 'đầy đủ' : 'đi kèm'} NVENC ${c.full.nvenc ? '✓' : '–'}`; });
+
 // version history round trip on a throw-away copy of a template
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-selftest-'));
 try {

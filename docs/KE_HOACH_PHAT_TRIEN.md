@@ -55,6 +55,15 @@ Chữ có tên · thời lượng + warp + khớp nhịp · preview 3 tỉ lệ 
 ### GĐ 1.5 — v0.2 ✅ (sau phản hồi dùng thật đầu tiên)
 Render chống treo (chia đoạn ~15 s, mỗi đoạn 1 tiến trình, watchdog tự thử lại, Huỷ/Dừng tất cả tắt hẳn, **Tiếp tục** sau lỗi/tắt máy) · sửa phát hiện NVENC + nút Chẩn đoán GPU · ước tính dung lượng · tab **Ảnh chèn** (ảnh/logo/watermark/12 sticker chỉ dẫn/Lottie, kéo thả trên khung xem) · **Thư viện mẫu** + chuẩn mẫu v1 + Lưu thành mẫu / Kiểm tra / Nhập–Xuất .zip.
 
+### Nâng cấp toàn diện 2026-10 (Tuấn duyệt 2026-10-08) — v0.6 → v1.0
+| Bản | Nội dung | Trạng thái |
+|---|---|---|
+| **0.6 Nền móng** | Engine kép (Hyperframes HTML/GSAP mặc định cho cảnh mới + Remotion), thư viện `SAMI_Library` + `lib:` hardlink, ffmpeg đầy đủ (vendor), cache chung `.sami-cache`, dọn bộ nhớ, chuyển dự án cũ, skill viết lại, sửa NVENC | ✅ 2026-10-08 |
+| **0.7 Carousel động** | Dự án `type: "carousel"` 1080×1350, mỗi slide 1 MP4 lặp 4/6/8 s trên lưới 120 BPM; port live-carousel (LC/PH toolkit, prep_photo, lc_audio, QA seam/frame0/contact sheet), trang vuốt kiểu Instagram, skill `sami-carousel` | tiếp theo |
+| **0.8 Cổng AI** | `providers/`: adapter chung (ảnh, video, nhạc, SFX, giọng, stock), ước tính → mã xác nhận → tạo, trần chi phí, sổ chi phí, khoá DPAPI, MCP server, kịch bản browser-harness cho ChatGPT/Gemini/Flow/Suno; cổng AI cục bộ (ACE-Step, Stable Audio qua ComfyUI, Kokoro) | |
+| **0.9 Footage** | Nhập video + proxy NVENC, cắt/tốc độ/B-roll/PiP/mask (`tracks.video`), bản ghi màn hình VFR→CFR, SFX Python, khối "vẽ bằng code" | |
+| **1.0** | Xuất Hyperframes thuần (không Remotion) cho đóng gói khách, preset nền tảng, tài liệu | |
+
 ### GĐ 2 — Dùng thật 2–3 tuần, rồi củng cố (ưu tiên cao)
 | # | Tính năng | Giá trị | Công |
 |---|---|---|---|

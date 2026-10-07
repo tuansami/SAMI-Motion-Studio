@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import {ENGINE, ENGINE_SRC, NODE_MODULES, DATA} from './paths.mjs';
+import {ENGINE, ENGINE_SRC, NODE_MODULES, DATA, LIB, cacheDir} from './paths.mjs';
+import {linkTree} from './fslink.mjs';
+import {materialize} from './library.mjs';
 
 export const readProject = (dir) => JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8'));
 export const writeProject = (dir, p) => {
@@ -10,19 +12,12 @@ export const writeProject = (dir, p) => {
   fs.writeFileSync(f, JSON.stringify(p, null, 1));
 };
 
-/** copy engine assets (grain, sfx) into <project>/public/_engine so staticFile('_engine/...') works */
+/** engine assets (grain, sfx) → <project>/public/_engine, and referenced SAMI_Library files (lib:…) → public/_lib.
+ *  Both are HARDLINKS (0 extra bytes on the same drive; a copy only when the project lives on another drive),
+ *  so staticFile('_engine/…') / media('lib:…') work in preview and render without duplicating media. */
 export const syncEngineAssets = (dir) => {
-  const src = path.join(ENGINE, 'public');
-  const dst = path.join(dir, 'public', '_engine');
-  const walk = (s, d) => {
-    fs.mkdirSync(d, {recursive: true});
-    for (const e of fs.readdirSync(s, {withFileTypes: true})) {
-      const a = path.join(s, e.name), b = path.join(d, e.name);
-      if (e.isDirectory()) walk(a, b);
-      else if (!fs.existsSync(b) || fs.statSync(b).size !== fs.statSync(a).size) fs.copyFileSync(a, b);
-    }
-  };
-  walk(src, dst);
+  linkTree(path.join(ENGINE, 'public'), path.join(dir, 'public', '_engine'));
+  try { return materialize(dir); } catch (e) { return {linked: 0, missing: [], error: e.message}; }
 };
 
 /** hash of code files (scenes + engine) AND public media → cache key for bundles.
@@ -39,8 +34,10 @@ export const codeHash = (dir, {media = true} = {}) => {
     }
   };
   walk(path.join(dir, 'scenes'));
+  walk(path.join(dir, 'hf'), true); // Hyperframes scenes (html/css/js + local assets)
   if (media) walk(path.join(dir, "public"), true);
   walk(ENGINE_SRC);
+  walk(path.join(LIB, 'remotion'));
   return h.digest('hex').slice(0, 12);
 };
 
@@ -49,7 +46,10 @@ export const webpackOverride = (dir0) => (config) => { const dir = path.resolve(
   ...config,
   resolve: {
     ...config.resolve,
-    alias: {...(config.resolve?.alias || {}), '@project': dir, '@engine': ENGINE_SRC},
+    alias: {...(config.resolve?.alias || {}),
+      // all-Hyperframes projects may have no scenes/index.ts → empty registry
+      ...(['index.ts', 'index.tsx', 'index.js'].some((f) => fs.existsSync(path.join(dir, 'scenes', f))) ? {} : {'@project/scenes/index$': path.join(ENGINE_SRC, 'core', 'emptyScenes.ts')}),
+      '@project': dir, '@engine': ENGINE_SRC, '@lib': path.join(LIB, 'remotion')},
     modules: [NODE_MODULES, 'node_modules', ...(config.resolve?.modules || [])],
   },
   resolveLoader: {...(config.resolveLoader || {}), modules: [NODE_MODULES, 'node_modules']},
@@ -61,13 +61,14 @@ const readCache = () => { try { return JSON.parse(fs.readFileSync(CACHE, 'utf8')
 /** Remotion (webpack) bundle for rendering, cached by code hash */
 export const renderBundle = async (dir0, onProgress) => {
   const dir = path.resolve(dir0);
+  syncEngineAssets(dir); // first: hardlinked _engine/_lib files are part of the media hash
   const key = dir + ':' + codeHash(dir);
   const c = readCache();
-  if (c[key] && fs.existsSync(path.join(c[key], 'index.html'))) { syncEngineAssets(dir); return c[key]; }
+  if (c[key] && fs.existsSync(path.join(c[key], 'index.html'))) return c[key];
   const {bundle} = await import('@remotion/bundler');
-  syncEngineAssets(dir);
   const out = await bundle({
     entryPoint: path.join(ENGINE_SRC, 'index.ts'),
+    outDir: path.join(cacheDir('bundles'), crypto.createHash('sha1').update(key).digest('hex').slice(0, 16)), // on Z:, not %TEMP% (C:)
     publicDir: path.join(dir, 'public'),
     webpackOverride: webpackOverride(dir),
     onProgress: (p) => onProgress?.(p),

@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<style>
+  /* H03 · CTA — vòng tròn tự vẽ, câu kêu gọi vào theo từ, viên liên hệ bật ra đúng nhịp CTA. */
+  #stage { position: absolute; inset: 0; background: radial-gradient(70% 60% at 50% 45%, #1b1450, var(--c-navy) 75%); display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 0 var(--safe-side); }
+  #ring { position: absolute; width: 760px; height: 760px; left: 50%; top: 50%; margin: -380px 0 0 -380px; }
+  [data-ratio="16x9"] #ring { width: 940px; height: 940px; margin: -470px 0 0 -470px; }
+  #ring circle { fill: none; stroke: url(#g); stroke-width: 6; }
+  #cta { position: relative; font-weight: 800; font-size: 128px; line-height: 1.04; letter-spacing: -0.04em; }
+  [data-ratio="9x16"] #cta { font-size: 120px; }
+  [data-ratio="1x1"] #cta { font-size: 104px; }
+  #pill { position: relative; margin-top: 64px; padding: 26px 60px; border-radius: 999px; background: var(--grad); color: var(--c-navyDeep); font-weight: 600; font-size: 46px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="H03">
+  <div id="stage" class="clip">
+    <svg id="ring" viewBox="0 0 200 200"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="var(--c-mint)"/><stop offset="1" stop-color="var(--c-purple)"/></linearGradient></defs><circle cx="100" cy="100" r="96"/></svg>
+    <div id="cta" data-copy="H03_cta"></div>
+    <div id="pill" data-copy="H03_contact"></div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, tl = S.timeline();
+  const c = document.querySelector('#ring circle'), len = 2 * Math.PI * 96;
+  c.style.strokeDasharray = len; c.style.strokeDashoffset = len;
+  tl.to(c, {strokeDashoffset: 0, duration: 1.6}, S.t0);
+  tl.fromTo('#ring', {rotate: -90, scale: 0.9}, {rotate: 0, scale: 1, duration: 2}, S.t0);
+  S.arrive(tl, S.words(document.getElementById('cta')), S.beat(0.5), {stagger: 0.2});
+  tl.fromTo('#pill', {scale: 0, opacity: 0}, {scale: 1, opacity: 1, duration: 0.5}, S.beat(2));
+  tl.to('#pill', {scale: 1.06, duration: 0.25, yoyo: true, repeat: 3, ease: 'sine.inOut'}, S.beat(4)); // nhún theo nhịp (đúng 2 nhịp)
+</script>
+</body>
+</html>

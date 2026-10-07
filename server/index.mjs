@@ -5,7 +5,7 @@ import os from 'os';
 import path from 'path';
 import crypto from 'crypto';
 import {spawn, spawnSync} from 'child_process';
-import {ROOT, DATA, TEMPLATES, DEFAULT_PROJECTS} from './paths.mjs';
+import {ROOT, DATA, TEMPLATES, DEFAULT_PROJECTS, LIBRARY, CACHE} from './paths.mjs';
 import {readProject, writeProject, syncEngineAssets} from './project.mjs';
 import {previewBundle} from './preview.mjs';
 import {addJob, cancelJob, clearDone, resumeJob, stopAll, killOrphans, publicJobs, jobs, onJobs} from './render.mjs';
@@ -13,11 +13,14 @@ import {validateProject} from './validate.mjs';
 import {analyzeMusic} from './audio.mjs';
 import {importAssets, listAssets} from './assets.mjs';
 import {listTemplates, checkTemplate, saveAsTemplate, importTemplate, exportTemplate, tplDir, setSharedRoots, CATEGORIES, GOALS} from './template.mjs';
-import {gpuEncoders, gpuDiagnose, FFMPEG} from './ffmpeg.mjs';
+import {gpuEncoders, gpuDiagnose, FFMPEG, refreshCaps, caps} from './ffmpeg.mjs';
+import {stageHtml, resolveStaged, isHf, lintScene, HF_VERSION} from './hf.mjs';
+import * as library from './library.mjs';
 import * as history from './history.mjs';
 import {CMP_ROOT} from './review.mjs';
 
 const PORT = +(process.env.STUDIO_PORT || 5178);
+if (!caps()) refreshCaps(); // async NVENC/filter probe → .studio/caps.json (0.5 probed synchronously on the first request)
 fs.mkdirSync(DATA, {recursive: true});
 const SETTINGS = path.join(DATA, 'settings.json');
 const DEFAULT_RENDER = {threads: Math.min(8, os.cpus().length), gpu: 'auto', res: 'FHD', fps: 30, codec: 'h264', crf: 18, priority: 'normal', titles: true, subtitles: true, audio: true, loudness: -14};
@@ -59,9 +62,12 @@ const watch = (id) => {
     else broadcast('project', {id});
   }, 400); };
   try {
-    const w1 = fs.watch(path.join(dir, 'scenes'), {recursive: true}, () => fire('code'));
-    const w2 = fs.watch(dir, (ev, f) => { if (f === 'project.json') fire('project'); });
-    watchers.set(id, [w1, w2]);
+    const ws = [];
+    if (fs.existsSync(path.join(dir, 'scenes'))) ws.push(fs.watch(path.join(dir, 'scenes'), {recursive: true}, () => fire('code')));
+    ws.push(fs.watch(dir, (ev, f) => { if (f === 'project.json') fire('project'); }));
+    // Hyperframes scenes: no bundle needed — just tell the preview to reload its iframes
+    if (fs.existsSync(path.join(dir, 'hf'))) { let th = null; ws.push(fs.watch(path.join(dir, 'hf'), {recursive: true}, () => { clearTimeout(th); th = setTimeout(() => broadcast('hf', {id, rev: Date.now()}), 300); })); }
+    watchers.set(id, ws);
   } catch {}
 };
 
@@ -174,9 +180,9 @@ const ensureClaude = (dir, pj) => {
     const tt = path.join(dir, 'brief', 'TRANG_THAI.md');
     if (!fs.existsSync(tt)) { fs.mkdirSync(path.dirname(tt), {recursive: true}); fs.writeFileSync(tt, trangThaiMd(pj)); }
     const src = path.join(ROOT, 'claude-code');
-    if (fs.existsSync(src) && !fs.existsSync(path.join(dir, '.claude'))) copyDir(src, path.join(dir, '.claude'));
+    if (fs.existsSync(src) && !fs.existsSync(path.join(dir, '.claude'))) copyDir(path.join(src, 'workflows'), path.join(dir, '.claude', 'workflows'));
     // app-owned skill + workflow: keep in sync with the installed Studio version
-    for (const rel of ['skills/sami-motion-studio/SKILL.md', 'workflows/sami-motion-video.js']) {
+    for (const rel of ['workflows/sami-motion-video.js']) { // skills: ONE global copy (tools/install-skills.mjs), not per project
       const a = path.join(src, rel), b = path.join(dir, '.claude', rel);
       if (fs.existsSync(a) && (!fs.existsSync(b) || fs.readFileSync(a, 'utf8') !== fs.readFileSync(b, 'utf8'))) { fs.mkdirSync(path.dirname(b), {recursive: true}); fs.copyFileSync(a, b); }
     }
@@ -244,6 +250,31 @@ const server = http.createServer(async (req, res) => {
     if (p.startsWith('/cmp/')) { const f = path.resolve(CMP_ROOT, p.slice(5)); if (!f.startsWith(path.resolve(CMP_ROOT) + path.sep)) { res.writeHead(403); return res.end(); } return sendFile(req, res, f); }
     m = p.match(/^\/tpl\/([\w.-]+)\/(preview\/[\w.-]+)$/);
     if (m) return sendFile(req, res, path.join(tplDir(m[1]), m[2]));
+    // Hyperframes scene preview: /hfp/<id>/<scene>/<16x9>/index.html (+ runtime/shim) and its assets (same paths as render staging)
+    m = p.match(/^\/hfp\/([0-9a-f]{10})\/([\w.-]+)\/(\d+x\d+)\/(.*)$/);
+    if (m) {
+      const dir = dirs.get(m[1]); if (!dir) return json(res, {error: 'unknown project'}, 404);
+      if (m[4] === '' || m[4] === 'index.html') {
+        const pj = readProject(dir); const s = (pj.scenes || []).find((x) => x.id === m[2]);
+        if (!s || !isHf(s)) { res.writeHead(404); return res.end('not a Hyperframes scene'); }
+        let html; try { html = stageHtml(dir, pj, s, m[3].replace('x', ':'), 30, {preview: true}); }
+        catch (e) { html = `<!doctype html><body style="margin:0;background:#300;color:#fff;font:28px Inter,sans-serif;padding:40px"><b>${s.id}</b><br>${String(e.message).replace(/</g, '&lt;')}<script>parent.postMessage({sami:'error',message:${JSON.stringify(String(e.message))}},'*')</script></body>`; }
+        res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store'}); return res.end(html);
+      }
+      const f = resolveStaged(dir, m[4]); if (!f) { res.writeHead(403); return res.end(); }
+      return sendFile(req, res, f);
+    }
+    if (p === '/api/hf/lint' && req.method === 'POST') {
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'unknown project'}, 404);
+      const pj = readProject(dir); const s = pj.scenes.find((x) => x.id === b.scene); if (!s || !isHf(s)) return json(res, {error: 'Không phải cảnh Hyperframes'}, 400);
+      return json(res, await lintScene(dir, pj, s, b.ratio));
+    }
+    // shared asset library (SAMI_Library)
+    if (p === '/api/library/search') return json(res, {root: LIBRARY, items: library.search({q: u.searchParams.get('q') || '', kind: u.searchParams.get('kind') || null, limit: +(u.searchParams.get('limit') || 60)})});
+    if (p === '/api/library/reindex' && req.method === 'POST') { const r = library.rebuildIndex(); return json(res, {count: r.count}); }
+    if (p === '/api/library/brands') return json(res, library.listBrands().map((id) => ({id, ...library.readBrand(id)})));
+    m = p.match(/^\/lib\/(.+)$/);
+    if (m) { const f = library.resolveLib('lib:' + m[1]); if (!f) { res.writeHead(403); return res.end(); } return sendFile(req, res, f); }
     // preview bundle
     m = p.match(/^\/bundle\/([0-9a-f]{10})\/(.+)$/);
     if (m) {
@@ -260,7 +291,7 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/state') {
       const recent = settings.recent.filter((r) => fs.existsSync(path.join(r.dir, 'project.json'))).map((r) => { let status = 'draft'; try { status = readProject(r.dir).status || 'draft'; } catch {} const l = readLock(r.dir); return {...r, id: register(r.dir), status, lockedBy: l && !isMine(l) && lockAlive(l) ? l : null}; });
       const templates = listTemplates();
-      return json(res, {recent, templates, categories: CATEGORIES, goals: GOALS, render: {...DEFAULT_RENDER, ...settings.render}, cpus: os.cpus().length, cpuModel: os.cpus()[0]?.model, platform: process.platform, gpu: gpuEncoders(), ffmpeg: !!FFMPEG, projectsRoot: settings.projectsRoot, sharedTemplates: settings.sharedTemplates || [], userName: userName(), host: os.hostname(), version: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version});
+      return json(res, {recent, templates, categories: CATEGORIES, goals: GOALS, render: {...DEFAULT_RENDER, ...settings.render}, cpus: os.cpus().length, cpuModel: os.cpus()[0]?.model, platform: process.platform, gpu: gpuEncoders(), caps: caps(), ffmpeg: !!FFMPEG, hyperframes: HF_VERSION, library: LIBRARY, cache: CACHE, projectsRoot: settings.projectsRoot, sharedTemplates: settings.sharedTemplates || [], userName: userName(), host: os.hostname(), version: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version});
     }
     if (p === '/api/settings' && req.method === 'POST') { const b = await jbody(req); settings = {...settings, ...b, render: {...settings.render, ...(b.render || {})}}; saveSettings(settings); setSharedRoots(settings.sharedTemplates); return json(res, {ok: true}); }
     if (p === '/api/pick-folder') { const d = await pickFolder(); return json(res, {dir: d, supported: process.platform === 'win32'}); }
@@ -343,7 +374,7 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/template/import' && req.method === 'POST') { const b = await jbody(req); return json(res, importTemplate(b.from, {shared: !!b.shared})); }
     if (p === '/api/template/export' && req.method === 'POST') { const b = await jbody(req); const r = exportTemplate(b.tpl); openPath(path.dirname(r.out)); return json(res, r); }
     if (p === '/api/pick-file') { const d = await pickFile(u.searchParams.get('filter') || 'Zip|*.zip'); return json(res, {file: d, supported: process.platform === 'win32'}); }
-    if (p === '/api/gpu/diagnose') return json(res, gpuDiagnose());
+    if (p === '/api/gpu/diagnose') return json(res, await gpuDiagnose());
     if (p === '/api/render/stop-all' && req.method === 'POST') { stopAll(); return json(res, {ok: true}); }
     if (p === '/api/jobs') return json(res, publicJobs());
     // ── batch variants (CSV in brief/variants.csv) ──
@@ -352,7 +383,8 @@ const server = http.createServer(async (req, res) => {
       const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'unknown project'}, 404);
       const f = path.join(dir, 'brief', 'variants.csv'); fs.mkdirSync(path.dirname(f), {recursive: true});
       if (fs.existsSync(f)) await autoSnap(dir, 'before-upload', 'Trước khi thay bảng biến thể');
-      fs.writeFileSync(f, '\uFEFF' + String(b.csv || '').replace(/^\uFEFF+/, '')); // one BOM \u2192 Excel reads UTF-8 (VI/DE accents) return json(res, {ok: true});
+      fs.writeFileSync(f, '\uFEFF' + String(b.csv || '').replace(/^\uFEFF+/, '')); // one BOM \u2192 Excel reads UTF-8 (VI/DE accents)
+      return json(res, {ok: true}); // 0.5.0 had this return inside the comment above \u2192 route fell through to 404
     }
     // ── review pack + compare (Chrome → child process) ──
     if (p === '/api/review' && req.method === 'POST') {

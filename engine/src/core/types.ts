@@ -4,6 +4,8 @@ import type {Ratio} from './format';
 export type SceneDef = {
   id: string; label: string; start: number; end: number; // base frames (30 fps)
   warp?: Knots | null; animLength?: number; fadeIn?: number; fadeDelay?: number; note?: string;
+  engine?: 'remotion' | 'hyperframes'; // Studio 0.6: 'hyperframes' = HTML + CSS + GSAP scene in `src` (default: remotion scenes/<id>.tsx)
+  src?: string;                         // hyperframes: 'hf/<id>.html' (paths inside are relative to the project root)
 };
 export type TextStyle = {
   font?: string; weight?: number; size?: number; color?: string; highlight?: string; uppercase?: boolean; letterSpacing?: number;
@@ -35,6 +37,7 @@ export type AudioCue = {t: number; sfx: string; gain?: number; label?: string; s
 export type VoiceClip = {t: number; src: string; len: number; gain?: number; label?: string}; // voice-over line; len (s) drives music ducking
 export type ProjectJSON = {
   name: string; client?: string; version?: number;
+  schemaVersion?: 1 | 2; type?: 'video' | 'carousel'; engine?: 'remotion' | 'hyperframes'; // 0.6 — engine = default for NEW scenes
   status?: 'draft' | 'review' | 'approved' | 'published'; // workflow label (Studio 0.5) — default 'draft', no effect on rendering
   formats: Ratio[]; baseFps?: 30;
   brand?: {colors?: Record<string, string>; fonts?: Record<string, string>; gradient?: string};
@@ -52,4 +55,5 @@ export type ProjectJSON = {
     voice?: VoiceClip[]; duck?: number; // duck: music gain change (dB) while a voice clip plays, default -9
   };
 };
-export type MainProps = {project: ProjectJSON; ratio: Ratio; fps: number; titles?: boolean; audio?: boolean; subtitles?: boolean};
+export type MainProps = {project: ProjectJSON; ratio: Ratio; fps: number; titles?: boolean; audio?: boolean; subtitles?: boolean;
+  hfClips?: Record<string, string>; hfBase?: string; hfRev?: number | string}; // Hyperframes scenes: rendered clips (export) / live iframe base URL (preview)

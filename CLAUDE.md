@@ -10,7 +10,11 @@ Owner: Tuan (CEO SAMI) — reply in Vietnamese, concise, push back when a reques
 2. **App development** (Studio itself): follow `docs/KE_HOACH_PHAT_TRIEN.md`. Write a short spec in `docs/specs/` first, get OK, then code.
 
 ## Map
-- `server/` Node API: index.mjs routes · render.mjs queue (parts + watchdog + resume; spawns render-worker.mjs / bundle-worker.mjs — never render in the server process) · preview.mjs esbuild · ffmpeg.mjs (GPU probe uses nullsrc — bundled ffmpeg has no color/testsrc) · audio.mjs · validate.mjs · assets.mjs · template.mjs (standard check, thumbs, import/export) · cli-*.mjs
+- `server/` Node API: index.mjs routes · render.mjs queue (parts + watchdog + resume; Hyperframes clips first, then spawns render-worker.mjs / bundle-worker.mjs — never render in the server process) · preview.mjs esbuild · ffmpeg.mjs (vendor → Remotion → PATH; async caps probe cached in .studio/caps.json; encoder test = encode a real PNG, bundled ffmpeg has no lavfi) · hf.mjs (Hyperframes: staging, clips, snapshots) · library.mjs (SAMI_Library, `lib:` URIs, hardlink materialize) · fslink.mjs (hardlink/junction) · env.mjs (child env: vendor ffmpeg on PATH, TEMP on Z:) · still.mjs (stills across engines) · audio.mjs · validate.mjs · assets.mjs · template.mjs (standard check, thumbs, import/export) · cli-*.mjs
+- `lib/` shared CODE versioned with the app: `lib/hf` (SAMI runtime for HTML scenes: sami-hf.js, sami.css, shim.js) · `lib/remotion` (TSX helpers, alias `@lib`) · `lib/py` (from 0.7).
+- `tools/` get-ffmpeg · cleanup · migrate · lib-seed · install-skills (all dry-run unless `--apply`).
+- Paths: `vendor/` (ffmpeg, gitignored) · `Z:\SAMI_Video\SAMI_Library` (assets, not git) · `Z:\SAMI_Video\.sami-cache` (deletable caches) · `%APPDATA%\SAMI` (keys/ledger from 0.8).
+- Skill source of truth: `claude-code/skills/` → `node tools/install-skills.mjs --apply` copies to `~/.claude/skills` (no per-project copies).
 - `engine/src/core` Main/Titles/Subtitles/AudioTrack/format/timebase/copy — shared by ALL projects: changes must stay backward compatible with existing project.json files.
 - `ui/` vanilla JS SPA (index.html, app.js, style.css) — no build step.
 - `templates/` project templates — must pass `docs/TEMPLATE_STANDARD.md` (`node server/cli-template.mjs check templates/<id>`).
