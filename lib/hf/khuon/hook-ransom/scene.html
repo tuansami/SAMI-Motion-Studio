@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_fonts/caveat/700.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn hook-ransom · mảnh giấy cắt dán bật vào lần lượt, dòng viết tay + nét gạch chân tự vẽ. */
+  #wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 var(--safe-side); }
+  #rh { font-size: 132px; max-width: 1500px; }
+  [data-ratio="9x16"] #rh { font-size: 140px; max-width: 940px; }
+  [data-ratio="1x1"] #rh, [data-ratio="4x5"] #rh { font-size: 100px; max-width: 940px; }
+  #subw { position: relative; margin-top: 70px; }
+  #sub { font-size: 76px; }
+  [data-ratio="9x16"] #sub { font-size: 80px; }
+  #ul { position: absolute; left: -4%; width: 108%; bottom: -26px; height: 40px; overflow: visible; }
+  #ul path { fill: none; stroke: var(--k-accent); stroke-width: 7; stroke-linecap: round; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="KHUON">
+  <div class="k-stage">
+    <div id="wrap" class="k-layer">
+      <div id="rh" data-slot="headline"></div>
+      <div id="subw" data-slot-wrap><div id="sub" class="k-hand" data-slot="sub" data-optional></div>
+        <svg id="ul" viewBox="0 0 400 40" preserveAspectRatio="none"><path d="M4 26 C 90 8, 180 34, 260 16 S 370 12, 396 22"/></svg></div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind(), tl = S.timeline();
+  const pieces = K.ransom(document.getElementById('rh'), {seed: 11});
+  // mỗi mảnh bật vào: từ to + xoay lệch về đúng chỗ (giữ góc nghiêng riêng của mảnh)
+  pieces.forEach((p, i) => tl.fromTo(p, {opacity: 0, scale: 1.6, rotation: (S.rnd(i + 3) - .5) * 30}, {opacity: 1, scale: 1, rotation: 0, duration: .4}, S.beat(.5) + i * .22));
+  if (K.has('sub')) { S.arrive(tl, '#sub', S.beat(.5) + pieces.length * .22 + .4, {dist: 20, blur: 6}); K.draw(tl, document.querySelector('#ul path'), S.beat(.5) + pieces.length * .22 + .9, .6); }
+  else document.getElementById('ul').style.display = 'none';
+  K.push(tl, '#wrap', .04);
+</script>
+</body>
+</html>

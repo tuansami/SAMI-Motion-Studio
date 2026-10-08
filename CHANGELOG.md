@@ -19,6 +19,38 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [0.8.3] — 2026-10-08 — Khuôn + Dây chuyền ("trả tiền nghĩ một lần")
+Spec: `docs/specs/khuon-day-chuyen.md` (Tuấn bảo triển khai 2026-10-08). Phần đắt của một video (chuyển động, bố cục từng tỉ lệ, nhịp) làm một lần thành khuôn; video sau Claude chỉ điền JSON.
+
+### Thêm
+- **16 khuôn** Hyperframes có tham số ở `lib/hf/khuon/<id>/` (`khuon.json` + `scene.html` + ảnh xem trước), mỗi khuôn chạy được 16:9, 9:16, 1:1, 4:5 và 3 theme:
+  - hook-words, hook-ransom (chữ cắt dán), problem-stamp (lý do + con dấu), benefits-3, stat-counter (vòng + số đếm);
+  - maps-search, maps-profile (màn hình Google Maps dựng bằng HTML), chat-whatsapp, phone-scroll (ảnh chụp dài tự cuộn);
+  - photo-collage (polaroid + băng dính), menu-dish, offer-badge, review-quote, calendar-date (lịch tháng thật, khoanh ngày), cta-contact, endcard-logo.
+  - Lấy cảm hứng từ V22 (giấy kraft, chữ cắt dán, polaroid, lịch), V23 (điện thoại, chat, Maps, thẻ kết) và hf-starter.
+- **Bộ kit khuôn** `lib/hf/khuon/kit.{css,js}`: gắn slot (`data-slot`, `data-slot-img`, ô trống tự ẩn), 3 theme `night` / `paper` / `light` (màu brand thắng), khối điện thoại / thẻ / nhãn / nút / polaroid / con dấu / bong bóng chat / sao, helper chữ cắt dán, bật vào, đóng dấu, đếm số, gõ chữ, nét vẽ, icon SVG.
+- **`server/khuon.mjs`**: liệt kê, **thêm cảnh** (chèn sau một cảnh, dời cảnh + SFX sau đó, cắt đúng lưới 15n+1), **Đổi khuôn** (giữ chữ của ô cùng tên, cất ô thừa vào `scene.khuon.stash` để đổi lại thì khôi phục, không đụng giọng / nhạc / SFX / thời lượng), `buildProject()` cho dây chuyền.
+- **Dây chuyền** `lib/pipelines/{promo, maps, menu}.mjs` + `server/cli-pipeline.mjs` (`list`, `example`, chạy): brief.json → dự án đủ cảnh, chữ, SFX theo nhịp, brand; validate + bảng ảnh QA `out/qa/pipeline_<tỉ lệ>.jpg`. **Không render.**
+- **Bộ nhận diện khách** `SAMI_Library/brands/<khách>/brand.json` (màu, gradient, font, theme, logo, khẩu hiệu, liên hệ, CTA, giọng, nhạc); mẫu `brands/sami`. Route `/api/brands`.
+- Studio: nút **🧩 Khuôn** ở cột Cảnh (chọn theme, lọc nhóm, ảnh mẫu, **＋ Thêm sau S0x** / **Đổi S0x**, có điểm neo Lịch sử trước khi áp). Route `/api/khuon`, `/api/khuon/thumb/…`, `/api/khuon/apply`.
+- `tools/khuon-thumbs.mjs`: dựng dự án thử chứa mọi khuôn với chữ / ảnh mẫu, chụp ảnh tĩnh (không render) → bảng kiểm theo theme; `--apply` ghi ảnh xem trước. Ảnh mẫu (nội bộ) ở `SAMI_Library/assets/img/khuon-mau/` (hardlink từ V22).
+- Cảnh Hyperframes nhận `SAMI.khuon`, `SAMI.theme`; **font brand** (`brand.fonts.head|ui|script`, tên họ font fontsource) tự nạp trong cảnh; ảnh `lib:` trong ô chữ dùng được khi render.
+- **Sổ chi phí theo video** (gói sami-media 1.1.0): mỗi lượt Claude Code của người chạy gói web ghi `claudeUsd` (hạn mức gói Claude, không vào trần 2/20 USD); `ledger --project <thư mục>` (CLI) / `ledger {project_dir}` (MCP) = API + Claude quy đổi của một video.
+- Skill `sami-motion-studio`: `references/khuon.md` (khuôn, dây chuyền, brand.json, kỷ luật phiên, chia model, chi phí theo video) + 2 dòng trong bảng "Decide the job".
+
+### Sửa lỗi
+- sami-media: thoát tiến trình ngay sau khi đóng kết nối CDP làm Node trên Windows báo `UV_HANDLE_CLOSING`: `close()` giờ chờ socket đóng hẳn.
+
+### Đã kiểm
+- `npm run check` đạt, thêm 3 mục: mọi khuôn đúng luật (slot khai báo đủ, ô ảnh đúng hậu tố, không ngẫu nhiên / thời gian thật / CDN, có kit + K.bind); thêm cảnh / đổi khuôn / đổi lại; 3 dây chuyền dựng từ brief mẫu không lỗi validate. sami-media `npm test` 21 mục.
+- Ảnh kiểm 16 khuôn × 3 theme × 9:16 + 16:9 (snapshot, đã xem); dây chuyền `maps` với brief mẫu → 8 cảnh, 40 s, bảng ảnh QA đã xem.
+- **Không render video nào.**
+
+### Roll back
+`git checkout v0.8.2` (hoặc commit 0.8.2). Dự án dựng từ khuôn vẫn mở được ở bản cũ (cảnh là HTML thường trong `hf/`; trường `khuon` bị bỏ qua, theme rơi về night).
+
+---
+
 ## [0.8.2] — 2026-10-08 — Chrome SAMI, kịch bản ChatGPT cố định, bộ mã hoá thật, cổng AI tách thành gói `sami-media`
 Quyết định của Tuấn 2026-10-08 (HANDOFF mục 3b). Lần thử 2026-10-08 trong Chrome chính bị hộp "Lưu ở đâu" và hỏi Allow mỗi lần nối: 0.8.2 chuyển mọi tự động hoá sang một Chrome riêng.
 

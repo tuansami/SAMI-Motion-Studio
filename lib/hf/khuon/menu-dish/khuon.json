@@ -1,0 +1,18 @@
+{
+ "name": "Thực đơn: một món + giá",
+ "group": "menu",
+ "version": 1,
+ "beats": 10,
+ "themes": ["paper", "night", "light"],
+ "from": "mới (SAMI)",
+ "description": "Ảnh món lớn trong khung tròn xoay nhẹ, tên món, mô tả, thẻ giá bật ra. Dùng nối nhiều cảnh cho video thực đơn / món mới.",
+ "slots": [
+  {"slot": "label", "label": "Nhãn (vd Món mới, Món 1/5)", "default": "Món mới", "sample": "Neu auf der Karte", "optional": true},
+  {"slot": "dish", "label": "Tên món (*từ* = tô màu)", "default": "Phở bò *tái lăn*", "sample": "Phở bò *tái lăn*"},
+  {"slot": "desc", "label": "Mô tả ngắn", "default": "Nước dùng ninh 12 giờ, thịt bò xào gừng", "sample": "12 Stunden Brühe, Rindfleisch mit Ingwer", "optional": true},
+  {"slot": "price", "label": "Giá (vd 14,90 €)", "default": "14,90 €", "sample": "14,90 €"},
+  {"slot": "dish_photo", "label": "Ảnh món (vuông hoặc ngang)", "type": "image", "default": "", "sample": "lib:img/khuon-mau/placeholder_dish.jpg"}
+ ],
+ "sfx": [{"beat": 0, "sfx": "whoosh_a", "gain": -18, "label": "ảnh món"}, {"beat": 4, "sfx": "pop", "gain": -14, "label": "giá"}],
+ "thumbAt": [2, 8]
+}

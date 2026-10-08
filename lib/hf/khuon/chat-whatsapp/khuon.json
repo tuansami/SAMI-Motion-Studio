@@ -1,0 +1,20 @@
+{
+ "name": "Chat: tin nhắn WhatsApp",
+ "group": "chat",
+ "version": 1,
+ "beats": 12,
+ "themes": ["night", "light", "paper"],
+ "from": "V23 S04 / V22 S10",
+ "description": "Màn hình WhatsApp: 3 đến 4 tin nhắn qua lại, có dấu ba chấm đang gõ trước tin đến. Câu dẫn bên cạnh (ngang) hoặc phía trên (dọc).",
+ "slots": [
+  {"slot": "headline", "label": "Câu dẫn (*từ* = tô màu)", "default": "Mọi thứ bắt đầu / từ *một tin nhắn.*", "sample": "Mọi thứ bắt đầu / từ *một tin nhắn.*", "optional": true},
+  {"slot": "name", "label": "Tên người nhắn", "default": "Hoa · SAMI", "sample": "Hoa · SAMI"},
+  {"slot": "status", "label": "Trạng thái", "default": "online", "sample": "online"},
+  {"slot": "m1", "label": "Tin 1 (khách gửi)", "default": "Chào chị, quán em muốn khách tìm thấy trên Maps.", "sample": "Chào chị, quán em muốn khách tìm thấy trên Maps."},
+  {"slot": "m2", "label": "Tin 2 (trả lời)", "default": "Chị xem hồ sơ quán ngay, 15 phút nữa gửi em kết quả nhé.", "sample": "Chị xem hồ sơ quán ngay, 15 phút nữa gửi em kết quả nhé."},
+  {"slot": "m3", "label": "Tin 3 (khách gửi)", "default": "Tuyệt, cảm ơn chị!", "sample": "Tuyệt, cảm ơn chị!", "optional": true},
+  {"slot": "m4", "label": "Tin 4 (trả lời)", "default": "", "sample": "", "optional": true}
+ ],
+ "sfx": [{"beat": 1, "sfx": "pop", "gain": -18, "label": "tin 1"}, {"beat": 4, "sfx": "pop", "gain": -18, "label": "tin 2"}, {"beat": 7, "sfx": "pop", "gain": -18, "label": "tin 3"}],
+ "thumbAt": [3, 10]
+}

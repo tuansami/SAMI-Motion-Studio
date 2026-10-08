@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/400.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_fonts/caveat/700.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn maps-search · điện thoại Maps: gõ từ khoá → danh sách quán → quán 1 sáng lên + ghim rơi. Màn hình dựng bằng HTML (không phải ảnh chụp). */
+  #txt { position: absolute; left: var(--safe-side); top: 0; bottom: 0; width: 46%; display: flex; flex-direction: column; justify-content: center; gap: 30px; }
+  #head { font-size: 112px; }
+  #sub { font-size: 66px; }
+  #phone { --pw: 420px; right: 12%; top: 50%; margin-top: -468px; }
+  [data-ratio="9x16"] #txt { left: var(--safe-side); right: var(--safe-side); width: auto; top: var(--safe-top); bottom: auto; text-align: center; align-items: center; gap: 16px; }
+  [data-ratio="9x16"] #head { font-size: 100px; }
+  [data-ratio="9x16"] #sub { font-size: 60px; }
+  [data-ratio="9x16"] #phone { --pw: 760px; right: auto; left: 50%; margin-left: -380px; top: 640px; margin-top: 0; }
+  [data-ratio="1x1"] #txt, [data-ratio="4x5"] #txt { width: 44%; }
+  [data-ratio="1x1"] #head, [data-ratio="4x5"] #head { font-size: 76px; }
+  [data-ratio="1x1"] #sub, [data-ratio="4x5"] #sub { font-size: 48px; }
+  [data-ratio="1x1"] #phone, [data-ratio="4x5"] #phone { --pw: 470px; right: 6%; top: 90px; margin-top: 0; }
+  /* màn hình Maps (em = 1/28 bề rộng điện thoại) */
+  .k-screen { font-size: calc(var(--pw) * .036); background: #F2F3F5; }
+  .map { position: absolute; left: 0; right: 0; top: 0; height: 52%; background: #E8EAED; overflow: hidden; }
+  .map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .bar { position: absolute; left: 4%; right: 4%; top: 13%; height: 2.6em; border-radius: 1.3em; background: #fff; box-shadow: 0 .15em .5em rgba(0,0,0,.18); display: flex; align-items: center; gap: .6em; padding: 0 1em; z-index: 3; color: #202124; }
+  .bar .k-ico { width: 1.05em; height: 1.05em; color: #5F6368; }
+  .bar .q { flex: 1; font-weight: 500; white-space: nowrap; overflow: hidden; }
+  .bar .q::after { content: ""; display: inline-block; width: .08em; height: 1.1em; background: #1A73E8; vertical-align: -.2em; margin-left: .05em; }
+  .bar .av { width: 1.6em; height: 1.6em; border-radius: 50%; background: #7E57C2; color: #fff; font-weight: 700; font-size: .8em; display: flex; align-items: center; justify-content: center; }
+  .chips { position: absolute; left: 4%; top: 22%; display: flex; gap: .4em; z-index: 3; }
+  .chips span { background: #fff; border-radius: 1em; padding: .35em .8em; font-size: .78em; font-weight: 600; color: #3C4043; box-shadow: 0 .08em .25em rgba(0,0,0,.15); white-space: nowrap; }
+  .pin { position: absolute; left: 58%; top: 34%; width: 2.6em; height: 2.6em; margin: -2.6em 0 0 -1.3em; color: #EA4335; z-index: 2; }
+  .pin .k-ico { width: 100%; height: 100%; }
+  .pulse { position: absolute; left: 58%; top: 34%; width: 3em; height: 1em; margin: -.5em 0 0 -1.5em; border-radius: 50%; background: rgba(234,67,53,.35); z-index: 1; }
+  .dot2 { position: absolute; width: .9em; height: .9em; border-radius: 50%; background: #EA4335; border: .15em solid #fff; box-shadow: 0 .05em .2em rgba(0,0,0,.3); }
+  .sheet { position: absolute; left: 0; right: 0; top: 47%; bottom: 0; background: #fff; border-radius: 1.2em 1.2em 0 0; box-shadow: 0 -.2em .8em rgba(0,0,0,.12); padding: .6em 4% 0; z-index: 4; }
+  .grab { width: 2.4em; height: .25em; border-radius: .2em; background: #DADCE0; margin: 0 auto .7em; }
+  .res { position: relative; display: flex; gap: .8em; padding: .75em .7em; border-radius: .8em; margin-bottom: .35em; border: .12em solid transparent; }
+  .res .info { flex: 1; min-width: 0; }
+  .res .n { font-weight: 700; font-size: 1.12em; color: #202124; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .res .rt { display: flex; align-items: center; gap: .3em; font-size: .9em; color: #3C4043; margin-top: .15em; }
+  .res .rt .k-stars { font-size: .85em; }
+  .res .m { font-size: .86em; color: #70757A; margin-top: .15em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .res .open { color: #188038; font-weight: 600; }
+  .res .th { width: 4.2em; height: 4.2em; border-radius: .6em; flex: none; }
+  .res .hil { position: absolute; inset: -.12em; border-radius: .8em; border: .14em solid #1A73E8; background: rgba(26,115,232,.08); opacity: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="KHUON">
+  <div class="k-stage">
+    <div id="txt" class="k-layer">
+      <div id="head" class="k-head" data-slot="headline"></div>
+      <div id="sub" class="k-hand" data-slot="sub" data-optional></div>
+    </div>
+    <div id="phone" class="k-phone" style="z-index:2"><div class="k-screen">
+      <div class="k-island"></div>
+      <div class="map"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
+        <rect width="100" height="100" fill="#E8EAED"/>
+        <path d="M-5 70 C 20 60, 40 80, 105 55" stroke="#AECBFA" stroke-width="7" fill="none"/>
+        <rect x="8" y="30" width="22" height="16" rx="2" fill="#CEEAD6"/><rect x="70" y="72" width="26" height="20" rx="2" fill="#CEEAD6"/>
+        <path d="M0 40 H100 M0 88 H100 M35 0 V100 M78 0 V100 M0 15 L100 60" stroke="#fff" stroke-width="2.6" fill="none"/>
+        <path d="M0 62 H100 M55 0 V100 M15 0 V100" stroke="#fff" stroke-width="1.4" fill="none"/>
+        <path d="M35 0 V100" stroke="#FDE293" stroke-width="2.6" fill="none"/>
+      </svg>
+        <span class="dot2" style="left:22%;top:58%"></span><span class="dot2" style="left:80%;top:44%"></span><span class="dot2" style="left:40%;top:80%"></span>
+        <div class="pulse"></div><div class="pin" data-ico="pin"></div>
+      </div>
+      <div class="bar"><span data-ico="search"></span><span class="q" id="q"></span><span class="av">S</span></div>
+      <div class="chips"><span>Đang mở</span><span>Đánh giá 4+</span><span>Gần đây</span></div>
+      <div class="sheet"><div class="grab"></div>
+        <div class="res" id="r1"><div class="hil"></div><div class="info"><div class="n" data-slot="r1_name"></div><div class="rt"><b id="r1r"></b><span class="k-stars" id="r1s"></span><span>(<span data-slot="r1_count"></span>)</span></div><div class="m" data-slot="r1_meta"></div><div class="m open">Đang mở cửa</div></div><div class="th" data-slot-img="r1_photo" data-optional></div></div>
+        <div class="res" id="r2"><div class="info"><div class="n" data-slot="r2_name"></div><div class="rt"><b id="r2r"></b><span class="k-stars" id="r2s"></span></div><div class="m">Nhà hàng · 600 m</div></div></div>
+        <div class="res" id="r3"><div class="info"><div class="n" data-slot="r3_name"></div><div class="rt"><b id="r3r"></b><span class="k-stars" id="r3s"></span></div><div class="m">Nhà hàng · 1,1 km</div></div></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind().icons(), tl = S.timeline();
+  for (const i of [1, 2, 3]) { const v = K.num(`r${i}_rating`, 4); document.getElementById(`r${i}r`).textContent = K.raw(`r${i}_rating`).replace('.', ','); K.stars(document.getElementById(`r${i}s`), v); }
+  // câu dẫn
+  S.arrive(tl, S.words(document.getElementById('head')), S.beat(.5), {stagger: .14, dur: .5});
+  if (K.has('sub')) S.arrive(tl, '#sub', S.beat(2.5), {dist: 18, blur: 6});
+  // điện thoại trồi lên
+  tl.fromTo('#phone', {y: S.portrait ? 500 : 260, opacity: 0}, {y: 0, opacity: 1, duration: .9}, S.beat(0));
+  // gõ từ khoá → Enter (nhịp 4)
+  K.type(tl, document.getElementById('q'), K.text('query'), S.beat(1), 16);
+  tl.fromTo('.sheet', {yPercent: 70}, {yPercent: 0, duration: .7}, S.beat(4));
+  tl.fromTo('.res', {opacity: 0, y: 30}, {opacity: 1, y: 0, duration: .5, stagger: .18}, S.beat(4.3));
+  // quán 1 sáng lên + ghim rơi (nhịp 7)
+  tl.to('#r1 .hil', {opacity: 1, duration: .3}, S.beat(7));
+  tl.fromTo('#r1', {scale: 1}, {scale: 1.04, duration: .25, yoyo: true, repeat: 1}, S.beat(7));
+  tl.fromTo('.pin', {y: -120, opacity: 0}, {y: 0, opacity: 1, duration: .45}, S.beat(7));
+  tl.fromTo('.pulse', {scale: 0, opacity: 0}, {scale: 1.6, opacity: 1, duration: .8}, S.beat(7.6));
+  tl.to('.dot2', {opacity: .35, duration: .4}, S.beat(7));
+  K.push(tl, '#phone', .03);
+</script>
+</body>
+</html>

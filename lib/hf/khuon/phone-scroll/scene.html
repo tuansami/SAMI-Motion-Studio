@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn phone-scroll · ảnh chụp màn hình dài cuộn trong điện thoại (cuộn = translate theo timeline), nhãn nổi bật bay ra hai bên. */
+  #txt { position: absolute; left: var(--safe-side); top: 0; bottom: 0; width: 44%; display: flex; flex-direction: column; justify-content: center; gap: 44px; }
+  #head { font-size: 96px; }
+  #keys { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .k-chip { font-size: 40px; }
+  .k-chip .k-ico { color: var(--k-accent); }
+  #phone { --pw: 420px; right: 14%; top: 50%; margin-top: -468px; z-index: 2; }
+  .k-screen { background: #fff; }
+  #shot { position: absolute; left: 0; top: 0; width: 100%; height: auto; display: block; }
+  #shotph { position: absolute; inset: 0; }
+  [data-ratio="9x16"] #txt { left: var(--safe-side); right: var(--safe-side); width: auto; top: var(--safe-top); bottom: auto; text-align: center; align-items: center; gap: 0; }
+  [data-ratio="9x16"] #head { font-size: 100px; }
+  [data-ratio="9x16"] #keys { position: absolute; left: 0; right: 0; top: 1290px; align-items: center; z-index: 3; }
+  [data-ratio="9x16"] .k-chip { font-size: 44px; box-shadow: var(--k-shadow); }
+  [data-ratio="9x16"] #phone { --pw: 640px; right: auto; left: 50%; margin-left: -320px; top: 560px; margin-top: 0; }
+  [data-ratio="1x1"] #txt, [data-ratio="4x5"] #txt { width: 46%; }
+  [data-ratio="1x1"] #head, [data-ratio="4x5"] #head { font-size: 70px; }
+  [data-ratio="1x1"] .k-chip, [data-ratio="4x5"] .k-chip { font-size: 32px; }
+  [data-ratio="1x1"] #phone, [data-ratio="4x5"] #phone { right: 6%; top: 90px; margin-top: 0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="KHUON">
+  <div class="k-stage">
+    <div id="txt" class="k-layer">
+      <div id="head" class="k-head" data-slot="headline"></div>
+      <div id="keys"></div>
+    </div>
+    <div id="phone" class="k-phone"><div class="k-screen">
+      <img id="shot" alt=""><div id="shotph" data-slot-img="screen_photo" data-ph="ẢNH CHỤP MÀN HÌNH"></div>
+    </div></div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind(), tl = S.timeline();
+  const shot = document.getElementById('shot'), url = K.src('screen_photo');
+  if (url) { shot.src = url; document.getElementById('shotph').style.display = 'none'; } else shot.style.display = 'none';
+  const keys = K.list('k', 3);
+  document.getElementById('keys').innerHTML = keys.map((k) => `<div class="k-chip">${K.icon('check')}<span>${K.html(k)}</span></div>`).join('');
+  S.arrive(tl, S.words(document.getElementById('head')), S.beat(.5), {stagger: .14, dur: .5});
+  tl.fromTo('#phone', {y: S.portrait ? 500 : 260, opacity: 0}, {y: 0, opacity: 1, duration: .9}, S.beat(0));
+  // cuộn: đo chiều cao ảnh khi ảnh đã tải (chỉ đặt khoảng cuộn, thời gian cố định từ nhịp 2 tới hết cảnh)
+  const scroll = {p: 0}; let dist = 0;
+  const apply = () => { shot.style.transform = `translateY(${-dist * scroll.p}px)`; };
+  const measure = () => { const scr = shot.parentElement; dist = Math.max(0, shot.offsetHeight - scr.clientHeight); apply(); };
+  if (url) { if (shot.complete) measure(); else shot.addEventListener('load', measure); }
+  tl.to(scroll, {p: 1, duration: Math.max(1, S.dur - S.beat(2) - .5), ease: 'none', onUpdate: apply}, S.beat(2));
+  tl.fromTo('#keys .k-chip', {opacity: 0, x: S.portrait ? 0 : -40, y: S.portrait ? 30 : 0}, {opacity: 1, x: 0, y: 0, duration: .45, stagger: S.BEAT * 1.5}, S.beat(5));
+</script>
+</body>
+</html>

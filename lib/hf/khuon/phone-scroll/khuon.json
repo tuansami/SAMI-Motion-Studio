@@ -1,0 +1,18 @@
+{
+ "name": "Điện thoại cuộn ảnh chụp (website, Maps, menu)",
+ "group": "anh",
+ "version": 1,
+ "beats": 12,
+ "themes": ["light", "night", "paper"],
+ "from": "V23 S06 / V22 S04",
+ "description": "Điện thoại hiện một ảnh chụp màn hình dài (website, hồ sơ Maps, thực đơn) và tự cuộn chậm; câu dẫn + 3 điểm nổi bật dạng nhãn.",
+ "slots": [
+  {"slot": "headline", "label": "Câu dẫn (*từ* = tô màu)", "default": "Website *đẹp như* / quán thật", "sample": "Website *đẹp như* / quán thật"},
+  {"slot": "screen_photo", "label": "Ảnh chụp màn hình (dọc, càng dài càng cuộn được)", "type": "image", "default": "", "sample": "lib:img/khuon-mau/maps_q_food.png"},
+  {"slot": "k1", "label": "Điểm nổi bật 1", "default": "Đặt bàn 1 chạm", "sample": "Đặt bàn 1 chạm", "optional": true},
+  {"slot": "k2", "label": "Điểm nổi bật 2", "default": "Tải dưới 2 giây", "sample": "Tải dưới 2 giây", "optional": true},
+  {"slot": "k3", "label": "Điểm nổi bật 3", "default": "Đẹp trên điện thoại", "sample": "Đẹp trên điện thoại", "optional": true}
+ ],
+ "sfx": [{"beat": 0, "sfx": "whoosh_b", "gain": -18, "label": "điện thoại"}, {"beat": 5, "sfx": "pop", "gain": -20, "label": "nhãn"}],
+ "thumbAt": [3, 10]
+}

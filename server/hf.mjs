@@ -44,6 +44,8 @@ export const sceneData = (p, s, ratio, fps) => {
   const copy = {}; for (const [k, v] of Object.entries(p.copy || {})) copy[k] = v?.value;
   return {copy, brand: {colors: {...DEFAULT_COLORS, ...(p.brand?.colors || {})}, gradient: p.brand?.gradient || null, fonts: p.brand?.fonts || {}},
     ratio, w: st.w, h: st.h, fps, scene: s.id, dur: +sceneSpan(p, s).dur.toFixed(4), t0: isCarousel(p) ? 0 : OV / 30, project: p.name || '',
+    // khuôn (lib/hf/khuon): which template this scene came from + its theme (night | paper | light)
+    khuon: s.khuon || null, theme: s.khuon?.theme || p.look?.theme || 'night',
     ...(isCarousel(p) ? carouselData(p, s) : {})};
 };
 /** carousel: slide index/count + where this slide sits in the whole carousel (for continuing progress / protagonist) */
@@ -77,7 +79,7 @@ export const stageHtml = (dir, p, s, ratio, fps, {preview = false, audio = null}
   const dataJs = preview
     ? `window.__samiData=${liveStr};window.SAMI=${data};(function(S){try{var o=JSON.parse(sessionStorage.getItem('sami:'+S.scene+':'+S.ratio)||'null');if(o){S.copy=o.copy||S.copy;var b=o.brand||{};S.brand={colors:Object.assign({},S.brand.colors,b.colors||{}),gradient:b.gradient||S.brand.gradient,fonts:b.fonts||S.brand.fonts};}}catch(e){}})(window.SAMI);`
     : `window.SAMI=${data};`;
-  const head = `<meta charset="utf-8"><script>${dataJs}</script><link rel="stylesheet" href="_sami/sami.css">` +
+  const head = `<meta charset="utf-8"><script>${dataJs}</script><link rel="stylesheet" href="_sami/sami.css">` + brandFontLinks(p) +
     (/_gsap\/gsap(\.min)?\.js/.test(html) ? '' : '<script src="_gsap/gsap.min.js"></script>') + '<script src="_sami/sami-hf.js"></script>' +
     (isCarousel(p) ? '<link rel="stylesheet" href="_sami/carousel.css"><script src="_sami/carousel.js"></script>' : '');
   html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, (h) => h + head) : html.replace(/<html[^>]*>/i, (h) => h + '<head>' + head + '</head>');
@@ -88,6 +90,19 @@ export const stageHtml = (dir, p, s, ratio, fps, {preview = false, audio = null}
     html = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, tail + '</body>') : html + tail;
   }
   return html;
+};
+
+/** brand fonts (project.json → brand.fonts.head / ui / script, e.g. "Playfair Display") → local fontsource links + CSS vars.
+ *  Only families installed under @fontsource load; others fall back to the theme fonts. */
+const famSlug = (f) => String(f || '').split(',')[0].replace(/["']/g, '').trim().toLowerCase().replace(/\s+/g, '-');
+export const brandFontLinks = (p) => {
+  const F = p.brand?.fonts || {}; let out = '', vars = '';
+  for (const [role, v] of Object.entries({head: F.head || F.display, ui: F.ui || F.body, script: F.script})) {
+    const slug = famSlug(v); if (!slug || !fs.existsSync(path.join(FONTS, slug))) continue;
+    for (const w of [400, 500, 600, 700, 800, 900]) if (fs.existsSync(path.join(FONTS, slug, `${w}.css`))) out += `<link rel="stylesheet" href="_fonts/${slug}/${w}.css">`;
+    vars += `--f-${role}:"${String(v).split(',')[0].replace(/["']/g, '').trim()}","Be Vietnam Pro",sans-serif;`;
+  }
+  return out + (vars ? `<style>html:root{${vars}}</style>` : ''); // html:root outranks a khuôn theme's [data-theme] fonts
 };
 
 /** font families referenced as _fonts/<family>/… */
@@ -118,7 +133,7 @@ export const stageDir = (dir, p, s, ratio, fps, {audio = null} = {}) => {
   junction(GSAP_DIST, path.join(out, '_gsap'));
   if (fs.existsSync(path.join(dir, 'public'))) junction(path.join(dir, 'public'), path.join(out, 'public'));
   for (const sub of ['hf', 'slides']) if (fs.existsSync(path.join(dir, sub))) junction(path.join(dir, sub), path.join(out, sub));
-  if (fs.existsSync(ASSETS) && /["'(]lib\//.test(html)) junction(ASSETS, path.join(out, 'lib'));
+  if (fs.existsSync(ASSETS) && /["'(]lib\/|"lib:/.test(html)) junction(ASSETS, path.join(out, 'lib')); // "lib: = a copy value (khuôn image slot)
   const fam = fontRefs(html);
   if (fam.length) { const fd = path.join(out, '_fonts'); fs.mkdirSync(fd, {recursive: true}); for (const f of fam) if (fs.existsSync(path.join(FONTS, f))) junction(path.join(FONTS, f), path.join(fd, f)); }
   return {dir: out, html};

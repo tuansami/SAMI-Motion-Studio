@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn offer-badge · huy hiệu răng cưa (SVG) xoay vào + tia sáng quay chậm, câu ưu đãi, điều kiện, nhãn thời hạn. */
+  #wrap { position: absolute; top: var(--safe-top); bottom: var(--safe-bottom); left: var(--safe-side); right: var(--safe-side); display: flex; align-items: center; justify-content: center; gap: 100px; }
+  #bw { position: relative; width: 660px; height: 660px; flex: none; }
+  #rays { position: absolute; inset: -30%; opacity: .5; }
+  #rays path { fill: color-mix(in srgb, var(--k-accent) 22%, transparent); }
+  #badge { position: absolute; inset: 0; }
+  #badge path { fill: var(--k-accent); }
+  [data-theme="night"] #badge path { fill: url(#g); }
+  #bt { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; rotate: -8deg; }
+  [data-theme="night"] #bt { color: #0C0628; }
+  #big { font-family: var(--f-head); font-weight: 900; font-size: 210px; letter-spacing: -0.05em; line-height: .95; white-space: nowrap; }
+  #bsub { font-family: var(--f-head); font-weight: 800; font-size: 44px; text-transform: uppercase; letter-spacing: .06em; margin-top: 8px; }
+  #txt { max-width: 820px; display: flex; flex-direction: column; gap: 30px; }
+  #head { font-size: 104px; }
+  #terms { font-size: 38px; }
+  #date { align-self: flex-start; font-size: 40px; }
+  #date .k-ico { color: var(--k-accent); }
+  [data-ratio="9x16"] #wrap { flex-direction: column; gap: 70px; text-align: center; }
+  [data-ratio="9x16"] #bw { width: 720px; height: 720px; }
+  [data-ratio="9x16"] #txt { align-items: center; max-width: 940px; }
+  [data-ratio="9x16"] #date { align-self: center; }
+  [data-ratio="1x1"] #wrap, [data-ratio="4x5"] #wrap { flex-direction: column; gap: 30px; text-align: center; }
+  [data-ratio="1x1"] #bw, [data-ratio="4x5"] #bw { width: 420px; height: 420px; }
+  [data-ratio="1x1"] #big, [data-ratio="4x5"] #big { font-size: 130px; }
+  [data-ratio="1x1"] #bsub, [data-ratio="4x5"] #bsub { font-size: 30px; }
+  [data-ratio="1x1"] #txt, [data-ratio="4x5"] #txt { align-items: center; gap: 16px; }
+  [data-ratio="1x1"] #head, [data-ratio="4x5"] #head { font-size: 70px; }
+  [data-ratio="1x1"] #date, [data-ratio="4x5"] #date { align-self: center; font-size: 32px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="KHUON">
+  <div class="k-stage">
+    <div id="wrap" class="k-layer">
+      <div id="bw">
+        <svg id="rays" viewBox="-100 -100 200 200"></svg>
+        <svg id="badge" viewBox="-100 -100 200 200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#08DDA4"/><stop offset="1" stop-color="#7667FE"/></linearGradient></defs><path id="bp"/></svg>
+        <div id="bt"><div id="big" data-slot="badge"></div><div id="bsub" data-slot="badge_sub" data-optional></div></div>
+      </div>
+      <div id="txt">
+        <div id="head" class="k-head" data-slot="headline"></div>
+        <div id="terms" class="k-sub" data-slot="terms" data-optional></div>
+        <div id="date" class="k-chip"><span data-ico="clock"></span><span data-slot="date" data-optional></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind().icons(), tl = S.timeline();
+  if (!K.has('date')) document.getElementById('date').style.display = 'none';
+  // huy hiệu 24 răng + 16 tia
+  let d = ''; for (let i = 0; i < 48; i++) { const a = i * Math.PI / 24, r = i % 2 ? 86 : 98; d += (i ? 'L' : 'M') + (Math.cos(a) * r).toFixed(2) + ' ' + (Math.sin(a) * r).toFixed(2); }
+  document.getElementById('bp').setAttribute('d', d + 'Z');
+  let rays = ''; for (let i = 0; i < 16; i++) { const a = i * Math.PI / 8, w = Math.PI / 32; rays += `<path d="M0 0 L${(Math.cos(a - w) * 100).toFixed(1)} ${(Math.sin(a - w) * 100).toFixed(1)} L${(Math.cos(a + w) * 100).toFixed(1)} ${(Math.sin(a + w) * 100).toFixed(1)}Z"/>`; }
+  document.getElementById('rays').innerHTML = rays;
+  K.layout(() => K.fitW(document.getElementById('big'), document.getElementById('bw').clientWidth * .78));
+  tl.fromTo('#bw', {scale: 0, rotation: -120, opacity: 0}, {scale: 1, rotation: 0, opacity: 1, duration: .8}, S.beat(.5));
+  tl.fromTo('#rays', {rotation: 0, opacity: 0}, {rotation: 45, opacity: 1, duration: S.dur, ease: 'none'}, 0);
+  tl.fromTo('#badge', {rotation: 0}, {rotation: 20, duration: S.dur, ease: 'none'}, 0);
+  S.arrive(tl, S.words(document.getElementById('head')), S.beat(2), {stagger: .13, dur: .5});
+  if (K.has('terms')) S.arrive(tl, '#terms', S.beat(4), {dist: 16, blur: 6});
+  if (K.has('date')) K.pop(tl, '#date', S.beat(5), {from: .5});
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn menu-dish · ảnh món tròn xoay chậm + vòng nét đứt, tên món, mô tả, thẻ giá bật ra. */
+  #wrap { position: absolute; top: var(--safe-top); bottom: var(--safe-bottom); left: var(--safe-side); right: var(--safe-side); display: flex; align-items: center; justify-content: center; gap: 110px; }
+  #platew { position: relative; width: 760px; height: 760px; flex: none; }
+  #plate { position: absolute; inset: 40px; border-radius: 50%; box-shadow: 0 40px 90px rgba(0,0,0,.35); overflow: hidden; }
+  #plate > div { width: 100%; height: 100%; }
+  #orbit { position: absolute; inset: 0; }
+  #orbit circle { fill: none; stroke: var(--k-accent); stroke-width: 2.5; stroke-dasharray: 2 14; stroke-linecap: round; }
+  #price { position: absolute; right: -10px; bottom: 60px; z-index: 2; padding: 26px 40px; border-radius: 999px; background: var(--k-accent); color: #fff; font-family: var(--f-head); font-weight: 800; font-size: 64px; white-space: nowrap; rotate: -6deg; box-shadow: 0 18px 40px rgba(0,0,0,.25); }
+  [data-theme="night"] #price { background: var(--grad); color: #0C0628; }
+  #txt { max-width: 760px; display: flex; flex-direction: column; gap: 28px; }
+  #label { font-size: 30px; }
+  #dish { font-size: 116px; }
+  #desc { font-size: 46px; }
+  [data-ratio="9x16"] #wrap { flex-direction: column; gap: 60px; text-align: center; }
+  [data-ratio="9x16"] #platew { width: 820px; height: 820px; }
+  [data-ratio="9x16"] #txt { align-items: center; max-width: 940px; }
+  [data-ratio="9x16"] #dish { font-size: 112px; }
+  [data-ratio="1x1"] #wrap, [data-ratio="4x5"] #wrap { gap: 50px; }
+  [data-ratio="1x1"] #platew, [data-ratio="4x5"] #platew { width: 480px; height: 480px; }
+  [data-ratio="1x1"] #price, [data-ratio="4x5"] #price { font-size: 44px; padding: 18px 28px; bottom: 20px; }
+  [data-ratio="1x1"] #dish, [data-ratio="4x5"] #dish { font-size: 74px; }
+  [data-ratio="1x1"] #desc, [data-ratio="4x5"] #desc { font-size: 34px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="KHUON">
+  <div class="k-stage">
+    <div id="wrap" class="k-layer">
+      <div id="platew">
+        <svg id="orbit" viewBox="0 0 200 200"><circle cx="100" cy="100" r="98"/></svg>
+        <div id="plate"><div data-slot-img="dish_photo" data-ph="ẢNH MÓN"></div></div>
+        <div id="price" data-slot="price"></div>
+      </div>
+      <div id="txt">
+        <div id="label" class="k-label" data-slot="label" data-optional></div>
+        <div id="dish" class="k-head" data-slot="dish"></div>
+        <div id="desc" class="k-sub" data-slot="desc" data-optional></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind(), tl = S.timeline();
+  tl.fromTo('#plate', {scale: .7, opacity: 0, rotation: -25}, {scale: 1, opacity: 1, rotation: 0, duration: .9}, S.beat(0));
+  tl.fromTo('#plate > div', {rotation: 0}, {rotation: 18, duration: S.dur, ease: 'none'}, 0);
+  tl.fromTo('#orbit', {rotation: 0, opacity: 0}, {rotation: 40, opacity: 1, duration: S.dur, ease: 'none'}, 0);
+  if (K.has('label')) S.arrive(tl, '#label', S.beat(1), {dist: 16});
+  S.arrive(tl, S.words(document.getElementById('dish')), S.beat(1.5), {stagger: .14, dur: .5});
+  if (K.has('desc')) S.arrive(tl, '#desc', S.beat(3), {dist: 20, blur: 6});
+  K.pop(tl, '#price', S.beat(4), {from: .3, rot: -30, rotTo: 0, dur: .45});
+</script>
+</body>
+</html>

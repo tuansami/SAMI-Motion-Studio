@@ -1,0 +1,26 @@
+{
+ "name": "Ảnh: polaroid dán băng dính",
+ "group": "anh",
+ "version": 1,
+ "beats": 10,
+ "themes": ["paper", "night", "light"],
+ "from": "V22 S03",
+ "description": "2 đến 6 ảnh polaroid rơi xuống lần lượt, nghiêng nhẹ, có băng dính và chú thích; câu viết tay ở dưới.",
+ "slots": [
+  {"slot": "headline", "label": "Câu dưới cùng (viết tay)", "default": "ai cũng ghé thăm", "sample": "ai cũng ghé thăm", "optional": true},
+  {"slot": "p1_photo", "label": "Ảnh 1", "type": "image", "default": "", "sample": "lib:img/khuon-mau/c1.jpg"},
+  {"slot": "c1", "label": "Chú thích 1", "default": "", "sample": "Khách châu Âu", "optional": true},
+  {"slot": "p2_photo", "label": "Ảnh 2", "type": "image", "default": "", "sample": "lib:img/khuon-mau/c2.jpg"},
+  {"slot": "c2", "label": "Chú thích 2", "default": "", "sample": "Khách Mỹ", "optional": true},
+  {"slot": "p3_photo", "label": "Ảnh 3", "type": "image", "default": "", "sample": "lib:img/khuon-mau/c3.jpg", "optional": true},
+  {"slot": "c3", "label": "Chú thích 3", "default": "", "sample": "Gia đình", "optional": true},
+  {"slot": "p4_photo", "label": "Ảnh 4", "type": "image", "default": "", "sample": "lib:img/khuon-mau/c4.jpg", "optional": true},
+  {"slot": "c4", "label": "Chú thích 4", "default": "", "sample": "Cặp đôi", "optional": true},
+  {"slot": "p5_photo", "label": "Ảnh 5", "type": "image", "default": "", "sample": "lib:img/khuon-mau/c5.jpg", "optional": true},
+  {"slot": "c5", "label": "Chú thích 5", "default": "", "sample": "Nhóm bạn", "optional": true},
+  {"slot": "p6_photo", "label": "Ảnh 6", "type": "image", "default": "", "sample": "lib:img/khuon-mau/c6.jpg", "optional": true},
+  {"slot": "c6", "label": "Chú thích 6", "default": "", "sample": "Khách Đông Bắc Á", "optional": true}
+ ],
+ "sfx": [{"beat": 0.5, "sfx": "whoosh_c", "gain": -20, "label": "ảnh 1"}, {"beat": 2, "sfx": "whoosh_c", "gain": -20, "label": "ảnh 3"}],
+ "thumbAt": [2, 8]
+}

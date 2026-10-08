@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/400.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn chat-whatsapp · màn hình chat dựng bằng HTML; tin lẻ = khách gửi (trái), tin chẵn = trả lời (phải). */
+  #txt { position: absolute; left: var(--safe-side); top: 0; bottom: 0; width: 44%; display: flex; flex-direction: column; justify-content: center; }
+  #head { font-size: 108px; }
+  #phone { --pw: 420px; right: 13%; top: 50%; margin-top: -468px; z-index: 2; }
+  [data-ratio="9x16"] #txt { left: var(--safe-side); right: var(--safe-side); width: auto; top: var(--safe-top); bottom: auto; text-align: center; align-items: center; }
+  [data-ratio="9x16"] #head { font-size: 96px; }
+  [data-ratio="9x16"] #phone { --pw: 760px; right: auto; left: 50%; margin-left: -380px; top: 560px; margin-top: 0; }
+  [data-ratio="9x16"] .noh #phone { top: 300px; }
+  [data-ratio="1x1"] #txt, [data-ratio="4x5"] #txt { width: 44%; }
+  [data-ratio="1x1"] #head, [data-ratio="4x5"] #head { font-size: 70px; }
+  [data-ratio="1x1"] #phone, [data-ratio="4x5"] #phone { right: 6%; top: 90px; margin-top: 0; }
+  .noh #phone { right: auto; left: 50%; margin-left: calc(var(--pw) / -2); }
+  .k-screen { font-size: calc(var(--pw) * .042); background: #EFEAE2; }
+  .k-screen::before { content: ""; position: absolute; inset: 0; opacity: .5; background-image: radial-gradient(rgba(0,0,0,.05) 1.2px, transparent 1.3px); background-size: 1.4em 1.4em; }
+  .hdr { position: relative; z-index: 2; height: 4.6em; padding: 1.7em 5% 0; display: flex; align-items: center; gap: .7em; background: #F7F5F2; border-bottom: .06em solid rgba(0,0,0,.08); }
+  .hdr .av { width: 2.2em; height: 2.2em; border-radius: 50%; background: #0C0628; color: #08DDA4; display: flex; align-items: center; justify-content: center; font-weight: 700; flex: none; }
+  .hdr .nm { font-weight: 700; color: #111B21; line-height: 1.1; }
+  .hdr .stt { font-size: .75em; color: #667781; }
+  .hdr .ic { margin-left: auto; color: #54656F; display: flex; gap: .9em; }
+  .hdr .ic .k-ico { width: 1.1em; height: 1.1em; }
+  .msgs { position: absolute; left: 0; right: 0; top: 5em; bottom: 4.2em; padding: 0 4.5%; display: flex; flex-direction: column; justify-content: flex-start; gap: .55em; z-index: 1; padding-top: .8em; }
+  .k-bub { font-size: 1em; max-width: 80%; padding: .55em .8em .45em; border-radius: .75em; }
+  .k-bub .tm { display: block; text-align: right; font-size: .62em; color: #667781; margin-top: .15em; }
+  .k-bub.out .tm::after { content: " ✓✓"; color: #53BDEB; }
+  .k-dots { padding: .7em .9em; border-radius: .75em; gap: .3em; }
+  .k-dots i { width: .45em; height: .45em; }
+  .inp { position: absolute; left: 3%; right: 3%; bottom: 1em; height: 2.4em; display: flex; gap: .4em; z-index: 2; }
+  .inp .f { flex: 1; border-radius: 1.2em; background: #fff; color: #8696A0; font-size: .9em; display: flex; align-items: center; padding: 0 1em; }
+  .inp .s { width: 2.4em; border-radius: 50%; background: #00A884; color: #fff; display: flex; align-items: center; justify-content: center; }
+  .inp .s .k-ico { width: 1.1em; height: 1.1em; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="KHUON">
+  <div class="k-stage" id="stage">
+    <div id="txt" class="k-layer"><div id="head" class="k-head" data-slot="headline" data-optional></div></div>
+    <div id="phone" class="k-phone"><div class="k-screen">
+      <div class="k-island"></div>
+      <div class="hdr"><div class="av" id="av"></div><div><div class="nm" data-slot="name"></div><div class="stt" data-slot="status"></div></div><div class="ic"><span data-ico="phone"></span></div></div>
+      <div class="msgs" id="msgs"></div>
+      <div class="inp"><div class="f">Nhập tin nhắn</div><div class="s" data-ico="arrow"></div></div>
+    </div></div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind(), tl = S.timeline();
+  if (!K.has('headline')) document.getElementById('stage').classList.add('noh');
+  document.getElementById('av').textContent = (K.text('name') || 'S').trim()[0].toUpperCase();
+  const msgs = K.list('m', 4), box = document.getElementById('msgs');
+  // 19:07, 19:08… (giờ tượng trưng)
+  box.innerHTML = msgs.map((m, i) => (i % 2 === 1 ? '<div class="k-dots" data-dots="' + i + '"><i></i><i></i><i></i></div>' : '') +
+    `<div class="k-bub ${i % 2 ? 'in' : 'out'}" data-m="${i}">${K.html(m)}<span class="tm">19:0${7 + i}</span></div>`).join('');
+  K.icons();
+  if (K.has('headline')) S.arrive(tl, S.words(document.getElementById('head')), S.beat(.5), {stagger: .14, dur: .5});
+  tl.fromTo('#phone', {y: S.portrait ? 500 : 260, opacity: 0}, {y: 0, opacity: 1, duration: .9}, S.beat(0));
+  // tin xuất hiện theo nhịp; tin trả lời có ba chấm trước 1 nhịp. Ẩn trước = display none để khung dồn từ dưới lên đúng chỗ.
+  const bubbles = [...box.querySelectorAll('.k-bub')], dots = [...box.querySelectorAll('.k-dots')];
+  [...bubbles, ...dots].forEach((el) => tl.set(el, {display: 'none'}, 0));
+  bubbles.forEach((b, i) => {
+    const at = S.beat(1 + i * 3);
+    const d = box.querySelector(`[data-dots="${i}"]`);
+    if (d) { tl.set(d, {display: 'flex'}, at - 1); tl.fromTo(d.children, {opacity: .3}, {opacity: 1, duration: .25, stagger: .12, repeat: 3, yoyo: true}, at - .95); tl.set(d, {display: 'none'}, at); }
+    tl.set(b, {display: 'block'}, at);
+    tl.fromTo(b, {opacity: 0, y: 24, scale: .92, transformOrigin: i % 2 ? '0% 100%' : '100% 100%'}, {opacity: 1, y: 0, scale: 1, duration: .4}, at);
+  });
+  K.push(tl, '#phone', .025);
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+ "name": "Maps: tìm kiếm trên điện thoại",
+ "group": "maps",
+ "version": 1,
+ "beats": 12,
+ "themes": ["paper", "night", "light"],
+ "from": "V22 S01 / V23 S08",
+ "description": "Điện thoại Google Maps: gõ từ khoá, danh sách quán hiện ra, quán của khách sáng lên và ghim rơi xuống bản đồ. Câu dẫn bên cạnh (ngang) hoặc phía trên (dọc).",
+ "slots": [
+  {"slot": "headline", "label": "Câu dẫn (*từ* = tô màu)", "default": "Khách gõ / *“quán ăn gần đây”*", "sample": "Khách gõ / *“quán ăn gần đây”*"},
+  {"slot": "sub", "label": "Dòng phụ", "default": "", "sample": "Berlin, 18:40", "optional": true},
+  {"slot": "query", "label": "Từ khoá gõ vào ô tìm", "default": "quán ăn gần đây", "sample": "vietnamesisches Restaurant"},
+  {"slot": "r1_name", "label": "Quán 1 (quán của khách, sáng lên)", "default": "Quán của bạn", "sample": "Saigon Atelier"},
+  {"slot": "r1_rating", "label": "Quán 1: điểm", "type": "number", "default": "4,8", "sample": "4,8"},
+  {"slot": "r1_count", "label": "Quán 1: số đánh giá", "default": "1.204", "sample": "1.204"},
+  {"slot": "r1_meta", "label": "Quán 1: loại · khoảng cách", "default": "Nhà hàng Việt · 350 m", "sample": "Vietnamesisch · 350 m"},
+  {"slot": "r1_photo", "label": "Quán 1: ảnh nhỏ", "type": "image", "default": "", "sample": "lib:img/khuon-mau/placeholder_dish.jpg", "optional": true},
+  {"slot": "r2_name", "label": "Quán 2", "default": "Quán bên cạnh", "sample": "Pho Co"},
+  {"slot": "r2_rating", "label": "Quán 2: điểm", "type": "number", "default": "4,1", "sample": "4,1"},
+  {"slot": "r3_name", "label": "Quán 3", "default": "Quán khác", "sample": "Banh Mi 36"},
+  {"slot": "r3_rating", "label": "Quán 3: điểm", "type": "number", "default": "3,9", "sample": "3,9"}
+ ],
+ "sfx": [{"beat": 0, "sfx": "whoosh_b", "gain": -18, "label": "điện thoại"}, {"beat": 1, "sfx": "typing_burst", "gain": -20, "label": "gõ"}, {"beat": 4, "sfx": "key_enter", "gain": -18, "label": "tìm"}, {"beat": 7, "sfx": "pop", "gain": -14, "label": "ghim"}],
+ "thumbAt": [2.5, 10]
+}

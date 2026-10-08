@@ -1,6 +1,6 @@
 # HAND-OFF — Nâng cấp SAMI Motion Studio (v0.6 → v1.0)
 
-Cập nhật: 2026-10-08 (sau v0.8.2) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
+Cập nhật: 2026-10-08 (sau v0.8.3) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
 
 Đọc file này đầu tiên khi mở phiên mới. Trả lời Tuấn bằng tiếng Việt, ngắn gọn; viết "SAMI" in hoa; không dùng em-dash trong copy hiển thị.
 
@@ -16,8 +16,8 @@ Cập nhật: 2026-10-08 (sau v0.8.2) · Người làm: Claude Code · Chủ d�
 | **v0.8.0 Cổng AI** | ✅ commit trên cùng nhánh (xem `git log`); còn 2 phép thử cần Tuấn, mục 3 |
 | **v0.8.1 Giao diện 0.7/0.8** | ✅ tạo carousel, Dùng ▾ + kéo thả, xoá dự án (Thùng rác), dọn lịch sử, thẻ phần cứng, `cli-render.mjs` (công tắc mặc định TẮT + `--request`), nút "Tạo bằng Claude Code". Xem CHANGELOG 0.8.1 |
 | **v0.8.2 Chrome SAMI, mã hoá thật, ChatGPT script, Jev, tách sami-media** | ✅ (xem CHANGELOG 0.8.2, mục 3c). Còn chờ Tuấn: đăng nhập Chrome SAMI + một lượt ChatGPT thật, điền khoá Jev, cho phép xuất 3 s thử NVENC, OK để push gói `MCP-sami-media` |
-| Khuôn + Dây chuyền | ⏳ **việc tiếp theo**: viết spec `docs/specs/khuon-day-chuyen.md`, Tuấn duyệt rồi mới làm (mục 3b phần "Sau 0.8.2") |
-| v0.9.0 Footage / PiP / B-roll | sau Khuôn |
+| **v0.8.3 Khuôn + Dây chuyền** | ✅ 16 khuôn × 3 theme, 🧩 Khuôn trong Studio, dây chuyền promo / maps / menu, brand.json, sổ chi phí theo video (CHANGELOG 0.8.3, mục 3d). Tuấn bảo "triển khai, chưa push" (2026-10-08) |
+| v0.9.0 Footage / PiP / B-roll | ⏳ **việc tiếp theo** (mục 4). Song song nếu Tuấn muốn: thêm khuôn tới 20 đến 30 (mục 3d) |
 | v1.0.0 Hoàn thiện | chưa làm |
 
 - **Git:**
@@ -79,6 +79,12 @@ Tuấn đã trả lời: làm cả 4 nhóm (stock + cục bộ → ElevenLabs �
 - Không có adapter Veo API (trần 2 USD/ngày không đủ); video AI đi qua Flow web.
 - **Luật Tuấn (2026-10-08): tuyệt đối không tự render khi Tuấn chưa yêu cầu.** Kể cả khi kiểm thử tính năng: chỉ kiểm đường từ chối.
 - Cài đặt xuất đã lưu của Tuấn đang là `gpu: "off"` (CPU) + H.265: đã báo Tuấn, không tự đổi.
+
+## 3d. v0.8.3 ĐÃ LÀM (2026-10-08): khuôn + dây chuyền
+- Đọc `claude-code/skills/sami-motion-studio/references/khuon.md` (cách dùng + cách viết khuôn mới) và spec `docs/specs/khuon-day-chuyen.md`.
+- Khuôn: `lib/hf/khuon/<id>/`, kit `lib/hf/khuon/kit.{css,js}`, logic `server/khuon.mjs`, QA `node tools/khuon-thumbs.mjs --only <id> --theme paper` (bảng ảnh ở `.sami-cache/khuon-test/`). Dây chuyền: `lib/pipelines/*.mjs` + `server/cli-pipeline.mjs`.
+- Bài học khi viết khuôn: `.k-layer` có `inset:0` nên phần tử định vị bằng right/width phải đặt `left:auto` hoặc bỏ class; góc nghiêng dùng thuộc tính CSS `rotate` (GSAP dùng `transform`); không dựng lại DOM trong callback `document.fonts.ready` (tween mất đích); một easing `S.EASE` cho mọi thứ.
+- Còn có thể làm (Tuấn chưa yêu cầu): thêm khuôn tới 20 đến 30 (gợi ý: so sánh trước / sau, bản đồ có ghim nhiều điểm, đồng hồ đếm ngược, timeline các bước, bảng giá 3 gói, video nền + chữ khi có v0.9), dây chuyền webinar → short (cần v0.9), UI chạy dây chuyền trong Studio, nhạc nền mặc định trong `brands/sami/brand.json` (thư viện chưa có nhạc).
 
 ## 3c. v0.8.2 ĐÃ LÀM (2026-10-08): đọc trước khi đụng cổng AI
 

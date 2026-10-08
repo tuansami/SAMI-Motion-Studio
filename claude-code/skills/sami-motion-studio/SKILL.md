@@ -38,6 +38,8 @@ Both engines live in one timeline: crossfades, warp (TSX only), titles, subtitle
 | Images / video / music / voice to find or generate | `references/providers.md` (MCP `sami-media`): library → stock → browser subscriptions → paid API only after estimate + Tuấn's OK |
 | Reusable template | `<app>/docs/TEMPLATE_STANDARD.md`; `node <app>/server/cli-template.mjs check templates/<id>` without ✗ |
 | Motion carousel (Instagram/Facebook slides that move) | skill **sami-carousel** (`type: "carousel"`, one loop MP4 per slide) |
+| Common video (promo ~30 s, Google Maps, menu / offer) | **Dây chuyền** first: write `brief.json`, run `server/cli-pipeline.mjs` → `references/khuon.md` |
+| New scene that a khuôn already covers (hook, problem, benefits, stat, Maps, chat, phone, photos, dish, offer, review, calendar, CTA, end card) | **Khuôn** (Studio 🧩 Khuôn or `applyKhuon`), only then hand-write HTML → `references/khuon.md` |
 | Whole new video | Studio "Tạo dự án mới" from a template (`hf-starter` for HTML scenes) + client asset folder; never copy an old project |
 | Client feedback round | `brief/TRANG_THAI.md → Phản hồi khách (vòng N)`: do [Claude] lines, point [Studio] lines to the tab |
 
@@ -70,4 +72,4 @@ One easing `cubic-bezier(0.22,1,0.36,1)` (`tw/keys/arrive` in TSX, `SAMI.EASE`/`
 - GPU: Studio 0.6 probes NVENC correctly (0.5's probe always failed → CPU). Diagnose: tab Xuất → Chẩn đoán GPU. ProRes is CPU.
 
 ## References (read only what the task needs)
-`references/hyperframes.md` (HTML scene API + skeleton) · `references/remotion.md` (TSX scenes) · `references/mixing.md` (both engines, clips, stills) · `references/schema.md` (project.json fields) · `references/library.md` (SAMI_Library, `lib:` URIs, licences) · `references/audio-sfx.md` (grid, cues, music edit, voice ducking) · `references/assets.md` (stock/AI generation rules) · `references/qa.md` (validate, stills, lint, export checks) · `references/render-ffmpeg.md` (GPU, formats, cache cleanup).
+`references/khuon.md` (khuôn library, dây chuyền, brand.json, session/model discipline, cost per video) · `references/hyperframes.md` (HTML scene API + skeleton) · `references/remotion.md` (TSX scenes) · `references/mixing.md` (both engines, clips, stills) · `references/schema.md` (project.json fields) · `references/library.md` (SAMI_Library, `lib:` URIs, licences) · `references/audio-sfx.md` (grid, cues, music edit, voice ducking) · `references/assets.md` (stock/AI generation rules) · `references/qa.md` (validate, stills, lint, export checks) · `references/render-ffmpeg.md` (GPU, formats, cache cleanup).

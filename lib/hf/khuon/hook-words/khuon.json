@@ -1,0 +1,16 @@
+{
+ "name": "Hook: câu lớn vào từng từ",
+ "group": "hook",
+ "version": 1,
+ "beats": 8,
+ "themes": ["night", "paper", "light"],
+ "from": "hf-starter H01",
+ "description": "Nhãn nhỏ gõ chữ, câu hook vào từng từ theo nhịp, máy đẩy chậm. Dùng mở đầu mọi video.",
+ "slots": [
+  {"slot": "label", "label": "Nhãn nhỏ phía trên", "default": "SAMI · BERLIN", "sample": "SAMI · BERLIN", "optional": true},
+  {"slot": "headline", "label": "Câu hook (*từ* = tô màu, / = xuống dòng)", "default": "Khách tìm quán / *trên Google Maps.*", "sample": "Khách tìm quán / *trên Google Maps.*", "hint": "≤ 8 từ"},
+  {"slot": "sub", "label": "Dòng phụ", "default": "", "sample": "Bạn có ở đó không?", "optional": true}
+ ],
+ "sfx": [{"beat": 0, "sfx": "whoosh_b", "gain": -18, "label": "vào"}, {"beat": 1, "sfx": "pop", "gain": -16, "label": "hook"}],
+ "thumbAt": [1.5, 6]
+}

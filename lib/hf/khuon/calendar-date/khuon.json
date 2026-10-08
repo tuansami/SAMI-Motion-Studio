@@ -1,0 +1,19 @@
+{
+ "name": "Thời gian: tờ lịch khoanh ngày",
+ "group": "thoi-gian",
+ "version": 1,
+ "beats": 10,
+ "themes": ["paper", "light", "night"],
+ "from": "V22 S09",
+ "description": "Tờ lịch tháng dựng lại theo tháng / năm thật, ngày quan trọng được khoanh bằng nét bút đỏ tự vẽ; câu chốt bên cạnh.",
+ "slots": [
+  {"slot": "month", "label": "Tên tháng hiển thị", "default": "Tháng 12", "sample": "Tháng 12"},
+  {"slot": "month_num", "label": "Tháng (1 đến 12, để xếp ngày đúng thứ)", "type": "number", "default": "12", "sample": "12"},
+  {"slot": "year", "label": "Năm", "type": "number", "default": "2026", "sample": "2026"},
+  {"slot": "day", "label": "Ngày khoanh tròn", "type": "number", "default": "24", "sample": "24"},
+  {"slot": "headline", "label": "Câu chốt (*từ* = tô màu)", "default": "Quán của bạn / đã *sẵn sàng* chưa?", "sample": "Quán của bạn / đã *sẵn sàng* chưa?"},
+  {"slot": "sub", "label": "Dòng viết tay", "default": "", "sample": "còn 6 tuần", "optional": true}
+ ],
+ "sfx": [{"beat": 0, "sfx": "whoosh_c", "gain": -18, "label": "tờ lịch"}, {"beat": 3, "sfx": "key_single", "gain": -18, "label": "khoanh"}],
+ "thumbAt": [2, 8]
+}

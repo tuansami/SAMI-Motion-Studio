@@ -1,0 +1,18 @@
+{
+ "name": "Vấn đề: lý do + con dấu",
+ "group": "van-de",
+ "version": 1,
+ "beats": 10,
+ "themes": ["paper", "night", "light"],
+ "from": "V22 S06",
+ "description": "Câu nêu nỗi đau, 2 đến 3 lý do có mũi tên đỏ xuống lần lượt, rồi con dấu đóng mạnh (khung rung nhẹ).",
+ "slots": [
+  {"slot": "headline", "label": "Nỗi đau (*từ* = tô màu)", "default": "Khách *lướt qua* rất nhanh", "sample": "Khách *lướt qua* rất nhanh"},
+  {"slot": "p1", "label": "Lý do 1", "default": "Thiếu giờ mở cửa", "sample": "Thiếu giờ mở cửa"},
+  {"slot": "p2", "label": "Lý do 2", "default": "Ảnh mờ, ảnh cũ", "sample": "Ảnh mờ, ảnh cũ"},
+  {"slot": "p3", "label": "Lý do 3", "default": "", "sample": "Không ai trả lời đánh giá", "optional": true},
+  {"slot": "stamp", "label": "Chữ trên con dấu", "default": "Lướt qua!", "sample": "Lướt qua!", "hint": "1 đến 2 từ"}
+ ],
+ "sfx": [{"beat": 1.5, "sfx": "key_single", "gain": -20, "label": "lý do"}, {"beat": 6, "sfx": "sub_hit", "gain": -10, "label": "con dấu"}],
+ "thumbAt": [3, 8]
+}

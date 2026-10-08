@@ -1,0 +1,18 @@
+{
+ "name": "Ưu đãi: huy hiệu giảm giá",
+ "group": "uu-dai",
+ "version": 1,
+ "beats": 10,
+ "themes": ["night", "paper", "light"],
+ "from": "mới (SAMI)",
+ "description": "Huy hiệu răng cưa xoay vào với con số ưu đãi lớn, câu ưu đãi, điều kiện nhỏ và nhãn thời hạn.",
+ "slots": [
+  {"slot": "badge", "label": "Chữ trên huy hiệu (vd -20%, 1+1, GRATIS)", "default": "-20%", "sample": "-20%"},
+  {"slot": "badge_sub", "label": "Dòng nhỏ dưới huy hiệu", "default": "", "sample": "Mittagsmenü", "optional": true},
+  {"slot": "headline", "label": "Câu ưu đãi (*từ* = tô màu)", "default": "Bữa trưa *giảm 20%* / cả tuần này", "sample": "Bữa trưa *giảm 20%* / cả tuần này"},
+  {"slot": "terms", "label": "Điều kiện (chữ nhỏ)", "default": "", "sample": "Thứ Hai đến Thứ Sáu, 11:30 đến 14:30", "optional": true},
+  {"slot": "date", "label": "Thời hạn", "default": "", "sample": "đến 31.10", "optional": true}
+ ],
+ "sfx": [{"beat": 0.5, "sfx": "sub_hit", "gain": -12, "label": "huy hiệu"}, {"beat": 5, "sfx": "pop", "gain": -18, "label": "thời hạn"}],
+ "thumbAt": [1.5, 8]
+}

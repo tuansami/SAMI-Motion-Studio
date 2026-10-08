@@ -1,0 +1,18 @@
+{
+ "name": "Đánh giá: lời khách + sao",
+ "group": "danh-gia",
+ "version": 1,
+ "beats": 10,
+ "themes": ["light", "paper", "night"],
+ "from": "mới (SAMI)",
+ "description": "Thẻ đánh giá kiểu Google: 5 sao sáng dần, lời khách vào từng từ, tên người viết và nguồn. Dùng làm bằng chứng xã hội.",
+ "slots": [
+  {"slot": "quote", "label": "Lời đánh giá (*từ* = tô màu)", "default": "Phở ngon nhất Berlin, *nhân viên rất thân thiện.*", "sample": "Beste Pho in Berlin, *super freundliches Team.*", "hint": "≤ 20 từ"},
+  {"slot": "author", "label": "Người viết", "default": "Anna K.", "sample": "Anna K."},
+  {"slot": "meta", "label": "Nguồn / thời gian", "default": "Google · 2 tuần trước", "sample": "Google · vor 2 Wochen"},
+  {"slot": "rating", "label": "Số sao (1 đến 5)", "type": "number", "default": "5", "sample": "5"},
+  {"slot": "headline", "label": "Câu phía trên", "default": "", "sample": "Khách nói gì?", "optional": true}
+ ],
+ "sfx": [{"beat": 1, "sfx": "pop", "gain": -20, "label": "sao"}, {"beat": 3, "sfx": "whoosh_a", "gain": -22, "label": "lời khách"}],
+ "thumbAt": [1.5, 8]
+}

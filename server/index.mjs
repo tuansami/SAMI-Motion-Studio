@@ -24,6 +24,7 @@ import * as chrome from 'sami-media/chrome';
 import {runWeb, plan as webPlan} from 'sami-media/runners';
 import {agentReady} from 'sami-media/agent';
 import {recycle} from './trash.mjs';
+import {listKhuon, applyKhuon, KHUON_DIR, GROUPS as KHUON_GROUPS, THEMES} from './khuon.mjs';
 import {probeGpu, gpuInfo} from './gpu.mjs';
 
 const PORT = +(process.env.STUDIO_PORT || 5178);
@@ -350,6 +351,20 @@ const server = http.createServer(async (req, res) => {
       fs.appendFileSync(path.join(DATA, 'cli-render.log'), JSON.stringify({ts: new Date().toISOString(), via: 'studio', dir, request: b.request, opts: o}) + '\n');
       return json(res, addJob({...o, id, dir, name: o.name || pj.name, by: 'Claude Code'}));
     }
+    // ── Khuôn (lib/hf/khuon) + brand.json của khách ──
+    if (p === '/api/khuon') return json(res, {khuon: listKhuon(), groups: KHUON_GROUPS, themes: THEMES});
+    m = p.match(/^\/api\/khuon\/thumb\/([\w-]+)\/(thumb_\w+\.jpg)$/);
+    if (m) return sendFile(req, res, path.join(KHUON_DIR, m[1], m[2]));
+    if (p === '/api/khuon/apply' && req.method === 'POST') {
+      // the UI sends its current (maybe unsaved) project: the khuôn is applied on top of it, then everything is saved
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404);
+      await history.snapshot(dir, {kind: 'manual', label: b.scene ? `Trước khi đổi khuôn ${b.scene}` : 'Trước khi thêm cảnh từ khuôn', source: 'Studio · ' + userName()}).catch(() => {});
+      const pj = b.project || readProject(dir);
+      const s = applyKhuon(dir, pj, {khuon: b.khuon, scene: b.scene || null, after: b.after || null, theme: b.theme || null});
+      writeProject(dir, pj); touchRecent(dir, pj.name);
+      return json(res, {scene: s, project: pj, validation: validateProject(dir)});
+    }
+    if (p === '/api/brands') return json(res, {brands: library.listBrands().map((id) => ({id, ...library.readBrand(id)}))});
     // ── Nguồn & AI (sami-media gateway): keys never leave config.mjs, paid runs need the one-time token ──
     if (p.startsWith('/api/providers')) {
       const b = req.method === 'POST' ? await jbody(req) : {};

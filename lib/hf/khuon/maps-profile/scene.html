@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/400.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_fonts/caveat/700.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn maps-profile · hồ sơ Google Maps dựng bằng HTML: ảnh, tên, sao đếm lên, giờ mở cửa, 4 nút sáng lần lượt. */
+  #txt { position: absolute; left: auto; right: var(--safe-side); top: 0; bottom: 0; width: 44%; display: flex; flex-direction: column; justify-content: center; gap: 30px; }
+  #head { font-size: 108px; }
+  #sub { font-size: 60px; }
+  #phone { --pw: 420px; left: 14%; top: 50%; margin-top: -468px; z-index: 2; }
+  [data-ratio="9x16"] #txt { left: var(--safe-side); right: var(--safe-side); width: auto; top: var(--safe-top); bottom: auto; text-align: center; align-items: center; gap: 16px; }
+  [data-ratio="9x16"] #head { font-size: 100px; }
+  [data-ratio="9x16"] #sub { font-size: 54px; }
+  [data-ratio="9x16"] #phone { --pw: 760px; left: 50%; margin-left: -380px; top: 660px; margin-top: 0; }
+  [data-ratio="1x1"] #txt, [data-ratio="4x5"] #txt { width: 44%; }
+  [data-ratio="1x1"] #head, [data-ratio="4x5"] #head { font-size: 72px; }
+  [data-ratio="1x1"] #sub, [data-ratio="4x5"] #sub { font-size: 44px; }
+  [data-ratio="1x1"] #phone, [data-ratio="4x5"] #phone { left: 6%; top: 90px; margin-top: 0; }
+  .k-screen { font-size: calc(var(--pw) * .036); background: #fff; }
+  .photos { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: .2em; height: 34%; }
+  .photos > div:first-child { grid-row: span 2; }
+  .body { padding: .9em 5% 0; }
+  .nm { font-weight: 700; font-size: 1.55em; color: #202124; line-height: 1.15; }
+  .rt { display: flex; align-items: center; gap: .35em; margin-top: .35em; font-size: 1em; color: #3C4043; }
+  .rt b { font-weight: 600; }
+  .cat { color: #70757A; font-size: .92em; margin-top: .25em; }
+  .hrs { margin-top: .5em; font-size: .92em; color: #3C4043; }
+  .hrs b { color: #188038; font-weight: 600; }
+  .acts { display: flex; gap: .45em; margin-top: 1em; }
+  .act { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .3em; font-size: .78em; font-weight: 600; color: #1A73E8; }
+  .act .c { width: 2.6em; height: 2.6em; border-radius: 50%; border: .1em solid #DADCE0; display: flex; align-items: center; justify-content: center; color: #1A73E8; background: #fff; }
+  .act .c .k-ico { width: 1.2em; height: 1.2em; }
+  .act.first .c { background: #1A73E8; color: #fff; border-color: #1A73E8; }
+  .tabs { display: flex; gap: 1.2em; margin-top: 1.1em; border-bottom: .08em solid #E8EAED; font-size: .9em; font-weight: 600; color: #5F6368; padding-bottom: .5em; }
+  .tabs span:first-child { color: #1A73E8; box-shadow: 0 .55em 0 -.4em #1A73E8; }
+  .rev { margin-top: .8em; display: flex; gap: .6em; align-items: flex-start; font-size: .86em; color: #3C4043; }
+  .rev .a { width: 2em; height: 2em; border-radius: 50%; background: #F4B400; flex: none; }
+  .rev .l { height: .55em; border-radius: .3em; background: #E8EAED; margin-top: .35em; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="KHUON">
+  <div class="k-stage">
+    <div id="txt" class="k-layer">
+      <div id="head" class="k-head" data-slot="headline"></div>
+      <div id="sub" class="k-hand" data-slot="sub" data-optional></div>
+    </div>
+    <div id="phone" class="k-phone"><div class="k-screen">
+      <div class="photos"><div data-slot-img="p1_photo"></div><div data-slot-img="p2_photo"></div><div data-slot-img="p3_photo"></div></div>
+      <div class="body">
+        <div class="nm" data-slot="name"></div>
+        <div class="rt"><b id="rv"></b><span id="st"></span><span>(<span data-slot="count"></span>)</span></div>
+        <div class="cat" data-slot="category"></div>
+        <div class="hrs" id="hrs"></div>
+        <div class="acts">
+          <div class="act first"><div class="c" data-ico="route"></div>Chỉ đường</div>
+          <div class="act"><div class="c" data-ico="phone"></div>Gọi</div>
+          <div class="act"><div class="c" data-ico="globe"></div>Website</div>
+          <div class="act"><div class="c" data-ico="star"></div>Lưu</div>
+        </div>
+        <div class="tabs"><span>Tổng quan</span><span>Thực đơn</span><span>Đánh giá</span><span>Ảnh</span></div>
+        <div class="rev"><div class="a"></div><div style="flex:1"><div class="l" style="width:40%"></div><div class="l" style="width:92%"></div><div class="l" style="width:76%"></div></div></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind().icons(), tl = S.timeline();
+  const rating = K.num('rating', 4.8);
+  const stars = K.stars(document.getElementById('st'), rating);
+  // giờ: phần trước "·" tô xanh
+  const h = K.text('hours'), i = h.indexOf('·'); document.getElementById('hrs').innerHTML = i > 0 ? `<b>${h.slice(0, i).trim()}</b> · ${h.slice(i + 1).trim()}` : h;
+  S.arrive(tl, S.words(document.getElementById('head')), S.beat(.5), {stagger: .14, dur: .5});
+  if (K.has('sub')) S.arrive(tl, '#sub', S.beat(3), {dist: 18, blur: 6});
+  tl.fromTo('#phone', {y: S.portrait ? 500 : 260, opacity: 0}, {y: 0, opacity: 1, duration: .9}, S.beat(0));
+  tl.fromTo('.photos > div', {opacity: 0, scale: 1.08}, {opacity: 1, scale: 1, duration: .6, stagger: .15}, S.beat(1));
+  K.count(tl, document.getElementById('rv'), rating, S.beat(2), 1.2, {decimals: 1, comma: true});
+  tl.fromTo(stars, {opacity: 0, scale: .3}, {opacity: 1, scale: 1, duration: .35, stagger: .12}, S.beat(2.5));
+  tl.fromTo(['.cat', '#hrs'], {opacity: 0, y: 12}, {opacity: 1, y: 0, duration: .4, stagger: .15}, S.beat(4));
+  tl.fromTo('.act', {opacity: 0, y: 16}, {opacity: 1, y: 0, duration: .35, stagger: .25}, S.beat(6));
+  tl.fromTo('.act .c', {boxShadow: '0 0 0 0 rgba(26,115,232,0)'}, {boxShadow: '0 0 0 .35em rgba(26,115,232,.18)', duration: .3, stagger: .25, yoyo: true, repeat: 1}, S.beat(6.4));
+  tl.fromTo(['.tabs', '.rev'], {opacity: 0}, {opacity: 1, duration: .5, stagger: .2}, S.beat(8));
+  K.push(tl, '#phone', .03);
+</script>
+</body>
+</html>

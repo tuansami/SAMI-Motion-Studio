@@ -1,0 +1,18 @@
+{
+ "name": "Lợi ích: 3 đến 4 thẻ có dấu tích",
+ "group": "loi-ich",
+ "version": 1,
+ "beats": 12,
+ "themes": ["night", "light", "paper"],
+ "from": "hf-starter H02 / V22 S08",
+ "description": "Tiêu đề rồi 3 đến 4 thẻ lợi ích vào lần lượt theo nhịp, dấu tích tự vẽ. Ngang: hàng thẻ; dọc: cột thẻ.",
+ "slots": [
+  {"slot": "title", "label": "Tiêu đề (*từ* = tô màu)", "default": "SAMI làm *gì* cho quán?", "sample": "SAMI làm *gì* cho quán?"},
+  {"slot": "b1", "label": "Lợi ích 1", "default": "Hồ sơ Maps đầy đủ", "sample": "Hồ sơ Maps đầy đủ"},
+  {"slot": "b2", "label": "Lợi ích 2", "default": "Ảnh đẹp, đúng mùa", "sample": "Ảnh đẹp, đúng mùa"},
+  {"slot": "b3", "label": "Lợi ích 3", "default": "Từ khoá khách hay tìm", "sample": "Từ khoá khách hay tìm"},
+  {"slot": "b4", "label": "Lợi ích 4", "default": "", "sample": "", "optional": true}
+ ],
+ "sfx": [{"beat": 2, "sfx": "pop", "gain": -18, "label": "thẻ 1"}, {"beat": 3.5, "sfx": "pop", "gain": -18, "label": "thẻ 2"}, {"beat": 5, "sfx": "pop", "gain": -18, "label": "thẻ 3"}],
+ "thumbAt": [3, 10]
+}

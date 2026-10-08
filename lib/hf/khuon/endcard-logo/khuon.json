@@ -1,0 +1,17 @@
+{
+ "name": "Kết: logo + khẩu hiệu",
+ "group": "ket",
+ "version": 1,
+ "beats": 8,
+ "themes": ["night", "light", "paper"],
+ "from": "V23 S10 / V22 S10",
+ "description": "Thẻ kết: logo (ảnh) hoặc tên thương hiệu chữ lớn, khẩu hiệu, website; vệt sáng quét qua logo.",
+ "slots": [
+  {"slot": "logo", "label": "Logo (ảnh PNG nền trong, bỏ trống = dùng tên chữ)", "type": "image", "default": "", "sample": "", "optional": true},
+  {"slot": "name", "label": "Tên thương hiệu (khi không có logo)", "default": "SAMI", "sample": "SAMI"},
+  {"slot": "tagline", "label": "Khẩu hiệu (*từ* = tô màu)", "default": "Mọi thứ bắt đầu từ *một cuộc trò chuyện.*", "sample": "Mọi thứ bắt đầu từ *một cuộc trò chuyện.*", "optional": true},
+  {"slot": "web", "label": "Website", "default": "sami-agency.de", "sample": "sami-agency.de", "optional": true}
+ ],
+ "sfx": [{"beat": 0.5, "sfx": "sub_hit", "gain": -14, "label": "logo"}],
+ "thumbAt": [1, 6]
+}

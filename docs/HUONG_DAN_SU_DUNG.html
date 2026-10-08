@@ -42,6 +42,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <li><a href="#11d-lam-viec-nhom-moi-o-05">11d. Làm việc nhóm (mới ở 0.5)</a></li>
 <li><a href="#11e-carousel-ong-07-nut-tao-o-081">11e. Carousel động (0.7, nút tạo ở 0.8.1)</a></li>
 <li><a href="#11f-tab-nguon-ai-stock-tao-bang-ai-ua-vao-video-08-nang-cap-081">11f. Tab Nguồn &amp; AI: stock, tạo bằng AI, đưa vào video (0.8, nâng cấp 0.8.1)</a></li>
+<li><a href="#11g-khuon-va-day-chuyen-moi-o-083">11g. Khuôn và dây chuyền (mới ở 0.8.3)</a></li>
 <li><a href="#12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</a><ul>
 <li><a href="#cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</a></li>
 <li><a href="#cac-buoc">Các bước</a></li>
@@ -57,7 +58,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </div>
 </div><h1 id="sami-motion-studio-huong-dan-su-dung">SAMI Motion Studio — Hướng dẫn sử dụng</h1>
 <blockquote>
-<p><strong>Phiên bản 0.8.2.</strong> Mới ở 0.8.2: <strong>Chrome SAMI</strong> (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng <strong>kịch bản cố định</strong> không tốn token, tab Xuất ghi <strong>bộ mã hoá thật</strong> (đo từ file), cổng AI tách thành gói <code>sami-media</code> (mục 11f). Ở 0.8.1: nút <strong>＋ Tạo carousel</strong>, <strong>chọn nhiều dự án để xoá</strong> (vào Thùng rác), <strong>🧹 Dọn lịch sử</strong>, <strong>"Dùng ▾" + kéo thả media lên khung xem</strong>, nút <strong>✨ Tạo</strong> cho ChatGPT / Gemini / Flow / Suno, <strong>thẻ phần cứng + chọn bộ mã hoá</strong> ở tab Xuất, công tắc <strong>Cho phép Claude Code xuất video</strong> (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab <strong>Nguồn &amp; AI</strong> (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: <strong>carousel động</strong>. Ở 0.6: cảnh HTML (Hyperframes), <strong>thư viện SAMI dùng chung</strong>, ffmpeg đầy đủ.</p>
+<p><strong>Phiên bản 0.8.3.</strong> Mới ở 0.8.3: <strong>🧩 Khuôn</strong> (16 cảnh dựng sẵn có tham số, 3 phong cách: đêm, giấy kraft, sáng; thêm cảnh hoặc đổi khuôn giữ nguyên chữ) và <strong>dây chuyền</strong> promo / Google Maps / thực đơn: Claude chỉ điền một file brief, máy dựng cả video (mục 11g). Ở 0.8.2: <strong>Chrome SAMI</strong> (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng <strong>kịch bản cố định</strong> không tốn token, tab Xuất ghi <strong>bộ mã hoá thật</strong> (đo từ file), cổng AI tách thành gói <code>sami-media</code> (mục 11f). Ở 0.8.1: nút <strong>＋ Tạo carousel</strong>, <strong>chọn nhiều dự án để xoá</strong> (vào Thùng rác), <strong>🧹 Dọn lịch sử</strong>, <strong>"Dùng ▾" + kéo thả media lên khung xem</strong>, nút <strong>✨ Tạo</strong> cho ChatGPT / Gemini / Flow / Suno, <strong>thẻ phần cứng + chọn bộ mã hoá</strong> ở tab Xuất, công tắc <strong>Cho phép Claude Code xuất video</strong> (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab <strong>Nguồn &amp; AI</strong> (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: <strong>carousel động</strong>. Ở 0.6: cảnh HTML (Hyperframes), <strong>thư viện SAMI dùng chung</strong>, ffmpeg đầy đủ.</p>
 <p>Phiên bản 0.5 (giai đoạn 1: web app chạy trên máy). Mới ở 0.5: <strong>Biến thể hàng loạt từ CSV</strong> (11c), <strong>làm việc nhóm</strong>: trạng thái, khoá dự án, mẫu dùng chung (11d). Ở 0.4: <strong>Gói duyệt khách</strong>, <strong>So sánh điểm neo</strong>, <strong>chuẩn âm lượng −14 LUFS</strong>. Ở 0.3: <strong>Lịch sử phiên bản / điểm neo</strong> (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
 <p><strong>Làm việc theo nhóm / với Claude:</strong> đọc <code>docs/QUY_TRINH_LAM_VIEC.md</code> (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).</p>
 </blockquote>
@@ -630,6 +631,46 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <p><strong>Khoá API</strong> (mục gập): dán khoá → Lưu. Khoá mã hoá bằng DPAPI trong <code>%APPDATA%\SAMI\providers.json</code>, chỉ tài khoản Windows này đọc được, không bao giờ hiện lại.
 <strong>Trần chi phí &amp; sổ chi phí</strong> (mục gập): mặc định 2 USD/ngày, 20 USD/tháng; sổ ghi từng lệnh.
 <strong>Cổng AI cục bộ</strong> (mục gập): địa chỉ Kokoro, ComfyUI nếu bạn tự cài.</p>
+<h2 id="11g-khuon-va-day-chuyen-moi-o-083">11g. Khuôn và dây chuyền (mới ở 0.8.3)</h2>
+<p><strong>Khuôn</strong> là một cảnh dựng sẵn (chuyển động, bố cục từng tỉ lệ, nhịp, SFX gợi ý) nhưng <strong>không có chữ cứng</strong>: chữ, ảnh, màu lấy từ dự án. Làm đẹp một lần, dùng cho mọi video.</p>
+<table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Khuôn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mở đầu</td>
+<td>Câu lớn vào từng từ · Chữ cắt dán</td>
+</tr>
+<tr>
+<td>Vấn đề / lợi ích / số liệu</td>
+<td>Lý do + con dấu · 3 đến 4 thẻ có dấu tích · Con số đếm lên</td>
+</tr>
+<tr>
+<td>Google Maps / chat / điện thoại</td>
+<td>Tìm kiếm trên Maps · Hồ sơ quán đầy đủ · Tin nhắn WhatsApp · Điện thoại cuộn ảnh chụp</td>
+</tr>
+<tr>
+<td>Ảnh / thực đơn / ưu đãi</td>
+<td>Polaroid dán băng dính · Một món + giá · Huy hiệu giảm giá</td>
+</tr>
+<tr>
+<td>Bằng chứng / thời gian / kết</td>
+<td>Lời khách + sao · Tờ lịch khoanh ngày · Nút + liên hệ · Logo + khẩu hiệu</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Cột Cảnh → 🧩 Khuôn</strong>: chọn phong cách (<strong>Đêm</strong> navy SAMI, <strong>Giấy kraft</strong> kiểu video Maps cuối năm, <strong>Sáng</strong>), lọc theo nhóm, xem ảnh mẫu.</li>
+<li><strong>＋ Thêm sau S0x</strong>: chèn cảnh mới sau cảnh đang chọn (các cảnh sau tự lùi, vẫn đúng nhịp). Sửa chữ ở tab <strong>Chữ</strong> (mỗi ô có nhãn), ảnh bằng <strong>📚 Chọn…</strong>.</li>
+<li><strong>Đổi S0x</strong>: thay kiểu của cảnh đang chọn, <strong>giữ nguyên chữ</strong> ở các ô cùng tên, không đụng giọng đọc, nhạc, SFX, thời lượng. Đổi lại kiểu cũ thì chữ cũ quay về. Trước mỗi lần đổi có điểm neo trong tab <strong>Lịch sử</strong>.</li>
+<li><strong>Dây chuyền</strong> (Claude Code chạy): bạn nói "làm video Google Maps cho quán X", Claude chỉ viết một file <code>brief.json</code> (chữ, ảnh, liên hệ) rồi chạy lệnh dây chuyền; máy chọn khuôn, xếp thời gian theo nhịp 120 BPM, điền chữ, đặt SFX, chụp ảnh kiểm. Có 3 dây chuyền: <strong>promo</strong> (~30 s), <strong>maps</strong> (dịch vụ Google Maps), <strong>menu</strong> (thực đơn, món mới, ưu đãi). Dây chuyền <strong>không xuất video</strong>; bạn mở dự án trong Studio để xem và chỉnh.</li>
+<li><strong>Bộ nhận diện khách</strong>: <code>SAMI_Library\brands\&lt;khách&gt;\brand.json</code> (màu, font, phong cách, logo, liên hệ, giọng, nhạc). Dây chuyền tự áp vào video. Có sẵn <code>brands\sami</code>.</li>
+<li>Chi phí của một video (API + lượt Claude quy đổi): Claude chạy <code>ledger --project &lt;thư mục&gt;</code>.</li>
+</ul>
 <h2 id="12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</h2>
 <h3 id="cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</h3>
 <pre><code>du-an-cua-khach/

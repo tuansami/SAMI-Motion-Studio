@@ -1,0 +1,23 @@
+{
+ "name": "Maps: hồ sơ quán đầy đủ",
+ "group": "maps",
+ "version": 1,
+ "beats": 12,
+ "themes": ["light", "paper", "night"],
+ "from": "V22 S07 / V23 S08",
+ "description": "Hồ sơ Google Maps của quán trên điện thoại: dải 3 ảnh, tên, sao đếm lên, giờ mở cửa, 4 nút bấm sáng lần lượt. Câu dẫn bên cạnh.",
+ "slots": [
+  {"slot": "headline", "label": "Câu dẫn (*từ* = tô màu)", "default": "Hồ sơ *đầy đủ* / ấn tượng đầu tiên", "sample": "Hồ sơ *đầy đủ* / ấn tượng đầu tiên"},
+  {"slot": "sub", "label": "Dòng phụ", "default": "", "sample": "ảnh đẹp · giờ đúng · trả lời đánh giá", "optional": true},
+  {"slot": "name", "label": "Tên quán", "default": "Quán của bạn", "sample": "Saigon Atelier"},
+  {"slot": "rating", "label": "Điểm (vd 4,8)", "type": "number", "default": "4,8", "sample": "4,8"},
+  {"slot": "count", "label": "Số đánh giá", "default": "1.204", "sample": "1.204"},
+  {"slot": "category", "label": "Loại quán · giá", "default": "Nhà hàng Việt · €€", "sample": "Vietnamesisches Restaurant · €€"},
+  {"slot": "hours", "label": "Giờ mở cửa", "default": "Đang mở · Đóng cửa lúc 22:00", "sample": "Geöffnet · schließt um 22:00"},
+  {"slot": "p1_photo", "label": "Ảnh 1", "type": "image", "default": "", "sample": "lib:img/khuon-mau/placeholder_dish.jpg"},
+  {"slot": "p2_photo", "label": "Ảnh 2", "type": "image", "default": "", "sample": "lib:img/khuon-mau/c2.jpg"},
+  {"slot": "p3_photo", "label": "Ảnh 3", "type": "image", "default": "", "sample": "lib:img/khuon-mau/placeholder_guests.jpg"}
+ ],
+ "sfx": [{"beat": 0, "sfx": "whoosh_b", "gain": -18, "label": "điện thoại"}, {"beat": 3, "sfx": "pop", "gain": -18, "label": "sao"}, {"beat": 6, "sfx": "key_single", "gain": -20, "label": "nút"}],
+ "thumbAt": [2.5, 10]
+}

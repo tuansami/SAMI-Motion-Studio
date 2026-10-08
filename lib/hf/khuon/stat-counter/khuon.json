@@ -1,0 +1,19 @@
+{
+ "name": "Số liệu: con số đếm lên",
+ "group": "so-lieu",
+ "version": 1,
+ "beats": 8,
+ "themes": ["night", "light", "paper"],
+ "from": "mới (SAMI)",
+ "description": "Một con số lớn đếm lên trong vòng tròn tự vẽ (phần trăm thì vòng chạy đúng tỉ lệ), chú thích và nguồn.",
+ "slots": [
+  {"slot": "label", "label": "Nhãn nhỏ", "default": "", "sample": "GOOGLE · 2026", "optional": true},
+  {"slot": "number", "label": "Con số (vd 87 hoặc 4,8)", "type": "number", "default": "87", "sample": "87"},
+  {"slot": "prefix", "label": "Trước số (vd +, €)", "default": "", "sample": "", "optional": true},
+  {"slot": "suffix", "label": "Sau số (vd %, ×, k)", "default": "%", "sample": "%"},
+  {"slot": "caption", "label": "Chú thích (*từ* = tô màu)", "default": "khách xem *Google Maps* trước khi tới quán", "sample": "khách xem *Google Maps* trước khi tới quán"},
+  {"slot": "source", "label": "Nguồn", "default": "", "sample": "Nguồn: Google, 2025", "optional": true}
+ ],
+ "sfx": [{"beat": 0.5, "sfx": "whoosh_a", "gain": -20, "label": "vòng"}, {"beat": 3, "sfx": "pop", "gain": -14, "label": "số xong"}],
+ "thumbAt": [1.5, 6]
+}

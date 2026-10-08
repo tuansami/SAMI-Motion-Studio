@@ -1,0 +1,15 @@
+{
+ "name": "Hook: chữ cắt dán",
+ "group": "hook",
+ "version": 1,
+ "beats": 8,
+ "themes": ["paper", "night", "light"],
+ "from": "V22 S05 / S09",
+ "description": "Câu hook thành các mảnh giấy cắt dán bật vào từng mảnh, dòng viết tay gạch chân. Hợp chủ đề vui, mùa lễ, thủ công.",
+ "slots": [
+  {"slot": "headline", "label": "Câu hook (*từ* = mảnh đỏ, / = xuống dòng)", "default": "Ai *cũng* mở / Google Maps", "sample": "Ai *cũng* mở / Google Maps", "hint": "≤ 7 từ"},
+  {"slot": "sub", "label": "Dòng viết tay", "default": "", "sample": "trước khi ra khỏi nhà", "optional": true}
+ ],
+ "sfx": [{"beat": 0.5, "sfx": "pop", "gain": -18, "label": "mảnh 1"}, {"beat": 2.5, "sfx": "pop", "gain": -18, "label": "mảnh cuối"}],
+ "thumbAt": [1.5, 6]
+}

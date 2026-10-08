@@ -1,0 +1,19 @@
+{
+ "name": "Kêu gọi: nút + liên hệ",
+ "group": "cta",
+ "version": 1,
+ "beats": 8,
+ "themes": ["night", "light", "paper"],
+ "from": "hf-starter H03 / V23 S10",
+ "description": "Câu kêu gọi lớn, nút bấm đập nhẹ theo nhịp, các nhãn liên hệ (web, điện thoại, WhatsApp, địa chỉ) vào lần lượt.",
+ "slots": [
+  {"slot": "headline", "label": "Câu kêu gọi (*từ* = tô màu)", "default": "Kiểm tra Google Maps / *miễn phí.*", "sample": "Kiểm tra Google Maps / *miễn phí.*"},
+  {"slot": "button", "label": "Chữ trên nút", "default": "Nhắn cho SAMI", "sample": "Kostenlose Beratung"},
+  {"slot": "web", "label": "Website", "default": "sami-agency.de", "sample": "sami-agency.de", "optional": true},
+  {"slot": "phone", "label": "Điện thoại", "default": "", "sample": "+49 155 60456888", "optional": true},
+  {"slot": "whatsapp", "label": "WhatsApp", "default": "", "sample": "", "optional": true},
+  {"slot": "address", "label": "Địa chỉ", "default": "", "sample": "", "optional": true}
+ ],
+ "sfx": [{"beat": 0.5, "sfx": "whoosh_b", "gain": -18, "label": "vào"}, {"beat": 3, "sfx": "pop", "gain": -12, "label": "nút"}],
+ "thumbAt": [1.5, 6]
+}

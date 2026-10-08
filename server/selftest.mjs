@@ -99,6 +99,49 @@ await t('cli-render / cli-carousel refuse without --request', () => {
     if (r.status === 0 || !/--request/.test(r.stderr)) throw new Error(f + ' không từ chối: ' + (r.stderr || r.stdout).slice(0, 200));
   }
 });
+// ── 0.8.3: khuôn + dây chuyền ──
+await t('khuôn: khuon.json + scene.html follow the rules', async () => {
+  const {listKhuon, KHUON_DIR, GROUPS, THEMES} = await import('./khuon.mjs');
+  const L = listKhuon(); if (L.length < 16) throw new Error('chỉ có ' + L.length + ' khuôn');
+  for (const k of L) {
+    const html = fs.readFileSync(path.join(KHUON_DIR, k.id, 'scene.html'), 'utf8'), bad = (m) => { throw new Error(`${k.id}: ${m}`); };
+    if (!GROUPS[k.group]) bad('nhóm lạ ' + k.group);
+    if (!k.themes?.length || k.themes.some((t) => !THEMES.includes(t))) bad('theme lạ');
+    if (!(k.beats >= 4)) bad('beats');
+    const slots = k.slots.map((s) => s.slot); if (new Set(slots).size !== slots.length) bad('slot trùng');
+    for (const s of k.slots) if (s.type === 'image' && !/(_image|_logo|_img|_photo)$/.test(s.slot) && s.slot !== 'logo') bad(`slot ảnh "${s.slot}" phải kết thúc bằng _photo / _logo (tab Chữ nhận ra ô ảnh)`);
+    if (!/data-composition-id=/.test(html) || !/_sami\/khuon\/kit\.js/.test(html) || !/K\.bind\(|S\.K\.bind\(/.test(html)) bad('thiếu root / kit / K.bind');
+    if (/Math\.random|Date\.now|new Date|requestAnimationFrame|setInterval|https?:\/\//.test(html.replace(/<!--[\s\S]*?-->/g, '').replace(/xmlns='http:\/\/www\.w3\.org\/2000\/svg'/g, ''))) bad('có ngẫu nhiên / thời gian thật / CDN');
+    for (const m of html.matchAll(/data-slot(?:-img)?="([\w]+)"/g)) if (!slots.includes(m[1])) bad('scene.html dùng slot không khai báo: ' + m[1]);
+  }
+  return L.length + ' khuôn';
+});
+await t('khuôn: thêm cảnh, đổi khuôn giữ chữ cùng tên, đổi lại khôi phục chữ', async () => {
+  const {buildProject, applyKhuon} = await import('./khuon.mjs');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-kh-'));
+  try {
+    const p = buildProject(d, {name: 't', formats: ['9:16'], scenes: [{khuon: 'hook-words', values: {headline: 'Xin chào', label: 'NHÃN'}}, {khuon: 'cta-contact'}]});
+    if (p.scenes[0].end !== 121 || p.scenes[1].start !== 121 || (p.scenes[1].end - 1) % 15) throw new Error('lưới nhịp: ' + p.scenes.map((s) => s.start + '-' + s.end));
+    applyKhuon(d, p, {khuon: 'hook-ransom', scene: 'S01'});
+    if (p.copy.S01_headline.value !== 'Xin chào' || p.copy.S01_label) throw new Error('đổi khuôn không giữ chữ');
+    applyKhuon(d, p, {khuon: 'hook-words', scene: 'S01'});
+    if (p.copy.S01_label?.value !== 'NHÃN') throw new Error('đổi lại không khôi phục ô đã cất');
+    const s = applyKhuon(d, p, {khuon: 'stat-counter', after: 'S01'});
+    if (s.id !== 'S03' || p.scenes[1].id !== 'S03' || p.scenes[2].start !== p.scenes[1].end) throw new Error('chèn sai');
+    if (!fs.readFileSync(path.join(d, 'hf', 'S03.html'), 'utf8').includes('data-composition-id="S03"')) throw new Error('id cảnh');
+  } finally { fs.rmSync(d, {recursive: true, force: true}); }
+});
+await t('dây chuyền: promo / maps / menu dựng từ brief mẫu, validate không lỗi', async () => {
+  const {buildProject} = await import('./khuon.mjs'); const {validateProject: vp} = await import('./validate.mjs');
+  const out = [];
+  for (const n of ['promo', 'maps', 'menu']) {
+    const P = await import('file:///' + path.join(ROOT, 'lib', 'pipelines', n + '.mjs').replace(/\\/g, '/'));
+    const d = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-pl-'));
+    try { const p = buildProject(d, P.default(P.example, null)); const v = vp(d); if (v.fail.length) throw new Error(n + ': ' + v.fail[0]); out.push(`${n} ${p.scenes.length} cảnh`); }
+    finally { fs.rmSync(d, {recursive: true, force: true}); }
+  }
+  return out.join(', ');
+});
 // ── 0.8.2: the encoder that really wrote a file (tiny 0.2 s clip from a still, CPU only; not a video export) ──
 await t('probeEncoder reads libx264 from a real file', async () => {
   const {probeEncoder, ffAsync} = await import('./ffmpeg.mjs');

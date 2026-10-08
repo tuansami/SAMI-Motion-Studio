@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/caveat/700.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn photo-collage · polaroid rơi xuống lần lượt (lưới tự tính theo số ảnh và tỉ lệ khung), băng dính, nhãn chú thích. */
+  #board { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) - 20px); bottom: calc(var(--safe-bottom) + 130px); }
+  #foot { position: absolute; left: 0; right: 0; bottom: calc(var(--safe-bottom) + 10px); text-align: center; font-size: 96px; }
+  .k-polaroid { padding: 2.2% 2.2% 0; box-sizing: border-box; display: flex; flex-direction: column; }
+  .k-polaroid .ph { flex: 1; }
+  .k-polaroid .lab { position: absolute; left: -3%; bottom: 7%; padding: 8px 18px; background: var(--k-accent); color: #fff; font: 600 30px var(--f-ui); white-space: nowrap; box-shadow: 0 6px 14px rgba(0,0,0,.2); rotate: -3deg; }
+  .k-polaroid .pad { height: 13%; flex: none; }
+  [data-theme="night"] .k-polaroid .lab { background: var(--c-purple); }
+  [data-ratio="9x16"] #foot { font-size: 104px; }
+  [data-ratio="9x16"] .k-polaroid .lab { font-size: 34px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="KHUON">
+  <div class="k-stage">
+    <div id="board" class="k-layer"></div>
+    <div id="foot" class="k-hand k-layer" data-slot="headline" data-optional style="top:auto"></div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind(), tl = S.timeline();
+  const photos = K.list('p', 6, '_photo'); const n = Math.max(1, photos.length);
+  const board = document.getElementById('board');
+  { // board size only depends on CSS (not fonts): measure once, build once (tweens below target these nodes)
+    if (!K.has('headline')) board.style.bottom = 'var(--safe-bottom)';
+    const W = board.clientWidth, H = board.clientHeight;
+    // số cột: ngang ưu tiên hàng ngang, dọc ưu tiên cột đôi
+    const cols = S.portrait ? (n <= 2 ? 1 : 2) : n <= 3 ? n : Math.ceil(n / 2), rows = Math.ceil(n / cols);
+    const cw = W / cols, ch = H / rows, pw = Math.min(cw * .94, ch * 1.02 / 1.12); // a little overlap between rows looks hand-made
+    board.innerHTML = photos.map((p, i) => {
+      const r = Math.floor(i / cols), c = i % cols, inRow = Math.min(cols, n - r * cols), off = (cols - inRow) * cw / 2;
+      const x = off + c * cw + (cw - pw) / 2 + (S.rnd(i + 2) - .5) * cw * .08, y = r * ch + (ch - pw * 1.12) / 2 + (S.rnd(i + 9) - .5) * ch * .06;
+      const cap = K.has('c' + (i + 1)) ? `<div class="lab">${K.html('c' + (i + 1))}</div>` : '';
+      return `<div class="k-polaroid" style="left:${x}px;top:${y}px;width:${pw}px;height:${pw * 1.12}px;rotate:${((S.rnd(i + 5) - .5) * 9).toFixed(1)}deg"><div class="k-tape"></div><div class="ph" data-slot-img="${p}"></div><div class="pad"></div>${cap}</div>`;
+    }).join('');
+    K.bind(board);
+  }
+  tl.fromTo('.k-polaroid', {opacity: 0, y: -90, scale: 1.12, rotation: (i) => (S.rnd(i + 21) - .5) * 24}, {opacity: 1, y: 0, scale: 1, rotation: 0, duration: .55, stagger: S.BEAT * .75}, S.beat(.5));
+  if (K.has('headline')) S.arrive(tl, '#foot', S.beat(.5) + n * S.BEAT * .75 + .3, {dist: 20, blur: 6});
+  K.push(tl, '#board', .03);
+</script>
+</body>
+</html>

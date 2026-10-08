@@ -295,6 +295,45 @@ $('#btnSnap').onclick = () => commit((p) => {
     if (s.end !== want) { const oldLen = s.end - s.start; s.end = want; const newLen = s.end - s.start; if (s.warp) { s.warp = s.warp.map(([n, o]) => [Math.round(n * newLen / oldLen), o]); s.warp.at(-1)[0] = newLen; } else if (s.animLength && s.animLength !== newLen) s.warp = [[0, 0], [newLen, s.animLength]]; }
   }
 });
+// ── Khuôn: thêm cảnh từ khuôn / đổi khuôn cảnh đang chọn (server/khuon.mjs; chữ cùng tên slot được giữ) ──
+S.kh = {group: '', theme: null};
+$('#btnKhuon').onclick = async () => {
+  let D; try { D = await api('/api/khuon'); } catch (e) { return toast(e.message, true); }
+  const K = S.kh; K.theme = K.theme || S.project.look?.theme || 'night';
+  const cur = S.project.scenes.find((s) => s.id === S.scene);
+  const tag = String(S.ratio || S.project.formats[0]).replace(':', 'x');
+  const THEME_VI = {night: 'Đêm (navy SAMI)', paper: 'Giấy kraft', light: 'Sáng'};
+  const apply = async (k, mode) => {
+    if (mode === 'replace' && !confirm(`Đổi cảnh ${cur.id} sang khuôn "${k.name}"?\nChữ của các ô cùng tên được giữ; giọng, nhạc, SFX, thời lượng không đổi. Có điểm neo trong Lịch sử để quay lại.`)) return;
+    try {
+      const r = await api('/api/khuon/apply', {id: S.id, project: S.project, khuon: k.id, theme: K.theme, ...(mode === 'replace' ? {scene: cur.id} : {after: cur?.id || null})});
+      S.project = r.project; S.saved = JSON.stringify(r.project); S.hfRev = Date.now(); $('#modal').hidden = true;
+      S.scene = r.scene.id; pushPreview(); renderAll();
+      toast(mode === 'replace' ? `Đã đổi ${r.scene.id} sang khuôn ${k.name}` : `Đã thêm cảnh ${r.scene.id} (${k.name}) · sửa chữ ở tab Chữ`, false, 6000);
+    } catch (e) { toast(e.message, true, 8000); }
+  };
+  const draw = () => {
+    const list = D.khuon.filter((k) => !K.group || k.group === K.group);
+    modal(h('div', {style: 'width:min(1100px,92vw)'},
+      h('h3', {}, '🧩 Khuôn cảnh'),
+      h('p', {class: 'muted', style: 'font-size:13px;margin-top:-6px'}, 'Khuôn là cảnh HTML dựng sẵn có tham số: chữ, ảnh, màu lấy từ dự án. ', cur ? `"Đổi khuôn" thay cảnh ${cur.id}, giữ chữ của ô cùng tên. ` : '', '"Thêm" chèn cảnh mới sau cảnh đang chọn.'),
+      h('div', {class: 'row', style: 'flex-wrap:wrap;gap:8px;margin-bottom:10px'},
+        h('div', {class: 'seg'}, ...D.themes.map((t) => h('button', {class: K.theme === t ? 'on' : '', onclick: () => { K.theme = t; draw(); }}, THEME_VI[t] || t))),
+        h('select', {onchange: (e) => { K.group = e.target.value; draw(); }}, h('option', {value: ''}, 'Mọi nhóm'), ...Object.entries(D.groups).filter(([g]) => D.khuon.some((k) => k.group === g)).map(([g, t]) => h('option', {value: g, selected: K.group === g}, t)))),
+      h('div', {style: 'display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;max-height:62vh;overflow:auto;padding-right:4px'},
+        ...list.map((k) => {
+          const th = k.thumbs.includes(`thumb_${tag}.jpg`) ? `thumb_${tag}.jpg` : k.thumbs[0];
+          return h('div', {class: 'group', style: 'margin:0;padding:8px;display:flex;flex-direction:column;gap:6px'},
+            th ? h('img', {src: `/api/khuon/thumb/${k.id}/${th}`, loading: 'lazy', style: 'width:100%;aspect-ratio:16/10;object-fit:contain;background:#0A0722;border-radius:8px'}) : h('div', {class: 'muted', style: 'aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;background:#0A0722;border-radius:8px'}, k.id),
+            h('b', {style: 'font-size:13.5px'}, k.name),
+            h('div', {class: 'muted', style: 'font-size:12px;flex:1'}, `${D.groups[k.group] || k.group} · ${(k.beats / 2).toFixed(1)} s · ${k.slots.length} ô`, h('br'), k.description || ''),
+            h('div', {class: 'row', style: 'gap:6px'},
+              h('button', {class: 'small primary', onclick: () => apply(k, 'add')}, cur ? `＋ Thêm sau ${cur.id}` : '＋ Thêm cảnh'),
+              cur ? h('button', {class: 'small', onclick: () => apply(k, 'replace')}, `Đổi ${cur.id}`) : null));
+        }))));
+  };
+  draw();
+};
 function renderScrub() {
   const T = S.project.scenes.at(-1)?.end || 1;
   const only = $('#tgScene').checked;

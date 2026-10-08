@@ -1,6 +1,6 @@
 # SAMI Motion Studio — Hướng dẫn sử dụng
 
-> **Phiên bản 0.8.2.** Mới ở 0.8.2: **Chrome SAMI** (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng **kịch bản cố định** không tốn token, tab Xuất ghi **bộ mã hoá thật** (đo từ file), cổng AI tách thành gói `sami-media` (mục 11f). Ở 0.8.1: nút **＋ Tạo carousel**, **chọn nhiều dự án để xoá** (vào Thùng rác), **🧹 Dọn lịch sử**, **"Dùng ▾" + kéo thả media lên khung xem**, nút **✨ Tạo** cho ChatGPT / Gemini / Flow / Suno, **thẻ phần cứng + chọn bộ mã hoá** ở tab Xuất, công tắc **Cho phép Claude Code xuất video** (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab **Nguồn & AI** (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: **carousel động**. Ở 0.6: cảnh HTML (Hyperframes), **thư viện SAMI dùng chung**, ffmpeg đầy đủ.
+> **Phiên bản 0.8.3.** Mới ở 0.8.3: **🧩 Khuôn** (16 cảnh dựng sẵn có tham số, 3 phong cách: đêm, giấy kraft, sáng; thêm cảnh hoặc đổi khuôn giữ nguyên chữ) và **dây chuyền** promo / Google Maps / thực đơn: Claude chỉ điền một file brief, máy dựng cả video (mục 11g). Ở 0.8.2: **Chrome SAMI** (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng **kịch bản cố định** không tốn token, tab Xuất ghi **bộ mã hoá thật** (đo từ file), cổng AI tách thành gói `sami-media` (mục 11f). Ở 0.8.1: nút **＋ Tạo carousel**, **chọn nhiều dự án để xoá** (vào Thùng rác), **🧹 Dọn lịch sử**, **"Dùng ▾" + kéo thả media lên khung xem**, nút **✨ Tạo** cho ChatGPT / Gemini / Flow / Suno, **thẻ phần cứng + chọn bộ mã hoá** ở tab Xuất, công tắc **Cho phép Claude Code xuất video** (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab **Nguồn & AI** (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: **carousel động**. Ở 0.6: cảnh HTML (Hyperframes), **thư viện SAMI dùng chung**, ffmpeg đầy đủ.
 >
 > Phiên bản 0.5 (giai đoạn 1: web app chạy trên máy). Mới ở 0.5: **Biến thể hàng loạt từ CSV** (11c), **làm việc nhóm**: trạng thái, khoá dự án, mẫu dùng chung (11d). Ở 0.4: **Gói duyệt khách**, **So sánh điểm neo**, **chuẩn âm lượng −14 LUFS**. Ở 0.3: **Lịch sử phiên bản / điểm neo** (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab **Ảnh chèn**, **Thư viện mẫu**. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà **không cần biết code**. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.
 
@@ -433,6 +433,24 @@ Bộ slide cho Instagram / Facebook / LinkedIn: **mỗi slide là 1 video MP4 l�
 **Khoá API** (mục gập): dán khoá → Lưu. Khoá mã hoá bằng DPAPI trong `%APPDATA%\SAMI\providers.json`, chỉ tài khoản Windows này đọc được, không bao giờ hiện lại.
 **Trần chi phí & sổ chi phí** (mục gập): mặc định 2 USD/ngày, 20 USD/tháng; sổ ghi từng lệnh.
 **Cổng AI cục bộ** (mục gập): địa chỉ Kokoro, ComfyUI nếu bạn tự cài.
+
+## 11g. Khuôn và dây chuyền (mới ở 0.8.3)
+**Khuôn** là một cảnh dựng sẵn (chuyển động, bố cục từng tỉ lệ, nhịp, SFX gợi ý) nhưng **không có chữ cứng**: chữ, ảnh, màu lấy từ dự án. Làm đẹp một lần, dùng cho mọi video.
+
+| Nhóm | Khuôn |
+|---|---|
+| Mở đầu | Câu lớn vào từng từ · Chữ cắt dán |
+| Vấn đề / lợi ích / số liệu | Lý do + con dấu · 3 đến 4 thẻ có dấu tích · Con số đếm lên |
+| Google Maps / chat / điện thoại | Tìm kiếm trên Maps · Hồ sơ quán đầy đủ · Tin nhắn WhatsApp · Điện thoại cuộn ảnh chụp |
+| Ảnh / thực đơn / ưu đãi | Polaroid dán băng dính · Một món + giá · Huy hiệu giảm giá |
+| Bằng chứng / thời gian / kết | Lời khách + sao · Tờ lịch khoanh ngày · Nút + liên hệ · Logo + khẩu hiệu |
+
+- **Cột Cảnh → 🧩 Khuôn**: chọn phong cách (**Đêm** navy SAMI, **Giấy kraft** kiểu video Maps cuối năm, **Sáng**), lọc theo nhóm, xem ảnh mẫu.
+  - **＋ Thêm sau S0x**: chèn cảnh mới sau cảnh đang chọn (các cảnh sau tự lùi, vẫn đúng nhịp). Sửa chữ ở tab **Chữ** (mỗi ô có nhãn), ảnh bằng **📚 Chọn…**.
+  - **Đổi S0x**: thay kiểu của cảnh đang chọn, **giữ nguyên chữ** ở các ô cùng tên, không đụng giọng đọc, nhạc, SFX, thời lượng. Đổi lại kiểu cũ thì chữ cũ quay về. Trước mỗi lần đổi có điểm neo trong tab **Lịch sử**.
+- **Dây chuyền** (Claude Code chạy): bạn nói "làm video Google Maps cho quán X", Claude chỉ viết một file `brief.json` (chữ, ảnh, liên hệ) rồi chạy lệnh dây chuyền; máy chọn khuôn, xếp thời gian theo nhịp 120 BPM, điền chữ, đặt SFX, chụp ảnh kiểm. Có 3 dây chuyền: **promo** (~30 s), **maps** (dịch vụ Google Maps), **menu** (thực đơn, món mới, ưu đãi). Dây chuyền **không xuất video**; bạn mở dự án trong Studio để xem và chỉnh.
+- **Bộ nhận diện khách**: `SAMI_Library\brands\<khách>\brand.json` (màu, font, phong cách, logo, liên hệ, giọng, nhạc). Dây chuyền tự áp vào video. Có sẵn `brands\sami`.
+- Chi phí của một video (API + lượt Claude quy đổi): Claude chạy `ledger --project <thư mục>`.
 
 ## 12. Làm video mới cùng Claude Code (quy trình chuẩn)
 
