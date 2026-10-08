@@ -134,13 +134,39 @@ await t('khuôn: thêm cảnh, đổi khuôn giữ chữ cùng tên, đổi lạ
 await t('dây chuyền: promo / maps / menu dựng từ brief mẫu, validate không lỗi', async () => {
   const {buildProject} = await import('./khuon.mjs'); const {validateProject: vp} = await import('./validate.mjs');
   const out = [];
-  for (const n of ['promo', 'maps', 'menu']) {
+  for (const n of ['promo', 'maps', 'menu', 'storyboard']) {
     const P = await import('file:///' + path.join(ROOT, 'lib', 'pipelines', n + '.mjs').replace(/\\/g, '/'));
     const d = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-pl-'));
     try { const p = buildProject(d, P.default(P.example, null)); const v = vp(d); if (v.fail.length) throw new Error(n + ': ' + v.fail[0]); out.push(`${n} ${p.scenes.length} cảnh`); }
     finally { fs.rmSync(d, {recursive: true, force: true}); }
   }
   return out.join(', ');
+});
+await t('khuôn: CATALOG.md khớp thư viện khuôn (cli-pipeline catalog --write)', async () => {
+  const {listKhuon} = await import('./khuon.mjs'); const md = fs.readFileSync(path.join(ROOT, 'lib', 'hf', 'khuon', 'CATALOG.md'), 'utf8');
+  const miss = listKhuon().filter((k) => !md.includes(`**${k.id}**`) || k.slots.some((s) => !md.includes('`' + s.slot))).map((k) => k.id);
+  if (miss.length) throw new Error('chạy lại catalog --write: ' + miss.join(', ')); return listKhuon().length + ' khuôn';
+});
+// ── 1.0: xuất Hyperframes thuần (no Remotion): support check, FILM composition, ffmpeg sound mix (no video is rendered) ──
+await t('xuất thuần: kiểm hỗ trợ, bố cục phim, trộn âm thanh bằng ffmpeg', async () => {
+  const N = await import('./hf-native.mjs'); const {buildProject} = await import('./khuon.mjs'); const {ffAsync, durationAsync} = await import('./ffmpeg.mjs');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-nat-'));
+  try {
+    const P = await import('file:///' + path.join(ROOT, 'lib', 'pipelines', 'storyboard.mjs').replace(/\\/g, '/'));
+    const p = buildProject(d, P.default(P.example, null));
+    p.titles = [{id: 'T1', text: 'Hallo *Welt*', start: 0.5, end: 2, anim: 'karaoke'}]; p.overlays = [{id: 'O1', kind: 'sticker', sticker: 'tap', start: 1, end: 2}];
+    if (!N.support(p, {ratio: '9:16'}).ok) throw new Error('khuôn project should be supported: ' + N.support(p, {ratio: '9:16'}).reasons);
+    const bad = N.support({...p, scenes: [...p.scenes, {id: 'X', start: 0, end: 30, label: 'tsx'}], overlays: [{id: 'L', kind: 'lottie'}]}, {ratio: '16:9', codec: 'h265', res: '2K'});
+    if (bad.ok || bad.reasons.length < 5) throw new Error('refusals missing: ' + bad.reasons.join(' | '));
+    const html = N.filmHtml(d, p, {ratio: '9:16', clips: Object.fromEntries(p.scenes.map((s) => [s.id, `_hf/${s.id}.mp4`]))});
+    if ((html.match(/<video id="sc-/g) || []).length !== p.scenes.length || !html.includes('native/film.js') || !html.includes('"T1"')) throw new Error('FILM html incomplete');
+    const plan = N.audioPlan(d, p, {out: path.join(d, 'mix.wav')});
+    if (plan.none) throw new Error('khuôn SFX cues should give a mix');
+    const r = await ffAsync(plan.args); if (r.code !== 0) throw new Error('ffmpeg mix: ' + String(r.stderr).slice(-300));
+    const len = await durationAsync(path.join(d, 'mix.wav')); const T = p.scenes.at(-1).end / 30;
+    if (Math.abs(len - T) > 0.1) throw new Error(`mix ${len}s ≠ ${T}s`);
+    return `${p.scenes.length} cảnh · ${plan.inputs.length} nguồn tiếng · ${len.toFixed(2)} s`;
+  } finally { fs.rmSync(d, {recursive: true, force: true}); }
 });
 // ── 0.9: footage (tiny synthetic clips, CPU; probe → proxy, VFR → CFR, timeline helpers, local media server) ──
 await t('footage: nhập, bản xem trước 540p, VFR → CFR 30, clip trên timeline, máy chủ media có Range', async () => {

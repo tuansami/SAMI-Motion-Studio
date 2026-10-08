@@ -107,6 +107,18 @@ export const receive = (dir, req, name) => new Promise((ok, bad) => {
   req.pipe(w); req.on('error', bad); w.on('error', bad);
   w.on('finish', () => { fs.renameSync(tmp, dst); ok(path.relative(dir, dst).replace(/\\/g, '/')); });
 });
+/** a video anywhere on disk → media/<sub>/<name>: hardlink on the same drive (0 bytes, instant), else an async copy
+ *  (never blocks the server on a multi-GB file). The original stays where it is. */
+export const importPath = async (dir, file, sub = 'footage') => {
+  file = path.resolve(String(file || '')); if (!fs.existsSync(file) || !fs.statSync(file).isFile()) throw new Error('Không thấy file ' + file);
+  if (!MEDIA_RE.test(file)) throw new Error('Chỉ nhận video (mp4, mov, m4v, webm, mkv, avi, mts)');
+  const d = path.join(dir, 'media', String(sub).replace(/[^\w-]/g, '') || 'footage'); fs.mkdirSync(d, {recursive: true});
+  const base = safeName(path.basename(file)); let dst = path.join(d, base), n = 2;
+  const rel = (f) => path.relative(dir, f).replace(/\\/g, '/');
+  while (fs.existsSync(dst)) { if (fs.statSync(dst).size === fs.statSync(file).size) return rel(dst); dst = path.join(d, base.replace(/(\.[^.]+)$/, `-${n++}$1`)); }
+  try { fs.linkSync(file, dst); } catch { const tmp = dst + '.part'; await fs.promises.copyFile(file, tmp); fs.renameSync(tmp, dst); }
+  return rel(dst);
+};
 /** move a file already in the project (e.g. a stock clip in public/video/…) into media/<sub>/ → 'media/…' */
 export const adopt = (dir, rel, sub = 'broll') => {
   const src = path.join(dir, rel); if (!fs.existsSync(src)) throw new Error('Không thấy ' + rel);

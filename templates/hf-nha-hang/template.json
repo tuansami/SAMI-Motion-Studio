@@ -1,0 +1,40 @@
+{
+ "id": "hf-nha-hang",
+ "name": "Nhà hàng: món mới + ưu đãi (khuôn)",
+ "version": "1.0.0",
+ "studio": ">=1.0.0",
+ "category": "restaurant",
+ "goal": [
+  "menu-moi",
+  "uu-dai"
+ ],
+ "description": "Video nhà hàng dựng từ khuôn: hook, món mới, khoảnh khắc khách, đánh giá Google, ưu đãi trưa, kêu gọi, thẻ kết. Toàn cảnh HTML nên xuất thuần được.",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "duration": 32,
+ "bpm": 120,
+ "languages": [
+  "de"
+ ],
+ "thumbFrame": 181,
+ "author": "SAMI Marketing Agency",
+ "license": "internal",
+ "tags": [
+  "khuon",
+  "restaurant",
+  "menu",
+  "de"
+ ],
+ "engine": "hyperframes",
+ "khuon": [
+  "hook-ransom",
+  "menu-dish",
+  "photo-collage",
+  "review-quote",
+  "offer-badge",
+  "cta-contact",
+  "endcard-logo"
+ ]
+}

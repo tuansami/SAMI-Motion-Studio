@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<script src="_sami/blocks/blocks.js"></script>
+<style>
+  /* Khuôn map-route · bản đồ cách điệu (SVG, tất định theo SAMI.rnd) + đường đi tự vẽ (SAMI.B.route), ghim, thẻ thời gian. */
+  #map { position: absolute; right: var(--safe-side); top: 50%; width: 980px; height: 880px; margin-top: -440px; border-radius: 40px; overflow: hidden; box-shadow: var(--k-shadow); background: #EEF0F2; }
+  #map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #txt { position: absolute; left: var(--safe-side); top: 0; bottom: 0; width: 40%; display: flex; flex-direction: column; justify-content: center; gap: 36px; }
+  #head { font-size: 100px; }
+  .lab { position: absolute; padding: 10px 20px; border-radius: 14px; background: #fff; color: #202124; font: 600 30px var(--f-ui); box-shadow: 0 6px 16px rgba(0,0,0,.18); white-space: nowrap; transform: translate(-50%, -150%); }
+  .lab.to { background: var(--k-accent); color: #fff; }
+  #eta { align-self: flex-start; font-size: 44px; }
+  #eta .k-ico { color: var(--k-accent); }
+  [data-ratio="9x16"] #txt { left: var(--safe-side); right: var(--safe-side); width: auto; top: var(--safe-top); bottom: auto; text-align: center; align-items: center; gap: 24px; }
+  [data-ratio="9x16"] #eta { align-self: center; }
+  [data-ratio="9x16"] #map { right: auto; left: 50%; margin-left: -470px; width: 940px; height: 1060px; top: 600px; margin-top: 0; }
+  [data-ratio="1x1"] #map, [data-ratio="4x5"] #map { width: 560px; height: 640px; margin-top: -320px; }
+  [data-ratio="1x1"] #head, [data-ratio="4x5"] #head { font-size: 64px; }
+  [data-ratio="1x1"] #eta, [data-ratio="4x5"] #eta { font-size: 32px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S04">
+  <div class="k-stage">
+    <div id="txt" class="k-layer">
+      <div id="head" class="k-head" data-slot="headline"></div>
+      <div id="eta" class="k-chip"><span data-ico="clock"></span><span data-slot="eta"></span></div>
+    </div>
+    <div id="map"><svg id="base" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice"></svg><svg id="rt" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice"></svg></div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind().icons(), tl = S.timeline();
+  // bản đồ: khối nhà, công viên, sông, lưới đường (tất định)
+  let g = '<rect width="1000" height="1000" fill="#EEF0F2"/>';
+  for (let i = 0; i < 46; i++) { const x = S.rnd(i + 1) * 1000, y = S.rnd(i + 51) * 1000, w = 60 + S.rnd(i + 99) * 120, h = 50 + S.rnd(i + 7) * 110; g += `<rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="${w.toFixed(0)}" height="${h.toFixed(0)}" rx="8" fill="#E1E4E8"/>`; }
+  g += '<path d="M-20 760 C 200 700, 380 840, 620 760 S 900 640, 1020 690" stroke="#AECBFA" stroke-width="64" fill="none"/>';
+  g += '<rect x="90" y="140" width="220" height="170" rx="20" fill="#CEEAD6"/><rect x="660" y="430" width="250" height="150" rx="20" fill="#CEEAD6"/>';
+  for (const x of [180, 420, 640, 860]) g += `<path d="M${x} 0 V1000" stroke="#fff" stroke-width="${x === 420 ? 26 : 16}"/>`;
+  for (const y of [110, 360, 590, 880]) g += `<path d="M0 ${y} H1000" stroke="#fff" stroke-width="${y === 360 ? 26 : 16}"/>`;
+  g += '<path d="M420 0 V1000" stroke="#FDE293" stroke-width="12"/>';
+  document.getElementById('base').innerHTML = g;
+  const pts = [[0.18, 0.86], [0.18, 0.59], [0.42, 0.59], [0.42, 0.36], [0.64, 0.36], [0.72, 0.2]];
+  const map = document.getElementById('map');
+  S.arrive(tl, S.words(document.getElementById('head')), S.beat(0), {stagger: .13, dur: .5});
+  tl.fromTo('#map', {opacity: 0, scale: .94}, {opacity: 1, scale: 1, duration: .7}, S.beat(0));
+  S.B.route(tl, document.getElementById('rt'), pts, S.beat(1.2), {dur: 2.2, width: 9});
+  // nhãn điểm đầu / cuối (toạ độ % của khung bản đồ)
+  for (const [k, p, at] of [['from', pts[0], S.beat(.8)], ['to', pts[pts.length - 1], S.beat(1.2) + 2.3]]) {
+    const l = document.createElement('div'); l.className = 'lab' + (k === 'to' ? ' to' : ''); l.innerHTML = K.html(k); l.style.left = p[0] * 100 + '%'; l.style.top = p[1] * 100 + '%'; map.appendChild(l);
+    tl.fromTo(l, {opacity: 0, y: 14}, {opacity: 1, y: 0, duration: .35}, at);
+  }
+  K.pop(tl, '#eta', S.beat(5), {from: .5});
+  K.push(tl, '#txt', .03);
+</script>
+</body>
+</html>

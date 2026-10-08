@@ -1,0 +1,419 @@
+{
+ "name": "Nhà hàng: món mới + ưu đãi (khuôn)",
+ "client": "",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {},
+ "look": {
+  "grain": 0.05,
+  "vignette": 0.4,
+  "theme": "paper"
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook",
+   "start": 0,
+   "end": 121,
+   "engine": "hyperframes",
+   "src": "hf/S01.html",
+   "khuon": {
+    "id": "hook-ransom",
+    "v": 1
+   }
+  },
+  {
+   "id": "S02",
+   "label": "Món mới",
+   "start": 121,
+   "end": 271,
+   "engine": "hyperframes",
+   "src": "hf/S02.html",
+   "khuon": {
+    "id": "menu-dish",
+    "v": 1
+   }
+  },
+  {
+   "id": "S03",
+   "label": "Không khí",
+   "start": 271,
+   "end": 421,
+   "engine": "hyperframes",
+   "src": "hf/S03.html",
+   "khuon": {
+    "id": "photo-collage",
+    "v": 1
+   }
+  },
+  {
+   "id": "S04",
+   "label": "Đánh giá",
+   "start": 421,
+   "end": 571,
+   "engine": "hyperframes",
+   "src": "hf/S04.html",
+   "khuon": {
+    "id": "review-quote",
+    "v": 1
+   }
+  },
+  {
+   "id": "S05",
+   "label": "Ưu đãi",
+   "start": 571,
+   "end": 721,
+   "engine": "hyperframes",
+   "src": "hf/S05.html",
+   "khuon": {
+    "id": "offer-badge",
+    "v": 1
+   }
+  },
+  {
+   "id": "S06",
+   "label": "Kêu gọi",
+   "start": 721,
+   "end": 841,
+   "engine": "hyperframes",
+   "src": "hf/S06.html",
+   "khuon": {
+    "id": "cta-contact",
+    "v": 1
+   }
+  },
+  {
+   "id": "S07",
+   "label": "Kết",
+   "start": 841,
+   "end": 961,
+   "engine": "hyperframes",
+   "src": "hf/S07.html",
+   "khuon": {
+    "id": "endcard-logo",
+    "v": 1
+   }
+  }
+ ],
+ "copy": {
+  "S01_headline": {
+   "label": "Câu hook (*từ* = mảnh đỏ, / = xuống dòng)",
+   "scene": "S01",
+   "value": "Neu auf der *Karte*",
+   "hint": "≤ 7 từ"
+  },
+  "S01_sub": {
+   "label": "Dòng viết tay (bỏ trống = ẩn)",
+   "scene": "S01",
+   "value": "nur diesen Monat"
+  },
+  "S02_label": {
+   "label": "Nhãn (vd Món mới, Món 1/5) (bỏ trống = ẩn)",
+   "scene": "S02",
+   "value": "Neu"
+  },
+  "S02_dish": {
+   "label": "Tên món (*từ* = tô màu)",
+   "scene": "S02",
+   "value": "Sushi Platte Atelier"
+  },
+  "S02_desc": {
+   "label": "Mô tả ngắn (bỏ trống = ẩn)",
+   "scene": "S02",
+   "value": "Lachs, Thunfisch, Avocado, 16 Stück"
+  },
+  "S02_price": {
+   "label": "Giá (vd 14,90 €)",
+   "scene": "S02",
+   "value": "24,90 €"
+  },
+  "S02_dish_photo": {
+   "label": "Ảnh món (vuông hoặc ngang)",
+   "scene": "S02",
+   "value": "lib:img/khuon-mau/placeholder_dish.jpg",
+   "type": "image"
+  },
+  "S03_headline": {
+   "label": "Câu dưới cùng (viết tay) (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": "Kommt *vorbei!*"
+  },
+  "S03_p1_photo": {
+   "label": "Ảnh 1",
+   "scene": "S03",
+   "value": "lib:img/khuon-mau/placeholder_guests.jpg",
+   "type": "image"
+  },
+  "S03_c1": {
+   "label": "Chú thích 1 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": "Freitagabend"
+  },
+  "S03_p2_photo": {
+   "label": "Ảnh 2",
+   "scene": "S03",
+   "value": "lib:img/khuon-mau/placeholder_dish.jpg",
+   "type": "image"
+  },
+  "S03_c2": {
+   "label": "Chú thích 2 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": "Frisch gerollt"
+  },
+  "S03_p3_photo": {
+   "label": "Ảnh 3 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": "",
+   "type": "image"
+  },
+  "S03_c3": {
+   "label": "Chú thích 3 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": ""
+  },
+  "S03_p4_photo": {
+   "label": "Ảnh 4 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": "",
+   "type": "image"
+  },
+  "S03_c4": {
+   "label": "Chú thích 4 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": ""
+  },
+  "S03_p5_photo": {
+   "label": "Ảnh 5 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": "",
+   "type": "image"
+  },
+  "S03_c5": {
+   "label": "Chú thích 5 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": ""
+  },
+  "S03_p6_photo": {
+   "label": "Ảnh 6 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": "",
+   "type": "image"
+  },
+  "S03_c6": {
+   "label": "Chú thích 6 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": ""
+  },
+  "S04_quote": {
+   "label": "Lời đánh giá (*từ* = tô màu)",
+   "scene": "S04",
+   "value": "Das beste Sushi im Kiez. Wir kommen jede Woche wieder.",
+   "hint": "≤ 20 từ"
+  },
+  "S04_author": {
+   "label": "Người viết",
+   "scene": "S04",
+   "value": "Lena M."
+  },
+  "S04_meta": {
+   "label": "Nguồn / thời gian",
+   "scene": "S04",
+   "value": "Google · vor 2 Wochen"
+  },
+  "S04_rating": {
+   "label": "Số sao (1 đến 5)",
+   "scene": "S04",
+   "value": "5",
+   "type": "number"
+  },
+  "S04_headline": {
+   "label": "Câu phía trên (bỏ trống = ẩn)",
+   "scene": "S04",
+   "value": "Das sagen *Gäste*"
+  },
+  "S05_badge": {
+   "label": "Chữ trên huy hiệu (vd -20%, 1+1, GRATIS)",
+   "scene": "S05",
+   "value": "-15%"
+  },
+  "S05_badge_sub": {
+   "label": "Dòng nhỏ dưới huy hiệu (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": "Mittagsmenü"
+  },
+  "S05_headline": {
+   "label": "Câu ưu đãi (*từ* = tô màu)",
+   "scene": "S05",
+   "value": "Mittagstisch *15% günstiger*"
+  },
+  "S05_terms": {
+   "label": "Điều kiện (chữ nhỏ) (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": "Mo bis Fr, 11:30 bis 14:30"
+  },
+  "S05_date": {
+   "label": "Thời hạn (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": "bis 30.11."
+  },
+  "S06_headline": {
+   "label": "Câu kêu gọi (*từ* = tô màu)",
+   "scene": "S06",
+   "value": "Jetzt *Tisch reservieren.*"
+  },
+  "S06_button": {
+   "label": "Chữ trên nút",
+   "scene": "S06",
+   "value": "Reservieren"
+  },
+  "S06_web": {
+   "label": "Website (bỏ trống = ẩn)",
+   "scene": "S06",
+   "value": "saigon-atelier.de"
+  },
+  "S06_phone": {
+   "label": "Điện thoại (bỏ trống = ẩn)",
+   "scene": "S06",
+   "value": "030 1234 567"
+  },
+  "S06_whatsapp": {
+   "label": "WhatsApp (bỏ trống = ẩn)",
+   "scene": "S06",
+   "value": ""
+  },
+  "S06_address": {
+   "label": "Địa chỉ (bỏ trống = ẩn)",
+   "scene": "S06",
+   "value": "Torstraße 12, Berlin"
+  },
+  "S07_logo": {
+   "label": "Logo (ảnh PNG nền trong, bỏ trống = dùng tên chữ) (bỏ trống = ẩn)",
+   "scene": "S07",
+   "value": "",
+   "type": "image"
+  },
+  "S07_name": {
+   "label": "Tên thương hiệu (khi không có logo)",
+   "scene": "S07",
+   "value": "Saigon Atelier"
+  },
+  "S07_tagline": {
+   "label": "Khẩu hiệu (*từ* = tô màu) (bỏ trống = ẩn)",
+   "scene": "S07",
+   "value": "Asiatische Küche, neu gedacht"
+  },
+  "S07_web": {
+   "label": "Website (bỏ trống = ẩn)",
+   "scene": "S07",
+   "value": "saigon-atelier.de"
+  }
+ },
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {
+   "font": "Be Vietnam Pro",
+   "weight": 700,
+   "color": "#FFFFFF",
+   "highlight": "#08DDA4",
+   "shadow": true
+  }
+ },
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "",
+   "gain": -4,
+   "edit": [],
+   "fadeOut": 2.5
+  },
+  "cues": [
+   {
+    "t": 0.25,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S01 mảnh 1"
+   },
+   {
+    "t": 1.25,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S01 mảnh cuối"
+   },
+   {
+    "t": 4.033,
+    "sfx": "whoosh_a",
+    "gain": -18,
+    "label": "S02 ảnh món"
+   },
+   {
+    "t": 6.033,
+    "sfx": "pop",
+    "gain": -14,
+    "label": "S02 giá"
+   },
+   {
+    "t": 9.283,
+    "sfx": "whoosh_c",
+    "gain": -20,
+    "label": "S03 ảnh 1"
+   },
+   {
+    "t": 10.033,
+    "sfx": "whoosh_c",
+    "gain": -20,
+    "label": "S03 ảnh 3"
+   },
+   {
+    "t": 14.533,
+    "sfx": "pop",
+    "gain": -20,
+    "label": "S04 sao"
+   },
+   {
+    "t": 15.533,
+    "sfx": "whoosh_a",
+    "gain": -22,
+    "label": "S04 lời khách"
+   },
+   {
+    "t": 19.283,
+    "sfx": "sub_hit",
+    "gain": -12,
+    "label": "S05 huy hiệu"
+   },
+   {
+    "t": 21.533,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S05 thời hạn"
+   },
+   {
+    "t": 24.283,
+    "sfx": "whoosh_b",
+    "gain": -18,
+    "label": "S06 vào"
+   },
+   {
+    "t": 25.533,
+    "sfx": "pop",
+    "gain": -12,
+    "label": "S06 nút"
+   },
+   {
+    "t": 28.283,
+    "sfx": "sub_hit",
+    "gain": -14,
+    "label": "S07 logo"
+   }
+  ]
+ }
+}

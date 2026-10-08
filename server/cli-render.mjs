@@ -10,6 +10,7 @@
 //   node server/cli-render.mjs <thư mục dự án> --request "<nguyên văn lời Tuấn>" [--ratio 9:16] [--res 540p|FHD|2K|4K]
 //        [--preset reels-9x16|feed-4x5|square-1x1|yt-16x9|yt-4k|ads-light|master-prores|review-540p] (lib/presets.json)
 //        [--fps 24|30|60] [--codec h264|h265|prores] [--scene S03] [--gpu auto|off] [--name …] [--draft] [--no-wait]
+//        [--engine native]   1.0: Hyperframes thuần, không cần Remotion (chỉ dự án toàn cảnh HTML; xem server/hf-native.mjs)
 //
 // Studio đang mở → lượt xuất vào hàng đợi của Studio (thấy trong tab Xuất, dừng/huỷ được, không tranh GPU).
 // Studio đang tắt → render ngay trong tiến trình này. Chờ xong mới thoát (chạy nền trong Claude Code để khỏi tốn token).
@@ -59,6 +60,7 @@ if (o.preset) { // lib/presets.json (0.9): ratio + res + fps + codec + crf in on
   for (const k of ['ratio', 'res', 'fps', 'codec', 'crf']) if (pr[k] != null) opts[k] = pr[k];
 }
 if (o.ratio) opts.ratio = String(o.ratio); if (o.res) opts.res = String(o.res); if (o.fps) opts.fps = +o.fps; if (o.codec) opts.codec = String(o.codec);
+if (o.engine) opts.engine = String(o.engine) === 'native' ? 'native' : 'remotion';
 if (o.gpu) opts.gpu = String(o.gpu); if (o.name) opts.name = String(o.name); if (o.scene) opts.scope = String(o.scene);
 if (o.draft) Object.assign(opts, {res: '540p', crf: 28, name: (o.name || pj.name) + '_nhap'});
 if (opts.ratio && !(pj.formats || []).includes(opts.ratio) && pj.type !== 'carousel') console.error(`! Dự án chưa có bố cục ${opts.ratio}: xuất ở chế độ vừa khung.`);

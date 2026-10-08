@@ -1,4 +1,6 @@
 // Music beat-grid analysis (same algorithm as the kit's tools/music-grid.mjs; idea from HyperFrames student kit, MIT).
+import fs from 'fs';
+import {Worker, isMainThread, parentPort, workerData} from 'worker_threads';
 import {ff} from './ffmpeg.mjs';
 export const analyzeMusic = (file, FPS = 30) => {
   const SR = 11025;
@@ -48,3 +50,16 @@ export const analyzeMusic = (file, FPS = 30) => {
     drops: inner.filter(([s, e]) => e - s >= 4).map(([, e]) => at(e)), breaks: inner.filter(([s, e]) => e - s < 4).map(([s, e]) => ({from: at(s), to: at(e)})),
     finalHit: at(finalHit), quietAt: +(off + (lastLoud + 1) * period).toFixed(2), bars};
 };
+
+/** 1.0: same analysis in a worker thread (decode + BPM sweep take seconds → never block the Studio server); cached by file + mtime */
+const cache = new Map();
+export const analyzeMusicAsync = (file, FPS = 30) => {
+  let key; try { const st = fs.statSync(file); key = file + '|' + st.mtimeMs + '|' + st.size + '|' + FPS; } catch { key = null; }
+  if (key && cache.has(key)) return Promise.resolve(cache.get(key));
+  return new Promise((ok, bad) => {
+    const w = new Worker(new URL(import.meta.url), {workerData: {file, FPS}});
+    w.once('message', (m) => { if (m.error) return bad(new Error(m.error)); if (key) { cache.set(key, m.result); if (cache.size > 50) cache.delete(cache.keys().next().value); } ok(m.result); });
+    w.once('error', bad); w.once('exit', (c) => { if (c) bad(new Error('Phân tích nhạc dừng (mã ' + c + ')')); });
+  });
+};
+if (!isMainThread && workerData?.file) { try { parentPort.postMessage({result: analyzeMusic(workerData.file, workerData.FPS)}); } catch (e) { parentPort.postMessage({error: e.message}); } }

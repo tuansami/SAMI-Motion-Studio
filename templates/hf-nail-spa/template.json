@@ -1,0 +1,43 @@
+{
+ "id": "hf-nail-spa",
+ "name": "Nail / Spa: dịch vụ + đặt lịch (khuôn)",
+ "version": "1.0.0",
+ "studio": ">=1.0.0",
+ "category": "nail",
+ "goal": [
+  "gioi-thieu",
+  "uu-dai"
+ ],
+ "description": "Video tiệm nail / spa dựng từ khuôn: hook, vấn đề, 3 lợi ích, số liệu, đánh giá, ngày ưu đãi, chat đặt lịch, kêu gọi, thẻ kết. Toàn cảnh HTML.",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "duration": 43,
+ "bpm": 120,
+ "languages": [
+  "de"
+ ],
+ "thumbFrame": 181,
+ "author": "SAMI Marketing Agency",
+ "license": "internal",
+ "tags": [
+  "khuon",
+  "nail",
+  "spa",
+  "booking",
+  "de"
+ ],
+ "engine": "hyperframes",
+ "khuon": [
+  "hook-words",
+  "problem-stamp",
+  "benefits-3",
+  "stat-counter",
+  "review-quote",
+  "calendar-date",
+  "chat-whatsapp",
+  "cta-contact",
+  "endcard-logo"
+ ]
+}

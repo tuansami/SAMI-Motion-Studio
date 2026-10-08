@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_fonts/caveat/700.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn problem-stamp · nỗi đau → lý do có mũi tên đỏ xuống → con dấu đóng mạnh. */
+  #wrap { position: absolute; top: var(--safe-top); bottom: var(--safe-bottom); left: calc(var(--safe-side) + 60px); right: var(--safe-side); display: flex; flex-direction: column; justify-content: center; }
+  #head { font-size: 124px; max-width: 1100px; margin-bottom: 56px; }
+  .p { display: flex; align-items: center; gap: 22px; font-family: var(--k-hand); font-weight: 700; color: var(--k-accent); font-size: 72px; line-height: 1.15; margin: 8px 0; }
+  .p .k-ico { width: .8em; height: .8em; }
+  #stampw { position: absolute; right: 9%; top: 50%; margin-top: -90px; }
+  .k-stamp { font-size: 96px; }
+  [data-ratio="9x16"] #wrap { left: calc(var(--safe-side) + 10px); bottom: calc(var(--safe-bottom) + 260px); }
+  [data-ratio="9x16"] #head { font-size: 124px; }
+  [data-ratio="9x16"] .p { font-size: 80px; }
+  [data-ratio="9x16"] #stampw { right: auto; left: 0; width: 100%; text-align: center; top: auto; bottom: calc(var(--safe-bottom) + 60px); margin: 0; }
+  [data-ratio="9x16"] .k-stamp { font-size: 120px; }
+  [data-ratio="1x1"] #head, [data-ratio="4x5"] #head { font-size: 92px; }
+  [data-ratio="1x1"] .p, [data-ratio="4x5"] .p { font-size: 56px; }
+  [data-ratio="1x1"] #stampw, [data-ratio="4x5"] #stampw { right: 6%; top: auto; bottom: calc(var(--safe-bottom) + 30px); }
+  [data-ratio="1x1"] .k-stamp, [data-ratio="4x5"] .k-stamp { font-size: 76px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02">
+  <div class="k-stage">
+    <div id="shake" class="k-layer">
+      <div id="wrap">
+        <div id="head" class="k-head" data-slot="headline"></div>
+        <div class="p" id="p1"><span data-ico="down"></span><span data-slot="p1"></span></div>
+        <div class="p" id="p2"><span data-ico="down"></span><span data-slot="p2"></span></div>
+        <div class="p" id="p3"><span data-ico="down"></span><span data-slot="p3" data-optional></span></div>
+      </div>
+      <div id="stampw"><div class="k-stamp" data-slot="stamp"></div></div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind().icons(), tl = S.timeline();
+  if (!K.has('p3')) document.getElementById('p3').style.display = 'none';
+  S.arrive(tl, S.words(document.getElementById('head')), S.beat(0), {stagger: .14, dur: .5});
+  const ps = ['#p1', '#p2', '#p3'].filter((q) => document.querySelector(q).style.display !== 'none');
+  ps.forEach((q, i) => tl.fromTo(q, {opacity: 0, x: -40}, {opacity: 1, x: 0, duration: .5}, S.beat(1.5 + i * 1.25)));
+  K.slam(tl, '.k-stamp', S.beat(6), '#shake');
+  K.push(tl, '#wrap', .03);
+</script>
+</body>
+</html>

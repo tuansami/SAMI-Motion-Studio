@@ -28,9 +28,10 @@
 <!-- HOME ------------------------------------------------------------ -->
 <main id="home" class="home">
   <section>
-    <h2 class="row" style="justify-content:space-between">Dự án gần đây <span class="row"><button id="btnNewCarousel" class="small" title="Carousel động cho Instagram/Facebook: mỗi slide một video lặp 4:5 có tiếng">＋ Tạo carousel</button> <button id="btnNewVideo" class="small">＋ Tạo video</button></span></h2>
+    <h2 class="row" style="justify-content:space-between">Dự án <span class="row"><button id="btnNewCarousel" class="small" title="Carousel động cho Instagram/Facebook: mỗi slide một video lặp 4:5 có tiếng">＋ Tạo carousel</button> <button id="btnNewVideo" class="small">＋ Tạo video</button></span></h2>
+    <div id="projTools" class="projTools"></div>
     <div id="selBar" class="selBar" hidden></div>
-    <div id="recent" class="cards"></div>
+    <div id="recent"></div>
     <div class="row gap">
       <button id="btnOpenFolder" class="primary">📂 Mở thư mục dự án…</button>
       <input id="openPath" placeholder="hoặc dán đường dẫn thư mục, ví dụ D:\Video\du-an-a" style="flex:1">
@@ -108,7 +109,7 @@
 </main>
 
 <div id="toast" class="toast" hidden></div>
-<div id="modal" class="modal" hidden><div class="box"><div id="modalBody"></div><div class="row end"><button id="modalClose">Đóng</button></div></div></div>
+<div id="modal" class="modal" hidden><div class="box"><button id="modalX" class="modalX" title="Đóng (Esc)" aria-label="Đóng">✕</button><div id="modalBody"></div><div class="row end"><button id="modalClose">Đóng</button></div></div></div>
 <input type="file" id="filePick" hidden>
 <script src="/ui/app.js"></script>
 </body>

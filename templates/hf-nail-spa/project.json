@@ -1,0 +1,512 @@
+{
+ "name": "Nail / Spa: dịch vụ + đặt lịch (khuôn)",
+ "client": "",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {},
+ "look": {
+  "grain": 0.05,
+  "vignette": 0.4,
+  "theme": "light"
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook",
+   "start": 0,
+   "end": 121,
+   "engine": "hyperframes",
+   "src": "hf/S01.html",
+   "khuon": {
+    "id": "hook-words",
+    "v": 1
+   }
+  },
+  {
+   "id": "S02",
+   "label": "Vấn đề",
+   "start": 121,
+   "end": 271,
+   "engine": "hyperframes",
+   "src": "hf/S02.html",
+   "khuon": {
+    "id": "problem-stamp",
+    "v": 1
+   }
+  },
+  {
+   "id": "S03",
+   "label": "Lợi ích",
+   "start": 271,
+   "end": 451,
+   "engine": "hyperframes",
+   "src": "hf/S03.html",
+   "khuon": {
+    "id": "benefits-3",
+    "v": 1
+   }
+  },
+  {
+   "id": "S04",
+   "label": "Số liệu",
+   "start": 451,
+   "end": 571,
+   "engine": "hyperframes",
+   "src": "hf/S04.html",
+   "khuon": {
+    "id": "stat-counter",
+    "v": 1
+   }
+  },
+  {
+   "id": "S05",
+   "label": "Đánh giá",
+   "start": 571,
+   "end": 721,
+   "engine": "hyperframes",
+   "src": "hf/S05.html",
+   "khuon": {
+    "id": "review-quote",
+    "v": 1
+   }
+  },
+  {
+   "id": "S06",
+   "label": "Ngày ưu đãi",
+   "start": 721,
+   "end": 871,
+   "engine": "hyperframes",
+   "src": "hf/S06.html",
+   "khuon": {
+    "id": "calendar-date",
+    "v": 1
+   }
+  },
+  {
+   "id": "S07",
+   "label": "Đặt lịch",
+   "start": 871,
+   "end": 1051,
+   "engine": "hyperframes",
+   "src": "hf/S07.html",
+   "khuon": {
+    "id": "chat-whatsapp",
+    "v": 1
+   }
+  },
+  {
+   "id": "S08",
+   "label": "Kêu gọi",
+   "start": 1051,
+   "end": 1171,
+   "engine": "hyperframes",
+   "src": "hf/S08.html",
+   "khuon": {
+    "id": "cta-contact",
+    "v": 1
+   }
+  },
+  {
+   "id": "S09",
+   "label": "Kết",
+   "start": 1171,
+   "end": 1291,
+   "engine": "hyperframes",
+   "src": "hf/S09.html",
+   "khuon": {
+    "id": "endcard-logo",
+    "v": 1
+   }
+  }
+ ],
+ "copy": {
+  "S01_label": {
+   "label": "Nhãn nhỏ phía trên (bỏ trống = ẩn)",
+   "scene": "S01",
+   "value": "NAIL STUDIO · BERLIN"
+  },
+  "S01_headline": {
+   "label": "Câu hook (*từ* = tô màu, / = xuống dòng)",
+   "scene": "S01",
+   "value": "Deine Nägel / verdienen *mehr.*",
+   "hint": "≤ 8 từ"
+  },
+  "S01_sub": {
+   "label": "Dòng phụ (bỏ trống = ẩn)",
+   "scene": "S01",
+   "value": ""
+  },
+  "S02_headline": {
+   "label": "Nỗi đau (*từ* = tô màu)",
+   "scene": "S02",
+   "value": "Kennst du *das?*"
+  },
+  "S02_p1": {
+   "label": "Lý do 1",
+   "scene": "S02",
+   "value": "Lack splittert nach 3 Tagen"
+  },
+  "S02_p2": {
+   "label": "Lý do 2",
+   "scene": "S02",
+   "value": "Termin erst in 2 Wochen"
+  },
+  "S02_p3": {
+   "label": "Lý do 3 (bỏ trống = ẩn)",
+   "scene": "S02",
+   "value": "Niemand hört zu"
+  },
+  "S02_stamp": {
+   "label": "Chữ trên con dấu",
+   "scene": "S02",
+   "value": "Nicht bei uns",
+   "hint": "1 đến 2 từ"
+  },
+  "S03_title": {
+   "label": "Tiêu đề (*từ* = tô màu)",
+   "scene": "S03",
+   "value": "Bei uns *anders*"
+  },
+  "S03_b1": {
+   "label": "Lợi ích 1",
+   "scene": "S03",
+   "value": "Hält 3 Wochen, garantiert"
+  },
+  "S03_b2": {
+   "label": "Lợi ích 2",
+   "scene": "S03",
+   "value": "Termin online in 30 Sekunden"
+  },
+  "S03_b3": {
+   "label": "Lợi ích 3",
+   "scene": "S03",
+   "value": "Beratung vor jedem Design"
+  },
+  "S03_b4": {
+   "label": "Lợi ích 4 (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": ""
+  },
+  "S04_label": {
+   "label": "Nhãn nhỏ (bỏ trống = ẩn)",
+   "scene": "S04",
+   "value": "GEL-MANIKÜRE"
+  },
+  "S04_number": {
+   "label": "Con số (vd 87 hoặc 4,8)",
+   "scene": "S04",
+   "value": "21",
+   "type": "number"
+  },
+  "S04_prefix": {
+   "label": "Trước số (vd +, €) (bỏ trống = ẩn)",
+   "scene": "S04",
+   "value": ""
+  },
+  "S04_suffix": {
+   "label": "Sau số (vd %, ×, k)",
+   "scene": "S04",
+   "value": " Tage"
+  },
+  "S04_caption": {
+   "label": "Chú thích (*từ* = tô màu)",
+   "scene": "S04",
+   "value": "hält unser Gel *mindestens*"
+  },
+  "S04_source": {
+   "label": "Nguồn (bỏ trống = ẩn)",
+   "scene": "S04",
+   "value": "Beispielwert, vor Veröffentlichung prüfen"
+  },
+  "S05_quote": {
+   "label": "Lời đánh giá (*từ* = tô màu)",
+   "scene": "S05",
+   "value": "Super sauber, super freundlich und die Nägel halten ewig.",
+   "hint": "≤ 20 từ"
+  },
+  "S05_author": {
+   "label": "Người viết",
+   "scene": "S05",
+   "value": "Sophie K."
+  },
+  "S05_meta": {
+   "label": "Nguồn / thời gian",
+   "scene": "S05",
+   "value": "Google"
+  },
+  "S05_rating": {
+   "label": "Số sao (1 đến 5)",
+   "scene": "S05",
+   "value": "5",
+   "type": "number"
+  },
+  "S05_headline": {
+   "label": "Câu phía trên (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": ""
+  },
+  "S06_month": {
+   "label": "Tên tháng hiển thị",
+   "scene": "S06",
+   "value": "November"
+  },
+  "S06_month_num": {
+   "label": "Tháng (1 đến 12, để xếp ngày đúng thứ)",
+   "scene": "S06",
+   "value": "11",
+   "type": "number"
+  },
+  "S06_year": {
+   "label": "Năm (vd 2026)",
+   "scene": "S06",
+   "value": "2026",
+   "type": "number"
+  },
+  "S06_day": {
+   "label": "Ngày khoanh tròn",
+   "scene": "S06",
+   "value": "14",
+   "type": "number"
+  },
+  "S06_headline": {
+   "label": "Câu chốt (*từ* = tô màu)",
+   "scene": "S06",
+   "value": "Ladies Day: / *-20%* auf alles"
+  },
+  "S06_sub": {
+   "label": "Dòng viết tay (bỏ trống = ẩn)",
+   "scene": "S06",
+   "value": "nur mit Termin"
+  },
+  "S07_headline": {
+   "label": "Câu dẫn (*từ* = tô màu) (bỏ trống = ẩn)",
+   "scene": "S07",
+   "value": "Termin per *WhatsApp*"
+  },
+  "S07_name": {
+   "label": "Tên người nhắn",
+   "scene": "S07",
+   "value": "Lotus Nails"
+  },
+  "S07_status": {
+   "label": "Trạng thái",
+   "scene": "S07",
+   "value": "online"
+  },
+  "S07_m1": {
+   "label": "Tin 1 (khách gửi)",
+   "scene": "S07",
+   "value": "Hallo! Habt ihr Samstag noch frei?"
+  },
+  "S07_m2": {
+   "label": "Tin 2 (trả lời)",
+   "scene": "S07",
+   "value": "Ja, 11 Uhr oder 15 Uhr 💅"
+  },
+  "S07_m3": {
+   "label": "Tin 3 (khách gửi) (bỏ trống = ẩn)",
+   "scene": "S07",
+   "value": "15 Uhr bitte!"
+  },
+  "S07_m4": {
+   "label": "Tin 4 (trả lời) (bỏ trống = ẩn)",
+   "scene": "S07",
+   "value": "Gebucht, bis Samstag!"
+  },
+  "S08_headline": {
+   "label": "Câu kêu gọi (*từ* = tô màu)",
+   "scene": "S08",
+   "value": "Jetzt *Termin sichern.*"
+  },
+  "S08_button": {
+   "label": "Chữ trên nút",
+   "scene": "S08",
+   "value": "Termin buchen"
+  },
+  "S08_web": {
+   "label": "Website (bỏ trống = ẩn)",
+   "scene": "S08",
+   "value": "lotus-nails.de"
+  },
+  "S08_phone": {
+   "label": "Điện thoại (bỏ trống = ẩn)",
+   "scene": "S08",
+   "value": ""
+  },
+  "S08_whatsapp": {
+   "label": "WhatsApp (bỏ trống = ẩn)",
+   "scene": "S08",
+   "value": "0176 1234 5678"
+  },
+  "S08_address": {
+   "label": "Địa chỉ (bỏ trống = ẩn)",
+   "scene": "S08",
+   "value": "Kantstraße 8, Berlin"
+  },
+  "S09_logo": {
+   "label": "Logo (ảnh PNG nền trong, bỏ trống = dùng tên chữ) (bỏ trống = ẩn)",
+   "scene": "S09",
+   "value": "",
+   "type": "image"
+  },
+  "S09_name": {
+   "label": "Tên thương hiệu (khi không có logo)",
+   "scene": "S09",
+   "value": "Lotus Nails"
+  },
+  "S09_tagline": {
+   "label": "Khẩu hiệu (*từ* = tô màu) (bỏ trống = ẩn)",
+   "scene": "S09",
+   "value": "Nails · Spa · Beauty"
+  },
+  "S09_web": {
+   "label": "Website (bỏ trống = ẩn)",
+   "scene": "S09",
+   "value": "lotus-nails.de"
+  }
+ },
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {
+   "font": "Be Vietnam Pro",
+   "weight": 700,
+   "color": "#FFFFFF",
+   "highlight": "#08DDA4",
+   "shadow": true
+  }
+ },
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "",
+   "gain": -4,
+   "edit": [],
+   "fadeOut": 2.5
+  },
+  "cues": [
+   {
+    "t": 0,
+    "sfx": "whoosh_b",
+    "gain": -18,
+    "label": "S01 vào"
+   },
+   {
+    "t": 0.5,
+    "sfx": "pop",
+    "gain": -16,
+    "label": "S01 hook"
+   },
+   {
+    "t": 4.783,
+    "sfx": "key_single",
+    "gain": -20,
+    "label": "S02 lý do"
+   },
+   {
+    "t": 7.033,
+    "sfx": "sub_hit",
+    "gain": -10,
+    "label": "S02 con dấu"
+   },
+   {
+    "t": 10.033,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S03 thẻ 1"
+   },
+   {
+    "t": 10.783,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S03 thẻ 2"
+   },
+   {
+    "t": 11.533,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S03 thẻ 3"
+   },
+   {
+    "t": 15.283,
+    "sfx": "whoosh_a",
+    "gain": -20,
+    "label": "S04 vòng"
+   },
+   {
+    "t": 16.533,
+    "sfx": "pop",
+    "gain": -14,
+    "label": "S04 số xong"
+   },
+   {
+    "t": 19.533,
+    "sfx": "pop",
+    "gain": -20,
+    "label": "S05 sao"
+   },
+   {
+    "t": 20.533,
+    "sfx": "whoosh_a",
+    "gain": -22,
+    "label": "S05 lời khách"
+   },
+   {
+    "t": 24.033,
+    "sfx": "whoosh_c",
+    "gain": -18,
+    "label": "S06 tờ lịch"
+   },
+   {
+    "t": 25.533,
+    "sfx": "key_single",
+    "gain": -18,
+    "label": "S06 khoanh"
+   },
+   {
+    "t": 29.533,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S07 tin 1"
+   },
+   {
+    "t": 31.033,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S07 tin 2"
+   },
+   {
+    "t": 32.533,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S07 tin 3"
+   },
+   {
+    "t": 35.283,
+    "sfx": "whoosh_b",
+    "gain": -18,
+    "label": "S08 vào"
+   },
+   {
+    "t": 36.533,
+    "sfx": "pop",
+    "gain": -12,
+    "label": "S08 nút"
+   },
+   {
+    "t": 39.283,
+    "sfx": "sub_hit",
+    "gain": -14,
+    "label": "S09 logo"
+   }
+  ]
+ }
+}

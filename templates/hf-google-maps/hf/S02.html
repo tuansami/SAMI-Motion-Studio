@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn stat-counter · vòng tròn tự vẽ + số đếm lên + chú thích. Ngang: vòng trái, chữ phải; dọc: chồng lên nhau. */
+  #wrap { position: absolute; top: var(--safe-top); bottom: var(--safe-bottom); left: var(--safe-side); right: var(--safe-side); display: flex; align-items: center; justify-content: center; gap: 100px; }
+  #ringw { position: relative; width: 640px; height: 640px; flex: none; }
+  #ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+  #ring circle { fill: none; stroke-width: 26; stroke-linecap: round; }
+  #ring .bg { stroke: var(--k-cardLine); }
+  #ring .fg { stroke: var(--k-accent); }
+  #num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--k-head); font-weight: var(--k-weight); letter-spacing: -0.05em; font-size: 230px; color: var(--k-ink); font-variant-numeric: tabular-nums; }
+  #txt { max-width: 760px; display: flex; flex-direction: column; gap: 30px; }
+  #label { font-size: 30px; }
+  #cap { font-size: 84px; }
+  #src { font-size: 30px; font-family: var(--k-mono); color: var(--k-sub); }
+  [data-ratio="9x16"] #wrap { flex-direction: column; gap: 70px; text-align: center; }
+  [data-ratio="9x16"] #ringw { width: 700px; height: 700px; }
+  [data-ratio="9x16"] #num { font-size: 250px; }
+  [data-ratio="9x16"] #txt { max-width: 900px; align-items: center; }
+  [data-ratio="9x16"] #cap { font-size: 84px; }
+  [data-ratio="1x1"] #wrap, [data-ratio="4x5"] #wrap { flex-direction: column; gap: 40px; text-align: center; }
+  [data-ratio="1x1"] #ringw, [data-ratio="4x5"] #ringw { width: 480px; height: 480px; }
+  [data-ratio="1x1"] #num, [data-ratio="4x5"] #num { font-size: 170px; }
+  [data-ratio="1x1"] #txt, [data-ratio="4x5"] #txt { align-items: center; gap: 18px; }
+  [data-ratio="1x1"] #cap, [data-ratio="4x5"] #cap { font-size: 58px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02">
+  <div class="k-stage">
+    <div id="wrap" class="k-layer">
+      <div id="ringw"><svg id="ring" viewBox="0 0 200 200"><circle class="bg" cx="100" cy="100" r="86" pathLength="1000"/><circle class="fg" cx="100" cy="100" r="86" pathLength="1000"/></svg><div id="num"></div></div>
+      <div id="txt">
+        <div id="label" class="k-label" data-slot="label" data-optional></div>
+        <div id="cap" class="k-head" data-slot="caption"></div>
+        <div id="src" data-slot="source" data-optional></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind(), tl = S.timeline();
+  const raw = K.raw('number'), to = K.num('number', 0), comma = /\d,\d/.test(raw), pct = /%/.test(K.raw('suffix'));
+  const num = document.getElementById('num');
+  K.count(tl, num, to, S.beat(.5), 2.2, {prefix: K.text('prefix'), suffix: K.text('suffix'), comma, sep: to >= 10000 ? '.' : ''});
+  // vòng: phần trăm thì chạy đúng tỉ lệ, số khác thì chạy đủ vòng
+  const fg = document.querySelector('.fg'), frac = pct ? Math.max(.02, Math.min(1, to / 100)) : 1;
+  fg.style.strokeDasharray = '1000'; tl.fromTo(fg, {strokeDashoffset: 1000}, {strokeDashoffset: 1000 * (1 - frac), duration: 2.2}, S.beat(.5));
+  tl.fromTo('#ringw', {scale: .85, opacity: 0}, {scale: 1, opacity: 1, duration: .6}, S.beat(0));
+  if (K.has('label')) S.arrive(tl, '#label', S.beat(1), {dist: 16});
+  S.arrive(tl, S.words(document.getElementById('cap')), S.beat(1.5), {stagger: .1, dur: .5});
+  if (K.has('source')) S.arrive(tl, '#src', S.beat(4), {dist: 12, blur: 4});
+  K.push(tl, '#wrap', .03);
+</script>
+</body>
+</html>

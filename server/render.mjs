@@ -18,6 +18,7 @@ import {readProject, codeHash} from './project.mjs';
 import {hasFootage, serveMedia} from './footage.mjs';
 import {gpuEncoders, capsReady, ffAsync, fprobeAsync, normalizeLoudness, probeEncoder} from './ffmpeg.mjs';
 import {DATA} from './paths.mjs';
+import {runNative} from './hf-native.mjs';
 
 export const SCALE = {'540p': 0.5, FHD: 1, '2K': 4 / 3, '4K': 2};
 const BITRATE = {'540p': '4M', FHD: '16M', '2K': '28M', '4K': '55M'}; // GPU (NVENC ignores CRF)
@@ -198,6 +199,10 @@ const run = async (j) => {
   const o = j.opts;
   j.status = 'running'; j.started = Date.now(); j.stage = 'Chuẩn bị'; j.note = null; emit();
   { const pj = readProject(o.dir); if (isCarousel(pj)) return runCarouselJob(j, pj); }
+  if (o.engine === 'native') { // 1.0: Hyperframes only, no Remotion (server/hf-native.mjs)
+    const caps = await capsReady(); const threads = Math.max(1, Math.min(+o.threads || 8, os.cpus().length));
+    return runNative(j, applyCopy(readProject(o.dir), o.copyOverride), {emit, scale: o.res === '4K' ? 2 : 1, gpu: o.gpu !== 'off' && !!caps.full?.nvenc, workers: Math.max(1, Math.min(4, Math.floor(threads / 2)))});
+  }
   const scene = o.scope && o.scope !== 'all' ? o.scope : null;
   const fps = +o.fps;
   const hfClips = await renderHfClips(j, applyCopy(readProject(o.dir), o.copyOverride), {ratio: o.ratio, fps, scene});

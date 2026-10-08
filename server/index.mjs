@@ -10,7 +10,7 @@ import {readProject, writeProject, syncEngineAssets} from './project.mjs';
 import {previewBundle} from './preview.mjs';
 import {addJob, cancelJob, clearDone, resumeJob, stopAll, killOrphans, publicJobs, jobs, onJobs} from './render.mjs';
 import {validateProject} from './validate.mjs';
-import {analyzeMusic} from './audio.mjs';
+import {analyzeMusicAsync} from './audio.mjs';
 import {importAssets, listAssets} from './assets.mjs';
 import {listTemplates, checkTemplate, saveAsTemplate, importTemplate, exportTemplate, tplDir, setSharedRoots, CATEGORIES, GOALS} from './template.mjs';
 import {gpuEncoders, gpuDiagnose, FFMPEG, refreshCaps, caps} from './ffmpeg.mjs';
@@ -26,6 +26,7 @@ import {agentReady} from 'sami-media/agent';
 import {recycle} from './trash.mjs';
 import {listKhuon, applyKhuon, KHUON_DIR, GROUPS as KHUON_GROUPS, THEMES} from './khuon.mjs';
 import * as footage from './footage.mjs';
+import {support as nativeSupport} from './hf-native.mjs';
 import {linkOrCopy} from './fslink.mjs';
 import {probeGpu, gpuInfo} from './gpu.mjs';
 
@@ -34,6 +35,7 @@ if (!caps()) refreshCaps(); // async NVENC/filter probe → .studio/caps.json (0
 probeGpu().catch(() => {}); // card name + driver for the Xuất tab
 fs.mkdirSync(DATA, {recursive: true});
 const SETTINGS = path.join(DATA, 'settings.json');
+const BOOT_VERSION = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version; // the UI warns when the running server is older than the files on disk
 const DEFAULT_RENDER = {threads: Math.min(8, os.cpus().length), gpu: 'auto', res: 'FHD', fps: 30, codec: 'h264', crf: 18, priority: 'normal', titles: true, subtitles: true, audio: true, loudness: -14};
 const loadSettings = () => { try { return {recent: [], render: DEFAULT_RENDER, projectsRoot: DEFAULT_PROJECTS, ...JSON.parse(fs.readFileSync(SETTINGS, 'utf8'))}; } catch { return {recent: [], render: DEFAULT_RENDER, projectsRoot: DEFAULT_PROJECTS}; } };
 const saveSettings = (s) => fs.writeFileSync(SETTINGS, JSON.stringify(s, null, 1));
@@ -48,7 +50,7 @@ const register = (dir) => { const d = path.resolve(dir); const id = idOf(d); dir
 for (const r of settings.recent) if (fs.existsSync(path.join(r.dir, 'project.json'))) register(r.dir);
 const samePath = (a, b) => idOf(a) === idOf(b); // Windows paths are case-insensitive
 const touchRecent = (dir, name) => {
-  settings.recent = [{dir: path.resolve(dir), name, opened: new Date().toISOString()}, ...settings.recent.filter((r) => !samePath(r.dir, dir))].slice(0, 20);
+  settings.recent = [{dir: path.resolve(dir), name, opened: new Date().toISOString()}, ...settings.recent.filter((r) => !samePath(r.dir, dir))].slice(0, 500); // 1.0: keep every project (the home page groups / filters them)
   saveSettings(settings);
 };
 settings.recent = settings.recent.filter((r, i, a) => a.findIndex((x) => samePath(x.dir, r.dir)) === i); // drop case-variant duplicates
@@ -111,10 +113,11 @@ const pickFolder = async () => {
   const ps = "Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.FolderBrowserDialog; $f.ShowNewFolderButton = $true; $w = New-Object System.Windows.Forms.Form; $w.TopMost = $true; $f.Description = 'Chon thu muc'; if ($f.ShowDialog($w) -eq 'OK') { [Console]::OutputEncoding = [Text.Encoding]::UTF8; Write-Output $f.SelectedPath }";
   return runPs(ps);
 };
-const pickFile = async (filter) => {
+const pickFile = async (filter, multi = false) => {
   if (process.platform !== 'win32') return null;
-  const ps = `Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.OpenFileDialog; $f.Filter = '${filter.replace(/'/g, '')}'; $w = New-Object System.Windows.Forms.Form; $w.TopMost = $true; if ($f.ShowDialog($w) -eq 'OK') { [Console]::OutputEncoding = [Text.Encoding]::UTF8; Write-Output $f.FileName }`;
-  return runPs(ps);
+  const ps = `Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.OpenFileDialog; $f.Filter = '${filter.replace(/'/g, '')}'; $f.Multiselect = $${multi ? 'true' : 'false'}; $w = New-Object System.Windows.Forms.Form; $w.TopMost = $true; if ($f.ShowDialog($w) -eq 'OK') { [Console]::OutputEncoding = [Text.Encoding]::UTF8; $f.FileNames | ForEach-Object { Write-Output $_ } }`;
+  const out = await runPs(ps); const L = out ? out.split(/\r?\n/).filter(Boolean) : [];
+  return multi ? L : L[0] || null;
 };
 const copyDir = (s, d, skip = () => false) => {
   fs.mkdirSync(d, {recursive: true});
@@ -322,6 +325,21 @@ const server = http.createServer(async (req, res) => {
     m = p.match(/^\/lib\/(.+)$/);
     if (m) { const f = library.resolveLib('lib:' + m[1]); if (!f) { res.writeHead(403); return res.end(); } return sendFile(req, res, f); }
     // ── project management: remove from list / move to the Windows Recycle Bin (restorable) ──
+    // 1.0: tags (stored in project.json → travel with the project) and "ẩn khỏi trang chủ" (per machine, settings.listHidden)
+    if (p === '/api/project/meta' && req.method === 'POST') {
+      const b = await jbody(req); const out = [];
+      for (const id of b.ids || []) {
+        const dir = dirs.get(id); if (!dir) { out.push({id, error: 'không rõ dự án'}); continue; }
+        if ('hidden' in b) settings.listHidden = b.hidden ? [...new Set([...(settings.listHidden || []), path.resolve(dir)])] : (settings.listHidden || []).filter((d) => !samePath(d, dir));
+        if (b.addTag || b.removeTag || Array.isArray(b.tags)) {
+          const pj = readProject(dir); let t = Array.isArray(b.tags) ? b.tags : (Array.isArray(pj.tags) ? pj.tags : []);
+          if (b.addTag) t = [...t, ...String(b.addTag).split(',')]; if (b.removeTag) t = t.filter((x) => x !== b.removeTag);
+          pj.tags = [...new Set(t.map((x) => String(x).trim()).filter(Boolean))]; writeProject(dir, pj);
+        }
+        out.push({id, ok: true});
+      }
+      saveSettings(settings); return json(res, {results: out});
+    }
     if (p === '/api/project/remove' && req.method === 'POST') {
       const b = await jbody(req); const out = [];
       for (const id of b.ids || []) {
@@ -424,9 +442,18 @@ const server = http.createServer(async (req, res) => {
       sse.add(res); const hb = setInterval(() => res.write(`event: ping\ndata: ${Date.now()}\n\n`), 10000); req.on('close', () => { clearInterval(hb); sse.delete(res); }); return;
     }
     if (p === '/api/state') {
-      const recent = settings.recent.filter((r) => fs.existsSync(path.join(r.dir, 'project.json'))).map((r) => { let status = 'draft', type = null; try { const pj = readProject(r.dir); status = pj.status || 'draft'; type = pj.type || null; } catch {} const l = readLock(r.dir); return {...r, id: register(r.dir), status, type, lockedBy: l && !isMine(l) && lockAlive(l) ? l : null}; });
+      const hiddenSet = new Set((settings.listHidden || []).map((d) => idOf(d)));
+      const recent = settings.recent.filter((r) => fs.existsSync(path.join(r.dir, 'project.json'))).map((r) => {
+        let status = 'draft', type = null, meta = {};
+        try {
+          const pj = readProject(r.dir); status = pj.status || 'draft'; type = pj.type || null;
+          const st = fs.statSync(path.join(r.dir, 'project.json'));
+          meta = {client: pj.client || '', tags: Array.isArray(pj.tags) ? pj.tags : [], scenes: (pj.scenes || []).length, seconds: Math.round((pj.scenes?.at(-1)?.end || 0) / 30), formats: pj.formats || [], created: pj.created || (st.birthtimeMs ? new Date(st.birthtimeMs).toISOString() : null), updated: new Date(st.mtimeMs).toISOString()};
+        } catch {}
+        const l = readLock(r.dir); return {...r, ...meta, id: register(r.dir), status, type, hidden: hiddenSet.has(idOf(r.dir)), lockedBy: l && !isMine(l) && lockAlive(l) ? l : null};
+      });
       const templates = listTemplates();
-      return json(res, {recent, templates, categories: CATEGORIES, goals: GOALS, render: {...DEFAULT_RENDER, ...settings.render}, cpus: os.cpus().length, cpuModel: os.cpus()[0]?.model, platform: process.platform, gpu: gpuEncoders(), caps: caps(), ffmpeg: !!FFMPEG, hyperframes: HF_VERSION, library: LIBRARY, cache: CACHE, projectsRoot: settings.projectsRoot, sharedTemplates: settings.sharedTemplates || [], gpuInfo: gpuInfo(), allowCliRender: !!settings.allowCliRender, agent: agentReady(), ffmpegFull: caps()?.full?.version?.match(/version (\S+)/)?.[1] || null, userName: userName(), host: os.hostname(), version: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version});
+      return json(res, {recent, templates, categories: CATEGORIES, goals: GOALS, render: {...DEFAULT_RENDER, ...settings.render}, cpus: os.cpus().length, cpuModel: os.cpus()[0]?.model, platform: process.platform, gpu: gpuEncoders(), caps: caps(), ffmpeg: !!FFMPEG, hyperframes: HF_VERSION, library: LIBRARY, cache: CACHE, projectsRoot: settings.projectsRoot, sharedTemplates: settings.sharedTemplates || [], gpuInfo: gpuInfo(), allowCliRender: !!settings.allowCliRender, agent: agentReady(), ffmpegFull: caps()?.full?.version?.match(/version (\S+)/)?.[1] || null, userName: userName(), host: os.hostname(), version: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version, bootVersion: BOOT_VERSION});
     }
     if (p === '/api/settings' && req.method === 'POST') { const b = await jbody(req); if ('allowCliRender' in b && !!b.allowCliRender !== !!settings.allowCliRender) fs.appendFileSync(path.join(DATA, 'cli-render.log'), JSON.stringify({ts: new Date().toISOString(), action: b.allowCliRender ? 'enable' : 'disable', via: b.via || 'studio-ui'}) + '\n'); settings = {...settings, ...b, render: {...settings.render, ...(b.render || {})}}; saveSettings(settings); setSharedRoots(settings.sharedTemplates); return json(res, {ok: true}); }
     if (p === '/api/pick-folder') { const d = await pickFolder(); return json(res, {dir: d, supported: process.platform === 'win32'}); }
@@ -476,6 +503,11 @@ const server = http.createServer(async (req, res) => {
       const src = await footage.receive(dir, req, u.searchParams.get('name'));
       return json(res, {src, task: startMediaTask(id, dir, src)});
     }
+    if (p === '/api/media/import-path' && req.method === 'POST') {
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404);
+      const out = []; for (const f of b.files || []) { try { const src = await footage.importPath(dir, f, b.sub || 'footage'); out.push({src, task: startMediaTask(b.id, dir, src)}); } catch (e) { out.push({file: f, error: e.message}); } }
+      return json(res, {items: out});
+    }
     if (p === '/api/media/prepare' && req.method === 'POST') { const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404); return json(res, {task: startMediaTask(b.id, dir, b.src)}); }
     if (p === '/api/media/adopt' && req.method === 'POST') { // a clip already in the project (stock video in public/video/…) → media/broll/ + prepare
       const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404);
@@ -497,11 +529,12 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/audio/analyze') {
       const dir = dirs.get(u.searchParams.get('id')); const f = path.join(dir, 'public', u.searchParams.get('file') || '');
       if (!fs.existsSync(f)) return json(res, {error: 'Không thấy file ' + u.searchParams.get('file')}, 400);
-      return json(res, analyzeMusic(f));
+      return json(res, await analyzeMusicAsync(f));
     }
+    if (p === '/api/render/native-check') { const dir = dirs.get(u.searchParams.get('id')); if (!dir) return json(res, {error: 'unknown'}, 404); const q = Object.fromEntries(u.searchParams); return json(res, nativeSupport(readProject(dir), {ratio: q.ratio, codec: q.codec, res: q.res, scope: q.scope})); }
     if (p === '/api/render' && req.method === 'POST') {
       const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'unknown'}, 404);
-      if (b.saveDefaults) { const {id, name, scope, ratio, saveDefaults, ...r} = b; settings.render = {...settings.render, ...r}; saveSettings(settings); }
+      if (b.saveDefaults) { const {id, name, scope, ratio, saveDefaults, engine, ...r} = b; settings.render = {...settings.render, ...r}; saveSettings(settings); }
       const v = validateProject(dir); if (v.fail.length) return json(res, {error: 'Dự án còn lỗi:\n• ' + v.fail.join('\n• ')}, 400);
       return json(res, addJob({...b, dir}));
     }
@@ -525,7 +558,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (p === '/api/template/import' && req.method === 'POST') { const b = await jbody(req); return json(res, importTemplate(b.from, {shared: !!b.shared})); }
     if (p === '/api/template/export' && req.method === 'POST') { const b = await jbody(req); const r = exportTemplate(b.tpl); openPath(path.dirname(r.out)); return json(res, r); }
-    if (p === '/api/pick-file') { const d = await pickFile(u.searchParams.get('filter') || 'Zip|*.zip'); return json(res, {file: d, supported: process.platform === 'win32'}); }
+    if (p === '/api/pick-file') { const multi = u.searchParams.get('multi') === '1'; const d = await pickFile(u.searchParams.get('filter') || 'Zip|*.zip', multi); return json(res, multi ? {files: d, supported: process.platform === 'win32'} : {file: d, supported: process.platform === 'win32'}); }
     if (p === '/api/gpu/diagnose') return json(res, await gpuDiagnose());
     if (p === '/api/render/stop-all' && req.method === 'POST') { stopAll(); return json(res, {ok: true}); }
     if (p === '/api/jobs') return json(res, publicJobs());

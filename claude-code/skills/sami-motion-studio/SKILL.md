@@ -3,7 +3,7 @@ name: sami-motion-studio
 description: Make or revise SAMI motion-graphics videos in a SAMI Motion Studio project (project.json + hf/ HTML scenes or scenes/ TSX) for 16:9/9:16/1:1/4:5 — brief, storyboard on the 120 BPM grid, Hyperframes (HTML+CSS+GSAP, default) or Remotion scenes, shared SAMI_Library assets, SFX/music cues, stills QA, Studio export (NVENC). Use for any Studio video project, template or scene.
 ---
 
-# SAMI Motion Studio (v0.6+)
+# SAMI Motion Studio (v1.0+)
 
 Premium motion ads for SAMI Marketing Agency and its hospitality clients (restaurants, nail, spa, hotels). Owner Tuấn (CEO): reply in Vietnamese, concise, push back when a request hurts conversion or brand. Write "SAMI" in capitals.
 
@@ -38,7 +38,9 @@ Both engines live in one timeline: crossfades, warp (TSX only), titles, subtitle
 | Images / video / music / voice to find or generate | `references/providers.md` (MCP `sami-media`): library → stock → browser subscriptions → paid API only after estimate + Tuấn's OK |
 | Reusable template | `<app>/docs/TEMPLATE_STANDARD.md`; `node <app>/server/cli-template.mjs check templates/<id>` without ✗ |
 | Motion carousel (Instagram/Facebook slides that move) | skill **sami-carousel** (`type: "carousel"`, one loop MP4 per slide) |
+| ANY new video, before writing scenes | **Khuôn first**: read `<app>/lib/hf/khuon/CATALOG.md` (≈ 2k tokens, every khuôn + its slots) and pick a khuôn per storyboard row; only rows no khuôn covers get hand-written HTML → `references/khuon.md` |
 | Common video (promo ~30 s, Google Maps, menu / offer) | **Dây chuyền** first: write `brief.json`, run `server/cli-pipeline.mjs` → `references/khuon.md` |
+| Any other video built from khuôn | **Dây chuyền `storyboard`**: `brief.json` = list of `{khuon, label, values}` → `cli-pipeline.mjs storyboard brief.json --out <dự án>`; add one scene later: `cli-pipeline.mjs add <dự án> <khuôn> --after S02 --values '{…}'` |
 | New scene that a khuôn already covers (hook, problem, benefits, stat, Maps, chat, phone, photos, dish, offer, review, calendar, CTA, end card) | **Khuôn** (Studio 🧩 Khuôn or `applyKhuon`), only then hand-write HTML → `references/khuon.md` |
 | Real footage: talking head, interview, B-roll, picture-in-picture, screen recording | **tracks.video** (Studio tab Footage, files in `media/`) → `references/footage.md`; captions over footage = titles |
 | Whole new video | Studio "Tạo dự án mới" from a template (`hf-starter` for HTML scenes) + client asset folder; never copy an old project |
@@ -46,8 +48,8 @@ Both engines live in one timeline: crossfades, warp (TSX only), titles, subtitle
 
 ## Workflow (⛔ = wait for OK)
 1. **Brief** ⛔: read `brief/`; ≤ 4 questions (audience/language, CTA + contact, length + ratios, which assets are real).
-2. **Script + storyboard** ⛔: `brief/SCRIPT_STORYBOARD.md`, table on the 120 BPM grid (beat = 15 base frames = 0.5 s, cuts at 15n+1): scene · seconds · on-screen copy · motion · engine · SFX. Reading time: 6–10 words ≥ 1.5 s, stat ≥ 2 s, key offer ≥ 3 s. Copy must sound spoken. No code before approval.
-3. **Data**: `project.json` scenes (contiguous, `engine`/`src` for HTML scenes), labelled copy, `formats`, audio cues (whoosh only on chapter cuts, typing in hook, pop on CTA, sub_hit on final logo).
+2. **Script + storyboard** ⛔: `brief/SCRIPT_STORYBOARD.md`, table on the 120 BPM grid (beat = 15 base frames = 0.5 s, cuts at 15n+1): scene · seconds · **khuôn** (id from CATALOG.md, or "viết tay") · on-screen copy per slot · SFX. Khuôn rows cost no scene code: the storyboard IS the build input. Reading time: 6–10 words ≥ 1.5 s, stat ≥ 2 s, key offer ≥ 3 s. Copy must sound spoken. No code before approval.
+3. **Data**: khuôn rows → `cli-pipeline.mjs storyboard` (or `add`) builds scenes + copy + SFX cues; hand-written rows: `project.json` scenes (contiguous, `engine`/`src` for HTML scenes), labelled copy, `formats`, audio cues (whoosh only on chapter cuts, typing in hook, pop on CTA, sub_hit on final logo).
 4. **Scenes**: one file each, rules per engine (references). Sequential by default; ≥ 6 new scenes AND user wants speed → workflow `.claude/workflows/sami-motion-video.js`.
 5. **QA** ⛔: `node <app>/server/cli-validate.mjs .` without ✗ → stills in every ratio `node <app>/server/cli-still.mjs . out/qa/S03.jpg 20,60,110 9:16` (HTML scenes use a fast snapshot; add `--exact` to see the final composite with titles) → Read them. Check clipping, diacritics, < 20 px text, dead frames, beat landings, invented numbers. `references/qa.md`.
 6. **Hand-off**: user exports in Studio (FHD/2K/4K, 24/30/60, NVENC). HTML scenes render once into cached clips (`public/_hf`). Don't render finals in the cloud. Update `TRANG_THAI.md`.
@@ -57,6 +59,7 @@ Both engines live in one timeline: crossfades, warp (TSX only), titles, subtitle
 - Command (run in the background, wait for the completion notice, don't poll):
   `node <app>/server/cli-render.mjs <project dir> --request "<Tuấn's request, verbatim>" [--ratio 9:16] [--res 540p|FHD|2K|4K] [--fps 30] [--codec h264|h265] [--scene S03] [--draft]`
 - It refuses unless the Studio switch "Cho phép Claude Code xuất video" (tab Xuất) is ON. If off: tell Tuấn; only if he says to turn it on: `node <app>/server/cli-render.mjs --enable --request "<his words>"`. Check with `--status`.
+- `--engine native` (1.0): export with Hyperframes only, no Remotion (client packages / licence). Only for projects whose scenes are all HTML (khuôn included), no Lottie, H.264 or ProRes, FHD or 4K. Check first in Studio tab Xuất → Bộ dựng, or `references/render-ffmpeg.md`.
 - Studio open → the job joins the Studio queue (visible, cancellable). Studio closed → renders in the CLI process. Same engine, same NVENC. Every enable/render is logged in `<app>/.studio/cli-render.log`.
 
 ## House rules

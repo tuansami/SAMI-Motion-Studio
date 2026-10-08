@@ -97,3 +97,18 @@ details.group>summary{list-style:revert}
 .estBox{margin-top:10px;border:1px solid var(--purple);border-radius:10px;padding:10px;background:rgba(118,103,254,.08)}.estBox .big{font-size:20px;font-weight:700;color:var(--mint);margin-top:2px}
 .keyRow{border-top:1px solid var(--line);padding:8px 0}.keyRow .kl{margin-bottom:4px;font-size:13px}
 .ledger{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}.ledger th,.ledger td{text-align:left;padding:3px 4px;border-bottom:1px solid var(--line)}.ledger th{color:var(--muted);font-weight:500}
+/* 1.0 — modal: nút ✕ luôn thấy, khung rộng cho Khuôn */
+.modal .box{position:relative}.modal .box.wide{max-width:min(1240px,96vw);width:96vw;max-height:90vh}
+.modalX{position:sticky;top:0;float:right;z-index:2;margin:-6px -6px 0 8px;width:34px;height:34px;padding:0;border-radius:50%;font-size:15px;background:var(--panel2)}
+.modalX:hover{border-color:var(--red);color:var(--red)}
+.khGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;max-height:66vh;overflow:auto;padding-right:4px}
+/* 1.0 — quản lý dự án */
+.projTools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}.projTools>input[type=search]{flex:1 1 260px;width:auto}.projTools>select{width:auto;flex:0 0 auto}.projTools .chk{margin:0}
+.pgroup{border-top:1px solid var(--line);padding:6px 0}.pgroup>summary{display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 2px;font-size:14px;list-style:none}.pgroup>summary::before{content:'▸';color:var(--muted);width:12px}.pgroup[open]>summary::before{content:'▾'}
+.pgroup>.cards,.pgroup>.projRows{margin:6px 0 10px}
+.projRows{display:flex;flex-direction:column;gap:4px}.card.row1{display:grid;grid-template-columns:minmax(220px,2fr) minmax(160px,1.6fr) auto;align-items:center;gap:4px 12px;padding:8px 40px 8px 12px}.card.row1 .pl1 b{margin:0}.card.row1 .ptags{grid-column:2}.card.row1 .pfoot{grid-column:3;grid-row:1;margin:0}
+.pmeta{font-size:12px;margin-top:2px}.ptags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.ptag{font-size:11px;padding:0 7px;border-radius:20px;background:rgba(118,103,254,.18);color:#C9C3FF;cursor:pointer}.ptag:hover{background:var(--purple);color:#fff}
+.pfoot{font-size:12px;margin-top:6px;display:flex;align-items:center;gap:6px}.pacts{margin-left:auto;display:flex;gap:4px;opacity:0;transition:opacity .15s}.card:hover .pacts{opacity:1}.pacts button{padding:0 6px}
+.card.hiddenP{opacity:.55;border-style:dashed}
+.srvWarn{background:#3a1d05;color:#FFD7A0;border-bottom:1px solid var(--amber);padding:8px 16px;font-size:13px}
+.ftAdd{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.ftDrop{border:2px dashed var(--line);border-radius:10px;padding:18px 12px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:8px}.ftDrop.on{border-color:var(--mint);color:var(--text)}

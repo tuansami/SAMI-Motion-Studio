@@ -1,6 +1,6 @@
 # HAND-OFF — Nâng cấp SAMI Motion Studio (v0.6 → v1.0)
 
-Cập nhật: 2026-10-08 (sau v0.8.3) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
+Cập nhật: 2026-10-08 (sau v1.0.0) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
 
 Đọc file này đầu tiên khi mở phiên mới. Trả lời Tuấn bằng tiếng Việt, ngắn gọn; viết "SAMI" in hoa; không dùng em-dash trong copy hiển thị.
 
@@ -18,7 +18,7 @@ Cập nhật: 2026-10-08 (sau v0.8.3) · Người làm: Claude Code · Chủ d�
 | **v0.8.2 Chrome SAMI, mã hoá thật, ChatGPT script, Jev, tách sami-media** | ✅ (xem CHANGELOG 0.8.2, mục 3c). Còn chờ Tuấn: đăng nhập Chrome SAMI + một lượt ChatGPT thật, điền khoá Jev, cho phép xuất 3 s thử NVENC, OK để push gói `MCP-sami-media` |
 | **v0.8.3 Khuôn + Dây chuyền** | ✅ 16 khuôn × 3 theme, 🧩 Khuôn trong Studio, dây chuyền promo / maps / menu, brand.json, sổ chi phí theo video (CHANGELOG 0.8.3, mục 3d). Tuấn bảo "triển khai, chưa push" (2026-10-08) |
 | **v0.9.0 Footage / PiP / B-roll** | ✅ tracks.video (main / broll / pip / screen), tab Footage, proxy 540p, VFR → CFR, tiếng footage + hạ nhạc, preset xuất, khối vẽ bằng code, 18 khuôn (CHANGELOG 0.9.0, mục 4). **Chờ Tuấn cho phép xuất thử** 60 s (1 chính, 2 B-roll, 1 PiP, vỗ tay kiểm lệch tiếng ≤ 1 khung, RAM < 12 GB) |
-| v1.0.0 Hoàn thiện | ⏳ **việc tiếp theo** (mục 5) |
+| **v1.0.0 Hoàn thiện** | ✅ quản lý dự án (tìm / gom / tag / ẩn), sửa hộp Khuôn + tab Footage, khuôn từ storyboard (CATALOG.md, dây chuyền `storyboard`, `add`), **xuất Hyperframes thuần** (thử nghiệm), 3 template ngành, phân tích nhạc trong worker (CHANGELOG 1.0.0, mục 5b). **Chờ Tuấn**: cho phép một lượt xuất thuần thật để so với Remotion; OK cài `opencv-python-headless`; OK push |
 
 - **Git:**
   - Nhánh `feat/v0.6-nen-mong` (tách từ `main` @ v0.5.0), working tree sạch sau commit 0.8.2.
@@ -154,6 +154,13 @@ Viết spec `docs/specs/khuon-day-chuyen.md`, Tuấn duyệt rồi mới làm. S
 - Chế độ ảnh carousel bản đầy đủ: OpenCV tách lớp; cần cài `opencv-python-headless`, phải hỏi trước.
 - Cập nhật tài liệu `docs/HUONG_DAN_SU_DUNG.md`; template Hyperframes theo ngành.
 - Khi phân phối cho khách: đổi ffmpeg sang bản BtbN **LGPL** (`node tools/get-ffmpeg.mjs --lgpl --force`).
+
+## 5b. v1.0.0 ĐÃ LÀM (2026-10-08)
+- Xuất thuần: `server/hf-native.mjs` (support, filmHtml, stageFilm, audioPlan, runNative, filmStills) + `lib/hf/native/film.js` (port 1:1 Scene/Titles/Overlays/Stickers/VideoTrack/FilmFinish: sửa engine thì sửa cả hai). Render nối ở `render.mjs → run()` khi `opts.engine === 'native'`. Chưa xuất thật lần nào.
+- Trang chủ: `renderProjects()` / `projCard()` / `tagDialog()` trong `ui/app.js`; tag ở `project.json → tags`, ẩn ở `settings.listHidden`; `bootVersion` so với `UI_VER` (nhớ bump cả `UI_VER` trong app.js khi đổi version).
+- Khuôn: thêm khuôn mới thì chạy `node server/cli-pipeline.mjs catalog --write` (selftest báo nếu quên). Template ngành: `node tools/khuon-templates.mjs --apply` rồi tạo ảnh bìa bằng `makeThumbs` (snapshot, không render).
+- Chưa làm (cố ý): tách router, semaphore, gom helper TSX, OpenCV (chờ OK cài), ffmpeg LGPL (khi phân phối).
+- Lần sau có thể làm: thêm khuôn tới 25 đến 30, UI chạy dây chuyền trong Studio, nhạc nền mặc định trong brand.json, xuất thuần cho chế độ vừa khung và Lottie.
 
 ## 6. Mẹo kỹ thuật (đã vấp, đừng vấp lại)
 - **Sửa file có dấu `\` hoặc regex:** dùng tool Edit. Heredoc Python hay làm hỏng escape.

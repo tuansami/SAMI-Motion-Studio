@@ -12,12 +12,20 @@ Parameterised Hyperframes scenes: `khuon.json` (name, group, beats, themes, slot
 - **New khuôn**: copy the closest one; `khuon.json` slots with `sample` values; in `scene.html` load `_sami/khuon/kit.css` + `kit.js`, call `const K = S.K.bind()` first, use `data-slot` / `data-slot-img`, `K.has/K.text/K.list/K.num/K.src`, blocks `.k-phone .k-card .k-chip .k-btn .k-polaroid .k-tape .k-stamp .k-bub`, helpers `K.ransom K.pop K.slam K.count K.type K.draw K.push K.stars K.icon K.layout K.around K.fitW`. One easing (S.EASE), no random/Date/rAF, layout per ratio with `[data-ratio="9x16"]`. Never rebuild DOM after creating tweens (fonts.ready callbacks may only change styles).
 - QA: `node <app>/tools/khuon-thumbs.mjs --only <id> --theme paper` → contact sheet in `.sami-cache/khuon-test/<theme>/sheet_*.jpg` (Read it). `--apply` writes the library thumbs. `npm run check` validates every khuôn.
 
+## Plan with khuôn from the first minute (1.0) — saves tokens and time
+- Read ONE file: `<app>/lib/hf/khuon/CATALOG.md` (every khuôn: group, beats, themes, one-line look, slot names; `?` = optional, `[ảnh]` = image). Regenerate after adding a khuôn: `cli-pipeline.mjs catalog --write` (selftest fails if it is stale). Machine form: `catalog --json`.
+- Storyboard column "khuôn" per row. Rows with a khuôn = no scene code, no thumbnail QA loop beyond the pipeline sheet; write HTML only for rows marked "viết tay" (a storyboard row may use `"custom": "…"` to build a placeholder from the nearest khuôn and leave a ✎ note in the label).
+- Build: `cli-pipeline.mjs example storyboard > brief.json` → edit → `cli-pipeline.mjs storyboard brief.json --out <app>/projects/<YYMMDD-VNN-ten-v.1> [--brand sami]`. `"closing": true` appends CTA + end card from the brand.
+- Existing project: `cli-pipeline.mjs add <dự án> <khuôn> [--after S02 | --replace S03] [--values '{"headline":"…"}' | --values file.json] [--theme paper] [--beats 8]`.
+- Every pipeline warns about values for slots the khuôn does not have (they would be dropped silently), e.g. `headline` on `stat-counter` (its slot is `caption`).
+- Industry templates built only from khuôn (export without Remotion): `templates/hf-nha-hang`, `hf-nail-spa`, `hf-google-maps` (`node tools/khuon-templates.mjs --apply` rebuilds them).
+
 ## Dây chuyền (`<app>/lib/pipelines/<name>.mjs`)
 ```bash
 node <app>/server/cli-pipeline.mjs example maps > brief.json      # edit the JSON only
 node <app>/server/cli-pipeline.mjs maps brief.json --out <app>/projects/<YYMMDD-VNN-ten-v.1> [--brand sami] [--ratio 9:16,16:9]
 ```
-- `promo` (~30 s: hook, problem, stat, benefits, proof, offer, CTA, end), `maps` (search → profile → benefits → deadline → CTA), `menu` (one scene per dish + offer). Parts missing from the brief are skipped.
+- `promo` (~30 s: hook, problem, stat, benefits, proof, offer, CTA, end), `maps` (search → profile → benefits → deadline → CTA), `menu` (one scene per dish + offer), `storyboard` (any list of khuôn). Parts missing from the brief are skipped.
 - Output: project + `brief/pipeline-<name>.json` + validate + QA sheet `out/qa/pipeline_<ratio>.jpg` (Read it). **No render.** Then the usual: voice, music (`lib:music/…`), Tuấn reviews in Studio, export only when he asks.
 - Brand: `SAMI_Library/brands/<client>/brand.json` `{name, colors, gradient, fonts{head,ui}, theme, logo, tagline, contact{web,phone,whatsapp,address}, cta, voice, music, lang}`. Template: `brands/sami/brand.json`. Pipelines fill CTA contact and the end card from it.
 - New pipeline: a pure function `(brief, brand) → {name, formats, theme, brand, music, scenes: [{khuon, values, beats?, theme?, label?}]}` + `describe` + `example`; helpers in `lib/pipelines/common.mjs`.

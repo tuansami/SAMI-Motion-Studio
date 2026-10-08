@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/caveat/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn hook-words · nhãn gõ chữ → câu hook vào từng từ → dòng phụ. Theme: night (lưới), paper (dải giấy rách), light (vệt màu). */
+  #wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 var(--safe-side); }
+  #label { font-size: 32px; margin-bottom: 44px; white-space: nowrap; }
+  #head { font-size: 168px; max-width: 1600px; }
+  #sub { font-size: 48px; margin-top: 44px; }
+  [data-ratio="9x16"] #head { font-size: 132px; max-width: 920px; }
+  [data-ratio="9x16"] #sub { font-size: 44px; }
+  [data-ratio="1x1"] #head, [data-ratio="4x5"] #head { font-size: 116px; max-width: 940px; }
+  [data-theme="paper"] #head { font-size: 150px; }
+  [data-theme="paper"][data-ratio="9x16"] #head { font-size: 118px; }
+  #deco { position: absolute; inset: 0; }
+  .strip { position: absolute; left: -5%; width: 110%; height: 26%; top: 37%; background: #FFFDF8; box-shadow: 0 14px 30px rgba(60,35,10,.22);
+    clip-path: polygon(0 6%, 4% 0, 9% 5%, 15% 1%, 22% 6%, 30% 2%, 37% 7%, 45% 1%, 53% 6%, 61% 0, 69% 5%, 77% 1%, 85% 6%, 92% 2%, 100% 5%, 100% 95%, 94% 100%, 87% 95%, 80% 99%, 72% 94%, 64% 100%, 56% 95%, 48% 99%, 40% 94%, 32% 100%, 24% 95%, 16% 99%, 8% 94%, 0 98%); }
+  .blob { position: absolute; width: 70%; aspect-ratio: 1; left: 15%; top: 10%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--k-accent) 22%, transparent), transparent); filter: blur(20px); }
+  #dot { position: absolute; width: 22px; height: 22px; border-radius: 50%; background: var(--k-accent); box-shadow: 0 0 40px var(--k-accent); left: 50%; top: 50%; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S01">
+  <div class="k-stage">
+    <div id="deco"></div>
+    <div id="wrap" class="k-layer">
+      <div id="label" class="k-label" data-slot="label" data-optional></div>
+      <div id="head" class="k-head" data-slot="headline"></div>
+      <div id="sub" class="k-sub" data-slot="sub" data-optional></div>
+    </div>
+    <div id="dot" class="k-layer" style="inset:auto"></div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind(), tl = S.timeline();
+  const deco = document.getElementById('deco');
+  if (K.paper) { deco.innerHTML = '<div class="strip"></div>'; K.around(deco.firstChild, document.getElementById('head'), 50); tl.fromTo('.strip', {scaleX: 0, transformOrigin: '0% 50%'}, {scaleX: 1, duration: .7}, S.beat(0)); }
+  else if (K.light) { deco.innerHTML = '<div class="blob"></div>'; tl.fromTo('.blob', {scale: .6, opacity: 0}, {scale: 1, opacity: 1, duration: 1.4}, S.beat(0)); }
+  else document.getElementById('dot').style.display = 'block';
+  // nhãn: gõ từng ký tự
+  const label = document.getElementById('label');
+  if (K.has('label')) K.type(tl, label, label.textContent, S.beat(.25), 26);
+  // câu hook: từng từ vào theo nhịp
+  S.arrive(tl, S.words(document.getElementById('head')), S.beat(1), {stagger: .2, dur: .55});
+  if (K.has('sub')) S.arrive(tl, '#sub', S.beat(4), {dist: 24});
+  if (K.night) { tl.fromTo('#dot', {scale: 0, x: -S.w * .3, y: S.h * .28}, {scale: 1, duration: .4}, S.beat(.5)); tl.to('#dot', {x: S.w * .3, duration: 2.4, ease: 'none'}, S.beat(1)); tl.to('#dot', {scale: 0, duration: .4}, S.beat(5.5)); }
+  else document.getElementById('dot').style.display = 'none';
+  K.push(tl, '#wrap', .05);
+</script>
+</body>
+</html>

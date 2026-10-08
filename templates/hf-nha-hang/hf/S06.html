@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn cta-contact · câu kêu gọi → nút đập theo nhịp + vòng sóng → nhãn liên hệ. */
+  #wrap { position: absolute; top: var(--safe-top); bottom: var(--safe-bottom); left: var(--safe-side); right: var(--safe-side); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 70px; }
+  #head { font-size: 140px; max-width: 1600px; }
+  #btnw { position: relative; }
+  .k-btn { font-size: 54px; position: relative; z-index: 2; }
+  .k-btn .k-ico { width: .9em; height: .9em; }
+  .wave { position: absolute; inset: 0; border-radius: 999px; border: 4px solid var(--k-accent); z-index: 1; }
+  #chips { display: flex; flex-wrap: wrap; gap: 22px; justify-content: center; max-width: 1500px; }
+  .k-chip { font-size: 38px; }
+  .k-chip .k-ico { color: var(--k-accent); }
+  [data-ratio="9x16"] #head { font-size: 124px; max-width: 940px; }
+  [data-ratio="9x16"] .k-btn { font-size: 56px; }
+  [data-ratio="9x16"] #chips { flex-direction: column; align-items: center; }
+  [data-ratio="9x16"] .k-chip { font-size: 44px; }
+  [data-ratio="1x1"] #head, [data-ratio="4x5"] #head { font-size: 96px; }
+  [data-ratio="1x1"] #wrap, [data-ratio="4x5"] #wrap { gap: 46px; }
+  [data-ratio="1x1"] .k-btn, [data-ratio="4x5"] .k-btn { font-size: 42px; }
+  [data-ratio="1x1"] .k-chip, [data-ratio="4x5"] .k-chip { font-size: 32px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S06">
+  <div class="k-stage">
+    <div id="wrap" class="k-layer">
+      <div id="head" class="k-head" data-slot="headline"></div>
+      <div id="btnw"><div class="wave"></div><div class="wave"></div><div class="k-btn"><span data-slot="button"></span><span data-ico="arrow"></span></div></div>
+      <div id="chips"></div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind().icons(), tl = S.timeline();
+  const C = [['web', 'globe'], ['phone', 'phone'], ['whatsapp', 'whatsapp'], ['address', 'pin']].filter(([s]) => K.has(s));
+  document.getElementById('chips').innerHTML = C.map(([s, ic]) => `<div class="k-chip">${K.icon(ic)}<span>${K.html(s)}</span></div>`).join('');
+  S.arrive(tl, S.words(document.getElementById('head')), S.beat(.5), {stagger: .15, dur: .55});
+  K.pop(tl, '.k-btn', S.beat(3), {from: .5});
+  // đập theo nhịp + sóng lan (mỗi 2 nhịp)
+  for (let b = 4; b < (S.dur - S.t0) / S.BEAT - 1; b += 2) {
+    tl.fromTo('.k-btn', {scale: 1}, {scale: 1.06, duration: .15, yoyo: true, repeat: 1}, S.beat(b));
+    tl.fromTo('.wave', {scale: 1, opacity: .8}, {scale: 1.35, opacity: 0, duration: .9, stagger: .25}, S.beat(b));
+  }
+  tl.set('.wave', {opacity: 0}, 0);
+  tl.fromTo('#chips .k-chip', {opacity: 0, y: 24}, {opacity: 1, y: 0, duration: .45, stagger: .25}, S.beat(4));
+</script>
+</body>
+</html>

@@ -17,8 +17,12 @@ const api = async (url, body) => {
   return j;
 };
 const toast = (msg, err = false, ms = 3200) => { const t = $('#toast'); t.textContent = msg; t.className = 'toast' + (err ? ' err' : ''); t.hidden = false; clearTimeout(t._t); t._t = setTimeout(() => (t.hidden = true), ms); };
-const modal = (content) => { const b = $('#modalBody'); b.innerHTML = ''; b.append(content); $('#modal').hidden = false; };
+const modal = (content, {wide = false} = {}) => { const b = $('#modalBody'); b.innerHTML = ''; b.append(content); $('#modal .box').classList.toggle('wide', wide); $('#modal').hidden = false; $('#modal .box').scrollTop = 0; };
 $('#modalClose').onclick = () => ($('#modal').hidden = true);
+// ✕, Esc and a click on the dark backdrop all go through the "Đóng" button (pickers override its onclick to resolve null)
+$('#modalX').onclick = () => $('#modalClose').click();
+$('#modal').addEventListener('mousedown', (e) => { if (e.target === $('#modal')) $('#modalClose').click(); });
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#modal').hidden) { e.preventDefault(); e.stopPropagation(); $('#modalClose').click(); } }, true);
 const BASE = 30; // base frames per second (all timings in project.json)
 const fmtT = (s) => { s = Math.max(0, s); const m = Math.floor(s / 60); return `${m}:${(s - m * 60).toFixed(1).padStart(4, '0')}`; };
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -35,12 +39,9 @@ const S = {state: null, id: null, dir: null, project: null, saved: null, hist: [
 async function loadHome() {
   S.state = await api('/api/state');
   $('#ver').textContent = 'v' + S.state.version;
-  const rc = $('#recent'); rc.innerHTML = '';
-  if (!S.state.recent.length) rc.append(h('div', {class: 'muted'}, 'Chưa có dự án. Tạo mới bên dưới hoặc mở một thư mục có project.json.'));
-  S.sel = new Set([...(S.sel || [])].filter((id) => S.state.recent.some((r) => r.id === id))); renderSelBar();
-  for (const r of S.state.recent) rc.append(h('div', {class: 'card' + (S.sel.has(r.id) ? ' picked' : ''), onclick: () => (S.sel.size ? toggleSel(r.id) : openProject({id: r.id}))},
-    h('input', {type: 'checkbox', class: 'cardChk', title: 'Chọn (để xoá / gỡ nhiều dự án)', checked: S.sel.has(r.id), onclick: (e) => { e.stopPropagation(); toggleSel(r.id); }}),
-    h('div', {class: 'row', style: 'justify-content:space-between'}, h('b', {}, r.name || 'Dự án'), r.type === 'carousel' ? h('span', {class: 'badge'}, 'Carousel') : null, statusBadge(r.status)), r.lockedBy ? h('div', {class: 'v-warn', style: 'font-size:12px'}, `🔒 ${r.lockedBy.user} đang mở (${r.lockedBy.host})`) : null, h('small', {}, r.dir), h('div', {class: 'muted', style: 'font-size:12px;margin-top:6px'}, r.opened ? 'Mở lần cuối: ' + new Date(r.opened).toLocaleString('vi-VN') : 'Dự án mẫu')));
+  showServerWarn();
+  S.sel = new Set([...(S.sel || [])].filter((id) => S.state.recent.some((r) => r.id === id)));
+  renderProjects(); renderSelBar();
   const sel = $('#npTemplate'); sel.innerHTML = '';
   for (const t of S.state.templates) sel.append(h('option', {value: t.id}, `${t.name} — ${t.scenes} cảnh, ${t.seconds}s, ${t.formats.join(' / ')}`));
   renderGallery(); renderTeam();
@@ -50,7 +51,110 @@ async function loadHome() {
 }
 // — chọn nhiều dự án: gỡ khỏi danh sách / chuyển vào Thùng rác Windows —
 S.sel = new Set();
-const toggleSel = (id) => { S.sel.has(id) ? S.sel.delete(id) : S.sel.add(id); loadHome(); };
+const toggleSel = (id) => { S.sel.has(id) ? S.sel.delete(id) : S.sel.add(id); renderProjects(); renderSelBar(); };
+/** 1.0: the running server is older than the files on disk (Studio updated without restarting) → new tabs call routes it does not have */
+function showServerWarn() {
+  let w = $('#srvWarn'); const old = S.state.bootVersion !== UI_VER;
+  if (!old) { if (w) w.remove(); return; }
+  if (!w) { w = h('div', {id: 'srvWarn', class: 'srvWarn'}); document.body.prepend(w); }
+  w.textContent = `⚠ Studio đang chạy bản cũ (${S.state.bootVersion || '≤ 0.9'}) trong khi giao diện đã là ${UI_VER}. Một số tab (Footage, quản lý dự án…) sẽ trống hoặc báo "Not Found". Đóng cửa sổ Studio (cửa sổ đen) rồi mở lại Start-Studio.bat.`;
+}
+// ── 1.0: quản lý dự án — tìm, gom theo tháng / ngày / khách / trạng thái, sắp xếp, lọc tag, ẩn ──
+const UI_VER = '1.0.0';
+const HV_KEY = 'sami.homeView';
+const HV_DEF = {q: '', group: 'month', sort: 'date', status: '', type: '', tag: '', client: '', showHidden: false, view: 'cards', closed: {}};
+S.hv = (() => { try { return {...HV_DEF, ...JSON.parse(localStorage.getItem(HV_KEY) || '{}'), q: ''}; } catch { return {...HV_DEF}; } })();
+const saveHv = () => { try { const {q, ...rest} = S.hv; localStorage.setItem(HV_KEY, JSON.stringify(rest)); } catch {} };
+/** ngày của dự án: tiền tố tên YYMMDD / YYMM (quy tắc đặt tên SAMI) → ngày tạo project.json → lần mở cuối */
+const DATE_RE = /^(\d{2})(\d{2})(\d{2})?(?=[-_ ]|$)/;
+const projDate = (r) => {
+  const m = String(r.name || '').match(DATE_RE) || String(r.dir || '').split(/[\\/]/).pop().match(DATE_RE);
+  if (m && +m[2] >= 1 && +m[2] <= 12 && (!m[3] || +m[3] <= 31)) {
+    if (!m[3] && r.created) { const c = new Date(r.created); if (c.getFullYear() === 2000 + +m[1] && c.getMonth() === +m[2] - 1) return {d: c, day: true}; } // "2610-V05…": day from when the project was created
+    return {d: new Date(2000 + +m[1], +m[2] - 1, m[3] ? +m[3] : 1), day: !!m[3]};
+  }
+  const t = r.created || r.opened || r.updated; return t ? {d: new Date(t), day: true} : {d: null, day: false};
+};
+const fmtMonth = (d) => (d ? `Tháng ${d.getMonth() + 1}/${d.getFullYear()}` : 'Không rõ ngày');
+const fmtDay = (d) => (d ? d.toLocaleDateString('vi-VN', {weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric'}) : 'Không rõ ngày');
+const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const normVi = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+function renderProjects() {
+  const V = S.hv, all = S.state.recent;
+  const tags = [...new Set(all.flatMap((r) => r.tags || []))].sort((a, b) => a.localeCompare(b, 'vi'));
+  const clients = [...new Set(all.map((r) => r.client).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'vi'));
+  const q = normVi(V.q).split(/\s+/).filter(Boolean);
+  const L = all.filter((r) => (V.showHidden || !r.hidden) && (!V.status || (r.status || 'draft') === V.status) && (!V.type || (V.type === 'carousel' ? r.type === 'carousel' : r.type !== 'carousel'))
+    && (!V.tag || (r.tags || []).includes(V.tag)) && (!V.client || r.client === V.client)
+    && (!q.length || q.every((w) => normVi([r.name, r.client, r.dir, ...(r.tags || [])].join(' ')).includes(w))));
+  const t = (x) => Date.parse(x) || 0, pd = (r) => projDate(r).d?.getTime() || 0;
+  const cmp = {date: (a, b) => pd(b) - pd(a) || t(b.opened) - t(a.opened), old: (a, b) => (pd(a) || 9e15) - (pd(b) || 9e15), opened: (a, b) => t(b.opened) - t(a.opened), updated: (a, b) => t(b.updated) - t(a.updated),
+    name: (a, b) => String(a.name).localeCompare(String(b.name), 'vi', {numeric: true})}[V.sort] || ((a, b) => pd(b) - pd(a));
+  L.sort((a, b) => cmp(a, b) || String(b.name).localeCompare(String(a.name), 'vi', {numeric: true}));
+  // — thanh công cụ —
+  const T = $('#projTools'); T.innerHTML = '';
+  const set = (k, v) => { V[k] = v; saveHv(); renderProjects(); };
+  const sel = (k, opts, title) => h('select', {title, onchange: (e) => set(k, e.target.value)}, ...opts.map(([v, l]) => h('option', {value: v, selected: V[k] === v}, l)));
+  const search = h('input', {id: 'projSearch', type: 'search', placeholder: `🔎 Tìm trong ${all.length} dự án: tên, khách, tag…`, value: V.q, oninput: (e) => { V.q = e.target.value; clearTimeout(S.hvT); S.hvT = setTimeout(() => { renderProjects(); const i = $('#projSearch'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 150); }});
+  T.append(search,
+    sel('group', [['month', 'Gom: theo tháng'], ['day', 'Gom: theo ngày'], ['client', 'Gom: theo khách'], ['status', 'Gom: theo trạng thái'], ['type', 'Gom: video / carousel'], ['none', 'Không gom']], 'Gom nhóm'),
+    sel('sort', [['date', 'Ngày dự án: mới trước'], ['old', 'Ngày dự án: cũ trước'], ['opened', 'Mở gần nhất'], ['updated', 'Sửa gần nhất'], ['name', 'Tên A → Z']], 'Sắp xếp'),
+    sel('status', [['', 'Mọi trạng thái'], ...Object.entries(STATUS).map(([k, [l]]) => [k, l])], 'Lọc trạng thái'),
+    sel('type', [['', 'Video + carousel'], ['video', 'Chỉ video'], ['carousel', 'Chỉ carousel']], 'Lọc loại'),
+    clients.length ? sel('client', [['', 'Mọi khách hàng'], ...clients.map((c) => [c, c])], 'Lọc khách hàng') : null,
+    h('label', {class: 'chk', title: 'Dự án đã ẩn vẫn nằm nguyên trên ổ đĩa'}, h('input', {type: 'checkbox', checked: V.showHidden, onchange: (e) => set('showHidden', e.target.checked)}), `Hiện dự án đã ẩn (${all.filter((r) => r.hidden).length})`),
+    h('div', {class: 'seg', style: 'margin-left:auto'}, ...[['cards', '▦ Thẻ'], ['list', '☰ Danh sách']].map(([v, l]) => h('button', {class: V.view === v ? 'on' : '', onclick: () => set('view', v)}, l))));
+  if (tags.length) T.append(h('div', {class: 'chips', style: 'width:100%;margin:0'}, h('span', {class: 'muted', style: 'font-size:12.5px;align-self:center'}, 'Tag:'),
+    h('button', {class: !V.tag ? 'on' : '', onclick: () => set('tag', '')}, 'Tất cả'), ...tags.map((x) => h('button', {class: V.tag === x ? 'on' : '', onclick: () => set('tag', V.tag === x ? '' : x)}, `#${x} (${all.filter((r) => (r.tags || []).includes(x)).length})`))));
+  // — các nhóm (gập / mở, nhớ theo máy) —
+  const rc = $('#recent'); rc.innerHTML = '';
+  if (!all.length) return rc.append(h('div', {class: 'muted'}, 'Chưa có dự án. Tạo mới bên dưới hoặc mở một thư mục có project.json.'));
+  if (!L.length) return rc.append(h('div', {class: 'muted', style: 'padding:10px 0'}, 'Không có dự án khớp bộ lọc. ', h('button', {class: 'small', onclick: () => { Object.assign(V, {q: '', status: '', type: '', tag: '', client: ''}); saveHv(); renderProjects(); }}, 'Xoá bộ lọc')));
+  const gk = {month: (r) => { const {d} = projDate(r); return [d ? ymd(d).slice(0, 7) : '0', fmtMonth(d)]; },
+    day: (r) => { const {d, day} = projDate(r); return [d ? ymd(d).slice(0, day ? 10 : 7) : '0', d ? (day ? fmtDay(d) : fmtMonth(d) + ' (tên chưa có ngày)') : 'Không rõ ngày']; },
+    client: (r) => [r.client || '~', r.client || 'Chưa ghi khách hàng'], status: (r) => [r.status || 'draft', (STATUS[r.status] || STATUS.draft)[0]],
+    type: (r) => [r.type === 'carousel' ? 'c' : 'v', r.type === 'carousel' ? 'Carousel' : 'Video']}[V.group];
+  const wrap = (items) => h('div', {class: V.view === 'list' ? 'projRows' : 'cards'}, ...items.map(projCard));
+  if (!gk) return rc.append(wrap(L));
+  const groups = new Map(); for (const r of L) { const [k, label] = gk(r); if (!groups.has(k)) groups.set(k, {label, items: []}); groups.get(k).items.push(r); }
+  let gi = 0;
+  for (const [k, g] of groups) {
+    const ck = V.group + ':' + k; const open = V.q ? true : V.closed[ck] === undefined ? gi < 3 : !V.closed[ck]; gi++;
+    const det = h('details', {class: 'pgroup', open}, h('summary', {}, h('b', {}, g.label), h('span', {class: 'muted'}, ` · ${g.items.length} dự án`),
+      h('button', {class: 'small', style: 'margin-left:auto', title: 'Chọn cả nhóm (để gắn tag / ẩn / xoá cùng lúc)', onclick: (e) => { e.preventDefault(); g.items.forEach((r) => S.sel.add(r.id)); renderProjects(); renderSelBar(); }}, 'Chọn nhóm')), wrap(g.items));
+    det.ontoggle = () => { if (!V.q) { V.closed[ck] = !det.open; saveHv(); } };
+    rc.append(det);
+  }
+}
+function projCard(r) {
+  const {d, day} = projDate(r); const list = S.hv.view === 'list';
+  const tagEls = (r.tags || []).map((x) => h('span', {class: 'ptag', title: 'Lọc theo tag này', onclick: (e) => { e.stopPropagation(); S.hv.tag = x; saveHv(); renderProjects(); }}, '#' + x));
+  const meta = [d ? (day ? d.toLocaleDateString('vi-VN') : fmtMonth(d)) : null, r.seconds ? fmtT(r.seconds).replace(/\.0$/, '') : null, r.scenes ? r.scenes + (r.type === 'carousel' ? ' slide' : ' cảnh') : null, (r.formats || []).join(' ')].filter(Boolean).join(' · ');
+  const acts = h('span', {class: 'pacts'},
+    h('button', {class: 'small', title: 'Gắn / bỏ tag', onclick: (e) => { e.stopPropagation(); tagDialog([r.id]); }}, '🏷'),
+    h('button', {class: 'small', title: r.hidden ? 'Hiện lại trên trang chủ' : 'Ẩn khỏi trang chủ (thư mục giữ nguyên)', onclick: async (e) => { e.stopPropagation(); await setProjMeta([r.id], {hidden: !r.hidden}); toast(r.hidden ? 'Đã hiện lại' : `Đã ẩn "${r.name}". Bật "Hiện dự án đã ẩn" để thấy lại.`); }}, r.hidden ? '👁' : '🙈'));
+  return h('div', {class: 'card' + (S.sel.has(r.id) ? ' picked' : '') + (r.hidden ? ' hiddenP' : '') + (list ? ' row1' : ''), onclick: () => (S.sel.size ? toggleSel(r.id) : openProject({id: r.id})), title: r.dir},
+    h('input', {type: 'checkbox', class: 'cardChk', title: 'Chọn (để gắn tag / ẩn / xoá nhiều dự án)', checked: S.sel.has(r.id), onclick: (e) => { e.stopPropagation(); toggleSel(r.id); }}),
+    h('div', {class: 'row pl1', style: 'justify-content:space-between'}, h('b', {}, r.name || 'Dự án'), r.type === 'carousel' ? h('span', {class: 'badge'}, 'Carousel') : null, statusBadge(r.status)),
+    r.lockedBy ? h('div', {class: 'v-warn', style: 'font-size:12px'}, `🔒 ${r.lockedBy.user} đang mở (${r.lockedBy.host})`) : null,
+    h('div', {class: 'muted pmeta'}, r.client ? '👤 ' + r.client + (meta ? ' · ' : '') : '', meta),
+    tagEls.length ? h('div', {class: 'ptags'}, ...tagEls) : null,
+    list ? null : h('small', {}, r.dir),
+    h('div', {class: 'muted pfoot'}, h('span', {}, r.opened ? 'Mở lần cuối: ' + new Date(r.opened).toLocaleString('vi-VN') : 'Chưa mở'), acts));
+}
+const setProjMeta = async (ids, patch) => { try { await api('/api/project/meta', {ids, ...patch}); await loadHome(); } catch (e) { toast(e.message, true, 6000); } };
+function tagDialog(ids) {
+  const items = S.state.recent.filter((r) => ids.includes(r.id)); const all = [...new Set(S.state.recent.flatMap((r) => r.tags || []))].sort();
+  const inp = h('input', {placeholder: 'tag mới, cách nhau bằng dấu phẩy: google-maps, nha-hang, berlin'});
+  const add = async (x) => { if (!x.trim()) return; $('#modal').hidden = true; await setProjMeta(ids, {addTag: x}); toast(`Đã gắn tag cho ${ids.length} dự án`); };
+  const used = [...new Set(items.flatMap((r) => r.tags || []))];
+  modal(h('div', {style: 'min-width:min(520px,90vw)'}, h('h3', {}, `🏷 Tag cho ${ids.length} dự án`),
+    h('p', {class: 'muted', style: 'margin-top:-6px;font-size:12.5px'}, 'Tag lưu trong project.json nên đi theo dự án (đồng nghiệp mở cũng thấy).'),
+    h('div', {class: 'row'}, inp, h('button', {class: 'primary', onclick: () => add(inp.value)}, 'Gắn')),
+    all.length ? h('div', {style: 'margin-top:12px'}, h('div', {class: 'muted', style: 'font-size:12.5px;margin-bottom:6px'}, 'Bấm để gắn tag có sẵn:'), h('div', {class: 'chips'}, ...all.map((x) => h('button', {onclick: () => add(x)}, '#' + x)))) : null,
+    used.length ? h('div', {style: 'margin-top:8px'}, h('div', {class: 'muted', style: 'font-size:12.5px;margin-bottom:6px'}, 'Bỏ tag:'), h('div', {class: 'chips'}, ...used.map((x) => h('button', {class: 'danger', onclick: async () => { $('#modal').hidden = true; await setProjMeta(ids, {removeTag: x}); toast('Đã bỏ #' + x); }}, '✕ #' + x)))) : null));
+  inp.onkeydown = (e) => { if (e.key === 'Enter') add(inp.value); }; inp.focus();
+}
 function renderSelBar() {
   const b = $('#selBar'); b.innerHTML = ''; b.hidden = !S.sel.size; if (!S.sel.size) return;
   const names = S.state.recent.filter((r) => S.sel.has(r.id)).map((r) => r.name || r.dir);
@@ -67,9 +171,13 @@ function renderSelBar() {
       else toast(trash ? `Đã chuyển ${r.results.length} dự án vào Thùng rác` : `Đã gỡ ${r.results.length} dự án khỏi danh sách`);
     } catch (e) { toast(e.message, true, 8000); }
   };
-  b.append(h('b', {}, `Đã chọn ${S.sel.size}`), h('button', {class: 'small', onclick: () => { S.state.recent.forEach((r) => S.sel.add(r.id)); loadHome(); }}, 'Chọn tất cả'),
+  const ids = [...S.sel];
+  b.append(h('b', {}, `Đã chọn ${S.sel.size}`), h('button', {class: 'small', onclick: () => { S.state.recent.forEach((r) => (S.hv.showHidden || !r.hidden) && S.sel.add(r.id)); renderProjects(); renderSelBar(); }}, 'Chọn tất cả'),
+    h('button', {class: 'small', onclick: () => tagDialog(ids)}, '🏷 Gắn tag'),
+    h('button', {class: 'small', title: 'Ẩn khỏi trang chủ, thư mục giữ nguyên', onclick: async () => { await setProjMeta(ids, {hidden: true}); S.sel.clear(); renderProjects(); renderSelBar(); toast(`Đã ẩn ${ids.length} dự án`); }}, '🙈 Ẩn'),
+    S.state.recent.some((r) => S.sel.has(r.id) && r.hidden) ? h('button', {class: 'small', onclick: async () => { await setProjMeta(ids, {hidden: false}); S.sel.clear(); renderProjects(); renderSelBar(); }}, '👁 Hiện lại') : null,
     h('button', {class: 'small', onclick: () => run(false)}, 'Gỡ khỏi danh sách'), h('button', {class: 'small danger', onclick: () => run(true)}, '🗑 Chuyển vào Thùng rác'),
-    h('button', {class: 'small', onclick: () => { S.sel.clear(); loadHome(); }}, 'Bỏ chọn'));
+    h('button', {class: 'small', onclick: () => { S.sel.clear(); renderProjects(); renderSelBar(); }}, 'Bỏ chọn'));
 }
 $('#btnNewVideo').onclick = () => { $('#newProj').scrollIntoView({behavior: 'smooth'}); $('#npName').focus(); };
 $('#btnNewCarousel').onclick = () => {
@@ -312,27 +420,38 @@ $('#btnKhuon').onclick = async () => {
       toast(mode === 'replace' ? `Đã đổi ${r.scene.id} sang khuôn ${k.name}` : `Đã thêm cảnh ${r.scene.id} (${k.name}) · sửa chữ ở tab Chữ`, false, 6000);
     } catch (e) { toast(e.message, true, 8000); }
   };
-  const draw = () => {
-    const list = D.khuon.filter((k) => !K.group || k.group === K.group);
-    modal(h('div', {style: 'width:min(1100px,92vw)'},
-      h('h3', {}, '🧩 Khuôn cảnh'),
-      h('p', {class: 'muted', style: 'font-size:13px;margin-top:-6px'}, 'Khuôn là cảnh HTML dựng sẵn có tham số: chữ, ảnh, màu lấy từ dự án. ', cur ? `"Đổi khuôn" thay cảnh ${cur.id}, giữ chữ của ô cùng tên. ` : '', '"Thêm" chèn cảnh mới sau cảnh đang chọn.'),
-      h('div', {class: 'row', style: 'flex-wrap:wrap;gap:8px;margin-bottom:10px'},
-        h('div', {class: 'seg'}, ...D.themes.map((t) => h('button', {class: K.theme === t ? 'on' : '', onclick: () => { K.theme = t; draw(); }}, THEME_VI[t] || t))),
-        h('select', {onchange: (e) => { K.group = e.target.value; draw(); }}, h('option', {value: ''}, 'Mọi nhóm'), ...Object.entries(D.groups).filter(([g]) => D.khuon.some((k) => k.group === g)).map(([g, t]) => h('option', {value: g, selected: K.group === g}, t)))),
-      h('div', {style: 'display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;max-height:62vh;overflow:auto;padding-right:4px'},
-        ...list.map((k) => {
-          const th = k.thumbs.includes(`thumb_${tag}.jpg`) ? `thumb_${tag}.jpg` : k.thumbs[0];
-          return h('div', {class: 'group', style: 'margin:0;padding:8px;display:flex;flex-direction:column;gap:6px'},
-            th ? h('img', {src: `/api/khuon/thumb/${k.id}/${th}`, loading: 'lazy', style: 'width:100%;aspect-ratio:16/10;object-fit:contain;background:#0A0722;border-radius:8px'}) : h('div', {class: 'muted', style: 'aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;background:#0A0722;border-radius:8px'}, k.id),
-            h('b', {style: 'font-size:13.5px'}, k.name),
-            h('div', {class: 'muted', style: 'font-size:12px;flex:1'}, `${D.groups[k.group] || k.group} · ${(k.beats / 2).toFixed(1)} s · ${k.slots.length} ô`, h('br'), k.description || ''),
-            h('div', {class: 'row', style: 'gap:6px'},
-              h('button', {class: 'small primary', onclick: () => apply(k, 'add')}, cur ? `＋ Thêm sau ${cur.id}` : '＋ Thêm cảnh'),
-              cur ? h('button', {class: 'small', onclick: () => apply(k, 'replace')}, `Đổi ${cur.id}`) : null));
-        }))));
+  K.q = K.q || '';
+  const grid = h('div', {class: 'khGrid'});
+  const count = h('span', {class: 'muted', style: 'font-size:12.5px'});
+  // search: name, id, description, group, slot labels (accent-insensitive: "uu dai" finds "Ưu đãi")
+  const hay = (k) => normVi([k.id, k.name, k.description, D.groups[k.group], k.group, ...(k.slots || []).map((s) => s.label + ' ' + s.slot), ...(k.tags || [])].join(' '));
+  const drawGrid = () => {
+    const words = normVi(K.q).split(/\s+/).filter(Boolean);
+    const list = D.khuon.filter((k) => (!K.group || k.group === K.group) && words.every((w) => hay(k).includes(w)));
+    count.textContent = `${list.length} / ${D.khuon.length} khuôn`;
+    grid.innerHTML = '';
+    if (!list.length) grid.append(h('div', {class: 'muted', style: 'grid-column:1/-1;padding:20px 0'}, 'Không có khuôn khớp. Thử từ khác, hoặc chọn "Mọi nhóm".'));
+    for (const k of list) {
+      const th = k.thumbs.includes(`thumb_${tag}.jpg`) ? `thumb_${tag}.jpg` : k.thumbs[0];
+      grid.append(h('div', {class: 'group', style: 'margin:0;padding:8px;display:flex;flex-direction:column;gap:6px'},
+        th ? h('img', {src: `/api/khuon/thumb/${k.id}/${th}`, loading: 'lazy', style: 'width:100%;aspect-ratio:16/10;object-fit:contain;background:#0A0722;border-radius:8px'}) : h('div', {class: 'muted', style: 'aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;background:#0A0722;border-radius:8px'}, k.id),
+        h('b', {style: 'font-size:13.5px'}, k.name),
+        h('div', {class: 'muted', style: 'font-size:12px;flex:1'}, `${D.groups[k.group] || k.group} · ${(k.beats / 2).toFixed(1)} s · ${k.slots.length} ô · `, h('code', {style: 'font-size:11px'}, k.id), h('br'), k.description || ''),
+        h('div', {class: 'row', style: 'gap:6px'},
+          h('button', {class: 'small primary', onclick: () => apply(k, 'add')}, cur ? `＋ Thêm sau ${cur.id}` : '＋ Thêm cảnh'),
+          cur ? h('button', {class: 'small', onclick: () => apply(k, 'replace')}, `Đổi ${cur.id}`) : null)));
+    }
   };
-  draw();
+  const search = h('input', {type: 'search', placeholder: '🔎 Tìm khuôn: maps, ưu đãi, số liệu, chat, menu…', value: K.q, style: 'flex:1;min-width:220px', oninput: (e) => { K.q = e.target.value; drawGrid(); }});
+  const themeSeg = h('div', {class: 'seg'}, ...D.themes.map((t) => h('button', {class: K.theme === t ? 'on' : '', onclick: (e) => { K.theme = t; [...themeSeg.children].forEach((x) => x.classList.toggle('on', x === e.target)); }}, THEME_VI[t] || t)));
+  modal(h('div', {},
+    h('h3', {style: 'margin-top:0'}, '🧩 Khuôn cảnh'),
+    h('p', {class: 'muted', style: 'font-size:13px;margin-top:-6px'}, 'Khuôn là cảnh HTML dựng sẵn có tham số: chữ, ảnh, màu lấy từ dự án. ', cur ? `"Đổi khuôn" thay cảnh ${cur.id}, giữ chữ của ô cùng tên. ` : '', '"Thêm" chèn cảnh mới sau cảnh đang chọn.'),
+    h('div', {class: 'row', style: 'flex-wrap:wrap;gap:8px;margin-bottom:10px'}, search,
+      h('select', {onchange: (e) => { K.group = e.target.value; drawGrid(); }}, h('option', {value: ''}, 'Mọi nhóm'), ...Object.entries(D.groups).filter(([g]) => D.khuon.some((k) => k.group === g)).map(([g, t]) => h('option', {value: g, selected: K.group === g}, t))),
+      themeSeg, count),
+    grid), {wide: true});
+  drawGrid(); search.focus();
 };
 function renderScrub() {
   const T = S.project.scenes.at(-1)?.end || 1;
@@ -356,7 +475,12 @@ function renderRatios() {
 // ─────────────────────────── INSPECTOR TABS ───────────────────────────
 $$('#tabs button').forEach((b) => (b.onclick = () => { S.tab = b.dataset.tab; $$('#tabs button').forEach((x) => x.classList.toggle('on', x === b)); renderTab(); }));
 function renderAll() { renderRatios(); renderScenes(); renderScrub(); renderTab(); $('#dirty').hidden = !isDirty(); $('#projStatus').value = S.project.status || 'draft'; }
-function renderTab() { setTimeout(renderHandles, 0); const B = $('#tabBody'); B.innerHTML = ''; ({text: tabText, titles: tabTitles, overlays: tabOverlays, subs: tabSubs, audio: tabAudio, look: tabLook, render: tabRender, history: tabHistory, variants: tabVariants, ai: tabAI, video: tabVideo})[S.tab](B); }
+function renderTab() {
+  setTimeout(renderHandles, 0); const B = $('#tabBody'); B.innerHTML = '';
+  // 1.0: a tab that throws (or an old server answering "Not Found") shows the reason instead of a blank panel
+  const fail = (e) => B.append(h('div', {class: 'v-fail', style: 'white-space:pre-wrap'}, `Tab này lỗi: ${e?.message || e}` + (/not found/i.test(String(e?.message)) ? '\n\nStudio đang chạy bản cũ: đóng cửa sổ Studio rồi mở lại Start-Studio.bat.' : '')));
+  try { Promise.resolve(({text: tabText, titles: tabTitles, overlays: tabOverlays, subs: tabSubs, audio: tabAudio, look: tabLook, render: tabRender, history: tabHistory, variants: tabVariants, ai: tabAI, video: tabVideo})[S.tab](B)).catch(fail); } catch (e) { fail(e); }
+}
 
 const field = (label, input, hint) => h('label', {}, label, input, hint ? h('div', {class: 'hint'}, hint) : null);
 const assetSelect = (value, type, onchange) => {
@@ -705,6 +829,19 @@ function tabRender(B) {
   box.append(field('Độ phân giải', seg('res', Object.entries(RES)), dims(r.ratio, r.res) + ' px'));
   box.append(field('Số khung hình / giây (FPS)', seg('fps', [[24, '24 (điện ảnh)'], [30, '30 (chuẩn)'], [60, '60 (siêu mượt)']]), r.fps === 60 ? 'Thời gian render ≈ gấp đôi 30 fps.' : null));
   box.append(field('Định dạng', seg('codec', [['h264', 'MP4 H.264 (phổ biến)'], ['h265', 'MP4 H.265 (nhẹ hơn)'], ['prores', 'ProRes .mov (dựng tiếp)']])));
+  // 1.0: Hyperframes thuần = no Remotion in the export (client packages, licence); only all-HTML projects
+  if (S.project.type !== 'carousel') {
+    r.engine ||= 'remotion';
+    const chk = h('div', {class: 'hint', style: 'margin-top:4px'});
+    box.append(field('Bộ dựng', seg('engine', [['remotion', 'Remotion (mặc định)'], ['native', 'Hyperframes thuần (thử nghiệm)']]), null), chk);
+    const q = new URLSearchParams({id: S.id, ratio: r.ratio, codec: r.codec, res: r.res, scope: S.renderScope || 'all'});
+    api('/api/render/native-check?' + q).then((x) => {
+      chk.innerHTML = '';
+      if (x.ok) chk.append(h('span', {class: 'v-ok'}, '✓ Dự án này xuất thuần được (không cần Remotion). '), r.engine === 'native' ? 'Tiêu đề, phụ đề, ảnh chèn, footage dựng bằng HTML; âm thanh trộn bằng ffmpeg.' : '');
+      else chk.append(h('span', {class: r.engine === 'native' ? 'v-fail' : 'muted'}, (r.engine === 'native' ? '✗ ' : 'Xuất thuần chưa được: ') + x.reasons.join(' · ')));
+      for (const n of x.notes || []) chk.append(h('div', {class: 'v-warn'}, '⚠ ' + n));
+    }).catch(() => {});
+  }
   if (r.codec !== 'prores') box.append(field(`Chất lượng (CRF ${r.crf}) — số nhỏ = đẹp hơn, file nặng hơn`, h('input', {type: 'range', min: 12, max: 28, step: 1, value: r.crf, oninput: (e) => { r.crf = +e.target.value; e.target.parentElement.firstChild.textContent = `Chất lượng (CRF ${r.crf}) — số nhỏ = đẹp hơn, file nặng hơn`; }}), r.gpu !== 'off' && g.nvenc ? 'Khi mã hoá bằng GPU, chất lượng tính theo bitrate tự động (FHD 16 Mbps, 2K 28, 4K 55).' : null));
   box.append(field(`Số luồng CPU: ${r.threads} / ${cpus}`, h('input', {type: 'range', min: 1, max: cpus, step: 1, value: Math.min(r.threads, cpus), oninput: (e) => { r.threads = +e.target.value; e.target.parentElement.firstChild.textContent = `Số luồng CPU: ${r.threads} / ${cpus}`; }}), 'Nhiều luồng = nhanh hơn nhưng máy nóng/chậm hơn. Mặc định 8.'));
   const card = (S.state.gpuInfo?.cards || []).find((c) => c.vendor === 'nvidia') || S.state.gpuInfo?.cards?.[0];
@@ -874,11 +1011,26 @@ async function tabVideo(B) {
   const pend = Object.values(S.tasks).filter((t) => t.kind === 'media' && t.project === S.id && t.status === 'running');
   B.append(h('div', {class: 'hint', style: 'margin:0 0 10px'}, 'Footage nằm trên một lớp riêng phía trên cảnh: ', h('b', {}, 'Chính'), ' phủ kín khung, ', h('b', {}, 'B-roll'), ' chèn ngắn (tắt tiếng), ', h('b', {}, 'PiP'), ' khung nhỏ ở góc, ', h('b', {}, 'Màn hình'), ' bản ghi màn hình trong khung điện thoại / laptop. Xem trước dùng bản 540p; khi xuất dùng file gốc. Tiêu đề, phụ đề, ảnh chèn vẫn nằm trên footage.'));
   // — kho footage của dự án —
-  const g = h('div', {class: 'group'}, h('h4', {}, `Footage của dự án (${S.ft.items.length})`,
-    h('button', {class: 'small primary', onclick: () => { const fp = $('#filePick'); fp.accept = 'video/*,.mts,.mkv'; fp.multiple = true; fp.value = ''; fp.onchange = () => { const L = [...fp.files]; fp.multiple = false; ftUpload(L); }; fp.click(); }}, '＋ Nhập video'),
-    h('button', {class: 'small', onclick: () => { goTab('ai'); S.ai.kind = 'video'; renderTab(); }, title: 'Tìm video stock miễn phí (Pexels, Pixabay…) rồi "Dùng ▾ → B-roll"'}, '🔎 Tìm B-roll')));
+  const g = h('div', {class: 'group'}, h('h4', {}, `Footage của dự án (${S.ft.items.length})`));
+  const pickDisk = async () => { // Windows dialog → hardlink / copy on the server: no browser upload, fine for multi-GB files
+    const r = await api('/api/pick-file?multi=1&filter=' + encodeURIComponent('Video|*.mp4;*.mov;*.m4v;*.webm;*.mkv;*.avi;*.mts|Mọi file|*.*'));
+    if (!r.supported) return toast('Hộp chọn file chỉ có trên Windows: dùng "Tải video lên" hoặc kéo thả', true);
+    if (!r.files?.length) return;
+    toast(`Đang đưa ${r.files.length} video vào dự án…`, false, 4000);
+    try { const x = await api('/api/media/import-path', {id: S.id, files: r.files}); for (const it of x.items) { if (it.error) toast(it.error, true, 6000); else taskWaiters[it.task] = (t) => { if (t.status !== 'running') { delete taskWaiters[it.task]; ftLoad().then(() => S.tab === 'video' && renderTab()); } }; } await ftLoad(); if (S.tab === 'video') renderTab(); }
+    catch (e) { toast(e.message, true, 8000); }
+  };
+  const pickLib = async () => { // thư viện SAMI · stock · video đã có trong public/ → media/ + proxy, rồi đặt lên timeline như B-roll
+    const ref = await pickMedia('video'); if (!ref) return;
+    try { const r = await api('/api/media/adopt', {id: S.id, rel: ref, sub: 'broll'}); toast('Đang chuẩn bị ' + r.src + '…'); addClipWhenReady(r.task, r.src, 'broll', secNow()); }
+    catch (e) { toast(e.message, true, 6000); }
+  };
+  g.append(h('div', {class: 'ftAdd'},
+    h('button', {class: 'small primary', title: 'Chọn file trên máy / NAS: không tải qua trình duyệt, cùng ổ đĩa thì tạo hardlink (0 byte, tức thì)', onclick: pickDisk}, '📂 Chọn video trên máy…'),
+    h('button', {class: 'small', title: 'Tải lên qua trình duyệt (khi Studio chạy trên máy khác)', onclick: () => { const fp = $('#filePick'); fp.accept = 'video/*,.mts,.mkv'; fp.multiple = true; fp.value = ''; fp.onchange = () => { const L = [...fp.files]; fp.multiple = false; ftUpload(L); }; fp.click(); }}, '⤒ Tải lên'),
+    h('button', {class: 'small', title: 'Video trong thư viện SAMI, stock miễn phí (Pexels, Pixabay…) hoặc video đã có trong dự án', onclick: pickLib}, '📚 Thư viện / Stock / B-roll')));
   for (const t of pend) g.append(h('div', {class: 'hint', style: 'margin:0 0 6px'}, '⏳ ' + t.msg));
-  if (!S.ft.items.length) g.append(h('div', {class: 'muted', style: 'font-size:13px'}, 'Chưa có video. Bấm "＋ Nhập video" hoặc kéo file từ Explorer thả vào đây. Bản ghi màn hình (tốc độ khung thay đổi) được chuyển sang 30 khung/giây cố định.'));
+  g.append(h('div', {class: 'ftDrop'}, S.ft.items.length ? 'Kéo video từ Explorer thả vào đây để thêm' : 'Chưa có video. Kéo file từ Explorer thả vào đây, hoặc dùng các nút bên trên. Bản ghi màn hình (tốc độ khung thay đổi) được chuyển sang 30 khung/giây cố định; xem trước dùng bản 540p.'));
   const grid = h('div', {class: 'stockGrid'});
   for (const m of S.ft.items) grid.append(h('div', {class: 'stk', title: `${m.src}\n${m.w}×${m.h} · ${m.fps} khung/s${m.audio ? ' · có tiếng' : ' · không tiếng'}${m.vfrOrig ? '\nĐã chuyển từ bản ghi tốc độ khung thay đổi' : ''}`},
     m.thumb ? h('img', {src: `/api/media/thumb/${S.id}/${m.src}`, loading: 'lazy'}) : h('div', {class: 'ph'}, m.name),
@@ -886,7 +1038,7 @@ async function tabVideo(B) {
     m.ready ? h('div', {class: 'row', style: 'margin:0 5px 5px;gap:3px;flex-wrap:wrap'}, ...['main', 'broll', 'pip', 'screen'].map((r) => h('button', {class: 'small' + (r === 'main' ? ' primary' : ''), title: 'Thêm vào timeline tại vị trí đang xem: ' + (S.ft.meta.roles?.[r] || r), onclick: () => addClip(m.src, r, secNow(), m)}, '＋' + ROLE_VI[r])))
       : h('div', {class: 'row', style: 'margin:0 5px 5px'}, h('button', {class: 'small', onclick: async () => { const r = await api('/api/media/prepare', {id: S.id, src: m.src}); taskWaiters[r.task] = (x) => { if (x.status !== 'running') { delete taskWaiters[r.task]; ftLoad().then(() => S.tab === 'video' && renderTab()); } }; renderTab(); }}, 'Chuẩn bị (540p)'))));
   g.append(grid);
-  g.ondragover = (e) => { e.preventDefault(); }; g.ondrop = (e) => { const L = [...(e.dataTransfer?.files || [])].filter((f) => /video|\.mts$|\.mkv$/i.test(f.type || f.name)); if (!L.length) return; e.preventDefault(); e.stopPropagation(); ftUpload(L); };
+  g.ondragover = (e) => { e.preventDefault(); g.querySelector('.ftDrop')?.classList.add('on'); }; g.ondragleave = () => g.querySelector('.ftDrop')?.classList.remove('on'); g.ondrop = (e) => { const L = [...(e.dataTransfer?.files || [])].filter((f) => /video|\.mts$|\.mkv$/i.test(f.type || f.name)); if (!L.length) return; e.preventDefault(); e.stopPropagation(); ftUpload(L); };
   B.append(g);
   // — các clip trên timeline —
   const lg = h('div', {class: 'group'}, h('h4', {}, `Trên timeline (${clips.length})`));
@@ -1252,7 +1404,7 @@ function reviewGroup() {
   g.append(h('div', {class: 'hint', style: 'margin:0 0 8px'}, 'Ảnh khung giữa của mọi cảnh × mọi tỉ lệ → 1 file review.html (gửi qua Lark/Zalo/Email, mở trên điện thoại, có ô góp ý từng cảnh + nút Sao chép góp ý) + ảnh contact sheet. Không cần render video. ≈ 2–4 phút.'),
     h('div', {class: 'row', style: 'flex-wrap:wrap'},
       h('button', {class: 'primary', disabled: !!running, onclick: async () => { if (isDirty()) await save(); try { await api('/api/review', {id: S.id}); renderTab(); } catch (e) { toast(e.message, true); } }}, running ? 'Đang tạo…' : '📋 Tạo gói duyệt'),
-      h('button', {title: 'Thêm bản video nhẹ 540p vào hàng đợi (gửi kèm để khách xem chuyển động)', onclick: async () => { if (isDirty()) await save(); try { await api('/api/render', {...S.render, res: '540p', fps: 30, crf: 28, ratio: S.project.formats[0], id: S.id, name: (S.render.name || S.project.name) + '_duyet', scope: 'all'}); toast('Đã thêm bản xem 540p vào hàng đợi'); } catch (e) { modal(h('pre', {style: 'white-space:pre-wrap'}, e.message)); } }}, '＋ Bản xem 540p')),
+      h('button', {title: 'Thêm bản video nhẹ 540p vào hàng đợi (gửi kèm để khách xem chuyển động)', onclick: async () => { if (isDirty()) await save(); try { await api('/api/render', {...S.render, engine: 'remotion', res: '540p', fps: 30, crf: 28, ratio: S.project.formats[0], id: S.id, name: (S.render.name || S.project.name) + '_duyet', scope: 'all'}); toast('Đã thêm bản xem 540p vào hàng đợi'); } catch (e) { modal(h('pre', {style: 'white-space:pre-wrap'}, e.message)); } }}, '＋ Bản xem 540p')),
     h('div', {id: 'reviewMsg', class: 'muted', style: 'font-size:12.5px;margin-top:6px'}, running ? `${running.msg} (${Math.round((running.p || 0) * 100)}%)` : ''));
   const list = h('div', {style: 'margin-top:8px'}); g.append(list);
   api('/api/review/list?id=' + S.id).then((L) => { for (const r of L.slice(0, 4)) list.append(h('div', {class: 'item', style: 'cursor:default;flex-wrap:wrap'}, h('span', {class: 't'}, r.stamp.replace('_', ' ')), h('a', {class: 'help', href: projUrl(r.html), target: '_blank'}, 'Mở trang duyệt'), ...r.sheets.map((s) => h('a', {class: 'help', href: projUrl(s), target: '_blank'}, s.match(/contact_(.*)\.jpg/)[1].replace('x', ':'))), h('button', {class: 'small', onclick: () => api('/api/open', {path: r.path})}, '📁'))); }).catch(() => {});

@@ -1,0 +1,40 @@
+{
+ "id": "hf-google-maps",
+ "name": "Dịch vụ Google Maps (khuôn)",
+ "version": "1.0.0",
+ "studio": ">=1.0.0",
+ "category": "agency",
+ "goal": [
+  "gioi-thieu"
+ ],
+ "description": "Video dịch vụ hồ sơ Google Maps cho nhà hàng, dựng từ khuôn: hook, số liệu, tìm trên Maps, đường tới quán, hồ sơ đầy đủ, biểu đồ trước / sau, kêu gọi, thẻ kết.",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "duration": 38,
+ "bpm": 120,
+ "languages": [
+  "de"
+ ],
+ "thumbFrame": 181,
+ "author": "SAMI Marketing Agency",
+ "license": "internal",
+ "tags": [
+  "khuon",
+  "google-maps",
+  "agency",
+  "de"
+ ],
+ "engine": "hyperframes",
+ "khuon": [
+  "hook-ransom",
+  "stat-counter",
+  "maps-search",
+  "map-route",
+  "maps-profile",
+  "chart-bars",
+  "cta-contact",
+  "endcard-logo"
+ ]
+}

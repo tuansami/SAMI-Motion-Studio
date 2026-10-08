@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn review-quote · thẻ đánh giá: dấu ngoặc lớn, sao sáng dần, lời khách vào từng từ, tên + nguồn. */
+  #wrap { position: absolute; top: var(--safe-top); bottom: var(--safe-bottom); left: var(--safe-side); right: var(--safe-side); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 50px; }
+  #head { font-size: 84px; text-align: center; }
+  #card { position: relative; width: 1300px; padding: 80px 90px 70px; }
+  #qm { position: absolute; left: 50px; top: -70px; width: 150px; height: 150px; color: var(--k-accent); }
+  #stars { font-size: 64px; color: #FBBC04; }
+  #quote { margin-top: 30px; font-family: var(--k-head); font-weight: var(--k-weight); letter-spacing: -0.02em; font-size: 76px; line-height: 1.18; color: var(--k-cardInk); }
+  [data-theme="paper"] #quote { font-style: italic; }
+  #who { margin-top: 44px; display: flex; align-items: center; gap: 24px; }
+  #av { width: 84px; height: 84px; border-radius: 50%; background: var(--k-accent); color: #fff; font: 800 40px var(--f-head); display: flex; align-items: center; justify-content: center; }
+  #author { font: 600 40px var(--f-ui); color: var(--k-cardInk); }
+  #meta { font: 500 30px var(--f-ui); color: #70757A; margin-top: 4px; }
+  [data-ratio="9x16"] #card { width: 100%; padding: 90px 64px 70px; }
+  [data-ratio="9x16"] #quote { font-size: 74px; }
+  [data-ratio="9x16"] #head { font-size: 96px; }
+  [data-ratio="1x1"] #card, [data-ratio="4x5"] #card { width: 100%; padding: 64px 56px 50px; }
+  [data-ratio="1x1"] #quote, [data-ratio="4x5"] #quote { font-size: 54px; }
+  [data-ratio="1x1"] #stars, [data-ratio="4x5"] #stars { font-size: 48px; }
+  [data-ratio="1x1"] #head, [data-ratio="4x5"] #head { font-size: 60px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S05">
+  <div class="k-stage">
+    <div id="wrap" class="k-layer">
+      <div id="head" class="k-head" data-slot="headline" data-optional></div>
+      <div id="card" class="k-card">
+        <div id="qm" data-ico="quote"></div>
+        <div id="stars"></div>
+        <div id="quote" data-slot="quote"></div>
+        <div id="who"><div id="av"></div><div><div id="author" data-slot="author"></div><div id="meta" data-slot="meta"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind().icons(), tl = S.timeline();
+  const st = K.stars(document.getElementById('stars'), K.num('rating', 5));
+  document.getElementById('av').textContent = (K.text('author') || 'A').trim()[0].toUpperCase();
+  if (K.has('headline')) S.arrive(tl, '#head', S.beat(0), {dist: 20});
+  S.arrive(tl, '#card', S.beat(.25), {dist: 60, dur: .7});
+  K.pop(tl, '#qm', S.beat(.75), {from: .2, rot: -40});
+  tl.fromTo(st, {opacity: 0, scale: .2}, {opacity: 1, scale: 1, duration: .35, stagger: .15}, S.beat(1));
+  S.arrive(tl, S.words(document.getElementById('quote')), S.beat(3), {stagger: .09, dur: .45, dist: 20});
+  S.arrive(tl, '#who', S.beat(3) + K.text('quote').split(/\s+/).length * .09 + .3, {dist: 16});
+  K.push(tl, '#card', .03);
+</script>
+</body>
+</html>

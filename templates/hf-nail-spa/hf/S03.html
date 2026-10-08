@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<style>
+  /* Khuôn benefits-3 · tiêu đề → 3–4 thẻ lợi ích lần lượt, dấu tích nét vẽ. */
+  #wrap { position: absolute; top: var(--safe-top); bottom: var(--safe-bottom); left: var(--safe-side); right: var(--safe-side); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  #title { font-size: 104px; text-align: center; margin-bottom: 80px; max-width: 1500px; }
+  #cards { display: flex; gap: 36px; width: 100%; justify-content: center; }
+  .b { flex: 1 1 0; max-width: 560px; padding: 46px 40px; display: flex; flex-direction: column; gap: 30px; }
+  .b .ck { width: 96px; height: 96px; border-radius: 50%; background: var(--k-accent); color: #fff; display: flex; align-items: center; justify-content: center; }
+  [data-theme="night"] .b .ck { background: var(--grad); color: #0C0628; }
+  .b .ck svg { width: 58px; height: 58px; }
+  .b .ck path { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .b .t { font-family: var(--k-ui); font-weight: 600; font-size: 46px; line-height: 1.2; }
+  [data-theme="paper"] .b { border-radius: 4px; }
+  [data-ratio="9x16"] #title { font-size: 112px; margin-bottom: 72px; max-width: 940px; }
+  [data-ratio="9x16"] #cards { flex-direction: column; gap: 30px; align-items: stretch; }
+  [data-ratio="9x16"] .b { max-width: none; flex: none; flex-direction: row; align-items: center; padding: 44px 44px; gap: 36px; }
+  [data-ratio="9x16"] .b .t { font-size: 60px; }
+  [data-ratio="1x1"] #title, [data-ratio="4x5"] #title { font-size: 78px; margin-bottom: 50px; }
+  [data-ratio="1x1"] #cards, [data-ratio="4x5"] #cards { flex-direction: column; gap: 22px; align-items: stretch; }
+  [data-ratio="1x1"] .b, [data-ratio="4x5"] .b { max-width: none; flex: none; flex-direction: row; align-items: center; padding: 26px 34px; }
+  [data-ratio="1x1"] .b .t, [data-ratio="4x5"] .b .t { font-size: 44px; }
+  [data-ratio="1x1"] .b .ck, [data-ratio="4x5"] .b .ck { width: 76px; height: 76px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S03">
+  <div class="k-stage">
+    <div id="wrap" class="k-layer">
+      <div id="title" class="k-head" data-slot="title"></div>
+      <div id="cards"></div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind(), tl = S.timeline();
+  const items = K.list('b', 4);
+  document.getElementById('cards').innerHTML = items.map((b) => `<div class="b k-card"><div class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><div class="t">${K.html(b)}</div></div>`).join('');
+  S.arrive(tl, S.words(document.getElementById('title')), S.beat(0), {stagger: .12, dur: .5});
+  document.querySelectorAll('.b').forEach((el, i) => {
+    const at = S.beat(2 + i * 1.5);
+    S.arrive(tl, el, at, {dist: 60, blur: 10, dur: .6});
+    K.draw(tl, el.querySelector('path'), at + .25, .5);
+  });
+  K.push(tl, '#wrap', .03);
+</script>
+</body>
+</html>

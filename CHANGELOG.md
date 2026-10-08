@@ -19,6 +19,61 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.0.0] — 2026-10-08 — Quản lý dự án, sửa lỗi Khuôn / Footage, khuôn ngay từ storyboard, xuất Hyperframes thuần
+HANDOFF mục 5 + lỗi Tuấn gặp khi thử 0.9. Tuấn bảo làm v1.0, chưa push.
+
+### Sửa lỗi (Tuấn báo khi thử 0.9)
+- **Hộp 🧩 Khuôn không có nút đóng**: hộp rộng 1100 px nằm trong khung 720 px nên nút "Đóng" ở cuối bị trôi khỏi màn hình. Mọi hộp thoại giờ có **nút ✕ dính ở góc**, đóng bằng **Esc** hoặc **bấm ra nền tối**; hộp Khuôn dùng khung rộng (tối đa 1240 px, 90 % chiều cao).
+- **Tab Footage trống, không thêm được video**: Studio đang chạy bản server cũ (mở trước khi cập nhật) nên `/api/media` trả "Not Found" (chữ đỏ nhỏ, trông như trống). Giờ:
+  - server ghi phiên bản lúc khởi động (`bootVersion`); giao diện thấy server cũ thì hiện **dải cam "Studio đang chạy bản cũ… mở lại Start-Studio.bat"**;
+  - tab nào lỗi cũng hiện lý do (trước đây lỗi trong tab async làm khung trống);
+  - tab Footage thêm **📂 Chọn video trên máy…** (hộp chọn nhiều file của Windows, server tạo liên kết cứng nếu cùng ổ, không thì chép bất đồng bộ: không tải qua trình duyệt, hợp file vài GB), **📚 Thư viện / Stock / B-roll** (thư viện SAMI, stock, video đã có trong dự án), ô **kéo thả** nét đứt luôn hiện.
+  - Route `/api/media/import-path`, `/api/pick-file?multi=1`; `footage.importPath()`.
+
+### Thêm
+- **Quản lý dự án ở trang chủ** (31 dự án nhìn bừa):
+  - ô **tìm** (tên, khách, tag, đường dẫn; không cần dấu), **gom** theo tháng / ngày / khách / trạng thái / loại / không gom, nhóm **gập được** (nhớ theo máy), nút **Chọn nhóm**;
+  - **sắp xếp** theo ngày dự án (mới / cũ trước), mở gần nhất, sửa gần nhất, tên; **lọc** trạng thái, loại, khách, **tag**; xem **thẻ** hoặc **danh sách** một dòng;
+  - ngày dự án đọc từ tiền tố tên theo quy tắc đặt tên (`YYMMDD-…`, `YYMM-…` + ngày tạo), không có thì ngày tạo `project.json`;
+  - **tag** lưu trong `project.json → tags` (đi theo dự án), gắn / bỏ cho nhiều dự án một lần; **🙈 Ẩn** khỏi trang chủ theo máy (`settings.listHidden`), "Hiện dự án đã ẩn" để lấy lại;
+  - danh sách không còn cắt ở 20 dự án gần nhất (giữ tới 500); `/api/state` trả thêm khách, tag, số cảnh, độ dài, tỉ lệ, ngày tạo / sửa, ẩn. Route `/api/project/meta`.
+- **Ô tìm trong 🧩 Khuôn** (tên, mã, mô tả, nhóm, tên ô chữ; không cần dấu), đếm số khuôn khớp, mã khuôn hiện trên thẻ.
+- **Khuôn ngay từ lúc lên kịch bản** (trả lời câu hỏi của Tuấn):
+  - `lib/hf/khuon/CATALOG.md`: danh mục một trang (≈ 2k token) mọi khuôn + ô chữ, sinh bằng `cli-pipeline.mjs catalog --write` (`--json` cho máy); selftest báo khi danh mục cũ;
+  - dây chuyền mới **`storyboard`**: brief là danh sách cảnh `{khuon, label, values, beats?, theme?}` (+ `closing: true` để thêm CTA và thẻ kết từ brand) → dự án dựng sẵn, cho mọi video không khớp promo / maps / menu;
+  - `cli-pipeline.mjs add <dự án> <khuôn> [--after S02 | --replace S03] [--values …]`: thêm / đổi một cảnh từ dòng lệnh;
+  - mọi dây chuyền **cảnh báo chữ đặt vào ô không có** trong khuôn (trước đây bị bỏ qua lặng lẽ);
+  - skill: storyboard có cột "khuôn", dòng có khuôn không cần viết code cảnh.
+- **Xuất Hyperframes thuần, không cần Remotion** (thử nghiệm) `server/hf-native.mjs` + `lib/hf/native/film.js`:
+  - cảnh HTML → clip (cache cũ); bố cục **FILM** (một `<video>` mỗi cảnh, chuyển cảnh mờ + nhoè như engine, footage có khung / cắt / tốc độ, tiêu đề 9 kiểu chạy chữ, phụ đề, ảnh chèn + 12 sticker tự vẽ, grain + vignette) do Hyperframes xuất; âm thanh trộn bằng **ffmpeg** (đoạn cắt nhạc + crossfade, tắt dần, hạ nhạc theo thoại / footage có tiếng, SFX, giọng, tiếng footage có atempo) → −14 LUFS → ghép (chép luồng hình);
+  - tab Xuất → ô **Bộ dựng** (Remotion / Hyperframes thuần) kèm kiểm tra trực tiếp dự án có xuất thuần được không và vì sao; `GET /api/render/native-check`; `cli-render --engine native`;
+  - từ chối rõ lý do: cảnh `.tsx`, Lottie, chế độ vừa khung, H.265, 540p / 2K, xuất từng cảnh;
+  - `filmStills()`: ảnh kiểm bố cục FILM bằng clip đã có trong cache (cảnh chưa có clip hiện ô sọc), không dựng video.
+- **3 template Hyperframes theo ngành** dựng toàn bằng khuôn (xuất thuần được): `hf-nha-hang` (7 cảnh, 32 s), `hf-nail-spa` (9 cảnh, 43 s), `hf-google-maps` (8 cảnh, 38 s); chữ tiếng Đức, quán hư cấu, có ảnh bìa. Dựng lại: `node tools/khuon-templates.mjs --apply`.
+
+### Thay đổi
+- `/api/audio/analyze` (phân tích nhịp nhạc) chạy trong **worker thread**, có cache theo file: không còn chặn server vài giây.
+- `validate`: ffprobe độ dài nhạc mix sẵn chỉ chạy một lần mỗi phiên bản file.
+- Nhãn ô "Năm" của khuôn `calendar-date` → "Năm (vd 2026)" (chuẩn mẫu đòi nhãn ≥ 4 ký tự).
+- "Bộ dựng" không lưu vào cài đặt xuất mặc định; "＋ Bản xem 540p" luôn dùng Remotion.
+
+### Đã kiểm
+- `npm run check`: tất cả đạt, thêm 2 phép thử (danh mục khuôn khớp; xuất thuần: từ chối đúng, bố cục FILM đủ cảnh / tiêu đề, trộn âm thanh ffmpeg ra đúng độ dài phim) và dây chuyền storyboard.
+- Trên Studio thử (cổng 5179): trang chủ gom theo tháng / ngày, tìm "maps" ra 3 dự án, tag + ẩn qua API; hộp Khuôn: tìm "uu dai" ra 1 khuôn, ✕ nằm trong khung, Esc và bấm nền đều đóng; tab Footage: nhập clip thử 3 s bằng đường dẫn → bản xem trước 540p → ＋B-roll lên timeline; tab Xuất: Bộ dựng báo ✓ với dự án khuôn, ✗ H.265.
+- Bố cục FILM: 8 ảnh tĩnh (tiêu đề rise + highlight gradient, karaoke có nền, đánh máy, phụ đề, sticker khoanh tròn tự vẽ, sticker chạm, PiP lấy khung thật từ video).
+- **Chưa thử**: một lượt xuất thuần thật (cần Tuấn cho phép xuất), so với bản Remotion cùng dự án.
+
+### Chưa làm (cố ý)
+- Tách router `index.mjs`, hàng đợi semaphore (xuất vẫn tuần tự: an toàn với giới hạn phiên NVENC của card dân dụng), gom 17 helper TSX (đụng 29 dự án cũ).
+- Carousel ảnh bản đầy đủ bằng OpenCV: cần cài `opencv-python-headless`, chờ Tuấn đồng ý.
+- Đổi ffmpeg sang bản LGPL: chỉ khi phân phối cho khách (`node tools/get-ffmpeg.mjs --lgpl --force`).
+
+### File chính
+`ui/{app.js,index.html,style.css}`, `server/{index,footage,hf-native,render,cli-render,cli-pipeline,audio,validate,selftest}.mjs`, `lib/hf/native/film.js`, `lib/hf/khuon/CATALOG.md`, `lib/pipelines/storyboard.mjs`, `tools/khuon-templates.mjs`, `templates/hf-{nha-hang,nail-spa,google-maps}/`, skill `sami-motion-studio` (SKILL.md, khuon.md, render-ffmpeg.md), `docs/HUONG_DAN_SU_DUNG.md`.
+
+### Roll back
+`git checkout v0.9.0` (khi đã gắn tag) hoặc commit trước đó. `project.json → tags` và `settings.listHidden` bị bản cũ bỏ qua, không hại.
+
 ## [0.9.0] — 2026-10-08 — Footage: video quay thật, B-roll, PiP, bản ghi màn hình; preset xuất; khối vẽ bằng code
 HANDOFF mục 4. Tuấn bảo làm v0.9 (2026-10-08), chưa push.
 

@@ -1,7 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import {readProject} from './project.mjs';
-import {duration} from './ffmpeg.mjs';
+import {duration as probeDuration} from './ffmpeg.mjs';
+// 1.0: ffprobe once per file version (validate runs on every save)
+const durCache = new Map();
+const duration = (f) => { let k; try { const st = fs.statSync(f); k = f + '|' + st.mtimeMs + '|' + st.size; } catch { return probeDuration(f); } if (!durCache.has(k)) durCache.set(k, probeDuration(f)); return durCache.get(k); };
 import {isHf} from './hf.mjs';
 import {isLib, resolveLib} from './library.mjs';
 import {proxyPath} from './footage.mjs';

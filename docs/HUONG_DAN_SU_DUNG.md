@@ -63,7 +63,18 @@ Kit cũ vẫn dùng được bình thường; Studio là bản nâng cấp nằm
 
 ## 3. Màn hình "Dự án"
 
-**Dự án gần đây** — bấm thẻ để mở. Thẻ carousel có nhãn **Carousel**.
+**Dự án** — bấm thẻ để mở. Thẻ carousel có nhãn **Carousel**.
+
+**Quản lý dự án (1.0):** thanh công cụ phía trên danh sách.
+- **🔎 Tìm**: gõ một phần tên, khách hàng, tag hoặc đường dẫn; không cần gõ dấu ("google maps", "nha hang").
+- **Gom**: theo **tháng** (mặc định), theo **ngày**, theo khách, theo trạng thái, video / carousel, hoặc không gom. Ngày lấy từ tiền tố tên theo quy tắc đặt tên (`261007-V22-…` = 07/10/2026; `2610-V05-…` = tháng 10/2026, ngày lấy theo lúc tạo dự án). Mỗi nhóm bấm để gập / mở; Studio nhớ nhóm nào đang gập. Nút **Chọn nhóm** chọn cả nhóm.
+- **Sắp xếp**: ngày dự án (mới trước / cũ trước), mở gần nhất, sửa gần nhất, tên A đến Z.
+- **Lọc**: trạng thái (Nháp, Chờ duyệt, Đã duyệt, Đã đăng), loại, khách hàng, **tag** (hàng chip `#tag`, bấm `#tag` trên thẻ cũng lọc).
+- **▦ Thẻ / ☰ Danh sách**: danh sách gọn một dòng một dự án khi có nhiều dự án.
+- **🏷 Tag** (rê chuột lên thẻ, hoặc chọn nhiều rồi **🏷 Gắn tag**): tag lưu trong `project.json` nên đi theo dự án, đồng nghiệp mở cũng thấy.
+- **🙈 Ẩn**: cất dự án khỏi trang chủ, thư mục giữ nguyên. Tick **Hiện dự án đã ẩn** để thấy lại (thẻ mờ, viền đứt) và bấm **👁** để hiện lại. Ẩn chỉ áp dụng trên máy này.
+
+Nếu đầu trang có dải màu cam "Studio đang chạy bản cũ": Studio đã được cập nhật nhưng cửa sổ Studio (cửa sổ đen) chưa tắt. Tắt rồi mở lại `Start-Studio.bat`.
 
 **Xoá / gỡ nhiều dự án (0.8.1):** rê chuột lên thẻ → tick ô ở góc phải (hoặc **Chọn tất cả**). Thanh tím hiện ra:
 - **Gỡ khỏi danh sách**: chỉ ẩn khỏi trang này, thư mục giữ nguyên.
@@ -268,6 +279,12 @@ Bấm để Studio đo file nhạc: **BPM**, phách đầu, **DROP** (điểm b�
 
 **Hàng đợi render**: thanh tiến độ, số khung đã vẽ / đã mã hoá, thời gian còn lại, bộ mã hoá đang dùng (GPU NVENC hay CPU; từ 0.8.2, trước khi ghép các đoạn Studio đọc lại file và ghi **bộ mã hoá thật**, ví dụ "GPU · h264_nvenc" hay "CPU · libx264", kèm cảnh báo nếu đã chọn GPU mà file do CPU mã hoá; mỗi lượt xuất xong ghi một dòng vào `.studio/renders.jsonl`), nút **Huỷ**, **Mở video**, **Mở thư mục out**, **Dọn xong**. Có thể tiếp tục chỉnh dự án khác khi đang render (mỗi bản render dùng dữ liệu **đã Lưu** tại lúc nó bắt đầu chạy — Studio tự lưu khi bấm Xuất).
 
+### Bộ dựng: Hyperframes thuần (mới ở 1.0, thử nghiệm)
+Ô **Bộ dựng** trong Cài đặt xuất: **Remotion** (mặc định, như cũ) hoặc **Hyperframes thuần**: xuất không cần Remotion, dùng khi đóng gói video / công cụ cho khách (giấy phép Remotion tính phí với công ty trên 3 người).
+- Chỉ dùng được khi **mọi cảnh là cảnh HTML** (khuôn hoặc cảnh Claude viết bằng HTML), không có Lottie, định dạng H.264 hoặc ProRes, độ phân giải Full HD hoặc 4K, tỉ lệ dự án có bố cục riêng. Dưới ô Bộ dựng Studio ghi rõ dự án này xuất thuần được không và vì sao.
+- Tiêu đề, phụ đề, ảnh chèn, sticker, footage, grain, vignette, chuyển cảnh giữ đúng như bản Remotion; âm thanh trộn bằng ffmpeg (nhạc có đoạn cắt, hạ nhạc khi có thoại, SFX, tiếng footage) rồi chuẩn −14 LUFS. File xuất có đuôi `_hf_<giờ>.mp4`.
+- Đang thử nghiệm: lần xuất thật đầu tiên nên so với bản Remotion của cùng dự án.
+
 ### Gói duyệt khách (mới ở 0.4)
 Dùng để khách hoặc sếp góp ý theo từng cảnh **mà không cần render video**.
 1. Vào tab Xuất → **📋 Tạo gói duyệt**. Mất khoảng 2–4 phút, chạy nền.
@@ -445,10 +462,12 @@ Bộ slide cho Instagram / Facebook / LinkedIn: **mỗi slide là 1 video MP4 l�
 | Ảnh / thực đơn / ưu đãi | Polaroid dán băng dính · Một món + giá · Huy hiệu giảm giá |
 | Bằng chứng / thời gian / kết | Lời khách + sao · Tờ lịch khoanh ngày · Nút + liên hệ · Logo + khẩu hiệu |
 
-- **Cột Cảnh → 🧩 Khuôn**: chọn phong cách (**Đêm** navy SAMI, **Giấy kraft** kiểu video Maps cuối năm, **Sáng**), lọc theo nhóm, xem ảnh mẫu.
+- **Cột Cảnh → 🧩 Khuôn**: ô **🔎 Tìm khuôn** (tên, mô tả, nhóm, tên ô chữ; không cần dấu), chọn phong cách (**Đêm** navy SAMI, **Giấy kraft** kiểu video Maps cuối năm, **Sáng**), lọc theo nhóm, xem ảnh mẫu.
   - **＋ Thêm sau S0x**: chèn cảnh mới sau cảnh đang chọn (các cảnh sau tự lùi, vẫn đúng nhịp). Sửa chữ ở tab **Chữ** (mỗi ô có nhãn), ảnh bằng **📚 Chọn…**.
   - **Đổi S0x**: thay kiểu của cảnh đang chọn, **giữ nguyên chữ** ở các ô cùng tên, không đụng giọng đọc, nhạc, SFX, thời lượng. Đổi lại kiểu cũ thì chữ cũ quay về. Trước mỗi lần đổi có điểm neo trong tab **Lịch sử**.
 - **Dây chuyền** (Claude Code chạy): bạn nói "làm video Google Maps cho quán X", Claude chỉ viết một file `brief.json` (chữ, ảnh, liên hệ) rồi chạy lệnh dây chuyền; máy chọn khuôn, xếp thời gian theo nhịp 120 BPM, điền chữ, đặt SFX, chụp ảnh kiểm. Có 3 dây chuyền: **promo** (~30 s), **maps** (dịch vụ Google Maps), **menu** (thực đơn, món mới, ưu đãi). Dây chuyền **không xuất video**; bạn mở dự án trong Studio để xem và chỉnh.
+- **Dây chuyền storyboard (1.0)**: cho mọi video khác. Khi lên kịch bản, Claude đọc **danh mục khuôn** (`lib/hf/khuon/CATALOG.md`, một trang) và ghi khuôn cho từng dòng storyboard; storyboard được duyệt chính là đầu vào để máy dựng, nên phần lớn cảnh không cần viết code và tốn ít token. Chỉ cảnh không có khuôn phù hợp mới viết tay.
+- **Template theo ngành (1.0)**, dựng toàn bằng khuôn: **Nhà hàng: món mới + ưu đãi**, **Nail / Spa: dịch vụ + đặt lịch**, **Dịch vụ Google Maps** (Thư viện mẫu). Chữ mẫu tiếng Đức, quán hư cấu, số liệu mẫu phải thay bằng số thật.
 - **Bộ nhận diện khách**: `SAMI_Library\brands\<khách>\brand.json` (màu, font, phong cách, logo, liên hệ, giọng, nhạc). Dây chuyền tự áp vào video. Có sẵn `brands\sami`.
 - Chi phí của một video (API + lượt Claude quy đổi): Claude chạy `ledger --project <thư mục>`.
 
@@ -462,7 +481,12 @@ Footage nằm trên một **lớp riêng phía trên cảnh**; tiêu đề, ph�
 | **PiP** | khung nhỏ ở góc (người nói trên nền cảnh đồ hoạ) | bo góc hoặc tròn, có tiếng |
 | **Màn hình** | bản ghi màn hình điện thoại / máy tính | nằm trong khung điện thoại hoặc laptop |
 
-- **Nhập**: tab Footage → **＋ Nhập video** (nhiều file, dung lượng bao nhiêu cũng được), hoặc **kéo file video thả lên khung xem** rồi chọn vai trò (PiP đặt đúng chỗ thả). File gốc vào thư mục `media/` của dự án; Studio tự tạo **bản xem trước 540p** để xem mượt, khi xuất dùng file gốc. Bản ghi màn hình có tốc độ khung thay đổi được tự chuyển sang 30 khung/giây cố định (khỏi lệch tiếng).
+- **Nhập** (1.0 thêm cách): tab Footage →
+  - **📂 Chọn video trên máy…**: hộp chọn file Windows, chọn nhiều file; không tải qua trình duyệt, cùng ổ đĩa thì Studio tạo liên kết cứng (tức thì, không tốn thêm dung lượng). Nên dùng cho file lớn.
+  - **⤒ Tải lên**: qua trình duyệt (khi Studio chạy trên máy khác).
+  - **📚 Thư viện / Stock / B-roll**: video trong thư viện SAMI, stock miễn phí, hoặc video đã có trong dự án → thành B-roll tại vị trí đang xem.
+  - **Kéo file thả** vào ô nét đứt của tab, hoặc **lên khung xem** rồi chọn vai trò (PiP đặt đúng chỗ thả).
+  Nếu tab Footage trống hoặc báo "Not Found": Studio đang chạy bản cũ, tắt cửa sổ Studio rồi mở lại. File gốc vào thư mục `media/` của dự án; Studio tự tạo **bản xem trước 540p** để xem mượt, khi xuất dùng file gốc. Bản ghi màn hình có tốc độ khung thay đổi được tự chuyển sang 30 khung/giây cố định (khỏi lệch tiếng).
 - **Đặt lên timeline**: đưa thanh thời gian tới chỗ muốn chèn, bấm **＋Chính / ＋B-roll / ＋PiP / ＋Màn hình** dưới video. Clip hiện thành vạch cam trên thanh thời gian (bấm vào để sửa). Clip dài hơn phim thì phim tự nối thêm một đoạn "Footage".
 - **Sửa clip**: bắt đầu, cắt vào / cắt ra, **⇥ Bắt đầu tại vị trí đang xem**, **✂ Kết thúc tại đây**, **✂ Tách đôi tại đây**, tốc độ 0,5× đến 2×, hiện / tắt dần, phủ kín hay vừa khung; PiP: kiểu khung, 5 nút đặt nhanh góc, thanh trượt vị trí, cỡ, bo góc; âm thanh: tắt tiếng, âm lượng dB, hạ nhạc nền khi clip có tiếng.
 - **B-roll từ stock**: nút **🔎 Tìm B-roll** (tab Nguồn & AI, loại Video) → **Dùng ▾ → Thêm làm B-roll tại vị trí đang xem**.
