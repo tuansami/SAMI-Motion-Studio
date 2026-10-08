@@ -62,6 +62,7 @@ label>input[type=color]{display:block}
 .grid9{display:grid;grid-template-columns:repeat(3,34px);gap:4px;margin:4px 0 8px}.grid9 button{height:26px;padding:0;font-size:12px}
 .tabs button{padding:10px 1px;font-size:12.5px}
 .marks i.ovm{background:var(--purple);height:3px;bottom:6px}
+.marks i.ftm{background:#F2B866;height:5px;top:0;bottom:auto;cursor:pointer;pointer-events:auto;border-radius:2px}.marks i.ftm.main{background:#E8913A}.marks i.ftm.pip,.marks i.ftm.screen{background:#F6D186}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.chips button{border-radius:20px;padding:4px 12px;font-size:12.5px}.chips button.on{background:var(--purple);border-color:var(--purple);color:#fff}
 .tplGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
 .tpl{background:var(--panel2);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}.tpl.sel{border-color:var(--mint);box-shadow:0 0 0 1px var(--mint)}

@@ -1,0 +1,17 @@
+{
+ "name": "Maps: đường tới quán",
+ "group": "maps",
+ "version": 1,
+ "beats": 10,
+ "themes": ["light", "paper", "night"],
+ "from": "mới (SAMI, khối vẽ bằng code 0.9)",
+ "description": "Bản đồ cách điệu vẽ bằng code, đường đi tự vẽ từ điểm xuất phát tới quán với chấm chạy theo, ghim ở hai đầu, thẻ thời gian đi bộ / lái xe. Không dùng ảnh chụp bản đồ.",
+ "slots": [
+  {"slot": "headline", "label": "Câu dẫn (*từ* = tô màu)", "default": "Chỉ *5 phút* / từ ga Alexanderplatz", "sample": "Chỉ *5 phút* / từ ga Alexanderplatz"},
+  {"slot": "from", "label": "Điểm xuất phát", "default": "Alexanderplatz", "sample": "Alexanderplatz"},
+  {"slot": "to", "label": "Tên quán (điểm đến)", "default": "Quán của bạn", "sample": "Saigon Atelier"},
+  {"slot": "eta", "label": "Thời gian (vd 5 phút đi bộ)", "default": "5 phút đi bộ", "sample": "5 phút đi bộ"}
+ ],
+ "sfx": [{"beat": 1, "sfx": "whoosh_a", "gain": -22, "label": "đường"}, {"beat": 5, "sfx": "pop", "gain": -14, "label": "tới nơi"}],
+ "thumbAt": [3, 8]
+}

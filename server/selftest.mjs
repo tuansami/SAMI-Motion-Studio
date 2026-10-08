@@ -142,6 +142,38 @@ await t('dây chuyền: promo / maps / menu dựng từ brief mẫu, validate kh
   }
   return out.join(', ');
 });
+// ── 0.9: footage (tiny synthetic clips, CPU; probe → proxy, VFR → CFR, timeline helpers, local media server) ──
+await t('footage: nhập, bản xem trước 540p, VFR → CFR 30, clip trên timeline, máy chủ media có Range', async () => {
+  const F = await import('./footage.mjs'); const {ffAsync} = await import('./ffmpeg.mjs'); const {buildProject} = await import('./khuon.mjs'); const {validateProject: vp} = await import('./validate.mjs');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-ft-'));
+  try {
+    buildProject(d, {name: 'ft', formats: ['9:16'], scenes: [{khuon: 'hook-words'}]});
+    fs.mkdirSync(path.join(d, 'media'));
+    const mk = (n, a) => ffAsync(['-v', 'error', '-y', ...a, path.join(d, 'media', n)]);
+    let r = await mk('a.mp4', ['-f', 'lavfi', '-i', 'testsrc2=size=320x180:rate=30:duration=1', '-f', 'lavfi', '-i', 'sine=duration=1', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-shortest']);
+    if (r.code) return 'ffmpeg thiếu lavfi/libx264 (bỏ qua)';
+    await mk('rec.mp4', ['-f', 'lavfi', '-i', 'testsrc=size=180x320:rate=30:duration=2', '-vf', "select='not(mod(n\\,3))+lt(n\\,20)'", '-fps_mode', 'vfr', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p']);
+    const a = await F.prepare(d, 'media/a.mp4'); if (!a.audio || !fs.existsSync(path.join(d, a.proxy)) || !fs.existsSync(path.join(d, a.thumb))) throw new Error('proxy / ảnh đại diện');
+    const v = await F.prepare(d, 'media/rec.mp4'); if (!v.vfrOrig || v.src !== 'media/rec.cfr30.mp4' || Math.abs(v.fps - 30) > 0.01) throw new Error('VFR → CFR: ' + JSON.stringify(v));
+    const L = F.listMedia(d); if (L.length !== 2 || L.some((x) => !x.ready) || L.some((x) => x.src === 'media/rec.mp4')) throw new Error('listMedia ' + L.map((x) => x.src));
+    const pj = JSON.parse(fs.readFileSync(path.join(d, 'project.json'), 'utf8')); pj.tracks = {video: [F.newClip(pj, {src: 'media/a.mp4', role: 'pip', at: 1, info: a})]};
+    pj.tracks.video.push(F.newClip(pj, {src: v.src, role: 'broll', at: 2, info: v}));
+    fs.writeFileSync(path.join(d, 'project.json'), JSON.stringify(pj));
+    if (pj.tracks.video[1].id !== 'V02' || pj.tracks.video[1].volume !== null || pj.tracks.video[0].volume !== 0 || F.clipEnd(pj.tracks.video[0]) !== 2) throw new Error('newClip ' + JSON.stringify(pj.tracks.video));
+    const val = vp(d); if (val.fail.length) throw new Error(val.fail[0]);
+    const ms = await F.serveMedia(d);
+    try {
+      const res = await fetch(ms.url + 'media/a.mp4', {headers: {Range: 'bytes=0-99'}}); if (res.status !== 206 || (await res.arrayBuffer()).byteLength !== 100) throw new Error('Range');
+      if ((await fetch(ms.url + 'project.json')).status !== 404) throw new Error('máy chủ media lộ file ngoài media/');
+    } finally { await ms.close(); }
+    return '2 clip · proxy + CFR + Range';
+  } finally { fs.rmSync(d, {recursive: true, force: true}); }
+});
+await t('preset xuất: lib/presets.json hợp lệ', () => {
+  const P = JSON.parse(fs.readFileSync(path.join(ROOT, 'lib', 'presets.json'), 'utf8')).presets;
+  for (const x of P) { if (!['16:9', '9:16', '1:1', '4:5'].includes(x.ratio) || !['540p', 'FHD', '2K', '4K'].includes(x.res) || ![24, 30, 60].includes(x.fps) || !['h264', 'h265', 'prores'].includes(x.codec)) throw new Error(x.id); }
+  return P.length + ' preset';
+});
 // ── 0.8.2: the encoder that really wrote a file (tiny 0.2 s clip from a still, CPU only; not a video export) ──
 await t('probeEncoder reads libx264 from a real file', async () => {
   const {probeEncoder, ffAsync} = await import('./ffmpeg.mjs');

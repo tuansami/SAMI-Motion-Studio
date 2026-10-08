@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_sami/khuon/kit.css">
+<script src="_sami/khuon/kit.js"></script>
+<script src="_sami/blocks/blocks.js"></script>
+<style>
+  /* Khuôn chart-bars · biểu đồ cột vẽ bằng code (SAMI.B.bars): cột mọc + số đếm, cột cuối màu nhấn. */
+  #wrap { position: absolute; top: var(--safe-top); bottom: var(--safe-bottom); left: var(--safe-side); right: var(--safe-side); display: flex; flex-direction: column; justify-content: center; gap: 50px; }
+  #title { font-size: 96px; max-width: 1500px; }
+  #chart { height: 560px; font-family: var(--k-ui); font-size: 52px; color: var(--k-ink); padding: 0 40px; border-bottom: 3px solid var(--k-cardLine); }
+  #src { font-size: 28px; font-family: var(--k-mono); color: var(--k-sub); }
+  [data-ratio="9x16"] #title { font-size: 100px; }
+  [data-ratio="9x16"] #chart { height: 860px; font-size: 54px; padding: 0 10px; }
+  [data-ratio="1x1"] #title, [data-ratio="4x5"] #title { font-size: 70px; }
+  [data-ratio="1x1"] #chart, [data-ratio="4x5"] #chart { height: 480px; font-size: 40px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="KHUON">
+  <div class="k-stage">
+    <div id="wrap" class="k-layer">
+      <div id="title" class="k-head" data-slot="title"></div>
+      <div id="chart"></div>
+      <div id="src" data-slot="source" data-optional></div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, K = S.K.bind(), tl = S.timeline();
+  const data = [1, 2, 3, 4, 5, 6].filter((i) => K.has('l' + i) && K.has('v' + i)).map((i) => ({label: K.text('l' + i), value: K.num('v' + i)}));
+  const dec = Math.max(0, ...[1, 2, 3, 4, 5, 6].map((i) => (K.raw('v' + i).replace(',', '.').split('.')[1] || '').length));
+  S.arrive(tl, S.words(document.getElementById('title')), S.beat(0), {stagger: .12, dur: .5});
+  S.B.bars(tl, document.getElementById('chart'), data, S.beat(1.5), {unit: K.text('unit'), decimals: dec, stagger: .3, dur: 1});
+  if (K.has('source')) S.arrive(tl, '#src', S.beat(5), {dist: 12, blur: 4});
+  K.push(tl, '#wrap', .025);
+</script>
+</body>
+</html>

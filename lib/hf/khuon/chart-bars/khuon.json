@@ -1,0 +1,22 @@
+{
+ "name": "Số liệu: biểu đồ cột tăng trưởng",
+ "group": "so-lieu",
+ "version": 1,
+ "beats": 10,
+ "themes": ["night", "light", "paper"],
+ "from": "mới (SAMI, khối vẽ bằng code 0.9)",
+ "description": "Biểu đồ 2 đến 6 cột mọc lên lần lượt, số trên đầu cột đếm lên, cột cuối tô màu nhấn; tiêu đề và nguồn. Dùng cho kết quả trước / sau, tăng trưởng theo tháng.",
+ "slots": [
+  {"slot": "title", "label": "Tiêu đề (*từ* = tô màu)", "default": "Lượt xem hồ sơ Maps / *gấp 3 sau 3 tháng*", "sample": "Lượt xem hồ sơ Maps / *gấp 3 sau 3 tháng*"},
+  {"slot": "l1", "label": "Cột 1: nhãn", "default": "Th7", "sample": "Th7"}, {"slot": "v1", "label": "Cột 1: số", "type": "number", "default": "820", "sample": "820"},
+  {"slot": "l2", "label": "Cột 2: nhãn", "default": "Th8", "sample": "Th8"}, {"slot": "v2", "label": "Cột 2: số", "type": "number", "default": "1240", "sample": "1240"},
+  {"slot": "l3", "label": "Cột 3: nhãn", "default": "Th9", "sample": "Th9", "optional": true}, {"slot": "v3", "label": "Cột 3: số", "type": "number", "default": "1810", "sample": "1810", "optional": true},
+  {"slot": "l4", "label": "Cột 4: nhãn", "default": "Th10", "sample": "Th10", "optional": true}, {"slot": "v4", "label": "Cột 4: số", "type": "number", "default": "2560", "sample": "2560", "optional": true},
+  {"slot": "l5", "label": "Cột 5: nhãn", "default": "", "sample": "", "optional": true}, {"slot": "v5", "label": "Cột 5: số", "type": "number", "default": "", "sample": "", "optional": true},
+  {"slot": "l6", "label": "Cột 6: nhãn", "default": "", "sample": "", "optional": true}, {"slot": "v6", "label": "Cột 6: số", "type": "number", "default": "", "sample": "", "optional": true},
+  {"slot": "unit", "label": "Đơn vị sau số (vd %, k)", "default": "", "sample": "", "optional": true},
+  {"slot": "source", "label": "Nguồn", "default": "", "sample": "Google Business Profile · quán mẫu", "optional": true}
+ ],
+ "sfx": [{"beat": 1.5, "sfx": "whoosh_a", "gain": -22, "label": "cột"}, {"beat": 4, "sfx": "pop", "gain": -16, "label": "cột cuối"}],
+ "thumbAt": [2.5, 8]
+}

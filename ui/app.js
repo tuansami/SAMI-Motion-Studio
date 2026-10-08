@@ -181,7 +181,7 @@ async function mountPreview() {
   S.playerApi = await window.StudioPreview.mount($('#playerBox'), previewOpts(), (f, total, playing) => { S.frame = f; S.total = total; S.playing = playing; updateTransport(); });
 }
 function showBundleError(msg) { const e = $('#bundleErr'); e.hidden = false; e.textContent = 'Lỗi code cảnh (sửa file rồi lưu, Studio sẽ tự tải lại):\n\n' + msg; }
-const previewOpts = () => ({project: S.varPreview != null && S.varCsv ? withCopy(S.project, readVariants(S.varCsv).variants[S.varPreview]?.copy) : S.project, ratio: S.ratio, fps: S.fps, titles: $('#tgTitles').checked, subtitles: $('#tgSubs').checked, audio: $('#tgAudio').checked, sceneId: $('#tgScene').checked ? S.scene : null, hfBase: `/hfp/${S.id}/`, hfRev: S.hfRev || 0});
+const previewOpts = () => ({project: S.varPreview != null && S.varCsv ? withCopy(S.project, readVariants(S.varCsv).variants[S.varPreview]?.copy) : S.project, ratio: S.ratio, fps: S.fps, titles: $('#tgTitles').checked, subtitles: $('#tgSubs').checked, audio: $('#tgAudio').checked, sceneId: $('#tgScene').checked ? S.scene : null, hfBase: `/hfp/${S.id}/`, hfRev: S.hfRev || 0, mediaBase: `/pm/${S.id}/`, mediaProxy: true});
 let upT;
 function pushPreview() { clearTimeout(upT); upT = setTimeout(() => S.playerApi?.update(previewOpts()), 120); }
 function sizePlayer() {
@@ -342,6 +342,7 @@ function renderScrub() {
   if (only) { const s = sceneById(S.scene); segs.append(h('div', {class: 'on', style: 'width:100%'}, `${s.id} · ${s.label}`)); return; }
   for (const s of S.project.scenes) segs.append(h('div', {class: s.id === S.scene ? 'on' : '', style: `width:${100 * (s.end - s.start) / T}%`, title: s.label}, s.id));
   for (const t of S.project.titles || []) marks.append(h('i', {style: `left:${100 * t.start * BASE / T}%;width:${Math.max(0.3, 100 * (t.end - t.start) * BASE / T)}%`, title: t.text}));
+  for (const c of S.project.tracks?.video || []) marks.append(h('i', {class: 'ftm ' + c.role, style: `left:${100 * c.at * BASE / T}%;width:${Math.max(0.3, 100 * ((c.out - c.in) / (c.speed || 1)) * BASE / T)}%`, title: `Footage ${c.id} · ${c.role} · ${c.label || c.src}`, onclick: (e) => { e.stopPropagation(); S.ft.sel = c.id; goTab('video'); }}));
   for (const o of S.project.overlays || []) if (!o.whole) marks.append(h('i', {class: 'ovm', style: `left:${100 * o.start * BASE / T}%;width:${Math.max(0.3, 100 * (o.end - o.start) * BASE / T)}%`, title: 'Ảnh: ' + (o.label || o.src || o.sticker)}));
   if (S.project.audio?.mode === 'layers') for (const c of S.project.audio.cues || []) marks.append(h('i', {class: 'sfx', style: `left:${100 * c.t * BASE / T}%`, title: c.label || c.sfx}));
   if (S.project.audio?.mode === 'layers') for (const c of S.project.audio.voice || []) marks.append(h('i', {class: 'sfx', style: `left:${100 * c.t * BASE / T}%;background:#7667FE`, title: 'Thoại: ' + (c.label || c.src)}));
@@ -355,7 +356,7 @@ function renderRatios() {
 // ─────────────────────────── INSPECTOR TABS ───────────────────────────
 $$('#tabs button').forEach((b) => (b.onclick = () => { S.tab = b.dataset.tab; $$('#tabs button').forEach((x) => x.classList.toggle('on', x === b)); renderTab(); }));
 function renderAll() { renderRatios(); renderScenes(); renderScrub(); renderTab(); $('#dirty').hidden = !isDirty(); $('#projStatus').value = S.project.status || 'draft'; }
-function renderTab() { setTimeout(renderHandles, 0); const B = $('#tabBody'); B.innerHTML = ''; ({text: tabText, titles: tabTitles, overlays: tabOverlays, subs: tabSubs, audio: tabAudio, look: tabLook, render: tabRender, history: tabHistory, variants: tabVariants, ai: tabAI})[S.tab](B); }
+function renderTab() { setTimeout(renderHandles, 0); const B = $('#tabBody'); B.innerHTML = ''; ({text: tabText, titles: tabTitles, overlays: tabOverlays, subs: tabSubs, audio: tabAudio, look: tabLook, render: tabRender, history: tabHistory, variants: tabVariants, ai: tabAI, video: tabVideo})[S.tab](B); }
 
 const field = (label, input, hint) => h('label', {}, label, input, hint ? h('div', {class: 'hint'}, hint) : null);
 const assetSelect = (value, type, onchange) => {
@@ -693,6 +694,13 @@ function tabRender(B) {
   const seg = (k, opts) => h('div', {class: 'seg'}, ...opts.map(([v, l]) => h('button', {class: r[k] === v ? 'on' : '', onclick: () => set(k, v)}, l)));
   const cpus = S.state.cpus; const g = S.state.gpu;
   const box = h('div', {class: 'group'}, h('h4', {}, 'Cài đặt xuất'));
+  // preset (0.9): one choice fills ratio + resolution + fps + format + quality (lib/presets.json)
+  if (!S.presets) api('/api/presets').then((x) => { S.presets = x.presets; if (S.tab === 'render') renderTab(); }).catch(() => { S.presets = []; });
+  if (S.presets?.length) {
+    const cur = S.presets.find((x) => ['ratio', 'res', 'fps', 'codec'].every((k) => x[k] == null || r[k] === x[k]) && (x.crf == null || x.codec === 'prores' || r.crf === x.crf));
+    box.append(field('Preset', h('select', {onchange: (e) => { const x = S.presets.find((y) => y.id === e.target.value); if (!x) return; for (const k of ['ratio', 'res', 'fps', 'codec', 'crf']) if (x[k] != null) r[k] = x[k]; S.ratio = r.ratio; renderRatios(); sizePlayer(); pushPreview(); renderTab(); }},
+      h('option', {value: ''}, cur ? '' : '(tự chọn bên dưới)'), ...S.presets.map((x) => h('option', {value: x.id, selected: cur?.id === x.id}, x.name))), cur?.note || 'Chọn nhanh theo nơi đăng; vẫn chỉnh tay được từng ô bên dưới.'));
+  }
   box.append(field('Tỉ lệ khung', seg('ratio', ratioList().map((x) => [x, RATIO_LABEL[x]])), S.project.formats.includes(r.ratio) ? null : '⚠ Dự án chưa có bố cục riêng cho tỉ lệ này → xuất ở chế độ "vừa khung".'));
   box.append(field('Độ phân giải', seg('res', Object.entries(RES)), dims(r.ratio, r.res) + ' px'));
   box.append(field('Số khung hình / giây (FPS)', seg('fps', [[24, '24 (điện ảnh)'], [30, '30 (chuẩn)'], [60, '60 (siêu mượt)']]), r.fps === 60 ? 'Thời gian render ≈ gấp đôi 30 fps.' : null));
@@ -818,6 +826,105 @@ function addOverlayFrom(ref, pos) {
 const goTab = (t) => { S.tab = t; $$('#tabs button').forEach((x) => x.classList.toggle('on', x.dataset.tab === t)); renderTab(); };
 const audioLen = (url) => new Promise((ok) => { const a = new Audio(); a.preload = 'metadata'; a.onloadedmetadata = () => ok(a.duration || 0); a.onerror = () => ok(0); a.src = url; });
 /** "Dùng ▾": put a media file where it belongs in the edit */
+// ─────────────────────────── FOOTAGE (0.9): tracks.video, media/ + proxy 540p ───────────────────────────
+S.ft = {items: null, sel: null, meta: null};
+const ROLE_VI = {main: 'Chính', broll: 'B-roll', pip: 'PiP', screen: 'Màn hình'};
+const MASK_VI = {none: 'Không', rounded: 'Bo góc', circle: 'Tròn', phone: 'Điện thoại', laptop: 'Laptop'};
+const clipLenS = (c) => Math.max(0, (c.out - c.in) / (c.speed || 1));
+const ftLoad = async () => { const r = await api('/api/media?id=' + S.id); S.ft.items = r.items; S.ft.meta = r; return r; };
+/** footage end beyond the film → append a blank "Footage" span so the clip is not cut off (cuts stay on the beat grid) */
+const extendForClip = (p, c) => {
+  const end = Math.ceil((c.at + clipLenS(c)) * BASE); const last = p.scenes.at(-1)?.end || 0;
+  if (end <= last) return false;
+  const want = Math.max(last + 15, Math.ceil((end - 1) / 15) * 15 + 1);
+  let n = p.scenes.length + 1, id; const ids = new Set(p.scenes.map((s) => s.id)); do { id = 'F' + String(n++).padStart(2, '0'); } while (ids.has(id));
+  p.scenes.push({id, label: 'Footage', start: last, end: want, engine: 'blank'}); return true;
+};
+function addClip(src, role, at, info) {
+  const d = S.ft.meta?.defaults?.[role] || {}; const dur = info?.duration || 5;
+  commit((p) => {
+    p.tracks ||= {}; p.tracks.video ||= [];
+    const ids = new Set(p.tracks.video.map((c) => c.id)); let k = 1, id; do { id = 'V' + String(k++).padStart(2, '0'); } while (ids.has(id));
+    const c = {id, label: src.split('/').pop().replace(/\.[^.]+$/, ''), src, role, at: +(+at).toFixed(2), in: 0, out: +(role === 'broll' ? Math.min(3, dur) : dur).toFixed(2), speed: 1, ...JSON.parse(JSON.stringify(d)), ...(info?.w ? {aspect: +(info.w / info.h).toFixed(4)} : {})};
+    if (role === 'pip' && S.ft.dropPos) { c.pip = {...(c.pip || {}), ...S.ft.dropPos}; S.ft.dropPos = null; }
+    p.tracks.video.push(c); S.ft.sel = id;
+    if (extendForClip(p, c)) toast('Phim được nối dài thêm một đoạn "Footage" để vừa clip', false, 5000);
+  });
+  goTab('video');
+}
+/** wait for a prepare task, then put the clip on the timeline */
+const addClipWhenReady = (taskId, src, role, at) => {
+  const go = async (t) => { if (t.status === 'error') return toast('Chuẩn bị video lỗi: ' + t.error, true, 8000); await ftLoad(); addClip(t.result?.src || src, role, at, t.result); };
+  const t = S.tasks[taskId]; if (t && t.status !== 'running') return go(t);
+  taskWaiters[taskId] = (x) => { if (x.status !== 'running') { delete taskWaiters[taskId]; go(x); } };
+};
+async function ftUpload(files, role, at) {
+  for (const f of files) {
+    toast(`Đang tải lên ${f.name} (${(f.size / 1e6).toFixed(0)} MB)…`, false, 4000);
+    const r = await fetch(`/api/media/upload?id=${S.id}&name=${encodeURIComponent(f.name)}`, {method: 'POST', body: f}).then((x) => x.json());
+    if (r.error) { toast(r.error, true, 6000); continue; }
+    if (role) addClipWhenReady(r.task, r.src, role, at ?? secNow()); else taskWaiters[r.task] = (x) => { if (x.status !== 'running') { delete taskWaiters[r.task]; ftLoad().then(() => S.tab === 'video' && renderTab()); } };
+  }
+  await ftLoad(); if (S.tab === 'video') renderTab();
+}
+async function tabVideo(B) {
+  if (S.project.type === 'carousel') return B.append(h('p', {class: 'muted'}, 'Carousel dùng ảnh / cảnh HTML cho từng slide; footage dành cho dự án video.'));
+  if (!S.ft.items) { try { await ftLoad(); } catch (e) { return B.append(h('div', {class: 'v-fail'}, e.message)); } if (S.tab !== 'video') return; }
+  const clips = S.project.tracks?.video || [];
+  const pend = Object.values(S.tasks).filter((t) => t.kind === 'media' && t.project === S.id && t.status === 'running');
+  B.append(h('div', {class: 'hint', style: 'margin:0 0 10px'}, 'Footage nằm trên một lớp riêng phía trên cảnh: ', h('b', {}, 'Chính'), ' phủ kín khung, ', h('b', {}, 'B-roll'), ' chèn ngắn (tắt tiếng), ', h('b', {}, 'PiP'), ' khung nhỏ ở góc, ', h('b', {}, 'Màn hình'), ' bản ghi màn hình trong khung điện thoại / laptop. Xem trước dùng bản 540p; khi xuất dùng file gốc. Tiêu đề, phụ đề, ảnh chèn vẫn nằm trên footage.'));
+  // — kho footage của dự án —
+  const g = h('div', {class: 'group'}, h('h4', {}, `Footage của dự án (${S.ft.items.length})`,
+    h('button', {class: 'small primary', onclick: () => { const fp = $('#filePick'); fp.accept = 'video/*,.mts,.mkv'; fp.multiple = true; fp.value = ''; fp.onchange = () => { const L = [...fp.files]; fp.multiple = false; ftUpload(L); }; fp.click(); }}, '＋ Nhập video'),
+    h('button', {class: 'small', onclick: () => { goTab('ai'); S.ai.kind = 'video'; renderTab(); }, title: 'Tìm video stock miễn phí (Pexels, Pixabay…) rồi "Dùng ▾ → B-roll"'}, '🔎 Tìm B-roll')));
+  for (const t of pend) g.append(h('div', {class: 'hint', style: 'margin:0 0 6px'}, '⏳ ' + t.msg));
+  if (!S.ft.items.length) g.append(h('div', {class: 'muted', style: 'font-size:13px'}, 'Chưa có video. Bấm "＋ Nhập video" hoặc kéo file từ Explorer thả vào đây. Bản ghi màn hình (tốc độ khung thay đổi) được chuyển sang 30 khung/giây cố định.'));
+  const grid = h('div', {class: 'stockGrid'});
+  for (const m of S.ft.items) grid.append(h('div', {class: 'stk', title: `${m.src}\n${m.w}×${m.h} · ${m.fps} khung/s${m.audio ? ' · có tiếng' : ' · không tiếng'}${m.vfrOrig ? '\nĐã chuyển từ bản ghi tốc độ khung thay đổi' : ''}`},
+    m.thumb ? h('img', {src: `/api/media/thumb/${S.id}/${m.src}`, loading: 'lazy'}) : h('div', {class: 'ph'}, m.name),
+    h('div', {class: 'meta'}, `${m.duration ? fmtT(m.duration) : '?'} · ${m.w || '?'}×${m.h || '?'}${m.audio ? ' · ♫' : ''}`),
+    m.ready ? h('div', {class: 'row', style: 'margin:0 5px 5px;gap:3px;flex-wrap:wrap'}, ...['main', 'broll', 'pip', 'screen'].map((r) => h('button', {class: 'small' + (r === 'main' ? ' primary' : ''), title: 'Thêm vào timeline tại vị trí đang xem: ' + (S.ft.meta.roles?.[r] || r), onclick: () => addClip(m.src, r, secNow(), m)}, '＋' + ROLE_VI[r])))
+      : h('div', {class: 'row', style: 'margin:0 5px 5px'}, h('button', {class: 'small', onclick: async () => { const r = await api('/api/media/prepare', {id: S.id, src: m.src}); taskWaiters[r.task] = (x) => { if (x.status !== 'running') { delete taskWaiters[r.task]; ftLoad().then(() => S.tab === 'video' && renderTab()); } }; renderTab(); }}, 'Chuẩn bị (540p)'))));
+  g.append(grid);
+  g.ondragover = (e) => { e.preventDefault(); }; g.ondrop = (e) => { const L = [...(e.dataTransfer?.files || [])].filter((f) => /video|\.mts$|\.mkv$/i.test(f.type || f.name)); if (!L.length) return; e.preventDefault(); e.stopPropagation(); ftUpload(L); };
+  B.append(g);
+  // — các clip trên timeline —
+  const lg = h('div', {class: 'group'}, h('h4', {}, `Trên timeline (${clips.length})`));
+  if (!clips.length) lg.append(h('div', {class: 'muted', style: 'font-size:13px'}, 'Chọn vị trí trên thanh thời gian rồi bấm ＋Chính / ＋B-roll / ＋PiP / ＋Màn hình ở video bên trên.'));
+  for (const c of [...clips].sort((a, b) => a.at - b.at)) lg.append(h('div', {class: 'item' + (c.id === S.ft.sel ? ' on' : ''), onclick: () => { S.ft.sel = c.id; S.playerApi?.seek(Math.round((c.at + 0.2) * S.fps)); renderTab(); }},
+    h('span', {class: 't'}, `${fmtT(c.at)}–${fmtT(c.at + clipLenS(c))}`), h('span', {class: 'x'}, `${ROLE_VI[c.role] || c.role} · ${c.label || c.src}`)));
+  B.append(lg);
+  const c = clips.find((x) => x.id === S.ft.sel); if (!c) return;
+  // — sửa clip đang chọn —
+  const set = (k, v) => commit((p) => { const x = p.tracks.video.find((y) => y.id === c.id); if (v === undefined) delete x[k]; else x[k] = v; extendForClip(p, x); });
+  const setPip = (k, v) => commit((p) => { const x = p.tracks.video.find((y) => y.id === c.id); x.pip = {...(x.pip || {x: .5, y: .5, w: .4}), [k]: v}; });
+  const num = (k, step, min, max, label, hint) => field(label, h('input', {type: 'number', step, min, max, value: c[k] ?? '', onchange: (e) => set(k, e.target.value === '' ? undefined : +e.target.value)}), hint);
+  const segOf = (k, opts, cur) => h('div', {class: 'seg'}, ...opts.map(([v, l]) => h('button', {class: (cur ?? c[k]) === v ? 'on' : '', onclick: () => set(k, v)}, l)));
+  const src = S.ft.items.find((m) => m.src === c.src);
+  const ed = h('div', {class: 'group'}, h('h4', {}, `${c.id} · ${c.label || c.src}`, h('button', {class: 'small danger', onclick: () => { commit((p) => { p.tracks.video = p.tracks.video.filter((x) => x.id !== c.id); }); S.ft.sel = null; }}, 'Xoá')));
+  ed.append(field('Vai trò', segOf('role', Object.keys(ROLE_VI).map((r) => [r, ROLE_VI[r]]))));
+  ed.append(h('div', {class: 'cols3'}, num('at', 0.05, 0, null, 'Bắt đầu trên phim (s)'), num('in', 0.05, 0, src?.duration, 'Cắt vào (s trong video)'), num('out', 0.05, 0, src?.duration, 'Cắt ra (s)', src?.duration ? `video dài ${src.duration.toFixed(1)} s` : null)));
+  ed.append(h('div', {class: 'row', style: 'gap:6px;flex-wrap:wrap;margin:-4px 0 10px'},
+    h('button', {class: 'small', onclick: () => set('at', +secNow().toFixed(2))}, '⇥ Bắt đầu tại vị trí đang xem'),
+    h('button', {class: 'small', onclick: () => { const t = secNow() - c.at; if (t <= 0.1 || t >= clipLenS(c)) return toast('Đưa vị trí xem vào giữa clip trước', true); set('out', +(c.in + t * (c.speed || 1)).toFixed(2)); }}, '✂ Kết thúc tại vị trí đang xem'),
+    h('button', {class: 'small', onclick: () => { const t = secNow() - c.at; if (t <= 0.1 || t >= clipLenS(c)) return toast('Đưa vị trí xem vào giữa clip trước', true); commit((p) => { const x = p.tracks.video.find((y) => y.id === c.id); const ids = new Set(p.tracks.video.map((y) => y.id)); let k = 1, id; do { id = 'V' + String(k++).padStart(2, '0'); } while (ids.has(id)); const cut = +(x.in + t * (x.speed || 1)).toFixed(2); p.tracks.video.push({...JSON.parse(JSON.stringify(x)), id, at: +(x.at + t).toFixed(2), in: cut}); x.out = cut; }); }}, '✂ Tách đôi tại đây')));
+  ed.append(h('div', {class: 'cols3'}, field('Tốc độ', h('select', {onchange: (e) => set('speed', +e.target.value)}, ...[0.5, 0.75, 1, 1.25, 1.5, 2].map((v) => h('option', {value: v, selected: (c.speed || 1) === v}, v + '×')))),
+    num('fadeIn', 0.05, 0, 3, 'Hiện dần (s)'), num('fadeOut', 0.05, 0, 3, 'Tắt dần (s)')));
+  ed.append(field('Khung hình', segOf('fit', [['cover', 'Phủ kín (cắt mép)'], ['contain', 'Vừa khung (viền đen)']], c.fit || (c.role === 'screen' ? 'contain' : 'cover'))));
+  if (c.role === 'pip' || c.role === 'screen') {
+    const P = {x: .5, y: .5, w: .4, r: .08, ...(c.pip || {})};
+    ed.append(field('Kiểu khung', segOf('mask', (c.role === 'screen' ? ['phone', 'laptop', 'rounded', 'none'] : ['rounded', 'circle', 'none']).map((m) => [m, MASK_VI[m]]), c.mask || (c.role === 'screen' ? 'phone' : 'rounded'))));
+    ed.append(h('div', {class: 'row', style: 'gap:4px;flex-wrap:wrap;margin-bottom:8px'}, ...[['↖', .22, .2], ['↗', .78, .2], ['⊙', .5, .5], ['↙', .22, .78], ['↘', .78, .78]].map(([l, x, y]) => h('button', {class: 'small', title: 'Đặt nhanh vị trí', onclick: () => commit((p) => { const v = p.tracks.video.find((q) => q.id === c.id); v.pip = {...P, x, y}; })}, l))));
+    const rng = (k, min, max, step, label) => field(`${label}: ${(+P[k]).toFixed(2)}`, h('input', {type: 'range', min, max, step, value: P[k], onchange: (e) => setPip(k, +e.target.value)}));
+    ed.append(h('div', {class: 'cols2'}, rng('x', 0, 1, .01, 'Ngang'), rng('y', 0, 1, .01, 'Dọc'), rng('w', .1, 1, .01, 'Cỡ (theo cạnh ngắn)'), ...(c.mask === 'rounded' || (!c.mask && c.role === 'pip') ? [rng('r', 0, .5, .01, 'Bo góc')] : [])));
+  }
+  const muted = c.volume == null;
+  ed.append(h('div', {class: 'row', style: 'gap:14px;flex-wrap:wrap;align-items:center'},
+    h('label', {class: 'chk', style: 'margin:0'}, h('input', {type: 'checkbox', checked: muted, disabled: src && !src.audio, onchange: (e) => set('volume', e.target.checked ? null : 0)}), src && !src.audio ? 'Video không có tiếng' : 'Tắt tiếng'),
+    muted ? null : h('label', {style: 'display:flex;gap:6px;align-items:center;margin:0'}, 'Âm lượng', h('input', {type: 'number', step: 1, min: -40, max: 12, value: c.volume ?? 0, style: 'width:70px', onchange: (e) => set('volume', +e.target.value)}), 'dB'),
+    muted ? null : h('label', {class: 'chk', style: 'margin:0'}, h('input', {type: 'checkbox', checked: c.duck !== false, onchange: (e) => set('duck', e.target.checked)}), 'Hạ nhạc nền khi clip có tiếng')));
+  B.append(ed);
+}
 function useMedia(ref) {
   const k = mediaKind(ref); const box = h('div', {class: 'useList'}); const done = (m) => { $('#modal').hidden = true; toast(m); };
   const btn = (label, fn, hint) => box.append(h('button', {onclick: fn}, h('b', {}, label), hint ? h('div', {class: 'muted', style: 'font-size:12px'}, hint) : null));
@@ -836,7 +943,14 @@ function useMedia(ref) {
     btn('Thêm làm giọng đọc tại vị trí đang xem', async () => { const len = await audioLen(mediaUrl(ref)); commit((p) => { p.audio ||= {mode: 'layers', cues: []}; if (p.audio.mode !== 'layers') p.audio.mode = 'layers'; (p.audio.voice ||= []).push({t: +secNow().toFixed(2), src: ref, len: +len.toFixed(2), gain: 0, label: ref.split('/').pop()}); p.audio.voice.sort((a, b) => a.t - b.t); }); done(`Đã thêm giọng đọc ${len.toFixed(1)} s tại ${fmtT(secNow())}`); }, 'nhạc tự hạ nhỏ khi có thoại');
     btn('Thêm làm hiệu ứng (SFX) tại vị trí đang xem', () => { commit((p) => { p.audio ||= {mode: 'layers', cues: []}; if (p.audio.mode !== 'layers') p.audio.mode = 'layers'; (p.audio.cues ||= []).push({t: +secNow().toFixed(2), src: ref, gain: -10, label: ref.split('/').pop()}); p.audio.cues.sort((a, b) => a.t - b.t); }); done('Đã thêm SFX tại ' + fmtT(secNow())); });
   } else if (k === 'lottie') btn('Thêm làm Lottie chèn', () => { $('#modal').hidden = true; addOverlayFrom(ref); });
-  else box.append(h('p', {class: 'muted'}, k === 'video' ? 'Video (B-roll, footage) đặt vào cảnh qua Claude Code: "dùng video ' + ref + ' cho cảnh …". Kéo footage trực tiếp trên timeline có ở bản 0.9.' : 'Loại file này chưa dùng trực tiếp được trong Studio.'));
+  else if (k === 'video' && S.project.type !== 'carousel') {
+    for (const [role, label] of [['broll', 'Thêm làm B-roll tại vị trí đang xem'], ['pip', 'Thêm làm PiP (khung nhỏ)'], ['main', 'Thêm làm footage chính']]) btn(label, async () => {
+      $('#modal').hidden = true;
+      try { const r = await api('/api/media/adopt', {id: S.id, rel: ref, sub: role === 'broll' ? 'broll' : 'footage'}); toast('Đang chuẩn bị ' + r.src + '…'); addClipWhenReady(r.task, r.src, role, secNow()); }
+      catch (e) { toast(e.message, true, 6000); }
+    }, role === 'broll' ? '3 giây, phủ khung, tắt tiếng; chuyển vào media/ của dự án' : 'chuyển vào media/ của dự án, tạo bản xem trước 540p');
+  }
+  else box.append(h('p', {class: 'muted'}, 'Loại file này chưa dùng trực tiếp được trong Studio.'));
   box.append(h('div', {class: 'row', style: 'margin-top:8px'}, h('button', {class: 'small', onclick: () => { navigator.clipboard?.writeText(ref); toast('Đã chép: ' + ref); }}, 'Chép đường dẫn'), h('code', {class: 'muted', style: 'font-size:11px;word-break:break-all'}, ref)));
   modal(h('div', {style: 'min-width:min(460px,90vw)'}, h('h3', {}, 'Dùng file này'), k === 'img' ? h('img', {src: mediaUrl(ref), style: 'max-width:100%;max-height:200px;border-radius:8px;margin-bottom:10px'}) : null, box));
 }
@@ -890,6 +1004,11 @@ const pickBtn = (type, onPick) => h('button', {class: 'small', title: 'Chọn t�
       if (d) { const x = JSON.parse(d); if (x.stock) { toast('Đang lấy ảnh stock…'); const f = await api('/api/providers/stock/fetch', {item: x.stock, id: S.id, to: 'project'}); S.assets = await api('/api/project/assets?id=' + S.id); ref = f.rel; } else ref = x.ref; }
       else if (e.dataTransfer.files.length) {
         const f = e.dataTransfer.files[0]; const k = mediaKind(f.name); if (!['img', 'audio', 'lottie', 'video'].includes(k)) return toast('Chỉ nhận ảnh, âm thanh, video hoặc Lottie', true);
+        if (k === 'video' && S.project.type !== 'carousel') { // footage (0.9): streamed into media/ + 540p proxy, then on the timeline at the playhead
+          const at = secNow(); const box = h('div', {class: 'useList'}, h('p', {class: 'muted', style: 'margin-top:0'}, f.name + ' · đặt vào timeline tại ' + fmtT(at) + ' như:'));
+          for (const [role, label] of [['main', 'Footage chính (phủ khung)'], ['broll', 'B-roll (chèn ngắn, tắt tiếng)'], ['pip', 'PiP: khung nhỏ tại chỗ thả'], ['screen', 'Màn hình: trong khung điện thoại']]) box.append(h('button', {onclick: () => { $('#modal').hidden = true; S.ft.dropPos = role === 'pip' ? pos : null; ftUpload([f], role, at); }}, h('b', {}, label)));
+          return modal(h('div', {style: 'max-width:440px'}, h('h3', {}, '🎬 Thêm footage'), box));
+        }
         toast('Đang tải lên ' + f.name + '…');
         const up = await fetch(`/api/upload?id=${S.id}&sub=${k}&name=${encodeURIComponent(f.name)}`, {method: 'POST', body: f}).then((x) => x.json());
         S.assets = await api('/api/project/assets?id=' + S.id); ref = up.path;

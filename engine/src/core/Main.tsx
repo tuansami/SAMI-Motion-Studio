@@ -13,6 +13,7 @@ import {Titles, Subtitles} from './Titles';
 import {AudioTrack} from './AudioTrack';
 import {Overlays} from './Overlays';
 import {HfCtx, HfScene, isHfScene} from './HfScene';
+import {MediaCtx, VideoTrack} from './VideoTrack';
 import type {MainProps, ProjectJSON} from './types';
 // @ts-ignore — provided by the Studio bundler alias
 import {REG} from '@project/scenes/index';
@@ -31,6 +32,7 @@ const SceneStack: React.FC<{p: ProjectJSON; fps: number}> = ({p, fps}) => {
         const b = car ? s.end : Math.min(T, s.end + OV);
         const from = toReal(a, fps);
         const dur = Math.max(1, toReal(b, fps) - from);
+        if (s.engine === 'blank') return null; // footage-only span: the video layer above shows through
         const Comp = REG[s.id];
         const hf = isHfScene(s);
         const fadeIn = first || car ? 0 : s.fadeIn ?? 2 * OV;
@@ -49,9 +51,10 @@ const Missing: React.FC<{id: string}> = ({id}) => (
   <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', background: '#300', color: '#fff', fontSize: 60, fontFamily: 'Inter'}}>Thiếu scene {id}</AbsoluteFill>
 );
 
-export const Main: React.FC<MainProps & {audioOnly?: boolean}> = ({project: p, ratio, fps, titles = true, audio = true, subtitles = true, audioOnly = false, hfClips, hfBase, hfRev}) => {
-  // audio pass of the export: only the sound layer (all sound lives in project.json → audio), no pixels → fast
-  if (audioOnly) return <TimebaseProvider fps={fps}><AudioTrack audio={p.audio} totalBase={totalBase(p)} /></TimebaseProvider>;
+export const Main: React.FC<MainProps & {audioOnly?: boolean}> = ({project: p, ratio, fps, titles = true, audio = true, subtitles = true, audioOnly = false, hfClips, hfBase, hfRev, mediaBase, mediaProxy}) => {
+  const media = {base: mediaBase, proxy: !!mediaProxy};
+  // audio pass of the export: only the sound layer (project.json → audio + footage sound), no pixels → fast
+  if (audioOnly) return <TimebaseProvider fps={fps}><MediaCtx.Provider value={media}><AudioTrack audio={p.audio} totalBase={totalBase(p)} video={p.tracks?.video} /></MediaCtx.Provider></TimebaseProvider>;
   setCopy(p.copy);
   applyBrand(p.brand);
   const native = p.formats.includes(ratio);
@@ -61,6 +64,7 @@ export const Main: React.FC<MainProps & {audioOnly?: boolean}> = ({project: p, r
   return (
     <TimebaseProvider fps={fps}>
      <HfCtx.Provider value={{clips: hfClips, base: hfBase, rev: hfRev}}>
+     <MediaCtx.Provider value={media}>
       <AbsoluteFill style={{background: p.look?.background || C.navyDeep, overflow: 'hidden'}}>
         {native ? (
           <FormatProvider ratio={ratio} native>
@@ -76,14 +80,16 @@ export const Main: React.FC<MainProps & {audioOnly?: boolean}> = ({project: p, r
           </FormatProvider>
         )}
         <FormatProvider ratio={ratio} native={native}>
+          <VideoTrack clips={p.tracks?.video} />
           <Overlays items={p.overlays} layer="under" totalSec={totalBase(p) / 30} />
           {titles && <Titles items={p.titles} />}
           {subtitles && <Subtitles cfg={p.subtitles} />}
           <Overlays items={p.overlays} layer="top" totalSec={totalBase(p) / 30} />
         </FormatProvider>
         <FilmFinish grain={p.look?.grain ?? 0.05} vignette={p.look?.vignette ?? 0.42} />
-        {audio && <AudioTrack audio={p.audio} totalBase={totalBase(p)} />}
+        {audio && <AudioTrack audio={p.audio} totalBase={totalBase(p)} video={p.tracks?.video} />}
       </AbsoluteFill>
+     </MediaCtx.Provider>
      </HfCtx.Provider>
     </TimebaseProvider>
   );

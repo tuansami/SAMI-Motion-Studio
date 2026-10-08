@@ -4,7 +4,7 @@ import type {Ratio} from './format';
 export type SceneDef = {
   id: string; label: string; start: number; end: number; // base frames (30 fps)
   warp?: Knots | null; animLength?: number; fadeIn?: number; fadeDelay?: number; note?: string;
-  engine?: 'remotion' | 'hyperframes'; // Studio 0.6: 'hyperframes' = HTML + CSS + GSAP scene in `src` (default: remotion scenes/<id>.tsx)
+  engine?: 'remotion' | 'hyperframes' | 'blank'; // 0.6: 'hyperframes' = HTML + CSS + GSAP scene in `src`; 0.9: 'blank' = empty span (footage only)
   src?: string;                         // hyperframes: 'hf/<id>.html' (paths inside are relative to the project root)
 };
 export type TextStyle = {
@@ -35,6 +35,14 @@ export type OverlayItem = {
 export type SubItem = {start: number; end: number; text: string};
 export type AudioCue = {t: number; sfx: string; gain?: number; label?: string; src?: string; len?: number}; // src: own file in public/ (overrides sfx)
 export type VoiceClip = {t: number; src: string; len: number; gain?: number; label?: string}; // voice-over line; len (s) drives music ducking
+// 0.9 footage (seconds): at = start on the timeline, in/out = source range, speed = playback rate. volume: dB, null = muted.
+export type VideoClip = {
+  id: string; src: string; label?: string; role: 'main' | 'broll' | 'pip' | 'screen';
+  at: number; in: number; out: number; speed?: number;
+  fit?: 'cover' | 'contain'; mask?: 'none' | 'rounded' | 'circle' | 'phone' | 'laptop';
+  pip?: {x: number; y: number; w: number; r?: number}; aspect?: number; border?: string; shadow?: boolean;
+  volume?: number | null; duck?: boolean; fadeIn?: number; fadeOut?: number; z?: number; formats?: Ratio[];
+};
 export type ProjectJSON = {
   name: string; client?: string; version?: number;
   schemaVersion?: 1 | 2; type?: 'video' | 'carousel'; engine?: 'remotion' | 'hyperframes'; // 0.6 — engine = default for NEW scenes
@@ -45,6 +53,7 @@ export type ProjectJSON = {
   scenes: SceneDef[];
   copy: Record<string, {label: string; scene?: string; value: any; hint?: string; multiline?: boolean}>;
   titles?: TitleItem[];
+  tracks?: {video?: VideoClip[]};
   overlays?: OverlayItem[];
   subtitles?: {enabled: boolean; items: SubItem[]; style?: TextStyle; pos?: {x: number; y: number}; anim?: 'karaoke' | 'fade' | 'pop' | 'none'; maxWidth?: number};
   audio?: {
@@ -56,4 +65,5 @@ export type ProjectJSON = {
   };
 };
 export type MainProps = {project: ProjectJSON; ratio: Ratio; fps: number; titles?: boolean; audio?: boolean; subtitles?: boolean;
-  hfClips?: Record<string, string>; hfBase?: string; hfRev?: number | string}; // Hyperframes scenes: rendered clips (export) / live iframe base URL (preview)
+  hfClips?: Record<string, string>; hfBase?: string; hfRev?: number | string; // Hyperframes scenes: rendered clips (export) / live iframe base URL (preview)
+  mediaBase?: string; mediaProxy?: boolean}; // 0.9 footage: HTTP base for media/ (preview: Studio /pm/<id>/ + 540p proxy; export: local media server, originals)

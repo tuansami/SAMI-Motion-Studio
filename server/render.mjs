@@ -15,6 +15,7 @@ import {isCarousel, renderCarousel} from './carousel.mjs';
 import {childEnv} from './env.mjs';
 import {fileURLToPath} from 'url';
 import {readProject, codeHash} from './project.mjs';
+import {hasFootage, serveMedia} from './footage.mjs';
 import {gpuEncoders, capsReady, ffAsync, fprobeAsync, normalizeLoudness, probeEncoder} from './ffmpeg.mjs';
 import {DATA} from './paths.mjs';
 
@@ -39,7 +40,7 @@ export const publicJobs = () => jobs.map(pub);
 let lastSave = 0;
 const persist = () => {
   const now = Date.now(); if (now - lastSave < 2000) return; lastSave = now;
-  try { fs.mkdirSync(DATA, {recursive: true}); fs.writeFileSync(JOBS_FILE, JSON.stringify(jobs.filter((j) => j.status !== 'done').map(({child, watchdog, ...r}) => r))); } catch {}
+  try { fs.mkdirSync(DATA, {recursive: true}); fs.writeFileSync(JOBS_FILE, JSON.stringify(jobs.filter((j) => j.status !== 'done').map(({child, watchdog, _media, ...r}) => r))); } catch {}
 };
 const emit = () => { const s = JSON.stringify(jobs.map(pub)); for (const l of listeners) l(s); persist(); };
 
@@ -97,6 +98,7 @@ const pump = async () => {
   catch (e) {
     if (j.status !== 'cancelled') { j.status = 'error'; j.error = humanError(String(e?.message || e)); j.stage = 'Lỗi' + (j.partsDone ? ` — đã xong ${j.partsDone}/${j.parts} đoạn, sửa xong bấm Tiếp tục` : ''); }
   }
+  if (j._media) { try { await j._media.close(); } catch {} j._media = null; }
   j.finished = Date.now(); running = null; j.child = null; lastSave = 0; emit(); setTimeout(pump, 50);
   if (j.status === 'done') try { fs.appendFileSync(path.join(DATA, 'renders.jsonl'), JSON.stringify({ts: new Date().toISOString(), name: j.name, out: j.out, by: j.opts?.by || 'Studio', gpu: j.opts?.gpu, codec: j.opts?.codec, encoder: j.encoder, encoderReal: j.encoderReal || null, seconds: Math.round((j.finished - j.started) / 1000)}) + '\n'); } catch {}
 };
@@ -204,7 +206,9 @@ const run = async (j) => {
   const serveUrl = await bundleInChild(j, o.dir, (p) => { j.progress = p / 100 * 0.03; j.stage = `Đóng gói dự án ${p}%`; emit(); });
   if (j.status === 'cancelled') return;
   const project = applyCopy(readProject(o.dir), o.copyOverride);
-  const inputProps = {project, ratio: o.ratio, fps, titles: o.titles !== false, subtitles: o.subtitles !== false, audio: o.audio !== false, hfClips, ...(scene ? {sceneId: scene} : {})};
+  // footage (0.9) is read from the originals over a local HTTP server for the whole job (never copied into the bundle)
+  if (hasFootage(project) && !j._media) j._media = await serveMedia(o.dir);
+  const inputProps = {project, ratio: o.ratio, fps, titles: o.titles !== false, subtitles: o.subtitles !== false, audio: o.audio !== false, hfClips, ...(scene ? {sceneId: scene} : {}), ...(j._media ? {mediaBase: j._media.url} : {})};
   const browserExecutable = process.env.REMOTION_BROWSER || null;
   const wantGpu = o.gpu !== 'off';
   const chromiumOptions = {gl: process.env.REMOTION_GL || (wantGpu ? 'angle' : 'swangle')};

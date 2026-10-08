@@ -1,0 +1,13 @@
+{
+ "_doc": "Preset xuất (Studio 0.9): tab Xuất → ô Preset, và server/cli-render.mjs --preset <id>. Chỉ đặt các ô có sẵn (tỉ lệ, độ phân giải, fps, định dạng, CRF). WebM VP9, GIF, chuỗi PNG, ProRes 4444 có kênh trong suốt: chưa có (cần một lượt xuất thử có Tuấn).",
+ "presets": [
+  {"id": "reels-9x16", "name": "Reels / TikTok / Shorts", "ratio": "9:16", "res": "FHD", "fps": 30, "codec": "h264", "crf": 18, "note": "1080×1920 · H.264 · chữ trong vùng an toàn 9:16"},
+  {"id": "feed-4x5", "name": "Feed Instagram / Facebook 4:5", "ratio": "4:5", "res": "FHD", "fps": 30, "codec": "h264", "crf": 18, "note": "1080×1350"},
+  {"id": "square-1x1", "name": "Vuông 1:1 (Ads, LinkedIn)", "ratio": "1:1", "res": "FHD", "fps": 30, "codec": "h264", "crf": 18, "note": "1080×1080"},
+  {"id": "yt-16x9", "name": "YouTube / web 16:9", "ratio": "16:9", "res": "FHD", "fps": 30, "codec": "h264", "crf": 18, "note": "1920×1080"},
+  {"id": "yt-4k", "name": "YouTube 4K", "ratio": "16:9", "res": "4K", "fps": 30, "codec": "h265", "crf": 20, "note": "3840×2160 · H.265 · render lâu hơn ≈ 4 lần"},
+  {"id": "ads-light", "name": "Quảng cáo nhẹ 9:16", "ratio": "9:16", "res": "FHD", "fps": 30, "codec": "h264", "crf": 23, "note": "file nhỏ hơn ≈ 40 %, đủ đẹp cho Meta / Google Ads"},
+  {"id": "master-prores", "name": "Bản gốc ProRes (dựng tiếp)", "ratio": "16:9", "res": "FHD", "fps": 30, "codec": "prores", "note": "ProRes HQ .mov, mã hoá bằng CPU, file rất nặng"},
+  {"id": "review-540p", "name": "Bản xem cho khách 540p", "ratio": "9:16", "res": "540p", "fps": 30, "codec": "h264", "crf": 28, "note": "gửi Zalo / Lark để khách xem chuyển động"}
+ ]
+}

@@ -4,6 +4,7 @@ import {readProject} from './project.mjs';
 import {duration} from './ffmpeg.mjs';
 import {isHf} from './hf.mjs';
 import {isLib, resolveLib} from './library.mjs';
+import {proxyPath} from './footage.mjs';
 
 /** returns {ok:[], warn:[], fail:[]} in Vietnamese */
 export const validateProject = (dir) => {
@@ -20,6 +21,7 @@ export const validateProject = (dir) => {
     if (i > 0 && s.start !== S[i - 1].end) fail.push(`Hở/chồng giữa ${S[i - 1].id} và ${s.id}.`);
     if (s.end <= s.start) fail.push(`${s.id} có thời lượng ≤ 0.`);
     if (i > 0 && p.type !== 'carousel' && (s.start - 1) % 15 !== 0) warn.push(`Điểm cắt vào ${s.id} (${(s.start / 30).toFixed(2)}s) lệch nhịp nhạc — nên là 15n+1 khung (bấm "Khớp nhịp").`);
+    if (s.engine === 'blank') return; // footage-only span (0.9)
     if (isHf(s)) {
       const f = path.join(dir, s.src || `hf/${s.id}.html`);
       if (!fs.existsSync(f)) { fail.push(`Thiếu file cảnh HTML ${s.src || `hf/${s.id}.html`}`); return; }
@@ -35,7 +37,19 @@ export const validateProject = (dir) => {
     if (!fs.existsSync(path.join(dir, 'scenes', s.id + '.tsx'))) fail.push(`Thiếu file scenes/${s.id}.tsx`);
   });
   const reg = fs.existsSync(path.join(dir, 'scenes', 'index.ts')) ? fs.readFileSync(path.join(dir, 'scenes', 'index.ts'), 'utf8') : '';
-  S.forEach((s) => { if (!isHf(s) && !reg.includes(s.id)) fail.push(`${s.id} chưa đăng ký trong scenes/index.ts`); });
+  S.forEach((s) => { if (!isHf(s) && s.engine !== 'blank' && !reg.includes(s.id)) fail.push(`${s.id} chưa đăng ký trong scenes/index.ts`); });
+  // footage (0.9): files exist, ranges sane, inside the film, proxy ready
+  const T = S.length ? S[S.length - 1].end / 30 : 0;
+  for (const c of p.tracks?.video || []) {
+    const tag = `Footage ${c.id} (${c.label || c.src})`;
+    if (!c.src || !fs.existsSync(path.join(dir, c.src))) { fail.push(`${tag}: thiếu file ${c.src}`); continue; }
+    if (!/^(media|public)\//.test(c.src)) warn.push(`${tag}: nên nằm trong media/ (file trong public/ bị chép vào mỗi lần đóng gói).`);
+    if (!(c.out > c.in) || c.in < 0) fail.push(`${tag}: đoạn cắt vào/ra không hợp lệ (${c.in} → ${c.out} s).`);
+    if (!(c.speed > 0)) fail.push(`${tag}: tốc độ phải > 0.`);
+    const end = (+c.at || 0) + ((c.out - c.in) / (c.speed || 1));
+    if (end > T + 0.05) warn.push(`${tag}: kết thúc ở ${end.toFixed(1)} s, sau cuối phim (${T.toFixed(1)} s): phần thừa bị cắt.`);
+    if (!fs.existsSync(proxyPath(dir, c.src))) warn.push(`${tag}: chưa có bản xem trước 540p (tab Footage → Chuẩn bị).`);
+  }
   if (p.type === 'carousel') {
     if (!(p.formats || []).includes('4:5')) fail.push('Carousel phải có tỉ lệ 4:5 (1080×1350) trong formats.');
     S.forEach((s) => {

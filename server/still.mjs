@@ -2,6 +2,7 @@
 //  • frame inside a Remotion scene → Remotion renderStill (full composite: titles, overlays, look)
 //  • frame inside a Hyperframes scene → fast path: `hyperframes snapshot` of that scene (scene only, no titles/overlays)
 //                                      exact path (exact:true): render the scene's clip (cached) and composite with Remotion
+import {hasFootage, serveMedia, clipEnd} from './footage.mjs';
 import fs from 'fs';
 import path from 'path';
 import {renderBundle, readProject} from './project.mjs';
@@ -26,7 +27,9 @@ export const stills = async (dir, frames, out, {ratio, fps = 30, project, titles
   ratio = ratio || p.formats[0];
   const layout = p.formats.includes(ratio) ? ratio : p.formats[0];
   const hfFrames = [], rmFrames = [], hfClips = {};
-  for (const f of frames) { const s = sceneAt(p, f, fps); (isHf(s) && !exact ? hfFrames : rmFrames).push([f, s]); }
+  // a frame with footage on it goes through Remotion (the HF snapshot shows the scene alone); full-frame footage hides the scene anyway
+  const footAt = (f) => (p.tracks?.video || []).some((c) => f / fps >= (+c.at || 0) && f / fps < clipEnd(c));
+  for (const f of frames) { const s = sceneAt(p, f, fps); (isHf(s) && !exact && !footAt(f) ? hfFrames : rmFrames).push([f, s]); }
   if (exact) for (const s of new Set(rmFrames.map(([, s]) => s).filter(isHf))) {
     onLog(`clip ${s.id}…`); hfClips[s.id] = (await ensureClip(dir, p, s, {ratio: layout, fps, workers: 4})).rel;
   }
@@ -51,7 +54,9 @@ export const stills = async (dir, frames, out, {ratio, fps = 30, project, titles
   if (rmFrames.length) {
     const {renderStill, selectComposition} = await import('@remotion/renderer');
     const serveUrl = await renderBundle(dir);
-    const inputProps = {project: p, ratio, fps, titles, subtitles, audio: false, hfClips};
+    const ms = hasFootage(p) ? await serveMedia(dir) : null; // footage originals over local HTTP (0.9)
+    try {
+    const inputProps = {project: p, ratio, fps, titles, subtitles, audio: false, hfClips, ...(ms ? {mediaBase: ms.url} : {})};
     const opts = {browserExecutable: process.env.REMOTION_BROWSER || null, chromiumOptions: process.env.REMOTION_GL ? {gl: process.env.REMOTION_GL} : {}};
     const comp = await selectComposition({serveUrl, id: 'Main', inputProps, ...opts});
     for (const [f, s] of rmFrames) {
@@ -59,6 +64,7 @@ export const stills = async (dir, frames, out, {ratio, fps = 30, project, titles
       await renderStill({composition: comp, serveUrl, output: dst, frame: Math.min(comp.durationInFrames - 1, f), imageFormat: 'jpeg', ...(jpegQuality ? {jpegQuality} : {}), ...(scale !== 1 ? {scale} : {}), inputProps, ...opts});
       done.push(dst); onLog(`${f} · ${s.id}`);
     }
+    } finally { await ms?.close(); }
   }
   return done;
 };

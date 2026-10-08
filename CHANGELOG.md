@@ -19,6 +19,34 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [0.9.0] — 2026-10-08 — Footage: video quay thật, B-roll, PiP, bản ghi màn hình; preset xuất; khối vẽ bằng code
+HANDOFF mục 4. Tuấn bảo làm v0.9 (2026-10-08), chưa push.
+
+### Thêm
+- **Lớp footage** `project.json → tracks.video[]` (giây): `at`, `in`/`out`, `speed`, `role` main / broll / pip / screen, `fit`, `mask` (bo góc, tròn, điện thoại, laptop), `pip{x,y,w,r}`, `aspect`, `volume` (dB, null = tắt tiếng), `duck`, `fadeIn`/`fadeOut`, `z`, `formats`. Vẽ phía trên cảnh, dưới ảnh chèn / tiêu đề / phụ đề, theo tỉ lệ xuất thật (cả chế độ vừa khung).
+  - Engine: `engine/src/core/VideoTrack.tsx` (`OffthreadVideo` có cắt và tốc độ, khung điện thoại / laptop vẽ bằng CSS), `MediaCtx`; props `mediaBase`, `mediaProxy`.
+  - **Tiếng footage** vào `AudioTrack` (cả lượt âm thanh khi xuất); clip có tiếng làm nhạc tự hạ như giọng đọc.
+  - Cảnh `engine: "blank"`: đoạn trống để footage hiện qua; Studio tự thêm đoạn "Footage" khi clip dài quá phim (vẫn cắt đúng 15n+1).
+- **Nhập footage** `server/footage.mjs`: tải lên dạng luồng vào `media/` (không đệm cả file trong RAM), dò VFR theo khoảng cách khung → bản CFR 30 `.cfr30.mp4`, **bản xem trước 540p** (NVENC nếu có, GOP 15, AAC) + ảnh đại diện vào `media/.cache/`, hàng đợi một lần mã hoá một lúc.
+  - Xem trước đọc `/pm/<dự án>/proxy/…`; **xuất và ảnh tĩnh đọc file gốc** qua máy chủ HTTP cục bộ tạm (`serveMedia`, có Range), không chép footage vào bundle.
+  - Route: `/api/media`, `/api/media/upload`, `/api/media/prepare`, `/api/media/adopt` (stock / thư viện → `media/broll/`), `/api/media/thumb/…`, `/pm/…`.
+- **Tab Footage**: kho video của dự án (ảnh, độ dài, cỡ, có tiếng), ＋Chính / ＋B-roll / ＋PiP / ＋Màn hình tại vị trí đang xem, danh sách clip, sửa clip (bắt đầu, cắt vào / ra, kết thúc tại đây, tách đôi, tốc độ, hiện / tắt dần, khung, vị trí PiP + 5 nút góc, âm lượng, hạ nhạc). **Kéo video thả lên khung xem** → chọn vai trò (PiP đặt đúng chỗ thả). Vạch footage trên thanh thời gian. "Dùng ▾" của video stock / thư viện → B-roll / PiP / Chính.
+- **Preset xuất** `lib/presets.json` (8 preset: Reels, Feed 4:5, Vuông, YouTube, YouTube 4K, Ads nhẹ, ProRes, bản xem 540p): ô Preset ở tab Xuất, `cli-render --preset`.
+- **Khối vẽ bằng code** `lib/hf/blocks/blocks.js` (`SAMI.B.bars`, `line`, `cursor`, `route`, `wipe`) + 2 khuôn mới: **chart-bars** (biểu đồ cột tăng trưởng), **map-route** (đường tới quán trên bản đồ vẽ bằng SVG). Tổng 18 khuôn.
+- Cảnh HTML nhúng được footage (`media/…`): staging tạo junction `media/`; ô ảnh / video của khuôn nhận đường dẫn `media/`.
+- `cli-validate`: thiếu file footage, cắt vào / ra sai, tốc độ ≤ 0, clip quá cuối phim, chưa có bản xem trước. `cli-still`: khung có footage đi qua Remotion.
+- Skill `sami-motion-studio`: `references/footage.md`, `schema.md` (tracks.video, cảnh blank), dòng mới trong bảng "Decide the job".
+
+### Đã kiểm
+- `npm run check` đạt, thêm: nhập + bản xem trước + VFR → CFR + clip trên timeline + máy chủ media (Range, không lộ file ngoài `media/`), preset hợp lệ, 18 khuôn đúng luật.
+- Thật trên máy với clip tổng hợp nhỏ (testsrc, CPU): proxy 540p, VFR → CFR 30, ảnh tĩnh Remotion 9:16 + 16:9 có PiP bo góc, B-roll phủ khung, bản ghi trong khung điện thoại; Studio thử (cổng 5179): tab Footage, khung xem phát proxy 540p, đổi khung tròn + góc trên trái, tách đôi clip, preset Reels điền đúng ô.
+- **Chưa thử (cần Tuấn cho phép xuất)**: video 60 s gồm 1 clip chính, 2 B-roll, 1 PiP; lệch tiếng / hình ≤ 1 khung (vỗ tay); RAM < 12 GB; NVENC thật. **Không render video nào.**
+
+### Roll back
+`git checkout v0.8.3` (hoặc commit 0.8.3). `tracks.video` bị bỏ qua ở bản cũ; cảnh `blank` sẽ báo "Thiếu scene". Thư mục `media/` không bị đụng.
+
+---
+
 ## [0.8.3] — 2026-10-08 — Khuôn + Dây chuyền ("trả tiền nghĩ một lần")
 Spec: `docs/specs/khuon-day-chuyen.md` (Tuấn bảo triển khai 2026-10-08). Phần đắt của một video (chuyển động, bố cục từng tỉ lệ, nhịp) làm một lần thành khuôn; video sau Claude chỉ điền JSON.
 

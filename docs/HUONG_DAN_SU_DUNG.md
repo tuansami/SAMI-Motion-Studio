@@ -1,6 +1,6 @@
 # SAMI Motion Studio — Hướng dẫn sử dụng
 
-> **Phiên bản 0.8.3.** Mới ở 0.8.3: **🧩 Khuôn** (16 cảnh dựng sẵn có tham số, 3 phong cách: đêm, giấy kraft, sáng; thêm cảnh hoặc đổi khuôn giữ nguyên chữ) và **dây chuyền** promo / Google Maps / thực đơn: Claude chỉ điền một file brief, máy dựng cả video (mục 11g). Ở 0.8.2: **Chrome SAMI** (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng **kịch bản cố định** không tốn token, tab Xuất ghi **bộ mã hoá thật** (đo từ file), cổng AI tách thành gói `sami-media` (mục 11f). Ở 0.8.1: nút **＋ Tạo carousel**, **chọn nhiều dự án để xoá** (vào Thùng rác), **🧹 Dọn lịch sử**, **"Dùng ▾" + kéo thả media lên khung xem**, nút **✨ Tạo** cho ChatGPT / Gemini / Flow / Suno, **thẻ phần cứng + chọn bộ mã hoá** ở tab Xuất, công tắc **Cho phép Claude Code xuất video** (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab **Nguồn & AI** (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: **carousel động**. Ở 0.6: cảnh HTML (Hyperframes), **thư viện SAMI dùng chung**, ffmpeg đầy đủ.
+> **Phiên bản 0.9.0.** Mới ở 0.9: tab **Footage** (video quay thật, B-roll, PiP, bản ghi màn hình trong khung điện thoại; tiếng footage vào bản mix, nhạc tự hạ), **Preset xuất** (Reels, Feed 4:5, YouTube…), khối **vẽ bằng code** và 2 khuôn mới: biểu đồ cột, đường tới quán (mục 11h, 11). Ở 0.8.3: **🧩 Khuôn** (16 cảnh dựng sẵn có tham số, 3 phong cách: đêm, giấy kraft, sáng; thêm cảnh hoặc đổi khuôn giữ nguyên chữ) và **dây chuyền** promo / Google Maps / thực đơn: Claude chỉ điền một file brief, máy dựng cả video (mục 11g). Ở 0.8.2: **Chrome SAMI** (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng **kịch bản cố định** không tốn token, tab Xuất ghi **bộ mã hoá thật** (đo từ file), cổng AI tách thành gói `sami-media` (mục 11f). Ở 0.8.1: nút **＋ Tạo carousel**, **chọn nhiều dự án để xoá** (vào Thùng rác), **🧹 Dọn lịch sử**, **"Dùng ▾" + kéo thả media lên khung xem**, nút **✨ Tạo** cho ChatGPT / Gemini / Flow / Suno, **thẻ phần cứng + chọn bộ mã hoá** ở tab Xuất, công tắc **Cho phép Claude Code xuất video** (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab **Nguồn & AI** (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: **carousel động**. Ở 0.6: cảnh HTML (Hyperframes), **thư viện SAMI dùng chung**, ffmpeg đầy đủ.
 >
 > Phiên bản 0.5 (giai đoạn 1: web app chạy trên máy). Mới ở 0.5: **Biến thể hàng loạt từ CSV** (11c), **làm việc nhóm**: trạng thái, khoá dự án, mẫu dùng chung (11d). Ở 0.4: **Gói duyệt khách**, **So sánh điểm neo**, **chuẩn âm lượng −14 LUFS**. Ở 0.3: **Lịch sử phiên bản / điểm neo** (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab **Ảnh chèn**, **Thư viện mẫu**. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà **không cần biết code**. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.
 
@@ -451,6 +451,26 @@ Bộ slide cho Instagram / Facebook / LinkedIn: **mỗi slide là 1 video MP4 l�
 - **Dây chuyền** (Claude Code chạy): bạn nói "làm video Google Maps cho quán X", Claude chỉ viết một file `brief.json` (chữ, ảnh, liên hệ) rồi chạy lệnh dây chuyền; máy chọn khuôn, xếp thời gian theo nhịp 120 BPM, điền chữ, đặt SFX, chụp ảnh kiểm. Có 3 dây chuyền: **promo** (~30 s), **maps** (dịch vụ Google Maps), **menu** (thực đơn, món mới, ưu đãi). Dây chuyền **không xuất video**; bạn mở dự án trong Studio để xem và chỉnh.
 - **Bộ nhận diện khách**: `SAMI_Library\brands\<khách>\brand.json` (màu, font, phong cách, logo, liên hệ, giọng, nhạc). Dây chuyền tự áp vào video. Có sẵn `brands\sami`.
 - Chi phí của một video (API + lượt Claude quy đổi): Claude chạy `ledger --project <thư mục>`.
+
+## 11h. Tab **Footage**: video quay thật, B-roll, PiP (mới ở 0.9)
+Footage nằm trên một **lớp riêng phía trên cảnh**; tiêu đề, phụ đề, ảnh chèn vẫn nằm trên footage (chữ tên người nói, chú thích: dùng tab **Tiêu đề**).
+
+| Vai trò | Dùng cho | Mặc định |
+|---|---|---|
+| **Chính** | người nói, phỏng vấn, cảnh quay dài | phủ kín khung, có tiếng, nhạc tự hạ |
+| **B-roll** | cảnh chèn ngắn (món ăn, không gian quán) | phủ khung, 3 giây, **tắt tiếng**, mờ dần 0,2 s |
+| **PiP** | khung nhỏ ở góc (người nói trên nền cảnh đồ hoạ) | bo góc hoặc tròn, có tiếng |
+| **Màn hình** | bản ghi màn hình điện thoại / máy tính | nằm trong khung điện thoại hoặc laptop |
+
+- **Nhập**: tab Footage → **＋ Nhập video** (nhiều file, dung lượng bao nhiêu cũng được), hoặc **kéo file video thả lên khung xem** rồi chọn vai trò (PiP đặt đúng chỗ thả). File gốc vào thư mục `media/` của dự án; Studio tự tạo **bản xem trước 540p** để xem mượt, khi xuất dùng file gốc. Bản ghi màn hình có tốc độ khung thay đổi được tự chuyển sang 30 khung/giây cố định (khỏi lệch tiếng).
+- **Đặt lên timeline**: đưa thanh thời gian tới chỗ muốn chèn, bấm **＋Chính / ＋B-roll / ＋PiP / ＋Màn hình** dưới video. Clip hiện thành vạch cam trên thanh thời gian (bấm vào để sửa). Clip dài hơn phim thì phim tự nối thêm một đoạn "Footage".
+- **Sửa clip**: bắt đầu, cắt vào / cắt ra, **⇥ Bắt đầu tại vị trí đang xem**, **✂ Kết thúc tại đây**, **✂ Tách đôi tại đây**, tốc độ 0,5× đến 2×, hiện / tắt dần, phủ kín hay vừa khung; PiP: kiểu khung, 5 nút đặt nhanh góc, thanh trượt vị trí, cỡ, bo góc; âm thanh: tắt tiếng, âm lượng dB, hạ nhạc nền khi clip có tiếng.
+- **B-roll từ stock**: nút **🔎 Tìm B-roll** (tab Nguồn & AI, loại Video) → **Dùng ▾ → Thêm làm B-roll tại vị trí đang xem**.
+- Ảnh kiểm (`cli-still`) khung có footage đi qua Remotion: cảnh HTML phía dưới hiện thẻ "chưa có clip" trừ khi thêm `--exact`. Đó là ảnh kiểm, không phải lỗi video.
+
+**Preset xuất** (tab Xuất, ô đầu tiên): Reels / TikTok / Shorts 9:16, Feed 4:5, Vuông 1:1, YouTube 16:9, YouTube 4K (H.265), Quảng cáo nhẹ 9:16, Bản gốc ProRes, Bản xem 540p. Chọn một preset là điền sẵn tỉ lệ, độ phân giải, khung/giây, định dạng, chất lượng; vẫn chỉnh tay được. WebM, GIF, chuỗi PNG, ProRes có nền trong suốt: chưa có.
+
+**Khối vẽ bằng code** cho cảnh HTML (`_sami/blocks/blocks.js`): biểu đồ cột, biểu đồ đường, con trỏ chuột bấm, đường đi trên bản đồ, chuyển cảnh quét màu. Hai khuôn mới dùng chúng: **Biểu đồ cột tăng trưởng**, **Đường tới quán** (nút 🧩 Khuôn).
 
 ## 12. Làm video mới cùng Claude Code (quy trình chuẩn)
 

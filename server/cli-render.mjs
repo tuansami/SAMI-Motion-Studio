@@ -8,6 +8,7 @@
 //   node server/cli-render.mjs --enable  --request "<nguyên văn lời Tuấn bảo bật>"
 //   node server/cli-render.mjs --disable
 //   node server/cli-render.mjs <thư mục dự án> --request "<nguyên văn lời Tuấn>" [--ratio 9:16] [--res 540p|FHD|2K|4K]
+//        [--preset reels-9x16|feed-4x5|square-1x1|yt-16x9|yt-4k|ads-light|master-prores|review-540p] (lib/presets.json)
 //        [--fps 24|30|60] [--codec h264|h265|prores] [--scene S03] [--gpu auto|off] [--name …] [--draft] [--no-wait]
 //
 // Studio đang mở → lượt xuất vào hàng đợi của Studio (thấy trong tab Xuất, dừng/huỷ được, không tranh GPU).
@@ -15,7 +16,7 @@
 // Mọi lần bật/tắt/xuất ghi vào .studio/cli-render.log.
 import fs from 'fs';
 import path from 'path';
-import {DATA} from './paths.mjs';
+import {DATA, LIB} from './paths.mjs';
 
 const argv = process.argv.slice(2);
 const pos = [], o = {};
@@ -52,6 +53,11 @@ if (!allowed) die('Studio đang TẮT "Cho phép Claude Code xuất video". Tu�
 
 const pj = JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8'));
 const opts = {};
+if (o.preset) { // lib/presets.json (0.9): ratio + res + fps + codec + crf in one name; explicit flags below still win
+  const P = JSON.parse(fs.readFileSync(path.join(LIB, 'presets.json'), 'utf8')).presets;
+  const pr = P.find((x) => x.id === o.preset); if (!pr) die(`Không có preset "${o.preset}". Có: ${P.map((x) => x.id).join(', ')}`);
+  for (const k of ['ratio', 'res', 'fps', 'codec', 'crf']) if (pr[k] != null) opts[k] = pr[k];
+}
 if (o.ratio) opts.ratio = String(o.ratio); if (o.res) opts.res = String(o.res); if (o.fps) opts.fps = +o.fps; if (o.codec) opts.codec = String(o.codec);
 if (o.gpu) opts.gpu = String(o.gpu); if (o.name) opts.name = String(o.name); if (o.scene) opts.scope = String(o.scene);
 if (o.draft) Object.assign(opts, {res: '540p', crf: 28, name: (o.name || pj.name) + '_nhap'});

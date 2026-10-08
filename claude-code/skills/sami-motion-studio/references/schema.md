@@ -21,7 +21,14 @@ All new fields are optional; v1 files work unchanged.
   "audio": {"mode": "layers",            // premix | layers | none
     "music": {"src": "lib:music/….mp3", "gain": -4, "edit": [[a, b, xf]], "fadeOut": 2.5},
     "cues": [{"t": 4.03, "sfx": "whoosh_b", "gain": -18, "label": "chuyển cảnh"}, {"t": 11.03, "src": "lib:sfx/eleven/pop_soft.mp3", "gain": -10}],
-    "voice": [{"t": 1.0, "src": "audio/vo_01.mp3", "len": 2.4}], "duck": -9}
+    "voice": [{"t": 1.0, "src": "audio/vo_01.mp3", "len": 2.4}], "duck": -9},
+  "tracks": {"video": [                  // 0.9 footage layer (seconds), above scenes, below overlays/titles/subtitles
+    {"id": "V01", "src": "media/talk.mp4", "role": "main|broll|pip|screen", "at": 0, "in": 2.5, "out": 14, "speed": 1,
+     "fit": "cover|contain", "mask": "none|rounded|circle|phone|laptop", "pip": {"x": .78, "y": .72, "w": .32, "r": .08},
+     "aspect": 1.7778, "volume": 0, "duck": true, "fadeIn": .3, "fadeOut": .3, "z": 20, "formats": []}
+  ]}
 }
 ```
+Scenes may be `{"engine": "blank"}` (0.9): an empty span the footage layer shows through (Studio adds one named "Footage" when a clip runs past the end).
+Khuôn scenes (0.8.3) add `"khuon": {"id", "v", "theme", "stash"}`; see `references/khuon.md`. Footage: `references/footage.md`.
 Media paths: `img/…`, `audio/…` = inside `public/`; `lib:<kind>/<file>` = SAMI_Library (hardlinked into `public/_lib`).

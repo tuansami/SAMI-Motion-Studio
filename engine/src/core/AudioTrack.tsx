@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Audio, Sequence, staticFile, useVideoConfig, interpolate} from 'remotion';
 import {media} from './media';
 import {BASE_FPS} from './timebase';
-import type {ProjectJSON} from './types';
+import {MediaCtx, footageUrl, clipLen} from './VideoTrack';
+import type {ProjectJSON, VideoClip} from './types';
 
 const db = (d = 0) => Math.pow(10, d / 20);
 
@@ -11,9 +12,12 @@ const db = (d = 0) => Math.pow(10, d / 20);
  * 'layers' builds the mix live: music (with bar-accurate edit segments + crossfades) + SFX cues.
  * Everything is in seconds.
  */
-export const AudioTrack: React.FC<{audio?: ProjectJSON['audio']; totalBase: number}> = ({audio, totalBase}) => {
+export const AudioTrack: React.FC<{audio?: ProjectJSON['audio']; totalBase: number; video?: VideoClip[]}> = ({audio, totalBase, video = []}) => {
   const {fps} = useVideoConfig();
-  if (!audio || audio.mode === 'none') return null;
+  const mctx = useContext(MediaCtx);
+  // footage with sound (volume != null): played here (the picture layer is muted), music ducks under it like under a voice-over
+  const heard = video.filter((c) => c.volume != null && footageUrl(mctx, c.src));
+  if (!audio || audio.mode === 'none') return <>{heard.map((c) => <FootageAudio key={c.id} c={c} />)}</>;
   const totalReal = Math.round((totalBase * fps) / BASE_FPS);
   if (audio.mode === 'premix' && audio.premix) {
     return <Audio src={media(audio.premix)} volume={db(audio.premixGain)} />;
@@ -21,7 +25,7 @@ export const AudioTrack: React.FC<{audio?: ProjectJSON['audio']; totalBase: numb
   const out: React.ReactNode[] = [];
   const m = audio.music;
   // voice-over ducking: music gain follows the voice clips (0.25 s ramps), in output seconds
-  const voice = audio.voice || [];
+  const voice = [...(audio.voice || []), ...heard.filter((c) => c.duck !== false).map((c) => ({t: c.at, len: clipLen(c), src: ''}))];
   const duckG = db(audio.duck ?? -9);
   const duckAt = (sec: number) => {
     let d = 1;
@@ -71,7 +75,8 @@ export const AudioTrack: React.FC<{audio?: ProjectJSON['audio']; totalBase: numb
       </Sequence>,
     );
   });
-  voice.forEach((v, i) => {
+  for (const c of heard) out.push(<FootageAudio key={'f' + c.id} c={c} />);
+  (audio.voice || []).forEach((v, i) => {
     out.push(
       <Sequence key={'v' + i} from={Math.max(0, Math.round(v.t * fps))} durationInFrames={Math.max(1, Math.round(((v.len || 8) + 0.5) * fps))} layout="none">
         <Audio src={media(v.src)} volume={db(v.gain ?? 0)} />
@@ -79,4 +84,18 @@ export const AudioTrack: React.FC<{audio?: ProjectJSON['audio']; totalBase: numb
     );
   });
   return <>{out}</>;
+};
+
+const FootageAudio: React.FC<{c: VideoClip}> = ({c}) => {
+  const {fps} = useVideoConfig();
+  const m = useContext(MediaCtx);
+  const url = footageUrl(m, c.src); if (!url) return null;
+  const len = Math.max(1, Math.round(clipLen(c) * fps)), fin = (c.fadeIn ?? 0) * fps, fout = (c.fadeOut ?? 0) * fps;
+  const s0 = Math.round((c.in ?? 0) * fps);
+  return (
+    <Sequence from={Math.round((c.at ?? 0) * fps)} durationInFrames={len} layout="none">
+      <Audio src={url} startFrom={s0} endAt={Math.max(s0 + 1, Math.round((c.out ?? 0) * fps))} playbackRate={c.speed || 1}
+        volume={(f) => db(c.volume ?? 0) * (fin ? Math.min(1, f / fin) : 1) * (fout ? Math.min(1, (len - f) / fout) : 1)} />
+    </Sequence>
+  );
 };

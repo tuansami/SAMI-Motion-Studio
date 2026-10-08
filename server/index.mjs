@@ -25,6 +25,8 @@ import {runWeb, plan as webPlan} from 'sami-media/runners';
 import {agentReady} from 'sami-media/agent';
 import {recycle} from './trash.mjs';
 import {listKhuon, applyKhuon, KHUON_DIR, GROUPS as KHUON_GROUPS, THEMES} from './khuon.mjs';
+import * as footage from './footage.mjs';
+import {linkOrCopy} from './fslink.mjs';
 import {probeGpu, gpuInfo} from './gpu.mjs';
 
 const PORT = +(process.env.STUDIO_PORT || 5178);
@@ -228,6 +230,16 @@ for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGBREAK']) { try { process.o
 const lastSaveSnap = new Map();
 // long Chrome jobs (review pack, compare) run in cli-review.mjs; progress → SSE "task"
 const tasks = new Map(); let taskSeq = 0;
+// footage prepare (probe → CFR → proxy → poster) in-process: ffmpeg runs as async children, the server never blocks
+const startMediaTask = (id, dir, src) => {
+  const t = {id: ++taskSeq, project: id, kind: 'media', status: 'running', msg: `${src}: đang chờ`, p: 0, result: null, error: null, started: Date.now(), src};
+  const pub = () => broadcast('task', t); tasks.set(t.id, t); pub();
+  footage.prepare(dir, src, {onStage: (m) => { t.msg = `${path.basename(src)}: ${m}`; pub(); }})
+    .then((info) => { t.status = 'done'; t.p = 1; t.result = info; t.msg = `${path.basename(src)}: sẵn sàng`; })
+    .catch((e) => { t.status = 'error'; t.error = e.message; })
+    .finally(() => { pub(); setTimeout(() => tasks.delete(t.id), 3600e3); });
+  return t.id;
+};
 const startTask = (id, dir, kind, args) => {
   for (const t of tasks.values()) if (t.project === id && t.kind === kind && t.status === 'running') return {task: t.id, already: true};
   const t = {id: ++taskSeq, project: id, kind, status: 'running', msg: 'Đang chuẩn bị…', p: 0, result: null, error: null, started: Date.now()};
@@ -271,6 +283,16 @@ const server = http.createServer(async (req, res) => {
     if (m) return sendFile(req, res, path.join(dirs.get(m[1]) || '/nonexistent', 'public', m[2]));
     m = p.match(/^\/proj\/([0-9a-f]{10})\/out\/(.+)$/);
     if (m) return sendFile(req, res, path.join(dirs.get(m[1]) || '/nonexistent', 'out', m[2]));
+    // footage (0.9) for the live preview: /pm/<id>/proxy/media/x.mp4 → 540p proxy (falls back to the original), /pm/<id>/media/x.mp4 → original
+    m = p.match(/^\/pm\/([0-9a-f]{10})\/(proxy\/)?((?:media|public)\/.+)$/);
+    if (m) {
+      const dir = dirs.get(m[1]); if (!dir) { res.writeHead(404); return res.end(); }
+      const orig = path.resolve(dir, m[3]); if (!orig.startsWith(path.resolve(dir) + path.sep)) { res.writeHead(403); return res.end(); }
+      const px = m[2] ? footage.proxyPath(dir, m[3]) : null;
+      return sendFile(req, res, px && fs.existsSync(px) ? px : orig);
+    }
+    m = p.match(/^\/api\/media\/thumb\/([0-9a-f]{10})\/((?:media|public)\/.+)$/);
+    if (m) return sendFile(req, res, footage.thumbPath(dirs.get(m[1]) || '/nonexistent', m[2]));
     if (p.startsWith('/cmp/')) { const f = path.resolve(CMP_ROOT, p.slice(5)); if (!f.startsWith(path.resolve(CMP_ROOT) + path.sep)) { res.writeHead(403); return res.end(); } return sendFile(req, res, f); }
     m = p.match(/^\/tpl\/([\w.-]+)\/(preview\/[\w.-]+)$/);
     if (m) return sendFile(req, res, path.join(tplDir(m[1]), m[2]));
@@ -364,6 +386,7 @@ const server = http.createServer(async (req, res) => {
       writeProject(dir, pj); touchRecent(dir, pj.name);
       return json(res, {scene: s, project: pj, validation: validateProject(dir)});
     }
+    if (p === '/api/presets') return sendFile(req, res, path.join(ROOT, 'lib', 'presets.json'));
     if (p === '/api/brands') return json(res, {brands: library.listBrands().map((id) => ({id, ...library.readBrand(id)}))});
     // ── Nguồn & AI (sami-media gateway): keys never leave config.mjs, paid runs need the one-time token ──
     if (p.startsWith('/api/providers')) {
@@ -446,6 +469,23 @@ const server = http.createServer(async (req, res) => {
       return json(res, {id, dir, report});
     }
     if (p === '/api/project/import-assets' && req.method === 'POST') { const b = await jbody(req); const dir = dirs.get(b.id); await autoSnap(dir, 'before-upload', 'Trước khi nhập tài nguyên'); return json(res, importAssets(b.from, dir)); }
+    // ── footage (0.9): stream upload into media/, then probe → CFR (VFR screen recordings) → 540p proxy → poster ──
+    if (p === '/api/media') { const dir = dirs.get(u.searchParams.get('id')); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404); return json(res, {items: footage.listMedia(dir), roles: footage.ROLES, masks: footage.MASKS, defaults: footage.DEFAULTS}); }
+    if (p === '/api/media/upload' && req.method === 'POST') { // raw body streamed to disk (videos can be GBs), ?id=&name=
+      const id = u.searchParams.get('id'); const dir = dirs.get(id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404);
+      const src = await footage.receive(dir, req, u.searchParams.get('name'));
+      return json(res, {src, task: startMediaTask(id, dir, src)});
+    }
+    if (p === '/api/media/prepare' && req.method === 'POST') { const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404); return json(res, {task: startMediaTask(b.id, dir, b.src)}); }
+    if (p === '/api/media/adopt' && req.method === 'POST') { // a clip already in the project (stock video in public/video/…) → media/broll/ + prepare
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404);
+      let src;
+      if (String(b.rel).startsWith('lib:')) { // shared SAMI_Library clip → hardlink into media/<sub>/ (0 extra bytes on the same drive)
+        const f = library.resolveLib(b.rel); if (!f || !fs.existsSync(f)) return json(res, {error: 'Không thấy ' + b.rel}, 404);
+        src = `media/${(b.sub || 'broll').replace(/[^\w-]/g, '')}/${path.basename(f)}`; linkOrCopy(f, path.join(dir, src));
+      } else src = footage.adopt(dir, 'public/' + String(b.rel || '').replace(/^public\//, ''), b.sub || 'broll');
+      return json(res, {src, task: startMediaTask(b.id, dir, src)});
+    }
     if (p === '/api/upload' && req.method === 'POST') { // raw body, ?id=&sub=audio&name=file.mp3
       const dir = dirs.get(u.searchParams.get('id')); const sub = (u.searchParams.get('sub') || 'img').replace(/[^a-z]/g, '');
       const name = path.basename(u.searchParams.get('name') || 'file').replace(/[^\p{L}\p{N}._-]+/gu, '_');

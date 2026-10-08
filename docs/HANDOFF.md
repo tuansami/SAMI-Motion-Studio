@@ -17,8 +17,8 @@ Cập nhật: 2026-10-08 (sau v0.8.3) · Người làm: Claude Code · Chủ d�
 | **v0.8.1 Giao diện 0.7/0.8** | ✅ tạo carousel, Dùng ▾ + kéo thả, xoá dự án (Thùng rác), dọn lịch sử, thẻ phần cứng, `cli-render.mjs` (công tắc mặc định TẮT + `--request`), nút "Tạo bằng Claude Code". Xem CHANGELOG 0.8.1 |
 | **v0.8.2 Chrome SAMI, mã hoá thật, ChatGPT script, Jev, tách sami-media** | ✅ (xem CHANGELOG 0.8.2, mục 3c). Còn chờ Tuấn: đăng nhập Chrome SAMI + một lượt ChatGPT thật, điền khoá Jev, cho phép xuất 3 s thử NVENC, OK để push gói `MCP-sami-media` |
 | **v0.8.3 Khuôn + Dây chuyền** | ✅ 16 khuôn × 3 theme, 🧩 Khuôn trong Studio, dây chuyền promo / maps / menu, brand.json, sổ chi phí theo video (CHANGELOG 0.8.3, mục 3d). Tuấn bảo "triển khai, chưa push" (2026-10-08) |
-| v0.9.0 Footage / PiP / B-roll | ⏳ **việc tiếp theo** (mục 4). Song song nếu Tuấn muốn: thêm khuôn tới 20 đến 30 (mục 3d) |
-| v1.0.0 Hoàn thiện | chưa làm |
+| **v0.9.0 Footage / PiP / B-roll** | ✅ tracks.video (main / broll / pip / screen), tab Footage, proxy 540p, VFR → CFR, tiếng footage + hạ nhạc, preset xuất, khối vẽ bằng code, 18 khuôn (CHANGELOG 0.9.0, mục 4). **Chờ Tuấn cho phép xuất thử** 60 s (1 chính, 2 B-roll, 1 PiP, vỗ tay kiểm lệch tiếng ≤ 1 khung, RAM < 12 GB) |
+| v1.0.0 Hoàn thiện | ⏳ **việc tiếp theo** (mục 5) |
 
 - **Git:**
   - Nhánh `feat/v0.6-nen-mong` (tách từ `main` @ v0.5.0), working tree sạch sau commit 0.8.2.
@@ -125,7 +125,11 @@ Tuấn đã trả lời: làm cả 4 nhóm (stock + cục bộ → ElevenLabs �
 - G. Tự động trình duyệt: kịch bản cố định → Jev → Claude.
 Viết spec `docs/specs/khuon-day-chuyen.md`, Tuấn duyệt rồi mới làm. Sau đó v0.9 Footage.
 
-## 4. v0.9.0 Footage / B-roll / PiP / trim
+## 4. v0.9.0 Footage / B-roll / PiP / trim (✅ ĐÃ LÀM 2026-10-08; kế hoạch gốc bên dưới để tra)
+- Đọc `claude-code/skills/sami-motion-studio/references/footage.md` trước khi sửa. Code: `server/footage.mjs`, `engine/src/core/VideoTrack.tsx`, `AudioTrack.tsx` (FootageAudio + ducking), `Main.tsx` (MediaCtx, VideoTrack sau SceneStack, cảnh `blank`), `render.mjs` / `still.mjs` (`serveMedia` cho cả job), tab Footage trong `ui/app.js` (`tabVideo`).
+- Khác kế hoạch: footage nằm trên một **lớp riêng phía trên cảnh** (không trộn vào cảnh); chữ trên footage = Titles. Không làm `libserve` riêng: `render.mjs` / `still.mjs` tự mở máy chủ cục bộ cổng ngẫu nhiên trong lúc chạy, nên Studio mở hay tắt đều xuất được. Preset chỉ gồm các định dạng đã có (h264, h265, ProRes); WebM VP9, GIF, chuỗi PNG, ProRes 4444 alpha để sau (cần xuất thử).
+- Chưa thử thật (cần Tuấn cho phép xuất): phép thử 60 s + vỗ tay, RAM, NVENC; lượt xuất có footage dài (OffthreadVideo tải file gốc qua HTTP).
+
 - **Nhập footage:** `media/` của dự án. Route `/api/media/import` → ffprobe → proxy NVENC 540p (`-g 15`) vào `media/.cache/proxy`.
   - Bản ghi màn hình VFR chuyển sang CFR 30.
   - Preview dùng proxy, xuất dùng file gốc.

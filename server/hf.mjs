@@ -117,7 +117,7 @@ export const resolveStaged = (dir, rel) => {
   if (rel.startsWith('_gsap/')) return pick(GSAP_DIST, rel.slice(6));
   if (rel.startsWith('_fonts/')) return pick(FONTS, rel.slice(7));
   if (rel.startsWith('lib/')) return pick(ASSETS, rel.slice(4));
-  if (rel.startsWith('public/') || rel.startsWith('hf/') || rel.startsWith('slides/')) return pick(dir, rel);
+  if (rel.startsWith('public/') || rel.startsWith('hf/') || rel.startsWith('slides/') || rel.startsWith('media/')) return pick(dir, rel); // media/ = footage (0.9)
   return pick(path.join(dir, 'hf'), rel); // bare relative refs → next to the scene file
 };
 
@@ -132,7 +132,7 @@ export const stageDir = (dir, p, s, ratio, fps, {audio = null} = {}) => {
   junction(path.join(LIB, 'hf'), path.join(out, '_sami'));
   junction(GSAP_DIST, path.join(out, '_gsap'));
   if (fs.existsSync(path.join(dir, 'public'))) junction(path.join(dir, 'public'), path.join(out, 'public'));
-  for (const sub of ['hf', 'slides']) if (fs.existsSync(path.join(dir, sub))) junction(path.join(dir, sub), path.join(out, sub));
+  for (const sub of ['hf', 'slides', 'media']) if (fs.existsSync(path.join(dir, sub))) junction(path.join(dir, sub), path.join(out, sub));
   if (fs.existsSync(ASSETS) && /["'(]lib\/|"lib:/.test(html)) junction(ASSETS, path.join(out, 'lib')); // "lib: = a copy value (khuôn image slot)
   const fam = fontRefs(html);
   if (fam.length) { const fd = path.join(out, '_fonts'); fs.mkdirSync(fd, {recursive: true}); for (const f of fam) if (fs.existsSync(path.join(FONTS, f))) junction(path.join(FONTS, f), path.join(fd, f)); }
