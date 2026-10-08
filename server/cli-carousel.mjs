@@ -1,4 +1,5 @@
-// node server/cli-carousel.mjs <projectDir> [render|audio|stills] [--only C01,C03] [--cpu]
+// node server/cli-carousel.mjs <projectDir> [render|audio|stills] [--only C01,C03] [--cpu] [--request "<lời Tuấn>"]
+//   render cần công tắc "Cho phép Claude Code xuất video" + --request (giống server/cli-render.mjs). Ưu tiên dùng cli-render.mjs.
 //   render (default): every slide → out/carousel/<stamp>/NN-<ID>.mp4 + covers/ + seams/ + contact-sheet.jpg + preview.html + qa.json
 //   audio:  only the per-slide seamless mixes → out/carousel/audio/<ID>.wav (listen before rendering)
 //   stills: frame 0 (= cover) + mid frame of every slide → out/qa/<ID>_cover.jpg, <ID>_mid.jpg (fast, no render)
@@ -11,8 +12,17 @@ import {ffAsync} from './ffmpeg.mjs';
 const args = process.argv.slice(2);
 const flag = (k) => { const i = args.indexOf(k); return i >= 0 ? args.splice(i, 2)[1] : null; };
 const only = flag('--only')?.split(',') || null;
+const request = flag('--request');
 const cpu = args.includes('--cpu');
 const [dir0, cmd = 'render'] = args.filter((a) => !a.startsWith('--'));
+// render = full video export → same rule as server/cli-render.mjs: Studio switch ON + Tuấn's request quoted
+if (cmd === 'render') {
+  const {DATA} = await import('./paths.mjs');
+  let on = false; try { on = !!JSON.parse(fs.readFileSync(path.join(DATA, 'settings.json'), 'utf8')).allowCliRender; } catch {}
+  if (!request || request.trim().length < 4) { console.error('✗ Xuất carousel cần --request "<nguyên văn yêu cầu xuất của Tuấn>". Không có yêu cầu thì KHÔNG xuất (QA dùng: stills / audio).'); process.exit(1); }
+  if (!on) { console.error('✗ Studio đang TẮT "Cho phép Claude Code xuất video" (tab Xuất).'); process.exit(1); }
+  fs.appendFileSync(path.join(DATA, 'cli-render.log'), JSON.stringify({ts: new Date().toISOString(), action: 'render', via: 'cli-carousel', dir: path.resolve(dir0 || '.'), request, only}) + '\n');
+}
 const dir = path.resolve(dir0 || '.');
 const p = readProject(dir);
 if (!isCarousel(p)) { console.error('project.json không phải carousel (type: "carousel")'); process.exit(1); }

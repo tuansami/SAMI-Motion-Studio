@@ -153,11 +153,11 @@ export const star = async (dir, id, {label, starred} = {}) => withLock(dir, asyn
 });
 
 /** keep: starred, labelled manual anchors, newest KEEP_AUTO, newest per day for KEEP_DAYS. Then GC unreferenced objects. */
-const pruneLocked = async (dir) => {
+const pruneLocked = async (dir, {keepAuto = KEEP_AUTO, keepDays = KEEP_DAYS} = {}) => {
   const all = (await listManifests(dir)).reverse(); // newest first
-  const keep = new Set(); const days = new Set(); const cutoff = Date.now() - KEEP_DAYS * 864e5;
+  const keep = new Set(); const days = new Set(); const cutoff = Date.now() - keepDays * 864e5;
   all.forEach((m, i) => {
-    if (m.starred || !AUTO.has(m.kind) || i < KEEP_AUTO) return keep.add(m.id);
+    if (m.starred || !AUTO.has(m.kind) || i < keepAuto) return keep.add(m.id);
     const t = Date.parse(m.time), day = m.time.slice(0, 10);
     if (t > cutoff && !days.has(day)) { days.add(day); keep.add(m.id); }
   });
@@ -170,7 +170,9 @@ const pruneLocked = async (dir) => {
   }
   return {removed, freed};
 };
-export const prune = (dir) => withLock(dir, () => pruneLocked(dir));
+/** levels for the Studio "Dọn lịch sử" button: chuẩn = automatic rule; gọn / tối thiểu keep fewer automatic anchors (★ + manual always kept) */
+export const PRUNE_LEVELS = {standard: {keepAuto: KEEP_AUTO, keepDays: KEEP_DAYS}, compact: {keepAuto: 10, keepDays: 7}, minimal: {keepAuto: 3, keepDays: 0}};
+export const prune = (dir, level = 'standard') => withLock(dir, () => pruneLocked(dir, PRUNE_LEVELS[level] || PRUNE_LEVELS.standard));
 
 /** disk used by .history */
 export const usage = async (dir) => {

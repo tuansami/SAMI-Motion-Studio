@@ -20,9 +20,13 @@ import * as history from './history.mjs';
 import {CMP_ROOT} from './review.mjs';
 import * as providers from '../providers/gateway.mjs';
 import * as pcfg from '../providers/config.mjs';
+import {startWebAgent, agentReady} from '../providers/agent.mjs';
+import {recycle} from './trash.mjs';
+import {probeGpu, gpuInfo} from './gpu.mjs';
 
 const PORT = +(process.env.STUDIO_PORT || 5178);
 if (!caps()) refreshCaps(); // async NVENC/filter probe → .studio/caps.json (0.5 probed synchronously on the first request)
+probeGpu().catch(() => {}); // card name + driver for the Xuất tab
 fs.mkdirSync(DATA, {recursive: true});
 const SETTINGS = path.join(DATA, 'settings.json');
 const DEFAULT_RENDER = {threads: Math.min(8, os.cpus().length), gpu: 'auto', res: 'FHD', fps: 30, codec: 'h264', crf: 18, priority: 'normal', titles: true, subtitles: true, audio: true, loudness: -14};
@@ -46,7 +50,7 @@ settings.recent = settings.recent.filter((r, i, a) => a.findIndex((x) => samePat
 // sample projects shipped with the app
 if (fs.existsSync(DEFAULT_PROJECTS)) for (const e of fs.readdirSync(DEFAULT_PROJECTS)) {
   const d = path.join(DEFAULT_PROJECTS, e);
-  if (fs.existsSync(path.join(d, 'project.json')) && !settings.recent.some((r) => samePath(r.dir, d))) { settings.recent.push({dir: d, name: readProject(d).name, opened: null}); register(d); }
+  if (fs.existsSync(path.join(d, 'project.json')) && !settings.recent.some((r) => samePath(r.dir, d)) && !(settings.hiddenProjects || []).some((x) => samePath(x, d))) { settings.recent.push({dir: d, name: readProject(d).name, opened: null}); register(d); }
 }
 saveSettings(settings);
 
@@ -233,6 +237,21 @@ const startTask = (id, dir, kind, args) => {
   child.on('exit', (code) => { if (t.status === 'running') { t.status = 'error'; t.error = `Tiến trình dừng (mã ${code})\n` + log.replace(/\x1b\[[0-9;]*m/g, '').slice(-800); } t.child = null; pub(); setTimeout(() => tasks.delete(t.id), 3600e3); });
   pub(); return {task: t.id};
 };
+// "Tạo bằng Claude Code" (gói web) → headless Claude Code run; progress → SSE "task" (kind "agent")
+const startAgentTask = (projectId, req, destDir) => {
+  for (const t of tasks.values()) if (t.kind === 'agent' && t.status === 'running') throw new Error('Claude Code đang chạy một lượt tạo khác. Chờ xong rồi bấm tiếp.');
+  const t = {id: ++taskSeq, project: projectId, kind: 'agent', status: 'running', msg: 'Đang mở Claude Code…', p: 0, result: null, error: null, started: Date.now(), provider: req.provider};
+  const pub = () => { const {child: _c, ...x} = t; broadcast('task', x); };
+  const run = startWebAgent({req, destDir, onEvent: (e) => { if (t.status === 'running') { t.msg = e.msg; pub(); } }});
+  t.child = run.child; tasks.set(t.id, t); pub();
+  run.done.then((r) => {
+    const files = providers.ledgerSummary({limit: 200}).recent.filter((x) => x.provider === req.provider && x.out && x.ts >= r.since).map((x) => x.out).reverse();
+    t.child = null; t.p = 1; t.result = {text: r.text, files, costUsd: r.costUsd, turns: r.turns};
+    if (t.status === 'running') { t.status = r.ok || files.length ? 'done' : 'error'; if (t.status === 'error') t.error = r.text; }
+    pub(); setTimeout(() => tasks.delete(t.id), 3600e3);
+  });
+  return {task: t.id};
+};
 const autoSnap = (dir, kind, label = '') => history.snapshot(dir, {kind, label, source: 'Studio · ' + userName()}).catch((e) => console.error('snapshot:', e.message));
 
 // ── server ───────────────────────────────────────────────────────────
@@ -277,6 +296,58 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/library/brands') return json(res, library.listBrands().map((id) => ({id, ...library.readBrand(id)})));
     m = p.match(/^\/lib\/(.+)$/);
     if (m) { const f = library.resolveLib('lib:' + m[1]); if (!f) { res.writeHead(403); return res.end(); } return sendFile(req, res, f); }
+    // ── project management: remove from list / move to the Windows Recycle Bin (restorable) ──
+    if (p === '/api/project/remove' && req.method === 'POST') {
+      const b = await jbody(req); const out = [];
+      for (const id of b.ids || []) {
+        const dir = dirs.get(id); if (!dir) { out.push({id, error: 'không rõ dự án'}); continue; }
+        const name = settings.recent.find((r) => samePath(r.dir, dir))?.name || path.basename(dir);
+        try {
+          if (b.trash) {
+            if (!fs.existsSync(path.join(dir, 'project.json'))) throw new Error('không phải thư mục dự án');
+            const R = path.resolve(ROOT).toLowerCase(), D = path.resolve(dir).toLowerCase();
+            if (R.startsWith(D) || D.startsWith(path.resolve(TEMPLATES).toLowerCase())) throw new Error('thư mục được bảo vệ');
+            const l = readLock(dir); if (l && !isMine(l) && lockAlive(l)) throw new Error(`${l.user} đang mở dự án này`);
+            for (const t of jobs) if (['queued', 'running'].includes(t.status) && samePath(t.opts.dir, dir)) throw new Error('đang có lượt render');
+            dropLock(dir); (watchers.get(id) || []).forEach((w) => { try { w.close(); } catch {} }); watchers.delete(id);
+            await recycle(dir);
+          }
+          settings.recent = settings.recent.filter((r) => !samePath(r.dir, dir));
+          if (path.resolve(dir).toLowerCase().startsWith(path.resolve(DEFAULT_PROJECTS).toLowerCase())) settings.hiddenProjects = [...new Set([...(settings.hiddenProjects || []), path.resolve(dir)])];
+          dirs.delete(id); out.push({id, name, ok: true, trashed: !!b.trash});
+        } catch (e) { out.push({id, name, error: e.message}); }
+      }
+      saveSettings(settings); return json(res, {results: out});
+    }
+    // ── new carousel (tools/carousel-new.mjs in a child process) ──
+    if (p === '/api/carousel/new' && req.method === 'POST') {
+      const b = await jbody(req); const root = b.location || settings.projectsRoot || DEFAULT_PROJECTS;
+      let dir = path.join(root, slug(b.name || 'carousel-moi')); let n = 2; while (fs.existsSync(dir)) dir = path.join(root, slug(b.name || 'carousel-moi') + '-' + n++);
+      const args = [path.join(ROOT, 'tools', 'carousel-new.mjs'), dir, '--name', String(b.name || path.basename(dir)), '--theme', String(b.theme || 'sami'), '--handle', String(b.handle || 'sami.agency'), '--dur', String(+b.dur || 6)];
+      if (b.imagesDir) {
+        if (!fs.existsSync(b.imagesDir)) return json(res, {error: 'Không thấy thư mục ảnh'}, 400);
+        const imgs = fs.readdirSync(b.imagesDir).filter((f) => /\.(jpe?g|png|webp)$/i.test(f)).sort((a, c) => a.localeCompare(c, undefined, {numeric: true})).slice(0, 20);
+        if (!imgs.length) return json(res, {error: 'Thư mục không có ảnh JPG/PNG/WebP'}, 400);
+        args.push('--images', ...imgs.map((f) => path.join(b.imagesDir, f)));
+      }
+      const r = await new Promise((ok) => { const c = spawn(process.execPath, args, {windowsHide: true, env: process.env}); let o = ''; c.stdout.on('data', (d) => (o += d)); c.stderr.on('data', (d) => (o += d)); c.on('exit', (code) => ok({code, o})); });
+      if (r.code !== 0) return json(res, {error: r.o.slice(-600)}, 500);
+      const pj = readProject(dir); if (b.client) { pj.client = b.client; writeProject(dir, pj); }
+      const id = register(dir); touchRecent(dir, pj.name); ensureClaude(dir, pj);
+      return json(res, {id, dir});
+    }
+    // ── render requested from Claude Code (server/cli-render.mjs): only when Tuấn enabled it, always with his request quoted ──
+    if (p === '/api/render/cli' && req.method === 'POST') {
+      const b = await jbody(req); const dir = path.resolve(String(b.dir || ''));
+      if (!settings.allowCliRender) return json(res, {error: 'Studio đang TẮT "Cho phép Claude Code xuất video" (tab Xuất).'}, 403);
+      if (String(b.request || '').trim().length < 4) return json(res, {error: 'Thiếu --request: nguyên văn yêu cầu xuất video của Tuấn.'}, 400);
+      if (!fs.existsSync(path.join(dir, 'project.json'))) return json(res, {error: 'Không phải thư mục dự án: ' + dir}, 400);
+      const v = validateProject(dir); if (v.fail.length) return json(res, {error: 'Dự án còn lỗi:\n• ' + v.fail.join('\n• ')}, 400);
+      const id = register(dir); const pj = readProject(dir);
+      const o = {...DEFAULT_RENDER, ...settings.render, ...(b.opts || {})}; o.ratio ||= pj.formats[0];
+      fs.appendFileSync(path.join(DATA, 'cli-render.log'), JSON.stringify({ts: new Date().toISOString(), via: 'studio', dir, request: b.request, opts: o}) + '\n');
+      return json(res, addJob({...o, id, dir, name: o.name || pj.name, by: 'Claude Code'}));
+    }
     // ── Nguồn & AI (providers/gateway.mjs): keys never leave config.mjs, paid runs need the one-time token ──
     if (p.startsWith('/api/providers')) {
       const b = req.method === 'POST' ? await jbody(req) : {};
@@ -292,6 +363,8 @@ const server = http.createServer(async (req, res) => {
         const r = await providers.generate({...b.req, dest: destFor(b)}, {token: b.token, confirmedBy: 'Studio · ' + userName(), onProgress: (x) => broadcast('provider', {id: b.id, ...x})});
         return json(res, {usd: r.usd, files: r.files.map((f) => ({uri: f.uri, rel: f.rel, path: f.path, duplicate: f.duplicate}))});
       }
+      if (p === '/api/providers/agent' && req.method === 'POST') return json(res, startAgentTask(b.id, b.req, b.to === 'project' ? dirs.get(b.id) : null));
+      if (p === '/api/providers/agent/cancel' && req.method === 'POST') { const t = tasks.get(+b.task); if (t?.child) { t.status = 'error'; t.error = 'Đã huỷ'; t.child.kill(); } return json(res, {ok: true}); }
       if (p === '/api/providers/ledger') return json(res, providers.ledgerSummary({limit: +(u.searchParams.get('limit') || 30)}));
     }
     // preview bundle
@@ -308,11 +381,11 @@ const server = http.createServer(async (req, res) => {
       sse.add(res); const hb = setInterval(() => res.write(`event: ping\ndata: ${Date.now()}\n\n`), 10000); req.on('close', () => { clearInterval(hb); sse.delete(res); }); return;
     }
     if (p === '/api/state') {
-      const recent = settings.recent.filter((r) => fs.existsSync(path.join(r.dir, 'project.json'))).map((r) => { let status = 'draft'; try { status = readProject(r.dir).status || 'draft'; } catch {} const l = readLock(r.dir); return {...r, id: register(r.dir), status, lockedBy: l && !isMine(l) && lockAlive(l) ? l : null}; });
+      const recent = settings.recent.filter((r) => fs.existsSync(path.join(r.dir, 'project.json'))).map((r) => { let status = 'draft', type = null; try { const pj = readProject(r.dir); status = pj.status || 'draft'; type = pj.type || null; } catch {} const l = readLock(r.dir); return {...r, id: register(r.dir), status, type, lockedBy: l && !isMine(l) && lockAlive(l) ? l : null}; });
       const templates = listTemplates();
-      return json(res, {recent, templates, categories: CATEGORIES, goals: GOALS, render: {...DEFAULT_RENDER, ...settings.render}, cpus: os.cpus().length, cpuModel: os.cpus()[0]?.model, platform: process.platform, gpu: gpuEncoders(), caps: caps(), ffmpeg: !!FFMPEG, hyperframes: HF_VERSION, library: LIBRARY, cache: CACHE, projectsRoot: settings.projectsRoot, sharedTemplates: settings.sharedTemplates || [], userName: userName(), host: os.hostname(), version: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version});
+      return json(res, {recent, templates, categories: CATEGORIES, goals: GOALS, render: {...DEFAULT_RENDER, ...settings.render}, cpus: os.cpus().length, cpuModel: os.cpus()[0]?.model, platform: process.platform, gpu: gpuEncoders(), caps: caps(), ffmpeg: !!FFMPEG, hyperframes: HF_VERSION, library: LIBRARY, cache: CACHE, projectsRoot: settings.projectsRoot, sharedTemplates: settings.sharedTemplates || [], gpuInfo: gpuInfo(), allowCliRender: !!settings.allowCliRender, agent: agentReady(), ffmpegFull: caps()?.full?.version?.match(/version (\S+)/)?.[1] || null, userName: userName(), host: os.hostname(), version: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version});
     }
-    if (p === '/api/settings' && req.method === 'POST') { const b = await jbody(req); settings = {...settings, ...b, render: {...settings.render, ...(b.render || {})}}; saveSettings(settings); setSharedRoots(settings.sharedTemplates); return json(res, {ok: true}); }
+    if (p === '/api/settings' && req.method === 'POST') { const b = await jbody(req); if ('allowCliRender' in b && !!b.allowCliRender !== !!settings.allowCliRender) fs.appendFileSync(path.join(DATA, 'cli-render.log'), JSON.stringify({ts: new Date().toISOString(), action: b.allowCliRender ? 'enable' : 'disable', via: b.via || 'studio-ui'}) + '\n'); settings = {...settings, ...b, render: {...settings.render, ...(b.render || {})}}; saveSettings(settings); setSharedRoots(settings.sharedTemplates); return json(res, {ok: true}); }
     if (p === '/api/pick-folder') { const d = await pickFolder(); return json(res, {dir: d, supported: process.platform === 'win32'}); }
     if (p === '/api/open' && req.method === 'POST') { const b = await jbody(req); if (b.path && fs.existsSync(b.path)) openPath(b.path); return json(res, {ok: true}); }
     if (p === '/api/project/open' && req.method === 'POST') {
@@ -436,7 +509,7 @@ const server = http.createServer(async (req, res) => {
       if (p === '/api/history/preview') return json(res, await history.preview(dir, u.searchParams.get('snap')));
       if (p === '/api/history/snapshot') return json(res, await history.snapshot(dir, {kind: 'manual', label: b.label || '', starred: !!b.starred, source: b.source || 'Studio', force: true}));
       if (p === '/api/history/star') return json(res, await history.star(dir, b.snap, {label: b.label, starred: b.starred}));
-      if (p === '/api/history/prune') return json(res, await history.prune(dir));
+      if (p === '/api/history/prune') { const before = await history.usage(dir); const r = await history.prune(dir, b.level); return json(res, {...r, before, after: await history.usage(dir)}); }
       if (p === '/api/history/restore') {
         const r = await history.restore(dir, b.snap, {paths: b.paths?.length ? b.paths : null});
         const id = register(dir); const pb = await previewBundle(dir); broadcast('restored', {id, hash: pb.hash});

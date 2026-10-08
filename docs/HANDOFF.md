@@ -14,6 +14,7 @@ Cập nhật: 2026-10-08 (sau v0.8.0) · Người làm: Claude Code · Chủ d�
 | **v0.6.0 Nền móng** | ✅ commit `e7306a8` |
 | **v0.7.0 Carousel động** | ✅ commit `88604e6` |
 | **v0.8.0 Cổng AI** | ✅ commit trên cùng nhánh (xem `git log`); còn 2 phép thử cần Tuấn, mục 3 |
+| **v0.8.1 Giao diện 0.7/0.8** | ✅ tạo carousel, Dùng ▾ + kéo thả, xoá dự án (Thùng rác), dọn lịch sử, thẻ phần cứng, `cli-render.mjs` (công tắc mặc định TẮT + `--request`), nút "Tạo bằng Claude Code". Xem CHANGELOG 0.8.1 |
 | v0.9.0 Footage / PiP / B-roll | ⏳ **việc tiếp theo** |
 | v1.0.0 Hoàn thiện | chưa làm |
 
@@ -74,6 +75,8 @@ Tuấn đã trả lời: làm cả 4 nhóm (stock + cục bộ → ElevenLabs �
   2. Một lượt ChatGPT web 5 ảnh theo `providers/recipes/chatgpt-image.md` (Tuấn có mặt, đã đăng nhập Chrome).
 - Giá trong `providers/pricing.mjs` là ước tính (2026-10); sửa không cần release qua `providers.json → opts.pricing`.
 - Không có adapter Veo API (trần 2 USD/ngày không đủ); video AI đi qua Flow web.
+- **Luật Tuấn (2026-10-08): tuyệt đối không tự render khi Tuấn chưa yêu cầu.** Kể cả khi kiểm thử tính năng: chỉ kiểm đường từ chối.
+- Cài đặt xuất đã lưu của Tuấn đang là `gpu: "off"` (CPU) + H.265: đã báo Tuấn, không tự đổi.
 
 ## 4. v0.9.0 Footage / B-roll / PiP / trim
 - **Nhập footage:** `media/` của dự án. Route `/api/media/import` → ffprobe → proxy NVENC 540p (`-g 15`) vào `media/.cache/proxy`.

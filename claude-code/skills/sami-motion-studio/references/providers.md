@@ -9,7 +9,7 @@ All media sourcing goes through `<app>/providers/gateway.mjs`. Three doors, same
 1. `library_search` (SAMI_Library) and the client's own assets.
 2. Free stock: `search_stock` (`auto` = Pexels, Pixabay, Unsplash with keys + Wikimedia without key; licence-filtered) → `fetch_stock`. Videos: `kind: "video"`.
 3. Free generators: `edge-tts` (draft VO only, licence unclear), `synth-sfx` (names: `python <app>/lib/py/sami_audio.py list`), local `kokoro` / `comfyui` when running.
-4. Subscriptions in Tuấn's browser: `chatgpt-web` (5 images per prompt), `gemini-web`, `flow-web` (Veo), `suno-web`. Follow `<app>/providers/recipes/<name>.md` with the browser-harness skill, then `ingest_file`.
+4. Subscriptions in Tuấn's browser: `chatgpt-web` (5 images per prompt), `gemini-web`, `flow-web` (Veo), `suno-web`. Follow `<app>/providers/recipes/<name>.md` with the browser-harness skill, then `ingest_file`. Tuấn can also press **"✨ Tạo bằng Claude Code"** in the Studio tab "Nguồn & AI": the Studio starts a headless `claude -p` (Sonnet, only browser-harness + `providers/cli.mjs downloads|ingest` allowed) that does the same recipe; his click = approval to submit that prompt once.
 5. Paid APIs: `elevenlabs-tts|music|sfx`, `openai-image`, `gemini-image`, `bfl-flux`, `fal`, `replicate`.
 
 ## Paid calls (hard rules, enforced by the gateway)
@@ -19,6 +19,10 @@ All media sourcing goes through `<app>/providers/gateway.mjs`. Three doors, same
 4. Over the cap → no token. Never ask Tuấn to raise caps to get around a block; suggest stock / web / free first.
 5. Never add `mcp__sami-media__generate` to an allowlist. Never ask for, read or print API keys: Tuấn enters them in the Studio (DPAPI-encrypted in `%APPDATA%\SAMI\providers.json`).
 6. Never generate images with ElevenLabs (no such adapter on purpose) unless Tuấn asks in text, and then only via the ElevenLabs connector, not the gateway.
+
+## Using the files in a video
+- Studio: every result has **"Dùng ▾"** (replace an image field, add as overlay / watermark, set as music / voice / SFX; carousel: music across slides or SFX on the current slide) and can be dragged onto the preview. Image/music fields have **"📚 Chọn…"** (project · SAMI_Library · stock).
+- Claude Code: put the `lib:`/`img/…` path into `project.json` (copy image fields, `overlays[].src`, `audio.music.src`, `audio.voice[]`, `audio.cues[].src`, carousel `scenes[].cues[].src`) or into the scene HTML.
 
 ## Output + meta
 - Default destination: `SAMI_Library/assets/<kind>/<provider>/<slug>-<sha8>.<ext>` → reference as `lib:<kind>/<provider>/<file>`. With `project_dir` (MCP) / `--to` (CLI) / "Lưu vào dự án" (UI): `<project>/public/{img,video,audio}/<provider>/…` → reference as `img/<provider>/<file>`.

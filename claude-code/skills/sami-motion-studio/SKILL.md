@@ -49,6 +49,13 @@ Both engines live in one timeline: crossfades, warp (TSX only), titles, subtitle
 5. **QA** ⛔: `node <app>/server/cli-validate.mjs .` without ✗ → stills in every ratio `node <app>/server/cli-still.mjs . out/qa/S03.jpg 20,60,110 9:16` (HTML scenes use a fast snapshot; add `--exact` to see the final composite with titles) → Read them. Check clipping, diacritics, < 20 px text, dead frames, beat landings, invented numbers. `references/qa.md`.
 6. **Hand-off**: user exports in Studio (FHD/2K/4K, 24/30/60, NVENC). HTML scenes render once into cached clips (`public/_hf`). Don't render finals in the cloud. Update `TRANG_THAI.md`.
 
+## Exporting from Claude Code (Studio 0.8.1+) — ONLY when Tuấn asks in chat
+- **Never start a render on your own** (not for QA, not "to check", not after finishing scenes). Stills (`cli-still`) are the QA tool. Render only when Tuấn's message asks to export / render / xuất video.
+- Command (run in the background, wait for the completion notice, don't poll):
+  `node <app>/server/cli-render.mjs <project dir> --request "<Tuấn's request, verbatim>" [--ratio 9:16] [--res 540p|FHD|2K|4K] [--fps 30] [--codec h264|h265] [--scene S03] [--draft]`
+- It refuses unless the Studio switch "Cho phép Claude Code xuất video" (tab Xuất) is ON. If off: tell Tuấn; only if he says to turn it on: `node <app>/server/cli-render.mjs --enable --request "<his words>"`. Check with `--status`.
+- Studio open → the job joins the Studio queue (visible, cancellable). Studio closed → renders in the CLI process. Same engine, same NVENC. Every enable/render is logged in `<app>/.studio/cli-render.log`.
+
 ## House rules
 One easing `cubic-bezier(0.22,1,0.36,1)` (`tw/keys/arrive` in TSX, `SAMI.EASE`/`S.arrive` in HTML) · crossfade every cut (engine) · grain + vignette once (engine) · few SFX · cut ruthlessly · no raw screenshots as content (exception: videos about Google services may show real Maps/Ads UI in a phone frame, approved 2026-10-07) · no invented stats · no other agencies' work · no platform logos (exception: real Google logo in videos about Google services) · German on-screen text for the DE market, Southern Vietnamese female voice when there is VO · SAMI end card: lockup + "Strategy • Automation • Marketing • Intelligence" + WhatsApp + URL (client videos: client logo + CTA) · no em-dash in on-screen copy.
 

@@ -6,6 +6,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 .toc{background:#0F0A2A;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 18px;margin:18px 0}</style></head><body><div class="toc"><b>Mục lục</b><div class="toc">
 <ul>
 <li><a href="#sami-motion-studio-huong-dan-su-dung">SAMI Motion Studio — Hướng dẫn sử dụng</a><ul>
+<li><a href="#0-claude-code-va-studio-ai-lam-gi">0. Claude Code và Studio: ai làm gì?</a></li>
 <li><a href="#1-studio-la-gi-khac-gi-sami-renderbat">1. Studio là gì — khác gì SAMI-Render.bat?</a></li>
 <li><a href="#2-cai-at-khoi-ong">2. Cài đặt &amp; khởi động</a></li>
 <li><a href="#3-man-hinh-du-an">3. Màn hình "Dự án"</a></li>
@@ -39,6 +40,8 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <li><a href="#11b-tab-lich-su-iem-neo-khoi-phuc-ban-cu-moi-o-03">11b. Tab Lịch sử — điểm neo, khôi phục bản cũ (mới ở 0.3)</a></li>
 <li><a href="#11c-tab-bien-the-nhieu-video-tu-1-bang-csv-moi-o-05">11c. Tab Biến thể — nhiều video từ 1 bảng CSV (mới ở 0.5)</a></li>
 <li><a href="#11d-lam-viec-nhom-moi-o-05">11d. Làm việc nhóm (mới ở 0.5)</a></li>
+<li><a href="#11e-carousel-ong-07-nut-tao-o-081">11e. Carousel động (0.7, nút tạo ở 0.8.1)</a></li>
+<li><a href="#11f-tab-nguon-ai-stock-tao-bang-ai-ua-vao-video-08-nang-cap-081">11f. Tab Nguồn &amp; AI: stock, tạo bằng AI, đưa vào video (0.8, nâng cấp 0.8.1)</a></li>
 <li><a href="#12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</a><ul>
 <li><a href="#cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</a></li>
 <li><a href="#cac-buoc">Các bước</a></li>
@@ -54,9 +57,65 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </div>
 </div><h1 id="sami-motion-studio-huong-dan-su-dung">SAMI Motion Studio — Hướng dẫn sử dụng</h1>
 <blockquote>
+<p><strong>Phiên bản 0.8.1.</strong> Mới ở 0.8.1: nút <strong>＋ Tạo carousel</strong>, <strong>chọn nhiều dự án để xoá</strong> (vào Thùng rác), <strong>🧹 Dọn lịch sử</strong>, <strong>"Dùng ▾" + kéo thả media lên khung xem</strong>, nút <strong>✨ Tạo bằng Claude Code</strong> cho ChatGPT / Gemini / Flow / Suno, <strong>thẻ phần cứng + chọn bộ mã hoá</strong> ở tab Xuất, công tắc <strong>Cho phép Claude Code xuất video</strong> (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab <strong>Nguồn &amp; AI</strong> (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: <strong>carousel động</strong>. Ở 0.6: cảnh HTML (Hyperframes), <strong>thư viện SAMI dùng chung</strong>, ffmpeg đầy đủ.</p>
 <p>Phiên bản 0.5 (giai đoạn 1: web app chạy trên máy). Mới ở 0.5: <strong>Biến thể hàng loạt từ CSV</strong> (11c), <strong>làm việc nhóm</strong>: trạng thái, khoá dự án, mẫu dùng chung (11d). Ở 0.4: <strong>Gói duyệt khách</strong>, <strong>So sánh điểm neo</strong>, <strong>chuẩn âm lượng −14 LUFS</strong>. Ở 0.3: <strong>Lịch sử phiên bản / điểm neo</strong> (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
 <p><strong>Làm việc theo nhóm / với Claude:</strong> đọc <code>docs/QUY_TRINH_LAM_VIEC.md</code> (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).</p>
 </blockquote>
+<hr />
+<h2 id="0-claude-code-va-studio-ai-lam-gi">0. Claude Code và Studio: ai làm gì?</h2>
+<p><strong>Sản xuất nằm ở Claude Code. Studio là bàn dựng: xem, sửa nhẹ, duyệt, xuất.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Việc</th>
+<th>Làm ở đâu</th>
+<th>Cần mở Studio?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Viết kịch bản, dựng cảnh (HTML Hyperframes / TSX), carousel</td>
+<td>Claude Code (skill <code>sami-motion-studio</code>, <code>sami-carousel</code>)</td>
+<td>Không. Mở thì thấy cập nhật ngay</td>
+</tr>
+<tr>
+<td>Tìm stock, tạo ảnh / giọng / nhạc / SFX</td>
+<td>Claude Code qua MCP <strong>sami-media</strong> (hoặc tab Nguồn &amp; AI)</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Tạo ảnh bằng ChatGPT / Gemini, video Flow, nhạc Suno (gói web)</td>
+<td>Claude Code + browser-harness trên Chrome của bạn (hoặc nút ✨ trong Studio)</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Ảnh QA, kiểm tra lỗi</td>
+<td>Claude Code (<code>cli-still</code>, <code>cli-validate</code>)</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Xem chuyển động, sửa chữ, thời lượng, nhạc, ảnh chèn, phụ đề</td>
+<td><strong>Studio</strong></td>
+<td>Có</td>
+</tr>
+<tr>
+<td>Nhập khoá API, đặt trần chi phí</td>
+<td><strong>Studio</strong> (Claude không bao giờ thấy khoá)</td>
+<td>Có</td>
+</tr>
+<tr>
+<td>Xuất video</td>
+<td>Studio (nút ▶ Xuất video) hoặc Claude Code <strong>khi bạn bảo</strong> (cần bật công tắc ở tab Xuất)</td>
+<td>Không bắt buộc</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Claude Code không tự xuất video.</strong> Chỉ khi bạn yêu cầu trong chat, và công tắc "Cho phép Claude Code xuất video" (tab Xuất) đang bật. Máy của bạn render (Hyperframes + Remotion + NVENC), Claude chỉ gõ 1 lệnh nên tốn rất ít token.</p>
+<p>Câu lệnh mẫu trong Claude Code:
+- <em>"Tìm 6 ảnh stock phở bò dọc, lấy 2 ảnh đẹp nhất vào dự án."</em>
+- <em>"Tạo 5 ảnh món ăn bằng ChatGPT web theo prompt này: …"</em> (Chrome đang mở, đã đăng nhập)
+- <em>"Ước tính chi phí đọc lời thoại này bằng giọng Anh Thu."</em> → bạn OK → Claude tạo.
+- <em>"Xuất bản nháp 9:16 dự án này."</em> (công tắc đang bật)</p>
 <hr />
 <h2 id="1-studio-la-gi-khac-gi-sami-renderbat">1. Studio là gì — khác gì SAMI-Render.bat?</h2>
 <table>
@@ -121,7 +180,11 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </blockquote>
 <hr />
 <h2 id="3-man-hinh-du-an">3. Màn hình "Dự án"</h2>
-<p><strong>Dự án gần đây</strong> — bấm thẻ để mở.</p>
+<p><strong>Dự án gần đây</strong> — bấm thẻ để mở. Thẻ carousel có nhãn <strong>Carousel</strong>.</p>
+<p><strong>Xoá / gỡ nhiều dự án (0.8.1):</strong> rê chuột lên thẻ → tick ô ở góc phải (hoặc <strong>Chọn tất cả</strong>). Thanh tím hiện ra:
+- <strong>Gỡ khỏi danh sách</strong>: chỉ ẩn khỏi trang này, thư mục giữ nguyên.
+- <strong>🗑 Chuyển vào Thùng rác</strong>: chuyển cả thư mục dự án (kể cả <code>.history</code>, <code>out/</code>) vào Thùng rác Windows, lấy lại được. Dự án quá lớn cho Thùng rác thì Windows hỏi trước khi xoá hẳn (cửa sổ đó có thể nằm dưới trình duyệt). Không xoá được dự án đang render hoặc đang được người khác mở. Ổ mạng không có Thùng rác nên Studio từ chối.</p>
+<p><strong>＋ Tạo carousel (0.8.1):</strong> mở hộp tạo carousel động (xem mục 11e). <strong>＋ Tạo video</strong> cuộn xuống form Tạo dự án mới.</p>
 <p><strong>Mở thư mục dự án…</strong> — chọn thư mục có file <code>project.json</code> (hoặc dán đường dẫn rồi bấm <em>Mở</em>).</p>
 <p><strong>Tạo dự án mới</strong></p>
 <table>
@@ -376,9 +439,9 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <td>Mặc định <strong>8</strong>. Máy 16 luồng muốn vừa render vừa làm việc: 8. Render qua đêm: tối đa</td>
 </tr>
 <tr>
-<td><strong>Tăng tốc GPU</strong></td>
-<td>Tự động · Tắt</td>
-<td>Tự động: dùng NVIDIA NVENC để mã hoá + GPU vẽ hiệu ứng</td>
+<td><strong>Bộ mã hoá video</strong></td>
+<td>GPU · NVIDIA NVENC (tên card) · CPU x264/x265</td>
+<td><strong>GPU</strong> nhanh hơn nhiều. CPU chỉ dùng khi GPU báo lỗi. Cài đặt này được nhớ cho lần sau: nếu thấy đang là CPU mà máy có NVIDIA, chọn lại GPU</td>
 </tr>
 <tr>
 <td><strong>Mức ưu tiên</strong></td>
@@ -397,6 +460,8 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </tr>
 </tbody>
 </table>
+<p><strong>Thẻ phần cứng (0.8.1)</strong> ngay dưới ô Bộ mã hoá: tên card đồ hoạ, VRAM, driver; NVENC H.264 / H.265 có chạy được không; ffmpeg đầy đủ (bản trong <code>vendor/ffmpeg</code>, dùng để ghép, chuẩn âm lượng, cảnh HTML) và ffmpeg của Remotion (mã hoá khung hình); CPU. Studio có hai bản ffmpeg là bình thường.</p>
+<p><strong>Cho phép Claude Code xuất video (0.8.1):</strong> mặc định <strong>tắt</strong>. Bật lên thì Claude Code xuất được video <strong>khi bạn yêu cầu trong chat</strong>: lệnh phải kèm nguyên văn câu yêu cầu và được ghi vào <code>.studio/cli-render.log</code>. Studio đang mở thì lượt xuất của Claude vào chung hàng đợi bên dưới (ghi "do Claude Code"), dừng / huỷ như thường. Tắt công tắc là Claude không xuất được nữa.</p>
 <p><strong>Các nút</strong>
 - <strong>▶ Xuất video</strong> — thêm vào hàng đợi.
 - <strong>Xuất cả 3 tỉ lệ</strong> — 3 bản 16:9 + 9:16 + 1:1 cùng cài đặt, chạy lần lượt.
@@ -486,6 +551,13 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 - Điểm tự động giữ 60 cái gần nhất, cộng mỗi ngày 1 cái trong 30 ngày.
 - Mốc ★ không bao giờ bị dọn.
 - Kho nằm ở <code>&lt;dự án&gt;/.history/</code>. <strong>Đừng xoá thư mục này.</strong> Copy cả thư mục dự án là mang theo luôn lịch sử.</p>
+<p><strong>🧹 Dọn lịch sử (0.8.1):</strong> tab Lịch sử → chọn mức → bấm Dọn. Studio báo số điểm neo đã dọn và dung lượng giải phóng.
+| Mức | Giữ lại (điểm tự động) |
+|---|---|
+| Chuẩn | 60 điểm gần nhất + 1 điểm/ngày trong 30 ngày (giống dọn tự động) |
+| Gọn | 10 điểm gần nhất + 1 điểm/ngày trong 7 ngày |
+| Tối thiểu | 3 điểm gần nhất |</p>
+<p>Mốc ★ và mốc tự đặt <strong>luôn được giữ</strong> ở mọi mức. Ảnh / video cũ không còn điểm neo nào dùng tới được xoá khỏi kho để trả lại ổ đĩa.</p>
 <p><strong>So sánh</strong> (mới ở 0.4): bấm <strong>So sánh</strong> ở một điểm neo. Studio chụp ảnh từng cảnh của bản đó và của bản hiện tại, đặt cạnh nhau, chỉ hiện các cảnh có khác biệt. Mất khoảng 1–3 phút. Nhờ vậy bạn biết bản nào đẹp hơn trước khi khôi phục.</p>
 <p><strong>Dòng lệnh</strong> (Claude Code cũng dùng): <code>node &lt;app&gt;/server/cli-snapshot.mjs . list</code> · <code>… snapshot --label "…"</code> · <code>… restore &lt;id&gt; [file …]</code></p>
 <h2 id="11c-tab-bien-the-nhieu-video-tu-1-bang-csv-moi-o-05">11c. Tab <strong>Biến thể</strong> — nhiều video từ 1 bảng CSV (mới ở 0.5)</h2>
@@ -517,6 +589,46 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <li><strong>Thư mục mẫu dùng chung</strong>: mẫu trong đó hiện ở Thư viện với nhãn "dùng chung". "Lưu thành mẫu" và "Nhập mẫu" có tuỳ chọn lưu thẳng vào thư mục chung để cả nhóm dùng.</li>
 <li>Mẹo: mỗi người chạy Studio trên máy mình, còn dự án nằm ở thư mục chung. Dự án mang theo <code>.history/</code>, nên ai mở cũng thấy đủ lịch sử.</li>
 </ul>
+<h2 id="11e-carousel-ong-07-nut-tao-o-081">11e. Carousel động (0.7, nút tạo ở 0.8.1)</h2>
+<p>Bộ slide cho Instagram / Facebook / LinkedIn: <strong>mỗi slide là 1 video MP4 lặp liền mạch</strong> 1080×1350 (4:5), 30 fps, có tiếng riêng, nhịp 120 BPM.</p>
+<ol>
+<li>Trang Dự án → <strong>＋ Tạo carousel</strong>.</li>
+<li><strong>Từ chủ đề (motion):</strong> tạo 5 slide mẫu; sau đó nhờ Claude Code (skill <code>sami-carousel</code>) viết nội dung và chuyển động theo chủ đề.</li>
+<li><strong>Từ ảnh có sẵn:</strong> chọn thư mục ảnh carousel đã thiết kế (JPG/PNG, xếp theo tên file, tối đa 20). Mỗi ảnh thành 1 slide động; khung đầu giữ nguyên ảnh gốc (làm ảnh bìa); ảnh không phải 4:5 được cắt giữa.</li>
+<li>Chọn màu (SAMI, Kem, Cà chua, Rừng, Đen), tài khoản hiện trên slide, độ dài mỗi slide (4, 6, 8 giây).</li>
+<li>Trình soạn mở ở tỉ lệ <strong>4:5 Feed</strong>. Tab Chữ sửa chữ từng slide như video thường.</li>
+<li>Âm thanh: mỗi slide có SFX riêng (<code>scenes[].cues</code>), nền là groove 120 BPM hoặc một bài nhạc chạy tiếp qua các slide. Trong tab Nguồn &amp; AI, "Dùng ▾" một file âm thanh để đặt nhạc carousel hoặc thêm SFX vào slide đang chọn.</li>
+<li>Tab Xuất → <strong>▶ Xuất video</strong>: ra <code>out/carousel/&lt;thời điểm&gt;/</code> gồm <code>01-C01.mp4…</code>, <code>covers/</code> (ảnh bìa), <code>seams/</code> (soát đường nối vòng), <code>contact-sheet.jpg</code>, <code>preview.html</code> (xem thử vuốt như Instagram, có nút bật tiếng).</li>
+</ol>
+<h2 id="11f-tab-nguon-ai-stock-tao-bang-ai-ua-vao-video-08-nang-cap-081">11f. Tab <strong>Nguồn &amp; AI</strong>: stock, tạo bằng AI, đưa vào video (0.8, nâng cấp 0.8.1)</h2>
+<p>Đầu tab chọn nơi lưu: <strong>Lưu vào dự án</strong> (<code>public/img|audio|video/&lt;nguồn&gt;/</code>) hoặc <strong>Lưu vào thư viện SAMI</strong> (dùng chung mọi dự án, đường dẫn <code>lib:…</code>). Mọi file kèm <code>&lt;file&gt;.meta.json</code>: nguồn, tác giả, giấy phép, prompt, chi phí.</p>
+<p><strong>Tìm stock miễn phí:</strong> gõ từ khoá tiếng Anh → <strong>Tìm</strong>. Pexels, Pixabay, Unsplash cần khoá miễn phí (mục Khoá API); Wikimedia không cần khoá và chỉ lấy ảnh dùng thương mại được. Mỗi ảnh có:
+- <strong>Dùng ▾</strong>: tải về rồi hỏi đặt vào đâu (xem dưới).
+- <strong>Lưu</strong>: chỉ tải về.
+- Kéo ảnh thả lên khung xem: thành Ảnh chèn đúng chỗ thả.</p>
+<p><strong>Tạo bằng AI:</strong> chọn Loại (ảnh, giọng đọc, nhạc, SFX, video) → Nguồn → viết prompt → bấm nút ✨:
+| Nguồn | Nút | Chi phí |
+|---|---|---|
+| Miễn phí: Edge TTS (giọng nháp), SFX tổng hợp, Kokoro / ComfyUI cục bộ | <strong>✨ Tạo</strong> | 0 |
+| Gói web: ChatGPT (5 ảnh/lệnh), Gemini, Flow / Veo, Suno | <strong>✨ Tạo bằng Claude Code</strong> | Hạn mức Claude (khoảng 0,5 đến 2 USD quy đổi mỗi lượt) + credit của gói web (Flow, Suno) |
+| Trả tiền: ElevenLabs, OpenAI, Gemini API, Flux, fal, Replicate | <strong>✨ Tạo… (xem chi phí trước)</strong> → <strong>Xác nhận tạo</strong> | Theo bảng giá, trong trần ngày/tháng |</p>
+<ul>
+<li>Nguồn trả tiền chưa có khoá: ô <strong>Dán khoá</strong> hiện ngay tại chỗ.</li>
+<li><strong>Tạo bằng Claude Code:</strong> Studio chạy Claude Code ngầm, mở một tab mới trong <strong>Chrome thật của bạn</strong>, gửi đúng prompt một lần, tải kết quả về và lưu kèm meta. Chrome phải đang mở và đã đăng nhập dịch vụ đó. Gặp trang đăng nhập, CAPTCHA hay hết lượt thì Claude dừng và báo. Có nút <strong>Dừng</strong>. Thường 2 đến 6 phút.</li>
+<li>Nguồn trả tiền: lệnh nào cũng hiện giá trước, bấm <strong>Xác nhận</strong> mới chạy. Vượt trần ngày / tháng thì không chạy được. Lỗi thì không tự chạy lại.</li>
+</ul>
+<p><strong>Dùng file trong video ("Dùng ▾"):</strong>
+| File | Lựa chọn |
+|---|---|
+| Ảnh | Thay ảnh của một ô ảnh (tab Chữ) · Thêm làm Ảnh chèn (3 giây từ vị trí đang xem) · Thêm làm Watermark / logo góc |
+| Âm thanh | Đặt làm nhạc nền · Thêm làm giọng đọc tại vị trí đang xem (nhạc tự hạ) · Thêm làm SFX tại vị trí đang xem |
+| Âm thanh (carousel) | Nhạc chạy qua các slide · SFX vào slide đang chọn |
+| Video | Chép đường dẫn để nhờ Claude Code đặt vào cảnh (kéo footage lên timeline có ở 0.9) |</p>
+<p><strong>📚 Chọn…</strong> cạnh các ô ảnh (tab Chữ, Ảnh chèn) và ô nhạc (tab Âm thanh): chọn từ <em>Trong dự án</em>, <em>Thư viện SAMI</em> hoặc <em>Stock miễn phí</em> trong một hộp.</p>
+<p><strong>Kéo thả lên khung xem:</strong> ảnh từ máy (Explorer), ảnh trong tab Nguồn &amp; AI hoặc hộp Chọn → thả lên khung xem → thành Ảnh chèn đúng vị trí thả. Kéo file âm thanh vào thì Studio hỏi đặt làm nhạc / giọng / SFX.</p>
+<p><strong>Khoá API</strong> (mục gập): dán khoá → Lưu. Khoá mã hoá bằng DPAPI trong <code>%APPDATA%\SAMI\providers.json</code>, chỉ tài khoản Windows này đọc được, không bao giờ hiện lại.
+<strong>Trần chi phí &amp; sổ chi phí</strong> (mục gập): mặc định 2 USD/ngày, 20 USD/tháng; sổ ghi từng lệnh.
+<strong>Cổng AI cục bộ</strong> (mục gập): địa chỉ Kokoro, ComfyUI nếu bạn tự cài.</p>
 <h2 id="12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</h2>
 <h3 id="cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</h3>
 <pre><code>du-an-cua-khach/
@@ -617,6 +729,22 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <tr>
 <td>Render chậm</td>
 <td>Tăng số luồng, chọn MP4 H.264 + GPU Tự động, dùng Full HD 30 fps cho bản nháp</td>
+</tr>
+<tr>
+<td>Tab Nguồn &amp; AI: "Chưa có khoá …"</td>
+<td>Dán khoá vào ô ngay dưới, hoặc mục Khoá API. Stock Wikimedia và nguồn miễn phí không cần khoá</td>
+</tr>
+<tr>
+<td>✨ Tạo bằng Claude Code báo "DỪNG: …"</td>
+<td>Đọc lý do: thường là chưa đăng nhập ChatGPT / Gemini trong Chrome, hoặc hết lượt. Đăng nhập rồi bấm lại</td>
+</tr>
+<tr>
+<td>Claude Code báo "Studio đang TẮT Cho phép Claude Code xuất video"</td>
+<td>Bật công tắc ở tab Xuất nếu muốn Claude xuất, hoặc tự bấm ▶ Xuất video</td>
+</tr>
+<tr>
+<td>Không thấy tính năng mới sau khi cập nhật</td>
+<td>Đóng hẳn cửa sổ đen của Studio, mở lại <code>Start-Studio.bat</code>, rồi tải lại trang (Ctrl+F5)</td>
 </tr>
 <tr>
 <td>Bộ mã hoá hiện "CPU" dù có card NVIDIA</td>

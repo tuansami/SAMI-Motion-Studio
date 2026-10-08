@@ -169,8 +169,9 @@ export const ingestFile = ({file, provider = 'manual', kind, prompt = null, mode
   const a = provider === 'manual' ? {id: 'manual', label: 'Nhập tay', licence: null, kinds: KINDS} : get(provider);
   kind = kind || a.kinds[0]; if (!SUB[kind]) throw new Error('Loại không hợp lệ: ' + kind);
   const d = destOf(dest);
-  ledger.append({provider: a.id, model, kind, est: 0, actual: 0, status: 'ok', sent: false, project: d.dir || null, files: [path.basename(file)], confirmedBy, note: note || 'ingest'});
-  return ingest(file, {title: title || prompt?.slice(0, 60) || path.basename(file, path.extname(file)), kind, provider: a.id, providerLabel: a.label, model, prompt, usd: 0, usdEstimated: false, licence: a.licence, source: {provider: a.id, prompt, original: path.basename(file)}, note: note || null, confirmedBy}, d, path.extname(file));
+  const r = ingest(file, {title: title || prompt?.slice(0, 60) || path.basename(file, path.extname(file)), kind, provider: a.id, providerLabel: a.label, model, prompt, usd: 0, usdEstimated: false, licence: a.licence, source: {provider: a.id, prompt, original: path.basename(file)}, note: note || null, confirmedBy}, d, path.extname(file));
+  ledger.append({provider: a.id, model, kind, est: 0, actual: 0, status: 'ok', sent: false, project: d.dir || null, files: [path.basename(file)], out: r.uri || r.rel, confirmedBy, note: note || 'ingest'});
+  return r;
 };
 
 export const ledgerSummary = ledger.summary;

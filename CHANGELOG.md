@@ -19,6 +19,51 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [0.8.1] — 2026-10-08 — Giao diện cho 0.7 / 0.8: tạo carousel, dùng media trong lúc sửa, xoá dự án, dọn lịch sử, phần cứng xuất, Claude Code xuất video (có công tắc)
+Phản hồi của Tuấn sau khi mở Studio 0.8.0: không thấy chỗ tạo carousel, có ô prompt mà không có nút tạo, ảnh lấy về không dùng được trong lúc sửa, thiếu xoá dự án và dọn lịch sử, tab Xuất không cho thấy ffmpeg / GPU.
+
+### Thêm
+- **Trang Dự án:**
+  - nút **＋ Tạo carousel** (hộp tạo: chế độ chủ đề hoặc từ thư mục ảnh, màu, tài khoản, độ dài slide) và **＋ Tạo video**; thẻ carousel có nhãn;
+  - **chọn nhiều dự án** (ô tick trên thẻ, Chọn tất cả) → **Gỡ khỏi danh sách** hoặc **🗑 Chuyển vào Thùng rác** Windows (SHFileOperation có FOF_WANTNUKEWARNING: quá lớn cho Thùng rác thì Windows hỏi trước khi xoá hẳn; từ chối ổ mạng, dự án đang render, dự án người khác đang mở, thư mục app/mẫu).
+- **Tab Lịch sử:** **🧹 Dọn lịch sử** với 3 mức (Chuẩn, Gọn, Tối thiểu); mốc ★ và mốc tự đặt luôn giữ; báo dung lượng giải phóng.
+- **Dùng media trong lúc sửa:**
+  - nút **"Dùng ▾"** trên mọi ảnh / âm thanh lấy về hay vừa tạo: thay ảnh ô Chữ, thêm Ảnh chèn, thêm Watermark, đặt nhạc nền, thêm giọng đọc (đo độ dài), thêm SFX tại vị trí đang xem; với carousel: nhạc chạy qua slide hoặc SFX vào slide đang chọn;
+  - nút **📚 Chọn…** cạnh ô ảnh (tab Chữ, Ảnh chèn), Lottie, nhạc nền, file mix: chọn từ dự án, thư viện SAMI hoặc stock;
+  - **kéo thả lên khung xem**: file từ Explorer, ảnh stock, ảnh thư viện → Ảnh chèn đúng chỗ thả; âm thanh → hỏi đặt vào đâu;
+  - danh sách "Vừa lấy / vừa tạo" trong tab Nguồn & AI; ô chọn file hiện `lib:` là "thư viện SAMI" thay vì "(không thấy)".
+- **Tab Nguồn & AI:** nút **✨ Tạo** luôn hiện; nguồn chưa có khoá có ô **Dán khoá** ngay tại chỗ; nguồn gói web có **✨ Tạo bằng Claude Code**: Studio chạy `claude -p` (Sonnet) ngầm, chỉ được dùng browser-harness (Chrome thật của Tuấn) và 2 lệnh `providers/cli.mjs downloads|ingest`; một lượt một lúc, có nút Dừng, dừng hẳn khi gặp trang đăng nhập / CAPTCHA / hết lượt. Khoá API, trần chi phí, cổng cục bộ gập lại cho gọn.
+- **Tab Xuất:**
+  - **thẻ phần cứng**: tên card, VRAM, driver (nvidia-smi / WMI), NVENC H.264 / H.265, ffmpeg đầy đủ (bản, vai trò) và ffmpeg của Remotion, CPU;
+  - ô **Bộ mã hoá video**: "GPU · NVIDIA NVENC (GTX 1070)" / "CPU · x264 / x265";
+  - công tắc **Cho phép Claude Code xuất video** (mặc định TẮT); lượt xuất do Claude ghi "do Claude Code" trong hàng đợi.
+- **`server/cli-render.mjs`**: Claude Code xuất video bằng đúng bộ máy của Studio. Bắt buộc `--request "<nguyên văn lời Tuấn>"` và công tắc đang bật. Studio mở → vào hàng đợi Studio; Studio tắt → render trong tiến trình CLI. `--status`, `--enable --request …`, `--disable`, `--draft`, `--scene`, `--no-wait`. Mọi lần bật / tắt / xuất ghi `.studio/cli-render.log`.
+- `providers/cli.mjs downloads [--since]` (file mới trong thư mục Tải xuống) và `ingest --prompt-file`.
+- Route mới: `/api/project/remove`, `/api/carousel/new`, `/api/render/cli`, `/api/providers/agent[/cancel]`; `/api/history/prune` nhận `level`.
+
+### Thay đổi
+- `cli-carousel.mjs render` cũng cần công tắc + `--request` (QA vẫn dùng `stills` / `audio` tự do). Skill `sami-motion-studio` và `sami-carousel`: Claude **không bao giờ tự xuất video**, chỉ khi Tuấn yêu cầu.
+- Mẫu mẫu (thư mục `projects/` đi kèm) bị gỡ khỏi danh sách thì không tự hiện lại khi khởi động.
+- `docs/HUONG_DAN_SU_DUNG.md`: mục 0 (Claude Code và Studio: ai làm gì), 3, 11, 11b, 11e (carousel), 11f (Nguồn & AI), 13.
+
+### Sửa lỗi
+- **Tab Xuất bị hỏng với dự án carousel** (0.7): bảng kích thước thiếu 4:5 → lỗi `dims` khi mở tab.
+
+### Đã kiểm
+- Studio thử ở cổng 5179 với dự án thử trong scratchpad: chọn và chuyển 1 dự án vào Thùng rác (thư mục có trong Recycle Bin, lấy lại được); tạo carousel từ hộp thoại; tab Xuất hiện đúng GTX 1070 · 8 GB · driver 582.28 · NVENC H.264/H.265 · ffmpeg n8.1.3; tìm ảnh Wikimedia → Dùng ▾ → Ảnh chèn hiện trên preview; kéo thả ảnh lên khung xem → Ảnh chèn đúng vị trí (25 %, 25 %); SFX tổng hợp → Dùng ▾ → cue; dọn lịch sử chạy.
+- Claude Code chạy ngầm: nạp đúng browser-harness (23 tool), chỉ MCP đó. **Chưa chạy lượt tạo ảnh thật qua ChatGPT** (cần Tuấn mở Chrome, đăng nhập).
+- **Không chạy render nào** khi kiểm (luật: chỉ xuất khi Tuấn yêu cầu); chỉ kiểm các trường hợp từ chối.
+- `npm run check` đạt (thêm 2 mục: CLI xuất từ chối khi thiếu `--request`; agent chỉ được dùng browser-harness).
+
+### File chính
+- **Mới:** `server/{cli-render, trash, gpu}.mjs`, `providers/agent.mjs`.
+- **Sửa:** `server/{index, history, cli-carousel, selftest}.mjs`, `providers/{gateway, cli}.mjs`, `ui/{app.js, index.html, style.css}`, `tools/carousel-new.mjs`, skill `sami-motion-studio` (+ `references/providers.md`), skill `sami-carousel`, `docs/HUONG_DAN_SU_DUNG.{md,html}`, `CLAUDE.md`.
+
+### Roll back
+`git checkout v0.8.0` (hoặc commit 0.8.0). Công tắc `allowCliRender` trong `.studio/settings.json` bị bỏ qua ở bản cũ. Dự án đã chuyển vào Thùng rác: khôi phục từ Recycle Bin của Windows.
+
+---
+
 ## [0.8.0] — 2026-10-08 — Cổng AI: stock, tạo ảnh / giọng / nhạc, chi phí có trần
 Lộ trình: v0.6 Nền móng ✅ → v0.7 Carousel ✅ → **v0.8 Cổng AI** → v0.9 Footage → v1.0. Spec: `docs/specs/v0.8-cong-ai.md`.
 

@@ -37,7 +37,10 @@ async function loadHome() {
   $('#ver').textContent = 'v' + S.state.version;
   const rc = $('#recent'); rc.innerHTML = '';
   if (!S.state.recent.length) rc.append(h('div', {class: 'muted'}, 'Chưa có dự án. Tạo mới bên dưới hoặc mở một thư mục có project.json.'));
-  for (const r of S.state.recent) rc.append(h('div', {class: 'card', onclick: () => openProject({id: r.id})}, h('div', {class: 'row', style: 'justify-content:space-between'}, h('b', {}, r.name || 'Dự án'), statusBadge(r.status)), r.lockedBy ? h('div', {class: 'v-warn', style: 'font-size:12px'}, `🔒 ${r.lockedBy.user} đang mở (${r.lockedBy.host})`) : null, h('small', {}, r.dir), h('div', {class: 'muted', style: 'font-size:12px;margin-top:6px'}, r.opened ? 'Mở lần cuối: ' + new Date(r.opened).toLocaleString('vi-VN') : 'Dự án mẫu')));
+  S.sel = new Set([...(S.sel || [])].filter((id) => S.state.recent.some((r) => r.id === id))); renderSelBar();
+  for (const r of S.state.recent) rc.append(h('div', {class: 'card' + (S.sel.has(r.id) ? ' picked' : ''), onclick: () => (S.sel.size ? toggleSel(r.id) : openProject({id: r.id}))},
+    h('input', {type: 'checkbox', class: 'cardChk', title: 'Chọn (để xoá / gỡ nhiều dự án)', checked: S.sel.has(r.id), onclick: (e) => { e.stopPropagation(); toggleSel(r.id); }}),
+    h('div', {class: 'row', style: 'justify-content:space-between'}, h('b', {}, r.name || 'Dự án'), r.type === 'carousel' ? h('span', {class: 'badge'}, 'Carousel') : null, statusBadge(r.status)), r.lockedBy ? h('div', {class: 'v-warn', style: 'font-size:12px'}, `🔒 ${r.lockedBy.user} đang mở (${r.lockedBy.host})`) : null, h('small', {}, r.dir), h('div', {class: 'muted', style: 'font-size:12px;margin-top:6px'}, r.opened ? 'Mở lần cuối: ' + new Date(r.opened).toLocaleString('vi-VN') : 'Dự án mẫu')));
   const sel = $('#npTemplate'); sel.innerHTML = '';
   for (const t of S.state.templates) sel.append(h('option', {value: t.id}, `${t.name} — ${t.scenes} cảnh, ${t.seconds}s, ${t.formats.join(' / ')}`));
   renderGallery(); renderTeam();
@@ -45,6 +48,53 @@ async function loadHome() {
   const g = S.state.gpu;
   $('#sysInfo').textContent = `Máy: ${S.state.cpuModel} · ${S.state.cpus} luồng CPU · GPU mã hoá: ${g.nvenc ? 'NVIDIA NVENC ✓' : g.qsv ? 'Intel QSV' : g.amf ? 'AMD AMF' : 'không phát hiện (render bằng CPU)'} · ffmpeg ${S.state.ffmpeg ? '✓' : '✗'}`;
 }
+// — chọn nhiều dự án: gỡ khỏi danh sách / chuyển vào Thùng rác Windows —
+S.sel = new Set();
+const toggleSel = (id) => { S.sel.has(id) ? S.sel.delete(id) : S.sel.add(id); loadHome(); };
+function renderSelBar() {
+  const b = $('#selBar'); b.innerHTML = ''; b.hidden = !S.sel.size; if (!S.sel.size) return;
+  const names = S.state.recent.filter((r) => S.sel.has(r.id)).map((r) => r.name || r.dir);
+  const run = async (trash) => {
+    const msg = trash ? `Chuyển ${names.length} dự án vào Thùng rác Windows?\n\n• ${names.join('\n• ')}\n\nCả thư mục (kể cả lịch sử .history và out/) được chuyển đi. Lấy lại được từ Thùng rác. Nếu dự án quá lớn cho Thùng rác, Windows sẽ hỏi trước khi xoá hẳn (cửa sổ đó có thể nằm dưới trình duyệt).`
+      : `Gỡ ${names.length} dự án khỏi danh sách? Thư mục trên ổ đĩa giữ nguyên, mở lại được bằng "Mở thư mục dự án".`;
+    if (!confirm(msg)) return;
+    toast(trash ? 'Đang chuyển vào Thùng rác…' : 'Đang gỡ…', false, 20000);
+    try {
+      const r = await api('/api/project/remove', {ids: [...S.sel], trash});
+      const bad = r.results.filter((x) => x.error);
+      S.sel.clear(); await loadHome();
+      if (bad.length) modal(h('div', {}, h('h3', {}, 'Một số dự án chưa xử lý được'), ...bad.map((x) => h('p', {class: 'v-fail'}, `${x.name || x.id}: ${x.error}`))));
+      else toast(trash ? `Đã chuyển ${r.results.length} dự án vào Thùng rác` : `Đã gỡ ${r.results.length} dự án khỏi danh sách`);
+    } catch (e) { toast(e.message, true, 8000); }
+  };
+  b.append(h('b', {}, `Đã chọn ${S.sel.size}`), h('button', {class: 'small', onclick: () => { S.state.recent.forEach((r) => S.sel.add(r.id)); loadHome(); }}, 'Chọn tất cả'),
+    h('button', {class: 'small', onclick: () => run(false)}, 'Gỡ khỏi danh sách'), h('button', {class: 'small danger', onclick: () => run(true)}, '🗑 Chuyển vào Thùng rác'),
+    h('button', {class: 'small', onclick: () => { S.sel.clear(); loadHome(); }}, 'Bỏ chọn'));
+}
+$('#btnNewVideo').onclick = () => { $('#newProj').scrollIntoView({behavior: 'smooth'}); $('#npName').focus(); };
+$('#btnNewCarousel').onclick = () => {
+  const name = h('input', {placeholder: 'VD: 261008-V30-maps-3-hebel-v.1'}), client = h('input', {placeholder: 'Khách hàng (tuỳ chọn)'});
+  const theme = h('select', {}, ...[['sami', 'SAMI (tím, xanh)'], ['cream', 'Kem'], ['tomato', 'Cà chua'], ['forest', 'Rừng'], ['noir', 'Đen']].map(([v, l]) => h('option', {value: v}, l)));
+  const handle = h('input', {value: 'sami.agency'}), dur = h('select', {}, ...[4, 6, 8].map((d) => h('option', {value: d, selected: d === 6}, d + ' giây / slide')));
+  const imgs = h('input', {placeholder: 'Để trống = 5 slide motion mẫu để Claude Code dựng theo chủ đề'});
+  let mode = 'motion';
+  const imgRow = field('Thư mục ảnh carousel đã thiết kế (JPG/PNG, xếp theo tên file)', h('div', {class: 'row'}, imgs, h('button', {onclick: async () => { const r = await api('/api/pick-folder'); if (r.dir) imgs.value = r.dir; }}, '…')), 'Mỗi ảnh thành 1 slide động; khung đầu giữ nguyên ảnh gốc (làm ảnh bìa). Ảnh không phải 4:5 được cắt giữa.');
+  imgRow.hidden = true;
+  const seg = h('div', {class: 'seg', style: 'margin-bottom:12px'}, ...[['motion', 'Từ chủ đề (motion)'], ['photo', 'Từ ảnh có sẵn']].map(([v, l]) => h('button', {class: v === mode ? 'on' : '', onclick: (e) => { mode = v; [...seg.children].forEach((x) => x.classList.toggle('on', x === e.target)); imgRow.hidden = v !== 'photo'; }}, l)));
+  const msg = h('div', {class: 'muted', style: 'margin-top:8px'});
+  modal(h('div', {style: 'min-width:min(560px,90vw)'}, h('h3', {}, 'Tạo carousel động'),
+    h('p', {class: 'muted', style: 'margin-top:0'}, 'Mỗi slide là 1 video MP4 lặp liền mạch 1080×1350 có tiếng riêng. Xuất ra cả bộ slide + ảnh bìa + trang xem thử vuốt như Instagram.'),
+    seg, field('Tên dự án', name), h('div', {class: 'cols2'}, field('Khách hàng', client), field('Tài khoản hiện trên slide', handle)), h('div', {class: 'cols2'}, field('Màu', theme), field('Độ dài mỗi slide', dur)), imgRow,
+    h('div', {class: 'row'}, h('button', {class: 'primary', onclick: async (e) => {
+      if (!name.value.trim()) return toast('Đặt tên dự án trước', true);
+      if (mode === 'photo' && !imgs.value.trim()) return toast('Chọn thư mục ảnh', true);
+      e.target.disabled = true; msg.textContent = 'Đang tạo…';
+      try { const r = await api('/api/carousel/new', {name: name.value.trim(), client: client.value.trim(), theme: theme.value, handle: handle.value.trim(), dur: +dur.value, imagesDir: mode === 'photo' ? imgs.value.trim() : null, location: $('#npLocation').value.trim()}); $('#modal').hidden = true; openProject({id: r.id}); }
+      catch (err) { e.target.disabled = false; msg.textContent = ''; toast(err.message, true, 8000); }
+    }}, '＋ Tạo carousel')), msg,
+    h('div', {class: 'hint', style: 'margin-top:10px'}, 'Chế độ chủ đề: sau khi tạo, nhờ Claude Code (skill sami-carousel) viết nội dung từng slide. Xuất: tab Xuất → ▶ Xuất video.')));
+  name.focus();
+};
 S.tplCat = 'all';
 function renderGallery() {
   const T = S.state.templates, C = S.state.categories || {};
@@ -271,7 +321,7 @@ function renderTab() { setTimeout(renderHandles, 0); const B = $('#tabBody'); B.
 const field = (label, input, hint) => h('label', {}, label, input, hint ? h('div', {class: 'hint'}, hint) : null);
 const assetSelect = (value, type, onchange) => {
   const sel = h('select', {onchange: (e) => onchange(e.target.value)}, h('option', {value: ''}, '— không —'), ...S.assets.filter((a) => !type || a.type === type).map((a) => h('option', {value: a.path, selected: a.path === value}, a.path)));
-  if (value && !S.assets.some((a) => a.path === value)) sel.append(h('option', {value, selected: true}, value + ' (không thấy)'));
+  if (value && !S.assets.some((a) => a.path === value)) sel.append(h('option', {value, selected: true}, value.startsWith('lib:') ? '📚 ' + value.slice(4) + ' (thư viện SAMI)' : value + ' (không thấy)'));
   return sel;
 };
 async function uploadTo(sub, accept) {
@@ -298,7 +348,7 @@ function tabText(B) {
   if (!cur.length) g.append(h('div', {class: 'muted'}, 'Cảnh này không có chữ chỉnh được.'));
   for (const [k, v] of cur) {
     const isImg = /(_image|_logo|_img|_photo)$/i.test(k);
-    if (isImg) { g.append(field(v.label || k, h('div', {class: 'row'}, assetSelect(v.value, 'img', (val) => commit((p) => { p.copy[k].value = val; })), h('button', {class: 'small', onclick: async () => { const pth = await uploadTo('img', 'image/*'); if (pth) commit((p) => { p.copy[k].value = 'img/' + pth.split('/').pop(); }); renderTab(); }}, 'Tải ảnh…')), v.hint)); continue; }
+    if (isImg) { g.append(field(v.label || k, h('div', {class: 'row'}, assetSelect(v.value, 'img', (val) => commit((p) => { p.copy[k].value = val; })), h('button', {class: 'small', onclick: async () => { const pth = await uploadTo('img', 'image/*'); if (pth) commit((p) => { p.copy[k].value = 'img/' + pth.split('/').pop(); }); renderTab(); }}, 'Tải ảnh…'), pickBtn('img', (ref) => { commit((p) => { p.copy[k].value = ref; }); renderTab(); })), v.hint)); continue; }
     const long = String(v.value).length > 38 || v.multiline;
     const inp = h(long ? 'textarea' : 'input', {value: v.value ?? '', rows: 2});
     if (long) inp.value = v.value ?? '';
@@ -381,13 +431,14 @@ const OV_ANIMS = {fade: 'Mờ dần', pop: 'Bật (pop)', rise: 'Trồi lên', '
 const KIND = {image: '🖼', sticker: '➜', lottie: '✦'};
 const GRID9 = [[0.12, 0.1], [0.5, 0.1], [0.88, 0.1], [0.12, 0.5], [0.5, 0.5], [0.88, 0.5], [0.12, 0.88], [0.5, 0.88], [0.88, 0.88]];
 const GRID9_L = ['↖', '↑', '↗', '←', '•', '→', '↙', '↓', '↘'];
-function newOverlay(kind, preset) {
+function newOverlay(kind, preset, extra = null) {
   const t0 = +secNow().toFixed(2); const id = 'o' + Math.random().toString(36).slice(2, 7);
   const base = {id, kind, start: t0, end: +(t0 + 3).toFixed(2), pos: {x: 0.5, y: 0.5}, width: 0.25, opacity: 1, anim: 'fade', out: 'fade', layer: 'under'};
   const o = kind === 'sticker' ? {...base, sticker: 'arrow', color: '#08DDA4', stroke: 6, width: 0.14, anim: 'draw', label: 'Chỉ dẫn'}
     : kind === 'lottie' ? {...base, src: '', loop: true, speed: 1, width: 0.3, anim: 'pop', label: 'Lottie'}
     : preset === 'watermark' ? {...base, src: '', whole: true, pos: {x: 0.88, y: 0.9}, width: 0.12, opacity: 0.35, anim: 'none', out: 'none', layer: 'top', label: 'Watermark'}
     : {...base, src: '', anim: 'pop', shadow: true, label: 'Ảnh / logo'};
+  if (extra) Object.assign(o, extra);
   commit((p) => { (p.overlays ||= []).push(o); });
   S.ovSel = id; renderTab();
 }
@@ -407,9 +458,9 @@ function tabOverlays(B) {
     h('button', {class: 'small', onclick: () => { const c = {...clone(o), id: 'o' + Math.random().toString(36).slice(2, 7), pos: {x: Math.min(0.95, (o.pos?.x ?? 0.5) + 0.05), y: Math.min(0.95, (o.pos?.y ?? 0.5) + 0.05)}}; commit((p) => { p.overlays.push(c); }); S.ovSel = c.id; renderTab(); }}, 'Nhân bản'), ' ',
     h('button', {class: 'small danger', onclick: () => { commit((p) => { p.overlays = p.overlays.filter((x) => x.id !== o.id); }); S.ovSel = null; renderTab(); }}, 'Xoá'))));
   g.append(field('Tên (để quản lý)', h('input', {value: o.label || '', onchange: (e) => upd((x) => { x.label = e.target.value; })})));
-  if (o.kind === 'image') g.append(field('File ảnh (PNG nền trong suốt, JPG, SVG, WebP, GIF)', h('div', {class: 'row'}, assetSelect(o.src, 'img', (v) => upd((x) => { x.src = v; })), h('button', {class: 'small', onclick: async () => { const pth = await uploadTo('img', 'image/*'); if (pth) upd((x) => { x.src = pth; }); }}, 'Tải lên…')), 'Logo/watermark nên dùng PNG hoặc SVG nền trong suốt.'));
+  if (o.kind === 'image') g.append(field('File ảnh (PNG nền trong suốt, JPG, SVG, WebP, GIF)', h('div', {class: 'row'}, assetSelect(o.src, 'img', (v) => upd((x) => { x.src = v; })), h('button', {class: 'small', onclick: async () => { const pth = await uploadTo('img', 'image/*'); if (pth) upd((x) => { x.src = pth; }); }}, 'Tải lên…'), pickBtn('img', (ref) => upd((x) => { x.src = ref; }))), 'Logo/watermark nên dùng PNG hoặc SVG nền trong suốt. Có thể kéo thả ảnh thẳng lên khung xem.'));
   if (o.kind === 'lottie') {
-    g.append(field('File Lottie (.json)', h('div', {class: 'row'}, assetSelect(o.src, 'lottie', (v) => upd((x) => { x.src = v; })), h('button', {class: 'small', onclick: async () => { const pth = await uploadTo('lottie', '.json,application/json'); if (pth) upd((x) => { x.src = pth; }); }}, 'Tải lên…')), 'Tải file "Lottie JSON" miễn phí ở LottieFiles.com (không dùng .lottie nén). Kiểm tra giấy phép trước khi dùng cho khách.'));
+    g.append(field('File Lottie (.json)', h('div', {class: 'row'}, assetSelect(o.src, 'lottie', (v) => upd((x) => { x.src = v; })), h('button', {class: 'small', onclick: async () => { const pth = await uploadTo('lottie', '.json,application/json'); if (pth) upd((x) => { x.src = pth; }); }}, 'Tải lên…'), pickBtn('lottie', (ref) => upd((x) => { x.src = ref; }))), 'Tải file "Lottie JSON" miễn phí ở LottieFiles.com (không dùng .lottie nén). Kiểm tra giấy phép trước khi dùng cho khách.'));
     g.append(h('div', {class: 'row', style: 'margin-bottom:8px'}, h('label', {class: 'chk'}, h('input', {type: 'checkbox', checked: o.loop !== false, onchange: (e) => upd((x) => { x.loop = e.target.checked; })}), 'Lặp lại'),
       h('span', {class: 'muted', style: 'font-size:12.5px'}, 'Tốc độ'), h('input', {type: 'number', step: '0.1', min: '0.1', max: '4', value: o.speed ?? 1, style: 'width:70px', onchange: (e) => upd((x) => { x.speed = +e.target.value; })})));
   }
@@ -511,11 +562,11 @@ function tabAudio(B) {
   const g = h('div', {class: 'group'}, h('h4', {}, 'Chế độ âm thanh'));
   g.append(h('div', {class: 'seg', style: 'margin-bottom:10px'}, ...[['premix', 'File mix sẵn'], ['layers', 'Ghép lớp (live)'], ['none', 'Tắt tiếng']].map(([k, l]) => h('button', {class: a.mode === k ? 'on' : '', onclick: () => upd((x) => { x.mode = k; })}, l))));
   g.append(h('div', {class: 'hint'}, a.mode === 'premix' ? 'Phát 1 file đã mix hoàn chỉnh (nhạc + SFX). Nếu đổi thời lượng cảnh, file không tự thay đổi → dùng "Ghép lớp".' : a.mode === 'layers' ? 'Studio tự ghép nhạc nền + hiệu ứng âm thanh (SFX) theo thời gian — đổi thời lượng cảnh là âm thanh đi theo.' : 'Video không có tiếng.'));
-  if (a.mode === 'premix') g.append(field('File mix', h('div', {class: 'row'}, assetSelect(a.premix, 'audio', (v) => upd((x) => { x.premix = v; })), h('button', {class: 'small', onclick: async () => { const pth = await uploadTo('audio', 'audio/*'); if (pth) upd((x) => { x.premix = pth; }); }}, 'Tải lên…'))));
+  if (a.mode === 'premix') g.append(field('File mix', h('div', {class: 'row'}, assetSelect(a.premix, 'audio', (v) => upd((x) => { x.premix = v; })), h('button', {class: 'small', onclick: async () => { const pth = await uploadTo('audio', 'audio/*'); if (pth) upd((x) => { x.premix = pth; }); }}, 'Tải lên…'), pickBtn('audio', (ref) => upd((x) => { x.premix = ref; })))));
   B.append(g);
   if (a.mode === 'layers') {
     const m = h('div', {class: 'group'}, h('h4', {}, 'Nhạc nền'));
-    m.append(field('File nhạc', h('div', {class: 'row'}, assetSelect(a.music.src, 'audio', (v) => upd((x) => { x.music.src = v; })), h('button', {class: 'small', onclick: async () => { const pth = await uploadTo('audio', 'audio/*'); if (pth) upd((x) => { x.music.src = pth; }); }}, 'Tải lên…'))));
+    m.append(field('File nhạc', h('div', {class: 'row'}, assetSelect(a.music.src, 'audio', (v) => upd((x) => { x.music.src = v; })), h('button', {class: 'small', onclick: async () => { const pth = await uploadTo('audio', 'audio/*'); if (pth) upd((x) => { x.music.src = pth; }); }}, 'Tải lên…'), pickBtn('audio', (ref) => upd((x) => { x.music.src = ref; x.music.edit = []; })))));
     m.append(h('div', {class: 'cols2'},
       field(`Âm lượng nhạc: ${a.music.gain ?? -4} dB`, h('input', {type: 'range', min: -30, max: 6, step: 1, value: a.music.gain ?? -4, onchange: (e) => upd((x) => { x.music.gain = +e.target.value; })})),
       field('Nhỏ dần cuối video (giây)', h('input', {type: 'number', step: '0.5', value: a.music.fadeOut ?? 2.5, onchange: (e) => upd((x) => { x.music.fadeOut = +e.target.value; })}))));
@@ -596,7 +647,7 @@ function tabLook(B) {
 
 // — Xuất video —
 const RES = {'540p': 'Nháp 540p', FHD: 'Full HD', '2K': '2K', '4K': '4K'};
-const dims = (ratio, res) => { const st = {'16:9': [1920, 1080], '9:16': [1080, 1920], '1:1': [1080, 1080]}[ratio]; const k = {'540p': 0.5, FHD: 1, '2K': 4 / 3, '4K': 2}[res]; return `${Math.round(st[0] * k)}×${Math.round(st[1] * k)}`; };
+const dims = (ratio, res) => { const st = {'16:9': [1920, 1080], '9:16': [1080, 1920], '1:1': [1080, 1080], '4:5': [1080, 1350]}[ratio] || [1920, 1080]; const k = {'540p': 0.5, FHD: 1, '2K': 4 / 3, '4K': 2}[res]; return `${Math.round(st[0] * k)}×${Math.round(st[1] * k)}`; };
 function tabRender(B) {
   const r = S.render;
   const set = (k, v) => { r[k] = v; renderTab(); };
@@ -609,9 +660,23 @@ function tabRender(B) {
   box.append(field('Định dạng', seg('codec', [['h264', 'MP4 H.264 (phổ biến)'], ['h265', 'MP4 H.265 (nhẹ hơn)'], ['prores', 'ProRes .mov (dựng tiếp)']])));
   if (r.codec !== 'prores') box.append(field(`Chất lượng (CRF ${r.crf}) — số nhỏ = đẹp hơn, file nặng hơn`, h('input', {type: 'range', min: 12, max: 28, step: 1, value: r.crf, oninput: (e) => { r.crf = +e.target.value; e.target.parentElement.firstChild.textContent = `Chất lượng (CRF ${r.crf}) — số nhỏ = đẹp hơn, file nặng hơn`; }}), r.gpu !== 'off' && g.nvenc ? 'Khi mã hoá bằng GPU, chất lượng tính theo bitrate tự động (FHD 16 Mbps, 2K 28, 4K 55).' : null));
   box.append(field(`Số luồng CPU: ${r.threads} / ${cpus}`, h('input', {type: 'range', min: 1, max: cpus, step: 1, value: Math.min(r.threads, cpus), oninput: (e) => { r.threads = +e.target.value; e.target.parentElement.firstChild.textContent = `Số luồng CPU: ${r.threads} / ${cpus}`; }}), 'Nhiều luồng = nhanh hơn nhưng máy nóng/chậm hơn. Mặc định 8.'));
-  box.append(field('Tăng tốc GPU', h('div', {class: 'row', style: 'flex-wrap:wrap'}, seg('gpu', [['auto', 'Tự động'], ['off', 'Tắt (chỉ CPU)']]), h('button', {class: 'small', onclick: diagnoseGpu}, '🩺 Chẩn đoán GPU')),
+  const card = (S.state.gpuInfo?.cards || []).find((c) => c.vendor === 'nvidia') || S.state.gpuInfo?.cards?.[0];
+  const gname = card ? card.name.replace(/^NVIDIA\s+(GeForce\s+)?/i, '') : 'GPU';
+  if (r.gpu !== 'off') r.gpu = 'auto';
+  box.append(field('Bộ mã hoá video', h('div', {class: 'row', style: 'flex-wrap:wrap'}, seg('gpu', [['auto', g.nvenc ? `GPU · NVIDIA NVENC (${gname})` : 'GPU (tự dò)'], ['off', 'CPU · x264 / x265']]), h('button', {class: 'small', onclick: diagnoseGpu}, '🩺 Chẩn đoán GPU')),
     r.codec === 'prores' ? 'ProRes luôn mã hoá bằng CPU (NVIDIA không có bộ mã hoá ProRes). Muốn dùng GPU → chọn MP4 H.264/H.265.'
-    : g.nvenc ? 'NVIDIA NVENC ✓ — GPU mã hoá video, CPU chỉ lo vẽ khung hình.' : 'Chưa chạy được NVENC — bấm "Chẩn đoán GPU" để xem nguyên nhân và cách sửa.'));
+    : r.gpu === 'off' ? 'CPU mã hoá: chậm hơn, chất lượng theo CRF. Dùng khi GPU báo lỗi.'
+    : g.nvenc ? `GPU ${gname} mã hoá video (H.264${g.hevc_nvenc ? ' và H.265' : ''}), CPU chỉ lo vẽ khung hình. Cảnh HTML (Hyperframes) cũng mã hoá bằng NVENC.` : 'Chưa chạy được NVENC: bấm "Chẩn đoán GPU" để xem nguyên nhân và cách sửa.'));
+  const cp = S.state.caps || {};
+  box.append(h('div', {class: 'hwCard'},
+    h('div', {}, h('span', {class: 'muted'}, 'Card đồ hoạ: '), card ? `${card.name}${card.vramGB ? ' · ' + card.vramGB + ' GB' : ''}${card.driver ? ' · driver ' + card.driver : ''}` : 'đang dò…'),
+    h('div', {}, h('span', {class: 'muted'}, 'Mã hoá GPU: '), [g.nvenc && 'NVENC H.264 ✓', g.hevc_nvenc && 'NVENC H.265 ✓', g.qsv && 'Intel QSV ✓', g.amf && 'AMD AMF ✓'].filter(Boolean).join(' · ') || 'không có (chỉ CPU)'),
+    h('div', {}, h('span', {class: 'muted'}, 'ffmpeg đầy đủ: '), cp.full?.full ? `${S.state.ffmpegFull || 'có'} (vendor/ffmpeg): ghép, chuẩn âm lượng, cảnh HTML` : 'chưa cài: chạy node tools/get-ffmpeg.mjs'),
+    h('div', {}, h('span', {class: 'muted'}, 'ffmpeg của Remotion: '), cp.remotion?.bin ? 'có: mã hoá khung hình video' : 'không thấy'),
+    h('div', {}, h('span', {class: 'muted'}, 'CPU: '), `${S.state.cpuModel} · ${cpus} luồng`)));
+  box.append(h('div', {class: 'hwCard', style: 'border-color:' + (S.state.allowCliRender ? 'var(--amber)' : 'var(--line)')},
+    h('label', {class: 'chk', style: 'margin:0'}, h('input', {type: 'checkbox', checked: !!S.state.allowCliRender, onchange: async (e) => { try { await api('/api/settings', {allowCliRender: e.target.checked}); S.state.allowCliRender = e.target.checked; toast(e.target.checked ? 'Đã BẬT: Claude Code được xuất video khi bạn yêu cầu trong chat' : 'Đã TẮT: Claude Code không xuất video được'); renderTab(); } catch (err) { toast(err.message, true); } }}), h('b', {style: 'color:var(--text)'}, 'Cho phép Claude Code xuất video')),
+    h('div', {class: 'hint', style: 'margin:4px 0 0'}, 'Mặc định TẮT. Khi bật, Claude Code chỉ xuất khi bạn yêu cầu trong chat (lệnh phải kèm nguyên văn yêu cầu, ghi vào .studio/cli-render.log). Lượt xuất của Claude vào chung hàng đợi bên dưới, dừng/huỷ được như thường. Lệnh: node server/cli-render.mjs <dự án> --request "…"')));
   if (r.loudness === undefined) r.loudness = -14;
   box.append(field('Chuẩn âm lượng khi xuất', seg('loudness', [[-14, '−14 LUFS (mạng xã hội)'], [-16, '−16 LUFS (web)'], ['off', 'Tắt']]), r.loudness === 'off' ? 'Giữ nguyên mức âm đã mix.' : 'Tự đo và chỉnh cả bản mix về ' + r.loudness + ' LUFS, đỉnh tối đa −1 dBTP — đều tiếng trên Reels/TikTok/YouTube, không bị nền tảng tự hạ nhỏ.'));
   box.append(field('Mức ưu tiên', seg('priority', [['low', 'Thấp (vẫn dùng máy mượt)'], ['normal', 'Bình thường'], ['high', 'Cao']])));
@@ -646,7 +711,7 @@ function renderJobs() {
   for (const j of [...S.jobs].reverse()) {
     const ST = {queued: 'Đang chờ', running: 'Đang render', done: 'Xong ✓', error: 'Lỗi', cancelled: 'Đã huỷ', interrupted: 'Bị ngắt'}[j.status] || j.status;
     q.append(h('div', {class: 'job ' + j.status},
-      h('div', {class: 'row'}, h('span', {class: 'st'}, ST), h('span', {style: 'flex:1'}, ` ${j.opts.ratio} · ${j.opts.res} · ${j.opts.fps}fps · ${j.opts.codec}${j.opts.scope && j.opts.scope !== 'all' ? ' · ' + j.opts.scope : ''}`),
+      h('div', {class: 'row'}, h('span', {class: 'st'}, ST), h('span', {style: 'flex:1'}, ` ${j.opts.ratio} · ${j.opts.res} · ${j.opts.fps}fps · ${j.opts.codec}${j.opts.scope && j.opts.scope !== 'all' ? ' · ' + j.opts.scope : ''}${j.opts.by ? ' · do ' + j.opts.by : ''}`),
         j.status === 'running' || j.status === 'queued' ? h('button', {class: 'small danger', onclick: () => act('/api/render/cancel', j.id)}, 'Huỷ') : null,
         j.canResume ? h('button', {class: 'small', title: 'Làm nốt các đoạn còn lại (không render lại phần đã xong)', onclick: () => act('/api/render/resume', j.id, 'Đã xếp lại vào hàng đợi')}, '↻ Tiếp tục') : null,
         j.status === 'done' ? h('button', {class: 'small', onclick: () => api('/api/open', {path: j.out})}, 'Mở video') : null),
@@ -660,7 +725,7 @@ function renderJobs() {
 }
 // rough output size (label only — real size depends on motion/detail)
 function estimateSize(r) {
-  const st = {'16:9': [1920, 1080], '9:16': [1080, 1920], '1:1': [1080, 1080]}[r.ratio]; const k = {'540p': 0.5, FHD: 1, '2K': 4 / 3, '4K': 2}[r.res];
+  const st = {'16:9': [1920, 1080], '9:16': [1080, 1920], '1:1': [1080, 1080], '4:5': [1080, 1350]}[r.ratio] || [1920, 1080]; const k = {'540p': 0.5, FHD: 1, '2K': 4 / 3, '4K': 2}[r.res];
   const px = (st[0] * k * st[1] * k) / (1920 * 1080); const f = +r.fps / 30;
   const gpu = r.gpu !== 'off' && S.state.gpu.nvenc && r.codec !== 'prores';
   let mbps;
@@ -692,54 +757,179 @@ async function diagnoseGpu() {
   } catch (e) { modal(h('div', {}, h('h3', {}, 'Chẩn đoán GPU'), h('p', {class: 'v-fail'}, e.message))); }
 }
 
+// ─────────────────────────── MEDIA: chọn, dùng, kéo thả ───────────────────────────
+const mediaKind = (ref) => (/\.(jpe?g|png|webp|avif|gif|svg)$/i.test(ref) ? 'img' : /\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(ref) ? 'audio' : /\.(mp4|mov|webm|mkv|m4v)$/i.test(ref) ? 'video' : /\.json$/i.test(ref) ? 'lottie' : 'other');
+const mediaUrl = (ref) => (ref.startsWith('lib:') ? '/lib/' + ref.slice(4).split('/').map(encodeURIComponent).join('/') : `/proj/${S.id}/public/${ref.split('/').map(encodeURIComponent).join('/')}`);
+const dragMedia = (payload) => (e) => { e.dataTransfer.setData('application/x-sami-media', JSON.stringify(payload)); e.dataTransfer.effectAllowed = 'copy'; };
+/** small preview tile for a project / library ref (image thumb, audio player, video poster) */
+const mediaTile = (ref, {onPick, extra} = {}) => {
+  const k = mediaKind(ref); const name = ref.split('/').pop();
+  const body = k === 'img' ? h('img', {src: mediaUrl(ref), loading: 'lazy'}) : k === 'video' ? h('video', {src: mediaUrl(ref), muted: true, preload: 'metadata'}) : k === 'audio' ? h('div', {class: 'ph'}, '♫ ' + name) : h('div', {class: 'ph'}, name);
+  const t = h('div', {class: 'stk', draggable: 'true', title: ref + '\nKéo thả lên khung xem để chèn', ondragstart: dragMedia({ref})}, body,
+    k === 'audio' ? h('audio', {src: mediaUrl(ref), controls: true, preload: 'none', style: 'width:100%;height:28px'}) : null,
+    h('div', {class: 'meta'}, name),
+    h('div', {class: 'row', style: 'margin:0 5px 5px;gap:4px'}, onPick ? h('button', {class: 'small primary', onclick: () => onPick(ref)}, 'Chọn') : h('button', {class: 'small primary', onclick: () => useMedia(ref)}, 'Dùng ▾'), extra || null));
+  return t;
+};
+function addOverlayFrom(ref, pos) {
+  const lottie = mediaKind(ref) === 'lottie';
+  newOverlay(lottie ? 'lottie' : 'image', null, {src: ref, ...(pos ? {pos} : {}), label: ref.split('/').pop()});
+  goTab('overlays'); toast('Đã thêm Ảnh chèn · kéo chấm xanh để đặt lại vị trí');
+}
+const goTab = (t) => { S.tab = t; $$('#tabs button').forEach((x) => x.classList.toggle('on', x.dataset.tab === t)); renderTab(); };
+const audioLen = (url) => new Promise((ok) => { const a = new Audio(); a.preload = 'metadata'; a.onloadedmetadata = () => ok(a.duration || 0); a.onerror = () => ok(0); a.src = url; });
+/** "Dùng ▾": put a media file where it belongs in the edit */
+function useMedia(ref) {
+  const k = mediaKind(ref); const box = h('div', {class: 'useList'}); const done = (m) => { $('#modal').hidden = true; toast(m); };
+  const btn = (label, fn, hint) => box.append(h('button', {onclick: fn}, h('b', {}, label), hint ? h('div', {class: 'muted', style: 'font-size:12px'}, hint) : null));
+  if (k === 'img') {
+    const fields = Object.entries(S.project.copy || {}).filter(([key]) => /(_image|_logo|_img|_photo)$/i.test(key)).sort((a, b) => (a[1].scene === S.scene ? -1 : 0) - (b[1].scene === S.scene ? -1 : 0));
+    for (const [key, v] of fields) btn(`Thay ảnh: ${v.label || key}`, () => { commit((p) => { p.copy[key].value = ref; }); if (S.scene !== v.scene) selectScene(v.scene); done('Đã thay ảnh ' + (v.label || key)); }, `cảnh ${v.scene}${v.value ? ' · đang là ' + String(v.value).split('/').pop() : ''}`);
+    btn('Thêm làm Ảnh chèn', () => { $('#modal').hidden = true; addOverlayFrom(ref); }, `3 giây từ vị trí đang xem (${fmtT(secNow())}), kéo để đặt vị trí`);
+    btn('Thêm làm Watermark / logo góc', () => { $('#modal').hidden = true; newOverlay('image', 'watermark', {src: ref}); goTab('overlays'); }, 'hiện suốt video, mờ 35% ở góc phải dưới');
+    if (S.project.type === 'carousel') box.append(h('div', {class: 'hint', style: 'margin-top:6px'}, 'Carousel: ảnh nền từng slide do Claude Code đặt trong slides/*.html; ở đây chỉ chèn ảnh nổi lên trên.'));
+  } else if (k === 'audio' && S.project.type === 'carousel') {
+    const sc = sceneById(S.scene); const tIn = +Math.max(0, secNow() - sc.start / BASE).toFixed(2);
+    btn('Đặt làm nhạc chạy qua các slide', () => { commit((p) => { p.carousel ||= {}; p.carousel.audio = {...(p.carousel.audio || {}), mode: 'music', music: {...(p.carousel.audio?.music || {gain: -4, start: 0}), src: ref}}; }); done('Đã đặt nhạc carousel · xuất lại để nghe'); }, 'bài hát chạy tiếp từ slide này sang slide sau');
+    btn(`Thêm SFX vào ${sc.id} tại giây ${tIn}`, () => { commit((p) => { const s = p.scenes.find((x) => x.id === sc.id); (s.cues ||= []).push({t: tIn, src: ref, gain: -10}); s.cues.sort((a, b) => a.t - b.t); }); done(`Đã thêm SFX vào ${sc.id}`); }, 'âm thanh carousel được trộn khi xuất (tab Xuất)');
+  } else if (k === 'audio') {
+    btn('Đặt làm nhạc nền', () => { commit((p) => { p.audio ||= {}; p.audio.mode = 'layers'; p.audio.music = {...(p.audio.music || {gain: -4, edit: [], fadeOut: 2.5}), src: ref, edit: []}; p.audio.cues ||= []; }); done('Đã đặt nhạc nền · xem tab Âm thanh'); }, 'chế độ Ghép lớp, phát từ đầu bài');
+    btn('Thêm làm giọng đọc tại vị trí đang xem', async () => { const len = await audioLen(mediaUrl(ref)); commit((p) => { p.audio ||= {mode: 'layers', cues: []}; if (p.audio.mode !== 'layers') p.audio.mode = 'layers'; (p.audio.voice ||= []).push({t: +secNow().toFixed(2), src: ref, len: +len.toFixed(2), gain: 0, label: ref.split('/').pop()}); p.audio.voice.sort((a, b) => a.t - b.t); }); done(`Đã thêm giọng đọc ${len.toFixed(1)} s tại ${fmtT(secNow())}`); }, 'nhạc tự hạ nhỏ khi có thoại');
+    btn('Thêm làm hiệu ứng (SFX) tại vị trí đang xem', () => { commit((p) => { p.audio ||= {mode: 'layers', cues: []}; if (p.audio.mode !== 'layers') p.audio.mode = 'layers'; (p.audio.cues ||= []).push({t: +secNow().toFixed(2), src: ref, gain: -10, label: ref.split('/').pop()}); p.audio.cues.sort((a, b) => a.t - b.t); }); done('Đã thêm SFX tại ' + fmtT(secNow())); });
+  } else if (k === 'lottie') btn('Thêm làm Lottie chèn', () => { $('#modal').hidden = true; addOverlayFrom(ref); });
+  else box.append(h('p', {class: 'muted'}, k === 'video' ? 'Video (B-roll, footage) đặt vào cảnh qua Claude Code: "dùng video ' + ref + ' cho cảnh …". Kéo footage trực tiếp trên timeline có ở bản 0.9.' : 'Loại file này chưa dùng trực tiếp được trong Studio.'));
+  box.append(h('div', {class: 'row', style: 'margin-top:8px'}, h('button', {class: 'small', onclick: () => { navigator.clipboard?.writeText(ref); toast('Đã chép: ' + ref); }}, 'Chép đường dẫn'), h('code', {class: 'muted', style: 'font-size:11px;word-break:break-all'}, ref)));
+  modal(h('div', {style: 'min-width:min(460px,90vw)'}, h('h3', {}, 'Dùng file này'), k === 'img' ? h('img', {src: mediaUrl(ref), style: 'max-width:100%;max-height:200px;border-radius:8px;margin-bottom:10px'}) : null, box));
+}
+/** chọn file: dự án · thư viện SAMI · stock → Promise<ref|null> */
+function pickMedia(type) {
+  return new Promise((ok) => {
+    let tab = 'proj'; const body = h('div', {}); const pick = (ref) => { $('#modal').hidden = true; ok(ref); };
+    const libKinds = {img: ['img'], audio: ['music', 'sfx', 'voice'], lottie: ['lottie'], video: ['video']}[type] || [type];
+    const draw = async () => {
+      body.innerHTML = '';
+      if (tab === 'proj') {
+        const L = S.assets.filter((a) => a.type === type);
+        body.append(L.length ? h('div', {class: 'stockGrid'}, ...L.map((a) => mediaTile(a.path, {onPick: pick}))) : h('p', {class: 'muted'}, 'Dự án chưa có file loại này. Tải lên, hoặc lấy từ thư viện / stock.'));
+      } else if (tab === 'lib') {
+        const q = h('input', {placeholder: 'Tìm trong thư viện SAMI…', value: S.libQ || ''}); const res = h('div', {});
+        const go = async () => { S.libQ = q.value; res.innerHTML = '<div class="muted">Đang tìm…</div>'; const out = []; for (const k of libKinds) { try { const r = await api(`/api/library/search?kind=${k}&q=${encodeURIComponent(q.value)}&limit=60`); out.push(...r.items); } catch {} } res.innerHTML = ''; res.append(out.length ? h('div', {class: 'stockGrid'}, ...out.map((it) => mediaTile(it.uri, {onPick: pick}))) : h('p', {class: 'muted'}, 'Không có kết quả.')); };
+        q.onkeydown = (e) => { if (e.key === 'Enter') go(); };
+        body.append(h('div', {class: 'row'}, q, h('button', {onclick: go}, 'Tìm')), res); go();
+      } else {
+        const q = h('input', {placeholder: 'Từ khoá tiếng Anh: pho, restaurant interior…'}); const res = h('div', {});
+        const go = async () => { res.innerHTML = '<div class="muted">Đang tìm…</div>'; let r; try { r = await api(`/api/providers/stock?q=${encodeURIComponent(q.value)}&kind=${type === 'video' ? 'video' : 'img'}&provider=auto`); } catch (e) { res.innerHTML = ''; return res.append(h('p', {class: 'v-fail'}, e.message)); }
+          res.innerHTML = ''; for (const e of r.errors) res.append(h('div', {class: 'v-warn', style: 'font-size:12px'}, e));
+          res.append(h('div', {class: 'stockGrid'}, ...r.items.map((it) => h('div', {class: 'stk', title: `${it.title}\n${it.author || ''} · ${it.provider} · ${it.licence?.name || ''}`}, h('img', {src: it.thumb, loading: 'lazy', referrerpolicy: 'no-referrer'}), h('div', {class: 'meta'}, `${it.provider} · ${it.w}×${it.h}`),
+            h('button', {class: 'small primary', style: 'margin:0 5px 5px', onclick: async (ev) => { ev.target.disabled = true; ev.target.textContent = '…'; try { const f = await api('/api/providers/stock/fetch', {item: it, id: S.id, to: 'project'}); S.assets = await api('/api/project/assets?id=' + S.id); pick(f.rel); } catch (err) { ev.target.disabled = false; ev.target.textContent = 'Chọn'; toast(err.message, true); } }}, 'Chọn'))))); };
+        q.onkeydown = (e) => { if (e.key === 'Enter') go(); };
+        body.append(h('div', {class: 'row'}, q, h('button', {onclick: go}, 'Tìm')), h('div', {class: 'hint', style: 'margin-top:6px'}, 'Pexels, Pixabay, Unsplash (cần khoá miễn phí, nhập ở tab Nguồn & AI), Wikimedia (không cần khoá). Ảnh lấy về kèm tác giả + giấy phép.'), res);
+      }
+    };
+    const seg = h('div', {class: 'seg', style: 'margin-bottom:10px'}, ...[['proj', 'Trong dự án'], ['lib', 'Thư viện SAMI'], ...(['img', 'video'].includes(type) ? [['stock', 'Stock miễn phí']] : [])].map(([v, l]) => h('button', {class: v === tab ? 'on' : '', onclick: (e) => { tab = v; [...seg.children].forEach((x) => x.classList.toggle('on', x === e.target)); draw(); }}, l)));
+    modal(h('div', {style: 'width:min(720px,90vw)'}, h('h3', {}, 'Chọn ' + ({img: 'ảnh', audio: 'âm thanh', lottie: 'Lottie', video: 'video'}[type] || 'file')), seg, body));
+    const close = $('#modalClose'); const prev = close.onclick; close.onclick = () => { close.onclick = prev; $('#modal').hidden = true; ok(null); };
+    draw();
+  });
+}
+const pickBtn = (type, onPick) => h('button', {class: 'small', title: 'Chọn từ dự án, thư viện SAMI hoặc stock miễn phí', onclick: async () => { const r = await pickMedia(type); if (r) onPick(r); }}, '📚 Chọn…');
+// kéo thả lên khung xem: file từ máy, ảnh/âm thanh từ tab Nguồn & AI hoặc hộp Chọn
+(() => {
+  const vp = $('#viewport'); let depth = 0;
+  const on = () => vp.classList.add('dropping'), off = () => { depth = 0; vp.classList.remove('dropping'); };
+  document.addEventListener('dragenter', (e) => { if (!S.project || $('#home') && !$('#home').hidden) return; if ([...e.dataTransfer.types].some((t) => t === 'Files' || t === 'application/x-sami-media')) { depth++; on(); } });
+  document.addEventListener('dragleave', () => { if (--depth <= 0) off(); });
+  document.addEventListener('drop', off); document.addEventListener('dragend', off);
+  vp.addEventListener('dragover', (e) => { if (S.project) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } });
+  vp.addEventListener('drop', async (e) => {
+    e.preventDefault(); off(); if (!S.project) return;
+    const r = $('#stageWrap').getBoundingClientRect(); const cl = (v) => Math.max(0.03, Math.min(0.97, v));
+    const pos = {x: +cl((e.clientX - r.left) / r.width).toFixed(3), y: +cl((e.clientY - r.top) / r.height).toFixed(3)};
+    let ref = null;
+    try {
+      const d = e.dataTransfer.getData('application/x-sami-media');
+      if (d) { const x = JSON.parse(d); if (x.stock) { toast('Đang lấy ảnh stock…'); const f = await api('/api/providers/stock/fetch', {item: x.stock, id: S.id, to: 'project'}); S.assets = await api('/api/project/assets?id=' + S.id); ref = f.rel; } else ref = x.ref; }
+      else if (e.dataTransfer.files.length) {
+        const f = e.dataTransfer.files[0]; const k = mediaKind(f.name); if (!['img', 'audio', 'lottie', 'video'].includes(k)) return toast('Chỉ nhận ảnh, âm thanh, video hoặc Lottie', true);
+        toast('Đang tải lên ' + f.name + '…');
+        const up = await fetch(`/api/upload?id=${S.id}&sub=${k}&name=${encodeURIComponent(f.name)}`, {method: 'POST', body: f}).then((x) => x.json());
+        S.assets = await api('/api/project/assets?id=' + S.id); ref = up.path;
+      }
+    } catch (err) { return toast(err.message, true, 6000); }
+    if (!ref) return;
+    const k = mediaKind(ref);
+    if (k === 'img' || k === 'lottie') addOverlayFrom(ref, pos); else useMedia(ref);
+  });
+})();
+
 // ─────────────────────────── NGUỒN & AI (providers/gateway.mjs) ───────────────────────────
 const KIND_LABEL = {img: 'Ảnh', video: 'Video', music: 'Nhạc', sfx: 'Hiệu ứng âm thanh', voice: 'Giọng đọc'};
 const usdT = (x) => (+x || 0).toFixed(3).replace(/0+$/, '').replace(/\.$/, '') + ' USD';
-S.ai = {q: '', kind: 'img', provider: 'auto', orientation: '', items: null, errors: [], gen: {kind: 'img', provider: '', prompt: '', n: 1, ratio: '9:16', seconds: 30, voice: '', model: ''}, est: null, to: 'project', busy: false};
+S.ai = {q: '', kind: 'img', provider: 'auto', orientation: '', items: null, errors: [], gen: {kind: 'img', provider: '', prompt: '', n: 1, ratio: '9:16', seconds: 30, voice: '', model: ''}, est: null, to: 'project', busy: false, results: [], task: null};
+const onAgentTask = (t) => {
+  if (t.kind !== 'agent') return; S.ai.task = t;
+  if (t.status === 'done' || t.status === 'error') {
+    S.ai.busy = false; if (t.result?.files?.length) { S.ai.results = [...t.result.files, ...S.ai.results].slice(0, 40); if (S.id) api('/api/project/assets?id=' + S.id).then((a) => (S.assets = a)).catch(() => {}); }
+    toast(t.status === 'done' ? `Claude Code xong: ${t.result?.files?.length || 0} file` : 'Claude Code dừng: ' + (t.error || '').slice(0, 160), t.status !== 'done', 8000);
+    if (S.tab === 'ai') renderTab();
+  } else { const el = $('#aiProgress'); if (el) el.textContent = t.msg; }
+};
 async function tabAI(B) {
   const A = S.ai;
   let P; try { P = await api('/api/providers'); } catch (e) { B.append(h('div', {class: 'v-fail'}, e.message)); return; }
   if (S.tab !== 'ai') return;
   const L = P.ledger;
-  B.append(h('div', {class: 'hint', style: 'margin:0 0 10px'}, `Thứ tự: thư viện SAMI → stock miễn phí → gói web (ChatGPT, Gemini, Flow, Suno qua Claude Code) → API trả tiền. Hôm nay đã dùng ${usdT(L.day)} / ${P.caps.dailyUsd} USD · tháng ${usdT(L.month)} / ${P.caps.monthlyUsd} USD.`));
-  const dest = h('div', {class: 'seg', style: 'margin-bottom:12px'}, ...[['project', 'Lưu vào dự án'], ['library', 'Lưu vào thư viện SAMI']].map(([v, t]) => h('button', {class: A.to === v ? 'on' : '', onclick: () => { A.to = v; renderTab(); }}, t)));
-  B.append(dest);
-  const afterSave = async (r) => { if (r.rel) { S.assets = await api('/api/project/assets?id=' + S.id); toast(`Đã lưu ${r.rel}${r.duplicate ? ' (đã có sẵn)' : ''}`); } else toast(`Đã lưu vào thư viện: ${r.uri}${r.duplicate ? ' (đã có sẵn)' : ''}`, false, 5000); };
+  B.append(h('div', {class: 'hint', style: 'margin:0 0 10px'}, `Tìm hoặc tạo media rồi bấm "Dùng ▾" (hoặc kéo thả lên khung xem) để đưa vào video. Thứ tự nên dùng: thư viện SAMI → stock miễn phí → gói web qua Claude Code → API trả tiền. Hôm nay đã dùng ${usdT(L.day)} / ${P.caps.dailyUsd} USD · tháng ${usdT(L.month)} / ${P.caps.monthlyUsd} USD.`));
+  B.append(h('div', {class: 'seg', style: 'margin-bottom:12px'}, ...[['project', 'Lưu vào dự án'], ['library', 'Lưu vào thư viện SAMI (dùng chung)']].map(([v, t]) => h('button', {class: A.to === v ? 'on' : '', onclick: () => { A.to = v; renderTab(); }}, t))));
+  const saved = async (refs) => { if (A.to === 'project') S.assets = await api('/api/project/assets?id=' + S.id); A.results = [...refs, ...A.results.filter((x) => !refs.includes(x))].slice(0, 40); };
+
+  // — kết quả gần đây —
+  if (A.results.length) B.append(h('div', {class: 'group'}, h('h4', {}, `Vừa lấy / vừa tạo (${A.results.length})`, h('button', {class: 'small', onclick: () => { A.results = []; renderTab(); }}, 'Ẩn')),
+    h('div', {class: 'hint', style: 'margin:0 0 6px'}, 'Bấm "Dùng ▾" để thay ảnh, thêm ảnh chèn, đặt nhạc nền / giọng đọc / SFX. Hoặc kéo thả lên khung xem.'),
+    h('div', {class: 'stockGrid'}, ...A.results.map((ref) => mediaTile(ref)))));
 
   // — stock —
   const stock = P.providers.filter((p) => p.stock);
   const sg = h('div', {class: 'group'}, h('h4', {}, 'Tìm ảnh / video stock (miễn phí)'));
-  const q = h('input', {value: A.q, placeholder: 'VD: pho bo, restaurant interior, chef cooking…', onkeydown: (e) => { if (e.key === 'Enter') go(); }});
+  const q = h('input', {value: A.q, placeholder: 'Từ khoá tiếng Anh: pho bo, restaurant interior, chef cooking…', onkeydown: (e) => { if (e.key === 'Enter') go(); }});
   const go = async () => { A.q = q.value.trim(); if (!A.q) return; A.items = null; A.errors = []; renderTab(); try { const r = await api(`/api/providers/stock?q=${encodeURIComponent(A.q)}&kind=${A.kind}&provider=${A.provider}&orientation=${A.orientation}`); A.items = r.items; A.errors = r.errors; } catch (e) { A.items = []; A.errors = [e.message]; } if (S.tab === 'ai') renderTab(); };
   sg.append(h('div', {class: 'row'}, q, h('button', {class: 'primary', onclick: go}, 'Tìm')),
     h('div', {class: 'cols3', style: 'margin-top:8px'},
       h('select', {onchange: (e) => { A.kind = e.target.value; }}, ...['img', 'video'].map((k) => h('option', {value: k, selected: A.kind === k}, KIND_LABEL[k]))),
       h('select', {onchange: (e) => { A.provider = e.target.value; }}, h('option', {value: 'auto'}, 'Mọi nguồn có khoá'), ...stock.map((p) => h('option', {value: p.id, selected: A.provider === p.id, disabled: !p.available}, p.label + (p.available ? '' : ' (chưa có khoá)')))),
       h('select', {onchange: (e) => { A.orientation = e.target.value; }}, ...[['', 'Mọi hướng'], ['portrait', 'Dọc'], ['landscape', 'Ngang'], ['square', 'Vuông']].map(([v, t]) => h('option', {value: v, selected: A.orientation === v}, t)))));
+  if (stock.some((p) => !p.available)) sg.append(h('div', {class: 'hint', style: 'margin:6px 0 0'}, 'Pexels / Pixabay / Unsplash cần khoá miễn phí (mục Khoá API bên dưới). Wikimedia không cần khoá.'));
   if (A.items === null && A.q) sg.append(h('div', {class: 'muted', style: 'margin-top:8px'}, 'Đang tìm…'));
   for (const e of A.errors) sg.append(h('div', {class: 'v-warn', style: 'font-size:12px;margin-top:6px'}, e));
-  if (A.items?.length) sg.append(h('div', {class: 'stockGrid'}, ...A.items.map((it) => h('div', {class: 'stk', title: `${it.title}\n${it.author || ''} · ${it.provider}\n${it.licence?.name || ''}`},
+  const fetchIt = async (it, btn) => { btn.disabled = true; const t = btn.textContent; btn.textContent = '…'; try { const r = await api('/api/providers/stock/fetch', {item: it, id: S.id, to: A.to}); it._ref = r.uri || r.rel; await saved([it._ref]); btn.disabled = false; btn.textContent = t; return it._ref; } catch (e) { btn.disabled = false; btn.textContent = t; toast(e.message, true, 6000); return null; } };
+  if (A.items?.length) sg.append(h('div', {class: 'stockGrid'}, ...A.items.map((it) => h('div', {class: 'stk', draggable: 'true', ondragstart: dragMedia(it._ref ? {ref: it._ref} : {stock: it}), title: `${it.title}\n${it.author || ''} · ${it.provider}\n${it.licence?.name || ''}\nKéo thả lên khung xem để chèn`},
     it.thumb ? h('img', {src: it.thumb, loading: 'lazy', referrerpolicy: 'no-referrer'}) : h('div', {class: 'ph'}, it.title),
     h('div', {class: 'meta'}, `${it.provider}${it.duration ? ' · ' + it.duration + ' s' : ''} · ${it.w}×${it.h}`),
-    h('button', {class: 'small', onclick: async (ev) => { ev.target.disabled = true; ev.target.textContent = '…'; try { await afterSave(await api('/api/providers/stock/fetch', {item: it, id: S.id, to: A.to})); ev.target.textContent = '✓'; } catch (e) { ev.target.disabled = false; ev.target.textContent = 'Lấy'; toast(e.message, true, 6000); } }}, 'Lấy')))));
+    h('div', {class: 'row', style: 'margin:0 5px 5px;gap:4px'},
+      h('button', {class: 'small primary', onclick: async (ev) => { const ref = it._ref || await fetchIt(it, ev.target); if (ref) useMedia(ref); }}, 'Dùng ▾'),
+      h('button', {class: 'small', title: 'Chỉ lưu, chưa dùng', onclick: async (ev) => { if (it._ref) return toast('Đã lưu rồi: ' + it._ref); if (await fetchIt(it, ev.target)) { toast('Đã lưu ' + it._ref); renderTab(); } }}, it._ref ? '✓' : 'Lưu'))))));
   else if (A.items) sg.append(h('div', {class: 'muted', style: 'margin-top:8px'}, 'Không có kết quả.'));
   B.append(sg);
 
-  // — generate —
+  // — tạo bằng AI —
   const G = A.gen; const gens = P.providers.filter((p) => !p.stock && p.kinds.includes(G.kind));
-  if (!gens.some((p) => p.id === G.provider)) G.provider = (gens.find((p) => p.available && !p.paid) || gens.find((p) => p.available) || gens[0])?.id || '';
+  if (!gens.some((p) => p.id === G.provider)) G.provider = (gens.find((p) => p.available && !p.paid && !p.web) || gens.find((p) => p.web) || gens.find((p) => p.available) || gens[0])?.id || '';
   const pv = P.providers.find((p) => p.id === G.provider);
   const gg = h('div', {class: 'group'}, h('h4', {}, 'Tạo bằng AI'));
   const setG = (k, v, re = false) => { G[k] = v; A.est = null; if (re) renderTab(); };
+  const tag = (p) => (p.web ? 'gói web, qua Claude Code' : p.paid ? 'trả tiền' : 'miễn phí');
   gg.append(h('div', {class: 'cols2'},
     field('Loại', h('select', {onchange: (e) => setG('kind', e.target.value, true)}, ...['img', 'voice', 'music', 'sfx', 'video'].map((k) => h('option', {value: k, selected: G.kind === k}, KIND_LABEL[k])))),
-    field('Nguồn', h('select', {onchange: (e) => { setG('provider', e.target.value, true); G.model = ''; G.voice = ''; }}, ...gens.map((p) => h('option', {value: p.id, selected: p.id === G.provider}, `${p.label}${p.paid ? ' · trả tiền' : p.web ? ' · gói web' : ' · miễn phí'}${p.available ? '' : ' (chưa sẵn sàng)'}`))))));
-  if (pv && !pv.available) gg.append(h('div', {class: 'v-warn', style: 'font-size:12px;margin:-4px 0 8px'}, pv.reason));
-  if (pv?.web) gg.append(h('div', {class: 'hint'}, `Gói web chạy bằng trình duyệt thật của bạn: nhờ Claude Code "tạo bằng ${pv.label}" (kịch bản ${pv.recipe}). Bạn cần có mặt và đã đăng nhập.`));
-  const prompt = h('textarea', {rows: 4, placeholder: G.kind === 'voice' ? 'Lời thoại…' : G.kind === 'sfx' && G.provider === 'synth-sfx' ? 'Tên hiệu ứng: whoosh, pop, chime, riser, impact…' : 'Mô tả (tiếng Anh cho kết quả tốt nhất). Không cần chữ trên ảnh: chữ nằm ở tab Chữ.', oninput: (e) => setG('prompt', e.target.value)}, G.prompt);
+    field('Nguồn', h('select', {onchange: (e) => { G.model = ''; G.voice = ''; setG('provider', e.target.value, true); }}, ...gens.map((p) => h('option', {value: p.id, selected: p.id === G.provider}, `${p.label} · ${tag(p)}${!p.available && p.keyId ? ' · chưa có khoá' : !p.available ? ' · chưa chạy' : ''}`))))));
+  if (pv?.keyId && !pv.keySource) {
+    const k = P.keys[pv.keyId]; const inp = h('input', {type: 'password', autocomplete: 'off', placeholder: `Dán khoá ${k.label}…`});
+    gg.append(h('div', {class: 'keyInline'}, h('div', {style: 'font-size:12.5px;margin-bottom:4px'}, `${pv.label} cần khoá API `, h('a', {href: k.url, target: '_blank', class: 'help'}, 'lấy khoá ↗'), '. Khoá được mã hoá, chỉ máy này đọc được.'),
+      h('div', {class: 'row'}, inp, h('button', {class: 'small primary', onclick: async () => { if (!inp.value.trim()) return; try { await api('/api/providers/key', {keyId: pv.keyId, key: inp.value}); toast('Đã lưu khoá ' + k.label); renderTab(); } catch (e) { toast(e.message, true); } }}, 'Lưu khoá'))));
+  } else if (pv && !pv.available && !pv.web) gg.append(h('div', {class: 'v-warn', style: 'font-size:12px;margin:-4px 0 8px'}, pv.reason));
+  const prompt = h('textarea', {rows: 4, placeholder: G.kind === 'voice' ? 'Lời thoại…' : G.kind === 'sfx' && G.provider === 'synth-sfx' ? 'Tên hiệu ứng: whoosh, pop, chime, riser, impact, click, sparkle…' : 'Mô tả bằng tiếng Anh cho kết quả tốt nhất. Không cần chữ trên ảnh: chữ nằm ở tab Chữ.', oninput: (e) => setG('prompt', e.target.value)}, G.prompt);
   gg.append(field(G.kind === 'voice' ? 'Lời thoại' : 'Prompt', prompt));
   const row = h('div', {class: 'cols3'});
-  if (['img', 'sfx'].includes(G.kind)) row.append(field('Số lượng', h('input', {type: 'number', min: 1, max: G.kind === 'img' ? 8 : 4, value: G.n, oninput: (e) => setG('n', +e.target.value)})));
+  if (['img', 'sfx'].includes(G.kind)) row.append(field('Số lượng', h('input', {type: 'number', min: 1, max: G.kind === 'img' ? (pv?.id === 'chatgpt-web' ? 5 : 8) : 4, value: G.n, oninput: (e) => setG('n', +e.target.value)})));
   if (['img', 'video'].includes(G.kind)) row.append(field('Tỉ lệ', h('select', {onchange: (e) => setG('ratio', e.target.value)}, ...['9:16', '4:5', '1:1', '16:9', '3:2', '2:3'].map((r) => h('option', {value: r, selected: G.ratio === r}, r)))));
   if (['music', 'sfx'].includes(G.kind)) row.append(field('Độ dài (s)', h('input', {type: 'number', min: 0.5, max: 300, step: 0.5, value: G.seconds, oninput: (e) => setG('seconds', +e.target.value)})));
   if (pv?.models) row.append(field('Model', h('select', {onchange: (e) => setG('model', e.target.value)}, ...pv.models.map((m) => h('option', {value: m, selected: (G.model || pv.defaults.model) === m}, m)))));
@@ -747,29 +937,44 @@ async function tabAI(B) {
   if (row.childNodes.length) gg.append(row);
   const reqNow = () => ({provider: G.provider, kind: G.kind, prompt: G.prompt, n: ['img', 'sfx'].includes(G.kind) ? G.n : 1, ratio: ['img', 'video'].includes(G.kind) ? G.ratio : undefined, seconds: ['music', 'sfx'].includes(G.kind) ? G.seconds : undefined, model: G.model || undefined, voice: G.kind === 'voice' ? G.voice || undefined : undefined});
   const run = async (token) => {
-    A.busy = true; renderTab();
-    try { const r = await api('/api/providers/generate', {req: reqNow(), token, id: S.id, to: A.to}); A.est = null; for (const f of r.files) await afterSave(f); toast(`Xong ${r.files.length} file · ${usdT(r.usd)}`, false, 5000); }
-    catch (e) { A.est = null; modal(h('div', {}, h('h3', {}, 'Tạo không thành công'), h('p', {class: 'v-fail', style: 'white-space:pre-wrap'}, e.message), h('p', {class: 'muted'}, 'Studio không tự chạy lại. Kiểm tra rồi bấm Ước tính lại.'))); }
+    A.busy = true; A.est = null; renderTab();
+    try { const r = await api('/api/providers/generate', {req: reqNow(), token, id: S.id, to: A.to}); await saved(r.files.map((f) => f.uri || f.rel)); toast(`Xong ${r.files.length} file · ${usdT(r.usd)} · bấm "Dùng ▾" để đưa vào video`, false, 6000); }
+    catch (e) { modal(h('div', {}, h('h3', {}, 'Tạo không thành công'), h('p', {class: 'v-fail', style: 'white-space:pre-wrap'}, e.message), h('p', {class: 'muted'}, 'Studio không tự chạy lại. Kiểm tra rồi bấm Tạo lại.'))); }
     A.busy = false; if (S.tab === 'ai') renderTab();
   };
-  const actions = h('div', {class: 'row', style: 'flex-wrap:wrap'});
-  actions.append(h('button', {disabled: A.busy || !pv?.available || pv?.web, onclick: async () => { try { A.est = await api('/api/providers/estimate', {req: reqNow(), id: S.id, to: A.to}); } catch (e) { A.est = {error: e.message}; } renderTab(); }}, 'Ước tính chi phí'));
-  gg.append(actions);
+  const runAgent = () => {
+    if (!G.prompt.trim()) return toast('Viết prompt trước', true);
+    const credit = {'flow-web': 'Mỗi lần tạo tốn credit Google AI của bạn.', 'suno-web': 'Mỗi lượt tốn credit Suno (thường 10 credit, ra 2 bài).'}[pv.id];
+    modal(h('div', {style: 'max-width:520px'}, h('h3', {}, `Tạo bằng ${pv.label} qua Claude Code`),
+      h('p', {}, 'Claude Code sẽ chạy ngầm, mở một tab mới trong ', h('b', {}, 'Chrome thật của bạn'), ', gửi đúng prompt này ', h('b', {}, 'một lần'), ', chờ kết quả, tải về và lưu vào ', A.to === 'project' ? 'dự án' : 'thư viện SAMI', ' kèm prompt + giấy phép.'),
+      h('ul', {class: 'muted', style: 'font-size:13px;padding-left:18px'}, h('li', {}, 'Chrome phải đang mở và đã đăng nhập ' + pv.label.replace(' (web)', '') + '. Gặp trang đăng nhập hay CAPTCHA, Claude dừng và báo lại.'), h('li', {}, 'Tốn hạn mức Claude của bạn (khoảng 0,5 đến 2 USD quy đổi mỗi lượt, tuỳ số bước).'), credit ? h('li', {}, credit) : null, h('li', {}, 'Thường mất 2 đến 6 phút. Studio vẫn dùng được trong lúc chờ.')),
+      h('pre', {style: 'white-space:pre-wrap;background:#0A0722;padding:8px;border-radius:8px;font-size:12px;max-height:160px;overflow:auto'}, G.prompt),
+      h('div', {class: 'row'}, h('button', {class: 'primary', onclick: async () => { $('#modal').hidden = true; try { const r = await api('/api/providers/agent', {req: reqNow(), id: S.id, to: A.to}); A.busy = true; A.task = {id: r.task, status: 'running', msg: 'Đang mở Claude Code…'}; renderTab(); } catch (e) { toast(e.message, true, 8000); } }}, 'Đồng ý, bắt đầu'))));
+  };
+  const busyAgent = A.task?.status === 'running';
+  const label = pv?.web ? '✨ Tạo bằng Claude Code' : pv?.paid ? '✨ Tạo… (xem chi phí trước)' : '✨ Tạo';
+  const canRun = pv && !A.busy && !busyAgent && (pv.web ? P.agent?.ok !== false : pv.available);
+  gg.append(h('div', {class: 'row', style: 'flex-wrap:wrap'}, h('button', {class: 'primary', disabled: !canRun, onclick: async () => {
+    if (!G.prompt.trim()) return toast(G.kind === 'voice' ? 'Viết lời thoại trước' : 'Viết prompt trước', true);
+    if (pv.web) return runAgent();
+    if (!pv.paid) return run(null);
+    try { A.est = await api('/api/providers/estimate', {req: reqNow(), id: S.id, to: A.to}); } catch (e) { A.est = {error: e.message}; } renderTab();
+  }}, label), pv?.web && P.agent?.ok === false ? h('span', {class: 'v-warn', style: 'font-size:12px'}, P.agent.reason) : null));
   const E = A.est;
-  if (A.busy) gg.append(h('div', {class: 'muted', style: 'margin-top:8px', id: 'aiProgress'}, 'Đang tạo… (không đóng Studio)'));
-  else if (E?.error) gg.append(h('div', {class: 'v-fail', style: 'margin-top:8px;white-space:pre-wrap'}, E.error));
+  if (busyAgent || A.busy) gg.append(h('div', {class: 'estBox'}, h('div', {class: 'row', style: 'justify-content:space-between'}, h('b', {}, busyAgent ? 'Claude Code đang làm…' : 'Đang tạo…'), busyAgent ? h('button', {class: 'small danger', onclick: async () => { await api('/api/providers/agent/cancel', {task: A.task.id}); }}, 'Dừng') : null), h('div', {class: 'muted', style: 'font-size:12.5px;margin-top:4px', id: 'aiProgress'}, A.task?.msg || 'Không đóng Studio trong lúc chờ')));
+  else if (A.task && A.task.status !== 'running' && A.task.result) gg.append(h('div', {class: 'hint', style: 'margin:8px 0 0'}, `Lượt Claude Code gần nhất: ${A.task.result.text?.slice(0, 200) || ''}${A.task.result.costUsd != null ? ` · ≈ ${usdT(A.task.result.costUsd)} hạn mức Claude` : ''}`));
+  if (E?.error) gg.append(h('div', {class: 'v-fail', style: 'margin-top:8px;white-space:pre-wrap'}, E.error));
   else if (E) {
-    const box = h('div', {class: 'estBox'}, h('div', {}, h('b', {}, E.label), ` · ${E.units}`), h('div', {class: 'big'}, E.paid ? '≈ ' + usdT(E.usd) : 'Miễn phí'), E.notes ? h('div', {class: 'hint', style: 'margin:4px 0 0'}, E.notes) : null,
-      E.paid ? h('div', {class: 'muted', style: 'font-size:12px;margin-top:4px'}, `Sau lệnh này: hôm nay ${usdT(E.spent.day + E.usd)} / ${E.caps.dailyUsd} USD · tháng ${usdT(E.spent.month + E.usd)} / ${E.caps.monthlyUsd} USD`) : null);
+    const box = h('div', {class: 'estBox'}, h('div', {}, h('b', {}, E.label), ` · ${E.units}`), h('div', {class: 'big'}, '≈ ' + usdT(E.usd)), E.notes ? h('div', {class: 'hint', style: 'margin:4px 0 0'}, E.notes) : null,
+      h('div', {class: 'muted', style: 'font-size:12px;margin-top:4px'}, `Sau lệnh này: hôm nay ${usdT(E.spent.day + E.usd)} / ${E.caps.dailyUsd} USD · tháng ${usdT(E.spent.month + E.usd)} / ${E.caps.monthlyUsd} USD`));
     if (E.blocked) box.append(h('div', {class: 'v-fail', style: 'margin-top:6px'}, E.blocked));
-    else if (E.paid) box.append(h('div', {class: 'row', style: 'margin-top:8px'}, h('button', {class: 'primary', onclick: () => run(E.token)}, `Xác nhận chạy · ≈ ${usdT(E.usd)}`), h('button', {onclick: () => { A.est = null; renderTab(); }}, 'Huỷ'), h('span', {class: 'muted', style: 'font-size:12px'}, 'Mã dùng 1 lần, hết hạn 10 phút')));
-    else box.append(h('div', {class: 'row', style: 'margin-top:8px'}, h('button', {class: 'primary', onclick: () => run(null)}, 'Chạy')));
+    else box.append(h('div', {class: 'row', style: 'margin-top:8px'}, h('button', {class: 'primary', onclick: () => run(E.token)}, `Xác nhận tạo · ≈ ${usdT(E.usd)}`), h('button', {onclick: () => { A.est = null; renderTab(); }}, 'Huỷ'), h('span', {class: 'muted', style: 'font-size:12px'}, 'Mã dùng 1 lần, hết hạn 10 phút')));
     gg.append(box);
   }
   B.append(gg);
 
-  // — keys —
-  const kg = h('div', {class: 'group'}, h('h4', {}, 'Khoá API'), h('div', {class: 'hint', style: 'margin:0 0 8px'}, 'Khoá được mã hoá bằng DPAPI của Windows trong %APPDATA%\\SAMI\\providers.json: chỉ tài khoản Windows này đọc được. Studio và Claude Code không bao giờ hiện lại khoá.'));
+  // — khoá API —
+  const kg = h('details', {class: 'group'}, h('summary', {style: 'cursor:pointer;font-weight:600;font-size:13px'}, `Khoá API (${Object.values(P.keys).filter((k) => k.source).length}/${Object.keys(P.keys).length} đã đặt)`), h('div', {class: 'hint', style: 'margin:8px 0'}, 'Khoá được mã hoá bằng DPAPI của Windows trong %APPDATA%\\SAMI\\providers.json: chỉ tài khoản Windows này đọc được. Studio và Claude Code không bao giờ hiện lại khoá.'));
   for (const [id, k] of Object.entries(P.keys)) {
     const inp = h('input', {type: 'password', autocomplete: 'off', placeholder: k.source ? '••••••••  (dán khoá mới để thay)' : 'Dán khoá…'});
     kg.append(h('div', {class: 'keyRow'}, h('div', {class: 'kl'}, h('b', {}, k.label), h('span', {class: k.source ? 'v-ok' : 'muted', style: 'font-size:12px'}, k.source === 'ui' ? ' ✓ đã đặt' : k.source === 'env' ? ' ✓ từ biến môi trường' : ' chưa đặt'), k.free ? h('span', {class: 'muted', style: 'font-size:12px'}, ' · miễn phí') : null, h('a', {href: k.url, target: '_blank', class: 'help', style: 'font-size:12px;margin-left:6px'}, 'lấy khoá ↗')),
@@ -778,16 +983,16 @@ async function tabAI(B) {
   }
   B.append(kg);
 
-  // — caps + ledger + local gateways —
+  // — trần chi phí + sổ + cổng cục bộ —
   const d = h('input', {type: 'number', min: 0, step: 0.5, value: P.caps.dailyUsd}), m = h('input', {type: 'number', min: 0, step: 1, value: P.caps.monthlyUsd});
-  const cg = h('div', {class: 'group'}, h('h4', {}, 'Trần chi phí & sổ chi phí'),
-    h('div', {class: 'cols3'}, field('USD / ngày', d), field('USD / tháng', m), h('label', {}, ' ', h('button', {onclick: async () => { try { await api('/api/providers/caps', {dailyUsd: d.value, monthlyUsd: m.value}); toast('Đã lưu trần chi phí'); renderTab(); } catch (e) { toast(e.message, true); } }}, 'Lưu trần'))));
+  const cg = h('details', {class: 'group'}, h('summary', {style: 'cursor:pointer;font-weight:600;font-size:13px'}, `Trần chi phí & sổ chi phí · hôm nay ${usdT(L.day)}`),
+    h('div', {class: 'cols3', style: 'margin-top:8px'}, field('USD / ngày', d), field('USD / tháng', m), h('label', {}, ' ', h('button', {onclick: async () => { try { await api('/api/providers/caps', {dailyUsd: d.value, monthlyUsd: m.value}); toast('Đã lưu trần chi phí'); renderTab(); } catch (e) { toast(e.message, true); } }}, 'Lưu trần'))));
   let LG = null; try { LG = await api('/api/providers/ledger?limit=20'); } catch {}
   if (LG?.recent?.length) cg.append(h('table', {class: 'ledger'}, h('tr', {}, h('th', {}, 'Lúc'), h('th', {}, 'Nguồn'), h('th', {}, 'Kết quả'), h('th', {}, 'USD')),
     ...LG.recent.map((r) => h('tr', {title: r.note || ''}, h('td', {}, new Date(r.ts).toLocaleString('vi-VN', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'})), h('td', {}, r.provider), h('td', {class: r.status === 'ok' ? '' : 'v-fail'}, r.status === 'ok' ? 'ok' : 'lỗi'), h('td', {}, r.charged ? usdT(r.charged) : '0')))));
   else cg.append(h('div', {class: 'muted'}, 'Chưa có lệnh nào.'));
   B.append(cg);
-  const lg = h('div', {class: 'group'}, h('h4', {}, 'Cổng AI cục bộ (tuỳ chọn)'), h('div', {class: 'hint', style: 'margin:0 0 8px'}, 'Kokoro-FastAPI (giọng, không có tiếng Việt) và ComfyUI (ACE-Step nhạc, Stable Audio SFX) chạy trên máy này. Studio không tự cài model.'));
+  const lg = h('details', {class: 'group'}, h('summary', {style: 'cursor:pointer;font-weight:600;font-size:13px'}, 'Cổng AI cục bộ (tuỳ chọn)'), h('div', {class: 'hint', style: 'margin:8px 0'}, 'Kokoro-FastAPI (giọng, không có tiếng Việt) và ComfyUI (ACE-Step nhạc, Stable Audio SFX) chạy trên máy này. Studio không tự cài model.'));
   for (const id of ['kokoro', 'comfyui']) {
     const pp = P.providers.find((x) => x.id === id); const inp = h('input', {value: P.opts[id]?.url || '', placeholder: pp.defaults.url});
     lg.append(field(`${pp.label} · ${pp.available ? '✓ đang chạy' : pp.reason}`, h('div', {class: 'row'}, inp, h('button', {class: 'small', onclick: async () => { try { await api('/api/providers/opts', {id, opts: {url: inp.value.trim()}}); renderTab(); } catch (e) { toast(e.message, true); } }}, 'Lưu'))));
@@ -809,6 +1014,16 @@ async function tabHistory(B) {
   }}, '★ Đặt mốc ngay')),
   h('div', {class: 'hint', style: 'margin:8px 0 0'}, 'Studio tự tạo điểm neo trước mỗi lượt chat với Claude Code, khi mở dự án và khi Lưu (tối đa 2 phút/lần). Mỗi điểm neo chứa toàn bộ dự án: project.json, code cảnh, brief, ảnh, video, âm thanh, Lottie — trừ out/. File không đổi chỉ lưu 1 lần nên rất nhẹ. Mốc ★ không bao giờ bị dọn; điểm tự động giữ 60 cái gần nhất + 1 cái/ngày trong 30 ngày.'));
   B.append(g);
+  const pg = h('div', {class: 'group'}, h('h4', {}, 'Dọn lịch sử'));
+  const lv = h('select', {}, h('option', {value: 'standard'}, 'Chuẩn: giữ 60 điểm tự động gần nhất + 1 điểm/ngày trong 30 ngày'), h('option', {value: 'compact'}, 'Gọn: giữ 10 điểm tự động gần nhất + 1 điểm/ngày trong 7 ngày'), h('option', {value: 'minimal'}, 'Tối thiểu: chỉ giữ 3 điểm tự động gần nhất'));
+  pg.append(lv, h('div', {class: 'hint', style: 'margin:6px 0 8px'}, 'Mốc ★ và mốc bạn tự đặt KHÔNG bao giờ bị dọn. File ảnh/video không còn điểm neo nào dùng tới sẽ được xoá khỏi kho lịch sử để giải phóng ổ đĩa.'),
+    h('button', {onclick: async (e) => {
+      if (!confirm('Dọn lịch sử theo mức đã chọn? Điểm neo tự động bị dọn sẽ không khôi phục được nữa (mốc ★ vẫn giữ).')) return;
+      e.target.disabled = true; e.target.textContent = 'Đang dọn…';
+      try { const r = await api('/api/history/prune', {id: S.id, level: lv.value}); toast(`Đã dọn ${r.removed} điểm neo · giải phóng ${fmtBytes(r.before - r.after)} (còn ${fmtBytes(r.after)})`, false, 6000); renderTab(); }
+      catch (err) { toast(err.message, true); e.target.disabled = false; }
+    }}, '🧹 Dọn lịch sử'));
+  B.append(pg);
   const L = h('div', {}, h('div', {class: 'muted'}, 'Đang tải lịch sử…')); B.append(L);
   let r; try { r = await api('/api/history?id=' + S.id); } catch (e) { L.innerHTML = ''; L.append(h('div', {class: 'v-fail'}, e.message)); return; }
   if (S.tab !== 'history') return;
@@ -852,7 +1067,7 @@ async function restoreDlg(it) {
 
 // ─────────────────────────── REVIEW PACK + COMPARE (tasks in child processes) ───────────────────────────
 S.tasks = {}; const taskWaiters = {};
-const onTask = (t) => { S.tasks[t.id] = t; taskWaiters[t.id]?.(t); if (t.kind === 'review' && t.project === S.id) { const el = $('#reviewMsg'); if (el) el.textContent = t.status === 'running' ? `${t.msg} (${Math.round((t.p || 0) * 100)}%)` : t.status === 'error' ? '✗ ' + t.error : ''; if (t.status === 'done') { toast(`Gói duyệt xong: ${t.result.scenes} cảnh × ${t.result.ratios.length} tỉ lệ`, false, 6000); if (S.tab === 'render') renderTab(); } } };
+const onTask = (t) => { S.tasks[t.id] = t; taskWaiters[t.id]?.(t); onAgentTask(t); if (t.kind === 'review' && t.project === S.id) { const el = $('#reviewMsg'); if (el) el.textContent = t.status === 'running' ? `${t.msg} (${Math.round((t.p || 0) * 100)}%)` : t.status === 'error' ? '✗ ' + t.error : ''; if (t.status === 'done') { toast(`Gói duyệt xong: ${t.result.scenes} cảnh × ${t.result.ratios.length} tỉ lệ`, false, 6000); if (S.tab === 'render') renderTab(); } } };
 const projUrl = (rel) => `/proj/${S.id}/${rel.split('/').map(encodeURIComponent).join('/')}`;
 function reviewGroup() {
   const g = h('div', {class: 'group'}, h('h4', {}, 'Gói duyệt khách'));

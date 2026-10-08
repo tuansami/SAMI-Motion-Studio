@@ -3,7 +3,8 @@
 //     node tools/carousel-new.mjs <thư mục mới> --name "261008-V30-maps-3-hebel-v.1" [--theme sami|cream|tomato|forest|noir] [--handle sami.agency]
 //   Chế độ photo (ảnh carousel đã thiết kế xong → mỗi ảnh thành 1 slide động, khung 0 giữ nguyên ảnh gốc):
 //     node tools/carousel-new.mjs <thư mục mới> --name "…" --images a.png b.png c.jpg  [--dur 6]
-//   Ảnh không phải 4:5 được cắt giữa về 1080×1350. Sau đó: node server/cli-carousel.mjs <thư mục> render
+//   Ảnh không phải 4:5 được cắt giữa về 1080×1350. Sau đó: QA bằng node server/cli-carousel.mjs <thư mục> stills; xuất trong Studio (tab Xuất).
+//   Trong Studio: trang chủ → "＋ Tạo carousel" làm đúng việc này.
 import fs from 'fs';
 import path from 'path';
 import {ROOT, LIB, TEMPLATES} from '../server/paths.mjs';

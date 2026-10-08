@@ -90,6 +90,14 @@ await t('providers/* parse', () => { const d = path.join(ROOT, 'providers'); for
     if (r.status && !/✗/.test(r.stdout || '')) fail('gateway selftest — ' + (r.stderr || '').slice(-300));
   } finally { fs.rmSync(d, {recursive: true, force: true}); }
 }
+// ── 0.8.1: Claude Code never renders without the Studio switch + Tuấn's request ──
+await t('cli-render / cli-carousel refuse without --request', () => {
+  for (const [f, a] of [['cli-render.mjs', [path.join(TEMPLATES, 'hf-starter')]], ['cli-carousel.mjs', [path.join(TEMPLATES, 'carousel-sami'), 'render']]]) {
+    const r = spawnSync(process.execPath, [path.join(ROOT, 'server', f), ...a], {encoding: 'utf8', env: {...process.env, STUDIO_PORT: '1'}});
+    if (r.status === 0 || !/--request/.test(r.stderr)) throw new Error(f + ' không từ chối: ' + (r.stderr || r.stdout).slice(0, 200));
+  }
+});
+await t('agent (Tạo bằng Claude Code): instructions lock tools to browser-harness + ingest', () => { const s = fs.readFileSync(path.join(ROOT, 'providers', 'agent.mjs'), 'utf8'); if (!/'--allowedTools', 'mcp__browser-harness'/.test(s) || !/--strict-mcp-config/.test(s) || /dangerously|bypassPermissions/.test(s)) throw new Error('allowedTools'); });
 await t('encoder caps (async probe, NVENC/QSV/AMF)', async () => { const {capsReady} = await import('./ffmpeg.mjs'); const c = await capsReady(); return `Remotion NVENC ${c.remotion.nvenc ? '✓' : '–'} · ffmpeg ${c.full.full ? 'đầy đủ' : 'đi kèm'} NVENC ${c.full.nvenc ? '✓' : '–'}`; });
 
 // version history round trip on a throw-away copy of a template
