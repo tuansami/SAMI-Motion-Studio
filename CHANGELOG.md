@@ -19,6 +19,26 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.1.0] — 2026-10-08 — Carousel ảnh tách lớp (OpenCV); xuất thuần đã thử thật, sửa lệch 1 khung
+Tuấn đồng ý 3 việc (2026-10-08): xuất thử chế độ thuần, cài `opencv-python-headless`, push.
+
+### Thêm
+- **Carousel từ ảnh, bản đầy đủ** (`lib/py/sami_layers.py`, OpenCV 5.0 trên `Y:\Python`):
+  - tìm **khối chữ** (gradient hình thái + Otsu, nhận cả chữ đậm trên dải màu phẳng), cắt sát nét chữ theo màu nền viền;
+  - tìm **chủ thể** bằng GrabCut từ khung giữa (chữ đánh dấu là nền), bỏ khi không đáng tin: độ đặc < 0,72, ít chi tiết hơn nền (mảng tường, trời), < 6 % hoặc > 65 % khung;
+  - slide (`lib/hf/photo-slide.html`): chủ thể phóng thêm theo nhịp thở (`photo.depth`, 0,025), từng khối chữ bật lần lượt đúng nhịp (`photo.pop`, 0,05). Lớp chỉ phóng to quanh chính nó nên luôn che pixel gốc: không cần vá nền, khung 0 và cuối vòng = ảnh gốc;
+  - `tools/carousel-new.mjs` (và nút ＋ Tạo carousel) tự tách lớp khi có OpenCV; `--no-layers` để tắt; không có OpenCV thì chạy chế độ gọn như cũ.
+
+### Sửa lỗi
+- **Xuất thuần trễ 1 khung** ở mọi cảnh sau cảnh đầu (native[n] = remotion[n−1]): thời điểm bắt đầu cảnh `a/30` không chẵn trong số nhị phân và Hyperframes làm tròn cả điểm bắt đầu lẫn thời điểm trong clip. Sửa: bắt đầu sớm nửa khung + lấy nguồn muộn nửa khung (`START_EPS`, `MEDIA_EPS` trong `server/hf-native.mjs`; footage cũng vậy). Đo bằng lượt xuất thật, không chỉ ảnh tĩnh (ảnh tĩnh và lượt xuất làm tròn khác nhau).
+
+### Đã kiểm
+- Xuất thật `hf-nha-hang` 9:16 FHD 30 fps bằng cả hai bộ dựng (GPU NVENC, lần đầu chạy NVENC thật):
+  - thuần 7 phút 29 giây (gồm dựng 7 clip cảnh), Remotion 8 phút 52 giây (dùng lại clip đã có); cả hai 961 khung, 32,03 s, −14,4 LUFS;
+  - trước khi sửa: PSNR trung bình 36,0 dB, 33 khung dưới 30 dB ở các đoạn chuyển động nhanh (lệch 1 khung); **sau khi sửa: trung bình 37,3 dB, thấp nhất 32,7 dB, 0 khung dưới 30 dB** (mức khác biệt do hai lần mã hoá NVENC); lượt xuất thuần khi clip cảnh đã có: 3 phút 41 giây;
+  - âm thanh: độ to từng đoạn 4 s khớp tới 0,2 dB; toàn bộ lệch 16 ms (dưới nửa khung, chưa xử lý).
+- Tách lớp: ảnh thử "bàn tiệc + tiêu đề" ra 3 khối chữ, không chủ thể (đúng); ảnh "đĩa sushi trên nền phẳng" ra 1 khối chữ + chủ thể; khung đầu slide so với ảnh gốc 45 đến 48 dB. Selftest thêm phép thử tách lớp.
+
 ## [1.0.0] — 2026-10-08 — Quản lý dự án, sửa lỗi Khuôn / Footage, khuôn ngay từ storyboard, xuất Hyperframes thuần
 HANDOFF mục 5 + lỗi Tuấn gặp khi thử 0.9. Tuấn bảo làm v1.0, chưa push.
 

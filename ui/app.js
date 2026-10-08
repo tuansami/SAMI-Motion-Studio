@@ -60,7 +60,7 @@ function showServerWarn() {
   w.textContent = `⚠ Studio đang chạy bản cũ (${S.state.bootVersion || '≤ 0.9'}) trong khi giao diện đã là ${UI_VER}. Một số tab (Footage, quản lý dự án…) sẽ trống hoặc báo "Not Found". Đóng cửa sổ Studio (cửa sổ đen) rồi mở lại Start-Studio.bat.`;
 }
 // ── 1.0: quản lý dự án — tìm, gom theo tháng / ngày / khách / trạng thái, sắp xếp, lọc tag, ẩn ──
-const UI_VER = '1.0.0';
+const UI_VER = '1.1.0';
 const HV_KEY = 'sami.homeView';
 const HV_DEF = {q: '', group: 'month', sort: 'date', status: '', type: '', tag: '', client: '', showHidden: false, view: 'cards', closed: {}};
 S.hv = (() => { try { return {...HV_DEF, ...JSON.parse(localStorage.getItem(HV_KEY) || '{}'), q: ''}; } catch { return {...HV_DEF}; } })();

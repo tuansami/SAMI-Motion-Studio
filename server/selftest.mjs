@@ -147,6 +147,20 @@ await t('khuôn: CATALOG.md khớp thư viện khuôn (cli-pipeline catalog --wr
   const miss = listKhuon().filter((k) => !md.includes(`**${k.id}**`) || k.slots.some((s) => !md.includes('`' + s.slot))).map((k) => k.id);
   if (miss.length) throw new Error('chạy lại catalog --write: ' + miss.join(', ')); return listKhuon().length + ' khuôn';
 });
+await t('carousel ảnh: tách lớp OpenCV (khối chữ + chủ thể)', async () => {
+  const PY = process.env.SAMI_PYTHON || 'python';
+  if (spawnSync(PY, ['-c', 'import cv2'], {encoding: 'utf8'}).status !== 0) return 'bỏ qua: chưa có opencv-python-headless (chế độ ảnh gọn vẫn chạy)';
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-ly-'));
+  try {
+    const mk = `import cv2,numpy as np\nc=np.full((1350,1080,3),(205,225,235),np.uint8)\nfor i in range(0,360,6):\n  cv2.ellipse(c,(540,780),(300,240),0,i,i+4,(20+i//2,90,200-i//3),-1)\ncv2.circle(c,(540,780),120,(30,160,60),-1)\ncv2.putText(c,'NEU: SUSHI',(90,200),cv2.FONT_HERSHEY_DUPLEX,3.0,(40,30,20),7,cv2.LINE_AA)\ncv2.imwrite(r'${path.join(d, 'a.jpg')}',c)`;
+    let r = spawnSync(PY, ['-c', mk], {encoding: 'utf8'}); if (r.status !== 0) throw new Error(r.stderr.slice(-200));
+    r = spawnSync(PY, [path.join(ROOT, 'lib', 'py', 'sami_layers.py'), path.join(d, 'a.jpg'), path.join(d, 'L')], {encoding: 'utf8'}); if (r.status !== 0) throw new Error((r.stderr || r.stdout).slice(-300));
+    const L = JSON.parse(fs.readFileSync(path.join(d, 'L', 'layers.json'), 'utf8'));
+    if (L.text.length !== 1 || L.text[0].y > 220 || L.text[0].y + L.text[0].h < 150) throw new Error('khối chữ sai: ' + JSON.stringify(L.text));
+    if (!L.subject) throw new Error('không tìm thấy chủ thể (đĩa giữa ảnh)');
+    return `${L.text.length} khối chữ + chủ thể ${Math.round(L.subject.area * 100)} %`;
+  } finally { fs.rmSync(d, {recursive: true, force: true}); }
+});
 // ── 1.0: xuất Hyperframes thuần (no Remotion): support check, FILM composition, ffmpeg sound mix (no video is rendered) ──
 await t('xuất thuần: kiểm hỗ trợ, bố cục phim, trộn âm thanh bằng ffmpeg', async () => {
   const N = await import('./hf-native.mjs'); const {buildProject} = await import('./khuon.mjs'); const {ffAsync, durationAsync} = await import('./ffmpeg.mjs');

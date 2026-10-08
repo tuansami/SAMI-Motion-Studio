@@ -15,7 +15,7 @@ A carousel post where each slide is a short looping video instead of a still. Pe
 | The user gives… | Mode | Start |
 |---|---|---|
 | a topic, message, notes | **motion** | `node <app>/tools/carousel-new.mjs <app>/projects/<name> --name "<name>" [--theme sami\|cream\|tomato\|forest\|noir] [--handle …]` → 5-slide SAMI template (Google-Maps pin travels through every slide) |
-| finished slide images (PNG/JPG) | **photo** | `… carousel-new.mjs <dir> --name "<name>" --images 01.png 02.png …` → each image becomes a slide; frame 0 = the original image, motion = breathing push, light sweep, motes, kick on the hit |
+| finished slide images (PNG/JPG) | **photo** | `… carousel-new.mjs <dir> --name "<name>" --images 01.png 02.png …` → each image becomes a slide; frame 0 = the original image, motion = breathing push, light sweep, motes, kick on the hit; with OpenCV (1.1) also text blocks pop on the hit and the subject gets parallax depth |
 Ask at most one question, only if it changes the whole piece. Defaults: 5 slides (hook, 3 value, CTA), theme `sami`, CTA "Kommentiere KEYWORD", 6 s per slide.
 
 ## Workflow (⛔ = wait for OK)

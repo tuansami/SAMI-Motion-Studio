@@ -23,6 +23,12 @@ const famSlug = (f) => String(f || '').split(',')[0].replace(/["']/g, '').trim()
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 const clipLen = (c) => Math.max(0, ((+c.out || 0) - (+c.in || 0)) / (+c.speed || 1));
 const fmt = (x) => (+x).toFixed(4);
+// Frame rounding (measured 2026-10-08 vs the Remotion export, which is the reference): with exact times the Hyperframes
+// render showed every scene after the first one frame late (native[n] == remotion[n−1]); start = a/30 is not exact in
+// binary and both the clip start and the source time get rounded. Half a frame earlier start + half a frame later source
+// lands on the same frame as Remotion (PSNR 37 dB = encoder noise). Env overrides only for re-measuring.
+const MEDIA_EPS = +(process.env.SAMI_NATIVE_EPS ?? 0.5);
+const START_EPS = +(process.env.SAMI_NATIVE_START_EPS ?? 0.5);
 
 /** can this project be exported without Remotion? → {ok, reasons[], notes[]} */
 export const support = (p, {ratio, codec = 'h264', res = 'FHD', scope = null} = {}) => {
@@ -53,9 +59,9 @@ const mediaUrl = (src) => (String(src).startsWith('lib:') ? 'lib/' + String(src)
 
 // ── footage markup (port of engine/src/core/VideoTrack.tsx; fades/pop are animated by film.js) ──
 const Z = {main: 0, screen: 5, broll: 10, pip: 20};
-const footageHtml = (c, st, idx) => {
+const footageHtml = (c, st, idx, fps = 30) => {
   const len = clipLen(c), fit = c.fit || (c.role === 'screen' ? 'contain' : 'cover');
-  const video = `<video id="fv-${esc(c.id)}" src="${esc(c.src.split('/').map(encodeURIComponent).join('/'))}" muted playsinline data-start="${fmt(c.at || 0)}" data-duration="${fmt(len)}" data-media-start="${fmt(c.in || 0)}"${(c.speed || 1) !== 1 ? ` data-playback-rate="${c.speed}"` : ''} style="width:100%;height:100%;object-fit:${fit};display:block"></video>`;
+  const video = `<video id="fv-${esc(c.id)}" src="${esc(c.src.split('/').map(encodeURIComponent).join('/'))}" muted playsinline data-start="${fmt(c.at || 0)}" data-duration="${fmt(len)}" data-media-start="${fmt((c.in || 0) + MEDIA_EPS / fps)}"${(c.speed || 1) !== 1 ? ` data-playback-rate="${c.speed}"` : ''} style="width:100%;height:100%;object-fit:${fit};display:block"></video>`;
   const zi = 10 + (c.z ?? Z[c.role] ?? 0) + idx / 1000;
   const framed = c.role === 'pip' || c.role === 'screen';
   if (!framed) return `<div id="ft-${esc(c.id)}" style="position:absolute;inset:0;z-index:${zi};visibility:hidden;${fit === 'contain' ? 'background:#000' : ''}">${video}</div>`;
@@ -83,13 +89,13 @@ export const filmHtml = (dir, p, {ratio, fps = 30, clips = {}, titles = true, su
     const a = first ? -OV : s.start - OV, b = Math.min(Tb, s.end + OV);
     const fadeIn = first ? 0 : s.fadeIn ?? 2 * OV;
     scenes.push({id: s.id, a, b, fadeIn, delay: s.fadeDelay ?? (fadeIn < 2 * OV ? OV - Math.round(fadeIn / 2) : 0), fadeOut: last ? 0 : 2 * OV});
-    const start = Math.max(0, a) / 30, mediaStart = a < 0 ? -a / 30 : 0, dur = (b - Math.max(0, a)) / 30;
+    const start = Math.max(0, Math.max(0, a) / 30 - (a > 0 ? START_EPS / fps : 0)), mediaStart = a < 0 ? -a / 30 : 0, dur = (b - Math.max(0, a)) / 30;
     vids += clips[s.id]
-      ? `<video id="sc-${esc(s.id)}" class="sc" src="public/${esc(clips[s.id])}" muted playsinline data-start="${fmt(start)}" data-duration="${fmt(dur)}" data-media-start="${fmt(mediaStart)}" style="z-index:${i + 1}"></video>\n`
+      ? `<video id="sc-${esc(s.id)}" class="sc" src="public/${esc(clips[s.id])}" muted playsinline data-start="${fmt(start)}" data-duration="${fmt(dur)}" data-media-start="${fmt(mediaStart + MEDIA_EPS / fps)}" style="z-index:${i + 1}"></video>\n`
       : `<div id="sc-${esc(s.id)}" class="sc ph" style="z-index:${i + 1}">${esc(s.id)} · ${esc(s.label || '')}<small>chưa có clip Hyperframes (QA)</small></div>\n`;
   });
   const foot = (p.tracks?.video || []).filter((c) => !c.formats?.length || c.formats.includes(ratio)).map((c, i) => ({c, i})).sort((x, y) => (x.c.z ?? Z[x.c.role] ?? 0) - (y.c.z ?? Z[y.c.role] ?? 0));
-  const footHtml = foot.map(({c, i}) => footageHtml(c, st, i)).join('\n');
+  const footHtml = foot.map(({c, i}) => footageHtml(c, st, i, fps)).join('\n');
   const footData = foot.map(({c}) => ({id: c.id, at: +c.at || 0, len: clipLen(c), fin: +c.fadeIn || 0, fout: +c.fadeOut || 0, framed: c.role === 'pip' || c.role === 'screen'}));
   const inRatio = (x) => !x.formats?.length || x.formats.includes(ratio);
   const FILM = {T, w: st.w, h: st.h, fps, scenes, footage: footData, colors, grad,

@@ -5,10 +5,14 @@
   /* Photo slide: brings a FINISHED carousel image to life without changing the design.
    * Frame 0 = the original image exactly (thumbnail). Motion: slow breathing push (periodic → seamless loop),
    * one light sweep on the hit beat, floating motes, optional camera kick on the hit. Settings: project.json → scene.photo
-   *   {"img": "img/C01.jpg", "hit": 2.0, "push": 0.035, "shine": true, "motes": 14, "kick": true, "focus": [0.5, 0.45]} */
+   *   {"img": "img/C01.jpg", "hit": 2.0, "push": 0.035, "shine": true, "motes": 14, "kick": true, "focus": [0.5, 0.45]}
+ * 1.0 full mode (OpenCV, lib/py/sami_layers.py): "layers": {"dir": "img/layers/P01/", "text": [{file,x,y,w,h}], "subject": {file,bbox}}
+ *   subject = extra parallax push ("depth"), text blocks = staggered pop on the hit ("pop"). Every layer only scales UP around
+ *   itself (≥ 1) so it always covers its own original pixels → no inpainting, and at t = 0 / t = dur all scales are 1 = the original. */
   #frame { position: absolute; inset: 0; overflow: hidden; background: #000; }
   #ph { position: absolute; inset: 0; background-size: cover; background-position: center; transform-origin: 50% 45%; will-change: transform; }
   #shine { position: absolute; inset: -20%; background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .28) 48%, rgba(255, 255, 255, .5) 50%, rgba(255, 255, 255, .28) 52%, transparent 62%); mix-blend-mode: soft-light; transform: translateX(-100%); }
+  .lay { position: absolute; display: block; pointer-events: none; will-change: transform; }
   .mote { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, .85); box-shadow: 0 0 12px rgba(255, 255, 255, .8); opacity: 0; }
 </style>
 </head>
@@ -18,10 +22,18 @@
 </div>
 <script>
   const S = window.SAMI, X = window.CX;
-  const cfg = Object.assign({hit: 2.0, push: 0.035, shine: true, motes: 14, kick: true, focus: [0.5, 0.45]}, (S.photo || {}));
+  const cfg = Object.assign({hit: 2.0, push: 0.035, shine: true, motes: 14, kick: true, focus: [0.5, 0.45], depth: 0.025, pop: 0.05}, (S.photo || {}));
   const ph = document.getElementById('ph'), shine = document.getElementById('shine'), motes = document.getElementById('motes');
   ph.style.backgroundImage = `url("public/${cfg.img || ('img/' + S.scene + '.jpg')}")`;
   ph.style.transformOrigin = `${cfg.focus[0] * 100}% ${cfg.focus[1] * 100}%`;
+  // layers (full photo mode): positioned in the 1080×1350 image space inside #ph, so they share the breathing push
+  const L = cfg.layers || null, sx = (v) => (v / 1080 * 100) + '%', sy = (v) => (v / 1350 * 100) + '%';
+  let subj = null; const texts = [];
+  if (L && L.subject) { subj = document.createElement('img'); subj.className = 'lay'; subj.src = 'public/' + L.dir + L.subject.file; Object.assign(subj.style, {left: 0, top: 0, width: '100%', height: '100%'});
+    const b = L.subject.bbox; subj.style.transformOrigin = sx(b[0] + b[2] / 2) + ' ' + sy(b[1] + b[3] / 2); ph.appendChild(subj); }
+  if (L && L.text) L.text.forEach((tb) => { const im = document.createElement('img'); im.className = 'lay'; im.src = 'public/' + L.dir + tb.file;
+    Object.assign(im.style, {left: sx(tb.x), top: sy(tb.y), width: sx(tb.w), height: sy(tb.h), transformOrigin: '50% 50%'}); ph.appendChild(im); texts.push(im); });
+  const bump = (p) => (p > 0 && p < 1 ? Math.sin(Math.PI * p) : 0); // ≥ 0, so a layer never shrinks below its original
   const ms = Array.from({length: cfg.motes}, (_, i) => { const d = document.createElement('i'); d.className = 'mote'; motes.appendChild(d); return {el: d, x: X.hash(i * 3.1 + 1) * 1080, y: 200 + X.hash(i * 7.7 + 2) * 1000, s: 0.5 + X.hash(i * 5.3) * 1.2, ph: X.hash(i * 9.1)}; });
   X.loop((t) => {
     const D = S.dur;
@@ -29,6 +41,8 @@
     const push = cfg.push * Math.pow(Math.sin(Math.PI * t / D), 2);
     const k = cfg.kick ? X.kick(t - cfg.hit, 2.6, 6) * 0.012 : 0;
     ph.style.transform = `scale(${1 + push + k})`;
+    if (subj) subj.style.transform = `scale(${1 + cfg.depth * Math.pow(Math.sin(Math.PI * t / D), 2)})`;
+    texts.forEach((im, i) => { im.style.transform = `scale(${1 + cfg.pop * bump(X.prog(t, cfg.hit - 0.1 + i * 0.12, cfg.hit + 0.5 + i * 0.12))})`; });
     if (cfg.shine) shine.style.transform = `translateX(${-100 + 200 * X.inOut(X.prog(t, cfg.hit - 0.15, cfg.hit + 0.9))}%)`;
     ms.forEach((m) => {
       const life = X.prog(t, cfg.hit - 0.2 + m.ph * 0.6, cfg.hit + 2.2 + m.ph * 0.6);
