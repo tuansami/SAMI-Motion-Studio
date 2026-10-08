@@ -1,0 +1,25 @@
+/* Phong cách: Bản tin dọc (tin nóng) (base: night). Nạp tự động cho mọi cảnh có theme "ban-tin-doc".
+ * Nền than chì có vạch quét mờ, đỏ tin nóng, tiêu đề in hoa đứng (Anton), khối thông tin vuông góc có vạch đỏ bên trái,
+ * nhấn = khối đỏ chữ trắng. Hợp tin nhanh 9:16. Không animation CSS (không seek được). */
+[data-theme="ban-tin-doc"] {
+  --k-bg: linear-gradient(180deg, #17181C 0%, #0D0E11 100%);
+  --k-ink: #FFFFFF; --k-sub: #B9BCC4; --k-accent: var(--c-accent, #E10600); --k-accent2: #FFD400;
+  --k-card: #1F2127; --k-cardInk: #FFFFFF; --k-cardLine: rgba(255,255,255,.08);
+  --k-paper: #FFFFFF; --k-paperInk: #111216; --k-shadow: 0 20px 50px rgba(0,0,0,.5);
+  --k-head: "Anton", "Oswald", var(--f-head); --k-hand: "Oswald", sans-serif; --k-mono: var(--f-mono); --k-ui: "Inter", var(--f-ui);
+  --k-weight: 400; --k-track: 0.005em;
+  --grad: linear-gradient(120deg, #E10600 0%, #FF5A3C 100%);
+}
+/* vạch quét ngang thay lưới kính của base night */
+html[data-theme="ban-tin-doc"] .k-stage::after { background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 2px, transparent 2px 6px); background-size: auto; opacity: 1;
+  -webkit-mask-image: none; mask-image: none; }
+html[data-theme="ban-tin-doc"] .k-head { text-transform: uppercase; line-height: 1.16; } /* Anton + dấu tiếng Việt chồng nhau dưới 1.15 */
+html[data-theme="ban-tin-doc"] .k-label { color: #FFFFFF; background: var(--k-accent); padding: 6px 14px; letter-spacing: .18em; }
+html[data-theme="ban-tin-doc"] .k-card { border-radius: 0; border: 0; border-left: 10px solid var(--k-accent); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: var(--k-shadow); }
+html[data-theme="ban-tin-doc"] .k-chip { border-radius: 0; background: #FFFFFF; color: #111216; border: 0; font-weight: 800; text-transform: uppercase; }
+html[data-theme="ban-tin-doc"] .k-btn { border-radius: 0; background: var(--k-accent); color: #FFFFFF; font-family: var(--k-head); font-weight: 400; text-transform: uppercase; letter-spacing: .04em; box-shadow: none; }
+html[data-theme="ban-tin-doc"] em.hl:has(.w) { background: none; padding: 0; }
+html[data-theme="ban-tin-doc"] em.hl, html[data-theme="ban-tin-doc"] em.hl .w { font-style: normal; color: #FFFFFF; background: var(--k-accent); -webkit-background-clip: border-box; background-clip: border-box;
+  padding: 0 .12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+html[data-theme="ban-tin-doc"] .k-stamp { border-radius: 0; color: #FFFFFF; background: var(--k-accent); border-color: var(--k-accent); -webkit-mask-image: none; mask-image: none; rotate: -4deg; }
+html[data-theme="ban-tin-doc"] .k-hand { font-family: "Oswald", sans-serif; font-weight: 700; text-transform: uppercase; color: var(--k-accent2); }

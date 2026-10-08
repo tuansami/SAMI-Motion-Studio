@@ -19,6 +19,29 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.2.0] — 2026-10-08 — Quản lý cảnh trong Studio, khung Ảnh động, phong cách (style pack)
+Tuấn hỏi (2026-10-08): dùng OpenCV thế nào; cột Cảnh không xoá / thêm / sắp xếp được; template có dễ thêm không, chuẩn chung gồm gì.
+
+### Thêm
+- **Cột Cảnh: sắp xếp, nhân bản, xoá, thêm cảnh** không cần Claude Code:
+  - **kéo thả** (⠿) đổi thứ tự; menu **⋯** mỗi cảnh: Nhân bản, Cảnh trống ngay sau, Thêm từ khuôn ngay sau, ↑ / ↓, Xoá; nút **＋ Thêm cảnh** cuối danh sách;
+  - mỗi cảnh giữ độ dài, cảnh xếp lại liền nhau, điểm cắt vẫn 15n+1 (cảnh đầu giữ +1); tiêu đề, SFX, giọng đọc, phụ đề, ảnh chèn, footage nằm trong cảnh đi theo cảnh (`relayout()` trong `ui/app.js`); xoá cảnh hỏi trước, nói số mục bị xoá theo, đặt điểm neo Lịch sử;
+  - nhân bản cảnh HTML chép file cảnh và đổi mã cảnh bên trong (`data-copy`, composition id), chép cả chữ (`/api/scene/duplicate`); cảnh Remotion chỉ qua Claude Code;
+  - cảnh trống (`engine: blank`) dùng cho footage / tiêu đề hoặc để 🧩 Khuôn → Đổi;
+  - thao tác cấu trúc tự lưu (cảnh HTML xem trước từ bản đã lưu), Ctrl+Z hoàn tác.
+- **Khung 🎞 Ảnh động** (tab Chữ, slide ảnh carousel): ảnh nhỏ có khung đỏ = khối chữ, khung xanh = chủ thể; Tách lớp / Tách lại / Bỏ chủ thể / Tắt tách lớp (`/api/carousel/layers`, tự làm mới `slides/photo.html` bản cũ); thanh trượt Nhịp chính, Thở, Chiều sâu, Độ bật chữ, Đốm sáng; ô Vệt sáng, Giật máy.
+- **Phong cách (style pack)** `lib/hf/styles/<id>/` (`style.json` + `style.css` + `style.js` + `assets/`), `server/styles.mjs`:
+  - nạp tự động vào mọi cảnh có theme = id (`styleHead`), `window.SAMI.style`; kit khuôn đặt `data-base`, luật thành phần trong `kit.css` và 18 khuôn theo base nên phong cách mới thừa hưởng bố cục + kết cấu rồi chỉ ghi đè phần khác;
+  - `tools/style-new.mjs <id> --name … --base paper|night|light` tạo khung + checklist 8 mục; `--demo` dựng template `templates/style-<id>` (8 khuôn tiêu biểu) + ảnh bìa; `khuon-thumbs --theme <id>` soát mọi khuôn;
+  - 2 phong cách mẫu: **cat-dan** (Tư liệu cắt dán giấy), **ban-tin-doc** (Bản tin dọc, tin nóng);
+  - Studio: tab Giao diện → **Phong cách** đổi cả video một lần; 🧩 Khuôn chọn phong cách từng cảnh (tên đầy đủ); thư viện mẫu lọc theo phong cách; `template.json → style, engine`; nhóm mới: Bất động sản, Giáo dục, Tin tức, Khoa học, Phong cách (demo).
+- `docs/TEMPLATE_STANDARD.md` **v2**: 3 tầng khuôn / phong cách / template, Hyperframes cho mọi mẫu mới, 8 thành phần chuẩn của một phong cách, luật CSS, cách tạo.
+- `README.md` cho repo Studio + liên kết 2 chiều với repo **MCP-sami-media** (đã đẩy lên GitHub, tag v1.0.0, v1.1.0) và cách clone cạnh nhau.
+
+### Đã kiểm
+- Studio thử (5179): đổi thứ tự S01 xuống sau S03 → điểm cắt 121 / 271 / 421 / 511, tiêu đề T1 0,5 s → 14,533 s, T2 3,2 s → 0,167 s; Ctrl+Z về đúng; nhân bản S02 → S07 kèm 6 ô chữ và `hf/S07.html`; thêm cảnh trống; xoá. Khung Ảnh động tách lại slide P02 ra 1 khối chữ + chủ thể, vẽ khung đỏ / xanh. Đổi phong cách cả video → cảnh nạp `_sami/styles/cat-dan/style.css`, `SAMI.style.base = paper`.
+- Bảng ảnh khuôn trong 2 phong cách mới; sửa: khối nhấn màu hiện trước chữ, Anton chồng dấu tiếng Việt, luật thiếu tiền tố `html` thua kit.css. Selftest thêm phép thử phong cách.
+
 ## [1.1.0] — 2026-10-08 — Carousel ảnh tách lớp (OpenCV); xuất thuần đã thử thật, sửa lệch 1 khung
 Tuấn đồng ý 3 việc (2026-10-08): xuất thử chế độ thuần, cài `opencv-python-headless`, push.
 

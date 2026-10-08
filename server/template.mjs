@@ -7,7 +7,7 @@ import {validateProject} from './validate.mjs';
 import {readProject, renderBundle} from './project.mjs';
 import {TEMPLATES, ROOT} from './paths.mjs';
 
-export const CATEGORIES = {restaurant: 'Nhà hàng', nail: 'Nail', spa: 'Spa', hotel: 'Khách sạn', agency: 'Agency / SAMI', generic: 'Chung'};
+export const CATEGORIES = {restaurant: 'Nhà hàng', nail: 'Nail', spa: 'Spa', hotel: 'Khách sạn', 'real-estate': 'Bất động sản', education: 'Giáo dục / bài giảng', news: 'Tin tức', science: 'Khoa học / giải thích', agency: 'Agency / SAMI', style: 'Phong cách (demo)', generic: 'Chung'};
 export const GOALS = {'khai-truong': 'Khai trương', 'menu-moi': 'Menu mới', 'uu-dai': 'Ưu đãi', 'tuyen-dung': 'Tuyển dụng', review: 'Review / cảm nhận', 'gioi-thieu': 'Giới thiệu dịch vụ', 'su-kien': 'Sự kiện / lễ', 'meo-hay': 'Mẹo / kiến thức (carousel)'};
 const FORBIDDEN = ['out', 'brief', '.claude', 'node_modules', 'CLAUDE.md', '.project.backup.json'];
 const REQUIRED = ['id', 'name', 'version', 'category', 'description', 'formats'];
@@ -148,7 +148,7 @@ export const saveAsTemplate = (projDir, meta) => {
 export const listTemplates = () => roots().flatMap(({root, prefix, shared}) => { try { return fs.readdirSync(root).filter((t) => fs.existsSync(path.join(root, t, 'project.json'))).map((f) => {
   const t = prefix + f; const dir = path.join(root, f);
   try { const pj = readProject(dir); const m = readManifest(dir) || {};
-  return {id: t, shared, root: shared ? root : null, name: m.name || pj.name, description: m.description || '', category: m.category || 'generic', goal: m.goal || [], tags: m.tags || [], version: m.version || '0', license: m.license || '', author: m.author || '',
+  return {id: t, shared, root: shared ? root : null, name: m.name || pj.name, description: m.description || '', category: m.category || 'generic', style: m.style || null, engine: m.engine || null, goal: m.goal || [], tags: m.tags || [], version: m.version || '0', license: m.license || '', author: m.author || '',
     formats: pj.formats, scenes: pj.scenes.length, seconds: +(pj.scenes.at(-1).end / 30).toFixed(1), hasManifest: !!readManifest(dir),
     thumbs: Object.fromEntries(pj.formats.filter((r) => fs.existsSync(path.join(dir, 'preview', thumbName(r)))).map((r) => [r, `/tpl/${t}/preview/${thumbName(r)}`]))};
   } catch { return null; } }).filter(Boolean); } catch { return []; } }); // an offline NAS / broken template never breaks the gallery

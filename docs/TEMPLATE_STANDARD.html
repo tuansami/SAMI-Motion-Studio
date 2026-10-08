@@ -5,60 +5,182 @@ table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}th,td{bor
 blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;background:#0F0A2A;border-radius:0 8px 8px 0;color:#cfcaf0}hr{border:0;border-top:1px solid rgba(255,255,255,.1)}
 .toc{background:#0F0A2A;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 18px;margin:18px 0}</style></head><body><div class="toc"><b>Mục lục</b><div class="toc">
 <ul>
-<li><a href="#chuan-template-sami-motion-studio-v1">Chuẩn Template SAMI Motion Studio — v1</a><ul>
-<li><a href="#1-cau-truc-thu-muc-bat-buoc">1. Cấu trúc thư mục (bắt buộc)</a></li>
-<li><a href="#2-templatejson">2. template.json</a></li>
-<li><a href="#3-tieu-chuan-noi-dung-khong-at-nen-sua">3. Tiêu chuẩn nội dung (✗ = không đạt, ⚠ = nên sửa)</a></li>
-<li><a href="#4-quy-trinh-ua-mau-vao-thu-vien">4. Quy trình đưa mẫu vào thư viện</a></li>
-<li><a href="#5-chia-se-nhap-mau">5. Chia sẻ &amp; nhập mẫu</a></li>
+<li><a href="#chuan-template-sami-motion-studio-v2-studio-12">Chuẩn Template SAMI Motion Studio — v2 (Studio 1.2)</a><ul>
+<li><a href="#1-engine-chi-hyperframes-cho-mau-moi">1. Engine: chỉ Hyperframes cho mẫu mới</a></li>
+<li><a href="#2-phong-cach-style-pack-chuan-chung-gom-gi">2. Phong cách (style pack): chuẩn chung gồm gì</a><ul>
+<li><a href="#luat-css-cua-phong-cach-kiem-tu-ong">Luật CSS của phong cách (kiểm tự động)</a></li>
+<li><a href="#tao-phong-cach-moi">Tạo phong cách mới</a></li>
+<li><a href="#khi-phong-cach-can-canh-ma-khuon-chua-co">Khi phong cách cần cảnh mà khuôn chưa có</a></li>
+</ul>
+</li>
+<li><a href="#3-cau-truc-thu-muc-template-bat-buoc">3. Cấu trúc thư mục template (bắt buộc)</a></li>
+<li><a href="#4-templatejson">4. template.json</a></li>
+<li><a href="#5-tieu-chuan-noi-dung-khong-at-nen-sua">5. Tiêu chuẩn nội dung (✗ = không đạt, ⚠ = nên sửa)</a></li>
+<li><a href="#6-quy-trinh-ua-mau-vao-thu-vien">6. Quy trình đưa mẫu vào thư viện</a></li>
+<li><a href="#7-chia-se-nhap-mau">7. Chia sẻ &amp; nhập mẫu</a></li>
 </ul>
 </li>
 </ul>
 </div>
-</div><h1 id="chuan-template-sami-motion-studio-v1">Chuẩn Template SAMI Motion Studio — v1</h1>
+</div><h1 id="chuan-template-sami-motion-studio-v2-studio-12">Chuẩn Template SAMI Motion Studio — v2 (Studio 1.2)</h1>
 <blockquote>
-<p>Một template = <strong>một thư mục dự án mẫu</strong> mà người không biết code chỉ cần thay chữ, ảnh, màu, nhạc là ra video đạt chuẩn cả 3 tỉ lệ. Mọi mẫu vào thư viện phải qua bộ kiểm tra <code>node server/cli-template.mjs check templates/&lt;id&gt;</code> (hoặc nút <strong>Kiểm tra mẫu</strong> trong Studio).</p>
+<p>Ba tầng, từ nhỏ đến lớn. Hiểu đúng tầng thì thêm mẫu mới rất nhanh:</p>
+<table>
+<thead>
+<tr>
+<th>Tầng</th>
+<th>Là gì</th>
+<th>Ở đâu</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Khuôn</strong></td>
+<td>Một cảnh dựng sẵn có chuyển động, không có chữ cứng</td>
+<td><code>lib/hf/khuon/&lt;id&gt;/</code></td>
+<td>Con số đếm lên, Tìm trên Google Maps, Polaroid</td>
+</tr>
+<tr>
+<td><strong>Phong cách</strong></td>
+<td>Bộ nhận diện hình ảnh: màu, font, thẻ, kết cấu, cách chuyển động, âm thanh. Mặc lên <strong>mọi</strong> khuôn</td>
+<td><code>lib/hf/styles/&lt;id&gt;/</code></td>
+<td>Tư liệu cắt dán giấy, Bản tin dọc</td>
+</tr>
+<tr>
+<td><strong>Template</strong></td>
+<td>Một dự án mẫu: chuỗi cảnh (thường là khuôn) + một phong cách + chữ / ảnh / nhạc mẫu</td>
+<td><code>templates/&lt;id&gt;/</code></td>
+<td>Nhà hàng: món mới + ưu đãi</td>
+</tr>
+</tbody>
+</table>
+<p>Một phong cách mới = mọi khuôn (18 cái) tự có thêm một bộ áo mới, mọi template đổi sang được bằng một cú bấm (tab <strong>Giao diện → Phong cách</strong>).
+Mọi mẫu vào thư viện phải qua <code>node server/cli-template.mjs check templates/&lt;id&gt;</code> (hoặc nút <strong>Kiểm tra</strong> trong thư viện).</p>
 </blockquote>
 <hr />
-<h2 id="1-cau-truc-thu-muc-bat-buoc">1. Cấu trúc thư mục (bắt buộc)</h2>
-<pre><code>templates/&lt;id&gt;/                 id: chữ thường-không-dấu, vd  restaurant-khai-truong
-├─ template.json                ← &quot;hồ sơ&quot; của mẫu (mục 2)
-├─ project.json                 ← dữ liệu mặc định: cảnh, chữ, tiêu đề, âm thanh, màu
-├─ scenes/                      ← code cảnh (Remotion + engine Studio)
-│  ├─ index.ts                  ← export const REG = {S01, S02, …}
-│  └─ S01.tsx …
-├─ public/
-│  ├─ img/placeholder_*.jpg     ← CHỈ ảnh minh hoạ trung tính / ảnh có bản quyền dùng lại được
-│  ├─ audio/                    ← (tuỳ chọn) nhạc có giấy phép dùng lại
-│  └─ lottie/                   ← (tuỳ chọn) Lottie JSON có giấy phép
-├─ preview/
-│  ├─ thumb_16x9.jpg            ← ảnh bìa (tự tạo bằng lệnh thumbs)
-│  ├─ thumb_9x16.jpg
-│  └─ thumb_1x1.jpg
-└─ README.md                    ← khi nào dùng, lưu ý, ví dụ nội dung
+<h2 id="1-engine-chi-hyperframes-cho-mau-moi">1. Engine: chỉ Hyperframes cho mẫu mới</h2>
+<ul>
+<li><strong>Mẫu mới: Hyperframes</strong> (HTML + CSS + JavaScript/GSAP). Đây chính là "javascript": không cần một loại thứ ba.
+  Lợi: xuất được <strong>không cần Remotion</strong> (đóng gói cho khách, không vướng giấy phép), Claude viết nhanh, dùng chung khuôn và phong cách.</li>
+<li><strong>Remotion (.tsx)</strong>: chỉ giữ cho dự án / mẫu cũ. Không làm mẫu Remotion mới. Mẫu cũ chạy bình thường, chuyển dần khi cần.</li>
+<li>Không cần chia thư viện mẫu theo engine: <code>template.json → engine</code> ghi <code>hyperframes</code> hoặc <code>remotion</code>, Studio tự biết.</li>
+</ul>
+<h2 id="2-phong-cach-style-pack-chuan-chung-gom-gi">2. Phong cách (style pack): chuẩn chung gồm gì</h2>
+<p>Mỗi phong cách phải trả lời đủ 8 câu hỏi. Ghi vào <code>style.json</code> + <code>style.css</code> (+ <code>style.js</code> nếu chuyển động khác mặc định).</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Thành phần</th>
+<th>Quyết định</th>
+<th>Ghi ở</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Màu</strong></td>
+<td>nền, chữ, chữ phụ, màu nhấn 1–2, màu thẻ; tương phản đủ đọc trên điện thoại</td>
+<td><code>style.css</code> token <code>--k-bg --k-ink --k-sub --k-accent --k-accent2 --k-card</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Chữ (typography)</strong></td>
+<td>font tiêu đề, font chữ thường, font tay / phụ; độ đậm, chữ hoa hay thường, khoảng cách dòng (≥ 1,15 với font hẹp để dấu tiếng Việt không chồng)</td>
+<td><code>style.json → fonts</code> (tên họ font có trong <code>@fontsource</code>), <code>--k-head --k-ui --k-hand --k-weight --k-track</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Thành phần</strong></td>
+<td>thẻ, nút, nhãn, khung ảnh, con dấu, cách <strong>nhấn chữ</strong> (<code>*từ*</code>)</td>
+<td><code>style.css</code>: <code>.k-card .k-btn .k-chip .k-polaroid .k-stamp em.hl …</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Kết cấu</strong></td>
+<td>hạt phim, giấy, vạch quét, lưới; luôn <strong>tĩnh</strong> (không phụ thuộc thời gian)</td>
+<td><code>.k-stage::after</code>, ảnh trong <code>assets/</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Chuyển động</strong></td>
+<td>một easing cho cả phim, tốc độ (trang trọng = chậm, tin nóng = nhanh), cách chữ / thẻ vào và ra</td>
+<td><code>style.json → motion</code>, <code>style.js → SAMI.styleFx</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Chuyển cảnh</strong></td>
+<td>mặc định engine (mờ + nhoè chồng 16 khung); phong cách có thể gợi ý khác (cắt cứng, quét màu)</td>
+<td><code>style.json → motion.transition</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Âm thanh</strong></td>
+<td>bộ SFX gợi ý (3 đến 5 tiếng), kiểu nhạc</td>
+<td><code>style.json → sfx, music</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Ảnh</strong></td>
+<td>cách xử lý ảnh: polaroid, cắt xé, đen trắng, khung điện thoại; ảnh mẫu có giấy phép</td>
+<td><code>style.css</code> + <code>assets/</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>base</code> = <code>paper | night | light</code>: phong cách mới mượn bố cục của một trong 3 base có sẵn (khuôn "giấy" xếp ảnh kiểu polaroid, "night" kiểu kính tối, "light" kiểu thẻ trắng) rồi chỉ ghi đè phần khác.</p>
+<h3 id="luat-css-cua-phong-cach-kiem-tu-ong">Luật CSS của phong cách (kiểm tự động)</h3>
+<ul>
+<li>Token đặt trong <code>[data-theme="&lt;id&gt;"] { … }</code>; luật thành phần bắt đầu bằng <code>html[data-theme="&lt;id&gt;"]</code> (để thắng luật base).</li>
+<li>Nhấn chữ có nền: đặt nền cho <code>em.hl, em.hl .w</code> kèm <code>em.hl:has(.w) { background: none }</code>, kẻo khối màu hiện trước khi chữ vào.</li>
+<li><strong>Không</strong> <code>@keyframes</code>, <code>animation</code>, <code>transition</code> (video được tua từng khung, CSS animation không tua được). Chuyển động chỉ qua timeline GSAP.</li>
+<li>Không tải gì từ Internet (font, ảnh): font qua <code>@fontsource</code>, ảnh trong <code>assets/</code>.</li>
+</ul>
+<h3 id="tao-phong-cach-moi">Tạo phong cách mới</h3>
+<pre><code class="language-bash">node tools/style-new.mjs giay-cat-dan --name &quot;Tư liệu cắt dán giấy&quot; --base paper --head &quot;Archivo Black&quot; --accent &quot;#D62828&quot;
+#   → lib/hf/styles/giay-cat-dan/{style.json, style.css, style.js, README.md (checklist 8 mục), assets/}
+#   sửa style.css (và style.js nếu cần), rồi:
+node tools/style-new.mjs giay-cat-dan --demo
+#   → templates/style-giay-cat-dan/ : 8 khuôn tiêu biểu mặc phong cách này + ảnh bìa (chỉ chụp ảnh, không xuất video)
+node tools/khuon-thumbs.mjs --theme giay-cat-dan --ratio 9:16
+#   → bảng ảnh mọi khuôn trong phong cách mới (.sami-cache/khuon-test/&lt;id&gt;/sheet_9x16.jpg) để soát lỗi
 </code></pre>
-<p>Không được có: <code>out/</code>, <code>brief/</code>, <code>node_modules/</code>, <code>.claude/</code>, <code>public/_engine/</code>, ảnh/logo/số liệu <strong>thật của khách</strong>.</p>
-<h2 id="2-templatejson">2. template.json</h2>
+<p>Hoặc nói với Claude Code: <em>"tạo phong cách Phim tư liệu: nền đen, chữ serif, ảnh đen trắng, chuyển cảnh chậm"</em>. Claude làm đúng các bước trên.</p>
+<h3 id="khi-phong-cach-can-canh-ma-khuon-chua-co">Khi phong cách cần cảnh mà khuôn chưa có</h3>
+<p>Ví dụ <strong>3Blue1Brown</strong> (công thức, đồ thị vẽ dần), <strong>Bất động sản</strong> (bản đồ khu vực, mặt bằng căn hộ), <strong>Bài giảng hoạt hình</strong> (nhân vật). Làm <strong>khuôn mới</strong> (chuẩn trong <code>claude-code/skills/sami-motion-studio/references/khuon.md</code>), không viết cảnh lẻ trong template: khuôn mới dùng lại được cho mọi phong cách.</p>
+<h2 id="3-cau-truc-thu-muc-template-bat-buoc">3. Cấu trúc thư mục template (bắt buộc)</h2>
+<pre><code>templates/&lt;id&gt;/                 id: chữ thường-không-dấu, vd  bds-vi-tri-du-an
+├─ template.json                ← hồ sơ của mẫu (mục 4)
+├─ project.json                 ← cảnh, chữ, tiêu đề, âm thanh, look.theme = phong cách
+├─ hf/S01.html …                ← cảnh HTML (thường chép từ khuôn khi dựng)
+├─ scenes/index.ts              ← để trống nếu không có cảnh Remotion
+├─ public/img/placeholder_*.jpg ← CHỈ ảnh minh hoạ trung tính / có giấy phép (hoặc lib:img/… của thư viện)
+├─ preview/thumb_9x16.jpg …     ← ảnh bìa (tự tạo)
+└─ README.md                    ← khi nào dùng, lưu ý
+</code></pre>
+<p>Không được có: <code>out/</code>, <code>brief/</code>, <code>node_modules/</code>, <code>.claude/</code>, <code>public/_engine|_hf|_lib/</code>, ảnh / logo / số liệu <strong>thật của khách</strong>.</p>
+<p>Cách nhanh nhất: dựng bằng dây chuyền <code>storyboard</code> (<code>server/cli-pipeline.mjs</code>) hoặc một công cụ như <code>tools/khuon-templates.mjs</code>, rồi thêm <code>template.json</code>.</p>
+<h2 id="4-templatejson">4. template.json</h2>
 <pre><code class="language-jsonc">{
-  &quot;id&quot;: &quot;restaurant-khai-truong&quot;,
-  &quot;name&quot;: &quot;Nhà hàng – Khai trương&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,                      // tăng khi sửa mẫu
-  &quot;studio&quot;: &quot;&gt;=0.2.0&quot;,                     // phiên bản Studio tối thiểu
-  &quot;category&quot;: &quot;restaurant&quot;,                // restaurant | nail | spa | hotel | agency | generic
-  &quot;goal&quot;: [&quot;khai-truong&quot;, &quot;uu-dai&quot;],       // khai-truong | menu-moi | uu-dai | tuyen-dung | review | gioi-thieu | su-kien
-  &quot;description&quot;: &quot;30 giây, 6 cảnh: hook → món đặc trưng → không gian → ưu đãi khai trương → địa chỉ → CTA.&quot;,
-  &quot;formats&quot;: [&quot;16:9&quot;, &quot;9:16&quot;, &quot;1:1&quot;],      // PHẢI có bố cục riêng cho từng tỉ lệ ghi ở đây
-  &quot;duration&quot;: 30,                          // giây (tự đo khi kiểm tra)
-  &quot;bpm&quot;: 120,                              // lưới nhịp: 1 nhịp = 15 khung (30 fps)
-  &quot;languages&quot;: [&quot;vi&quot;],                     // ngôn ngữ chữ mẫu
-  &quot;slots&quot;: {&quot;text&quot;: 18, &quot;image&quot;: 4, &quot;logo&quot;: 1},  // tự đếm khi kiểm tra
-  &quot;thumbFrame&quot;: 150,                       // khung (30 fps) dùng làm ảnh bìa
-  &quot;author&quot;: &quot;SAMI Marketing Agency&quot;,
-  &quot;license&quot;: &quot;internal&quot;,                   // internal | CC-BY-4.0 | MIT | …
-  &quot;tags&quot;: [&quot;food&quot;, &quot;warm&quot;, &quot;premium&quot;]
+  &quot;id&quot;: &quot;bds-vi-tri-du-an&quot;,
+  &quot;name&quot;: &quot;Bất động sản: vị trí dự án&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;studio&quot;: &quot;&gt;=1.2.0&quot;,
+  &quot;engine&quot;: &quot;hyperframes&quot;,                  // hyperframes | remotion (mẫu cũ)
+  &quot;style&quot;: &quot;ban-do-sang&quot;,                   // phong cách mặc định (lib/hf/styles/&lt;id&gt; hoặc night | paper | light)
+  &quot;category&quot;: &quot;real-estate&quot;,                // restaurant | nail | spa | hotel | real-estate | education | news | science | agency | style | generic
+  &quot;goal&quot;: [&quot;gioi-thieu&quot;],                   // khai-truong | menu-moi | uu-dai | tuyen-dung | review | gioi-thieu | su-kien
+  &quot;description&quot;: &quot;40 giây, 8 cảnh: hook → bản đồ khu vực → tiện ích quanh → mặt bằng → giá → CTA.&quot;,
+  &quot;formats&quot;: [&quot;9:16&quot;, &quot;16:9&quot;],
+  &quot;duration&quot;: 40, &quot;bpm&quot;: 120,
+  &quot;languages&quot;: [&quot;de&quot;],
+  &quot;khuon&quot;: [&quot;hook-words&quot;, &quot;map-route&quot;, &quot;benefits-3&quot;, &quot;stat-counter&quot;, &quot;cta-contact&quot;, &quot;endcard-logo&quot;],
+  &quot;thumbFrame&quot;: 150,
+  &quot;author&quot;: &quot;SAMI Marketing Agency&quot;, &quot;license&quot;: &quot;internal&quot;,
+  &quot;tags&quot;: [&quot;real-estate&quot;, &quot;map&quot;, &quot;clean&quot;]
 }
 </code></pre>
-<h2 id="3-tieu-chuan-noi-dung-khong-at-nen-sua">3. Tiêu chuẩn nội dung (✗ = không đạt, ⚠ = nên sửa)</h2>
+<h2 id="5-tieu-chuan-noi-dung-khong-at-nen-sua">5. Tiêu chuẩn nội dung (✗ = không đạt, ⚠ = nên sửa)</h2>
 <table>
 <thead>
 <tr>
@@ -70,37 +192,37 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <tbody>
 <tr>
 <td>1</td>
-<td><code>cli-validate</code> không còn ✗ (timeline liền mạch, đủ tài nguyên, không Math.random/Date)</td>
+<td><code>cli-validate</code> không còn ✗ (timeline liền mạch, đủ tài nguyên, không <code>Math.random</code> / <code>Date</code> / <code>requestAnimationFrame</code>)</td>
 <td>✗</td>
 </tr>
 <tr>
 <td>2</td>
-<td><strong>Mọi chữ hiện trên video</strong> nằm trong <code>project.json → copy</code>, có <code>label</code> tiếng Việt mô tả VỊ TRÍ ("Tiêu đề lớn cảnh 1", không phải "S01_title")</td>
+<td><strong>Mọi chữ hiện trên video</strong> nằm trong <code>project.json → copy</code>, có <code>label</code> tiếng Việt ≥ 4 ký tự mô tả vị trí</td>
 <td>✗</td>
 </tr>
 <tr>
 <td>3</td>
-<td>Mọi ảnh thay được là <strong>ô ảnh</strong> (<code>copy.&lt;ID&gt;_image</code> / <code>_logo</code>) — không hard-code đường dẫn ảnh trong code cảnh</td>
+<td>Mọi ảnh thay được là <strong>ô ảnh</strong> (<code>&lt;cảnh&gt;_..._photo</code> / <code>_logo</code>), không hard-code đường dẫn ảnh trong cảnh</td>
 <td>✗</td>
 </tr>
 <tr>
 <td>4</td>
-<td>Bố cục riêng cho mỗi tỉ lệ khai trong <code>formats</code> (dùng <code>useFormat</code> / <code>usePick</code>), chữ không tràn / không bị che ở 9:16 (vùng an toàn: trên 10 %, dưới 15 %)</td>
+<td>Bố cục riêng cho mỗi tỉ lệ trong <code>formats</code> (<code>[data-ratio="9x16"] …</code>), chữ không tràn / không bị che ở 9:16 (vùng an toàn)</td>
 <td>✗</td>
 </tr>
 <tr>
 <td>5</td>
-<td>Thời gian qua <code>useT()</code> / <code>useBaseFrame()</code> — <strong>không</strong> <code>useCurrentFrame()</code> trong cảnh (sai ở 24/60 fps)</td>
+<td>Mọi chuyển động là hàm của timeline (GSAP, <code>SAMI.timeline()</code>); không CSS animation / transition</td>
 <td>✗</td>
 </tr>
 <tr>
 <td>6</td>
-<td>Một easing duy nhất (<code>tw</code> / <code>keys</code> / <code>arrive</code>), không spring, không CSS transition</td>
+<td>Một easing cho cả phim (<code>SAMI.EASE</code> hoặc easing của phong cách)</td>
 <td>✗</td>
 </tr>
 <tr>
 <td>7</td>
-<td>Màu lấy từ theme (<code>C.*</code>, <code>GRAD</code>) để đổi màu thương hiệu 1 chỗ là đổi cả video — hạn chế mã màu cứng</td>
+<td>Màu / font lấy từ token (phong cách + <code>brand</code>), không mã màu cứng trong cảnh</td>
 <td>⚠</td>
 </tr>
 <tr>
@@ -115,50 +237,48 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </tr>
 <tr>
 <td>10</td>
-<td>Âm thanh chỉ qua <code>project.json → audio</code> (không <code>&lt;Audio&gt;</code> trong code cảnh); nhạc mẫu phải có giấy phép dùng lại</td>
+<td>Âm thanh chỉ qua <code>project.json → audio</code>; nhạc mẫu có giấy phép</td>
 <td>✗ nếu nhạc không rõ nguồn</td>
 </tr>
 <tr>
 <td>11</td>
-<td>Không số liệu / giá / review bịa đặt trình bày như thật — chữ mẫu phải rõ là mẫu (vd "−20 %" + ghi chú "thay bằng ưu đãi thật")</td>
+<td>Không số liệu / giá / review bịa trình bày như thật: chữ mẫu ghi rõ là mẫu</td>
 <td>✗</td>
 </tr>
 <tr>
 <td>12</td>
-<td>Không logo nền tảng (Google, Meta…), không tác phẩm của agency khác</td>
+<td>Không logo nền tảng (trừ video về dịch vụ Google), không tác phẩm của agency khác</td>
 <td>✗</td>
 </tr>
 <tr>
 <td>13</td>
-<td>Có ảnh bìa 3 tỉ lệ trong <code>preview/</code> + README</td>
+<td>Có ảnh bìa + README</td>
 <td>⚠</td>
 </tr>
 <tr>
 <td>14</td>
-<td>Render thử 24 / 30 / 60 fps không lỗi; chữ tiếng Việt không mất dấu</td>
+<td>Chữ tiếng Việt và tiếng Đức không mất dấu, không chồng dòng</td>
 <td>✗</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Mẫu Hyperframes: Bộ dựng "Hyperframes thuần" ở tab Xuất báo ✓</td>
+<td>⚠</td>
 </tr>
 </tbody>
 </table>
-<h2 id="4-quy-trinh-ua-mau-vao-thu-vien">4. Quy trình đưa mẫu vào thư viện</h2>
+<h2 id="6-quy-trinh-ua-mau-vao-thu-vien">6. Quy trình đưa mẫu vào thư viện</h2>
 <ol>
-<li>Làm video cho khách như bình thường (Studio + Claude Code).</li>
-<li>Video đạt → <strong>Giao diện → Lưu thành mẫu</strong> (hoặc nhờ Claude Code: <em>"chuyển dự án này thành template theo docs/TEMPLATE_STANDARD.md"</em>).</li>
-<li><strong>Thay ảnh/logo/số liệu thật của khách bằng ảnh minh hoạ</strong> (Studio cảnh báo nếu phát hiện ảnh trong mẫu).</li>
+<li>Làm video cho khách như bình thường, hoặc dựng từ storyboard khuôn.</li>
+<li>Đạt → <strong>Giao diện → Lưu thành mẫu</strong> (hoặc nhờ Claude Code: <em>"chuyển dự án này thành template theo docs/TEMPLATE_STANDARD.md"</em>).</li>
+<li>Thay ảnh / logo / số liệu thật của khách bằng ảnh minh hoạ.</li>
 <li><code>node server/cli-template.mjs check templates/&lt;id&gt;</code> → sửa đến khi không còn ✗.</li>
-<li><code>node server/cli-template.mjs thumbs templates/&lt;id&gt;</code> → tạo ảnh bìa.</li>
-<li>1 người (motion lead) duyệt → mẫu xuất hiện trong thư viện "Tạo dự án mới".</li>
+<li>Ảnh bìa: nút <strong>Tạo lại ảnh bìa</strong> trong hộp Kiểm tra (chụp ảnh tĩnh, không xuất video).</li>
+<li>Motion lead duyệt → mẫu hiện trong thư viện, lọc được theo nhóm và <strong>phong cách</strong>.</li>
 </ol>
-<h2 id="5-chia-se-nhap-mau">5. Chia sẻ &amp; nhập mẫu</h2>
+<h2 id="7-chia-se-nhap-mau">7. Chia sẻ &amp; nhập mẫu</h2>
 <ul>
-<li><strong>Xuất mẫu</strong> (nút <em>Xuất .zip</em> trong thư viện) → gửi file <code>.zip</code> cho đồng nghiệp / văn phòng khác.</li>
-<li><strong>Nhập mẫu</strong>: <em>Trang Dự án → Nhập mẫu…</em> chọn thư mục hoặc file <code>.zip</code> → Studio kiểm tra chuẩn rồi thêm vào thư viện.</li>
-<li>Mẫu từ cộng đồng:
-  | Nguồn | Dùng thế nào |
-  |---|---|
-  | <strong>Lottie JSON</strong> (LottieFiles…) | Dùng trực tiếp: tab <strong>Ảnh chèn → + Lottie</strong> |
-  | <strong>Dự án Remotion</strong> (React/TSX trên GitHub, do Claude/Opus tạo) | Nhờ Claude Code chuyển sang chuẩn này: đổi <code>useCurrentFrame</code> → <code>useT</code>, chữ → <code>copy</code>, màu → theme, thêm bố cục 9:16/1:1 |
-  | <strong>HyperFrames</strong> (HTML + GSAP, HeyGen) | Không chạy trực tiếp — dùng làm tham khảo, nhờ Claude Code viết lại thành cảnh Remotion |
-  | <strong>Skill / prompt</strong> (SKILL.md) | Đọc để học cách làm; đưa quy tắc hay vào <code>docs/PROJECT_GUIDE.md</code> |</li>
-<li>Luôn kiểm tra <strong>giấy phép</strong> (license) của mẫu cộng đồng trước khi dùng cho khách trả tiền.</li>
+<li><strong>Xuất .zip</strong> / <strong>⤓ Nhập mẫu…</strong> trong thư viện. Mẫu dùng phong cách riêng: gửi kèm thư mục <code>lib/hf/styles/&lt;id&gt;/</code> (hoặc đặt phong cách trong thư mục mẫu dùng chung của nhóm).</li>
+<li>Mẫu cộng đồng: <strong>Lottie</strong> dùng trực tiếp (tab Ảnh chèn); <strong>Hyperframes / HTML + GSAP</strong> chuyển thành khuôn theo chuẩn khuôn; <strong>Remotion</strong> chỉ dùng tham khảo, viết lại bằng HTML.</li>
+<li>Luôn kiểm giấy phép trước khi dùng cho khách trả tiền.</li>
 </ul></body></html>

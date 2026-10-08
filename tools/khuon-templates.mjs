@@ -53,7 +53,7 @@ for (const t of T) {
   fs.rmSync(dir, {recursive: true, force: true});
   const p = buildProject(dir, {name: t.name, client: '', formats: ['9:16', '16:9'], theme: t.theme, brand: {}, music: '', scenes: t.scenes});
   const sec = Math.round(p.scenes.at(-1).end / 30);
-  fs.writeFileSync(path.join(dir, 'template.json'), JSON.stringify({id: t.id, name: t.name, version: '1.0.0', studio: '>=1.0.0', category: t.category, goal: t.goal, description: t.description, formats: ['9:16', '16:9'], duration: sec, bpm: 120, languages: ['de'], thumbFrame: Math.round(p.scenes[1].start + 60), author: 'SAMI Marketing Agency', license: 'internal', tags: t.tags, engine: 'hyperframes', khuon: t.scenes.map((s) => s.khuon)}, null, 1));
+  fs.writeFileSync(path.join(dir, 'template.json'), JSON.stringify({id: t.id, name: t.name, version: '1.0.0', studio: '>=1.0.0', category: t.category, style: t.theme, goal: t.goal, description: t.description, formats: ['9:16', '16:9'], duration: sec, bpm: 120, languages: ['de'], thumbFrame: Math.round(p.scenes[1].start + 60), author: 'SAMI Marketing Agency', license: 'internal', tags: t.tags, engine: 'hyperframes', khuon: t.scenes.map((s) => s.khuon)}, null, 1));
   fs.writeFileSync(path.join(dir, 'README.md'), `# ${t.name}\n\n${t.description}\n\nDựng bằng \`node tools/khuon-templates.mjs --apply\` từ khuôn (lib/hf/khuon). Đổi chữ ở tab Chữ; đổi khuôn từng cảnh bằng 🧩 Khuôn. Nhà hàng / tiệm trong mẫu là hư cấu; số liệu mẫu phải thay bằng số thật trước khi đăng.\n`);
   const v = validateProject(dir);
   console.log(`✓ ${t.id}: ${p.scenes.length} cảnh · ${sec} s${v.fail.length ? ' · ✗ ' + v.fail.join('; ') : ''}`);

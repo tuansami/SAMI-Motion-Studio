@@ -1,0 +1,43 @@
+{
+ "name": "Bản tin dọc (tin nóng)",
+ "description": "Nền than chì, đỏ tin nóng, chữ in hoa đứng (Anton), khối nhấn đỏ. Hợp tin nhanh 9:16.",
+ "base": "night",
+ "version": "1.0.0",
+ "fonts": {
+  "head": "Anton",
+  "ui": "Inter",
+  "hand": "Oswald"
+ },
+ "fontWeights": [
+  400,
+  500,
+  700,
+  800
+ ],
+ "palette": {
+  "bg": "",
+  "ink": "",
+  "accent": "#E10600",
+  "accent2": ""
+ },
+ "motion": {
+  "ease": "cubic-bezier(0.22,1,0.36,1)",
+  "speed": 1.2,
+  "note": "Một easing cho cả phim; speed < 1 = chậm, trang trọng; > 1 = nhanh, tin nóng"
+ },
+ "texture": "hạt nhẹ",
+ "sfx": [
+  "sub_hit",
+  "key_single",
+  "whoosh_c"
+ ],
+ "music": "",
+ "tags": [
+  "news",
+  "breaking",
+  "vertical",
+  "bold"
+ ],
+ "author": "SAMI Marketing Agency",
+ "license": "internal"
+}

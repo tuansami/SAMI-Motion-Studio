@@ -147,6 +147,18 @@ await t('khuôn: CATALOG.md khớp thư viện khuôn (cli-pipeline catalog --wr
   const miss = listKhuon().filter((k) => !md.includes(`**${k.id}**`) || k.slots.some((s) => !md.includes('`' + s.slot))).map((k) => k.id);
   if (miss.length) throw new Error('chạy lại catalog --write: ' + miss.join(', ')); return listKhuon().length + ' khuôn';
 });
+await t('phong cách: style.json + style.css đúng chuẩn, cảnh khuôn nạp được', async () => {
+  const {listStyles, styleHead} = await import('./styles.mjs'); const out = [];
+  for (const s of listStyles().filter((x) => !x.builtin)) {
+    const d = path.join(ROOT, 'lib', 'hf', 'styles', s.id); const css = fs.readFileSync(path.join(d, 'style.css'), 'utf8');
+    if (!['night', 'paper', 'light'].includes(s.base)) throw new Error(`${s.id}: base phải là night | paper | light`);
+    if (!css.includes(`[data-theme="${s.id}"]`)) throw new Error(`${s.id}: style.css thiếu [data-theme="${s.id}"]`);
+    if (/@keyframes|animation\s*:|transition\s*:/.test(css.replace(/\/\*[\s\S]*?\*\//g, ''))) throw new Error(`${s.id}: CSS animation / transition (không seek được)`);
+    if (!styleHead(s.id).includes(`styles/${s.id}/style.css`)) throw new Error(`${s.id}: không nạp style.css`);
+    out.push(s.id);
+  }
+  return out.length + ' phong cách: ' + out.join(', ');
+});
 await t('carousel ảnh: tách lớp OpenCV (khối chữ + chủ thể)', async () => {
   const PY = process.env.SAMI_PYTHON || 'python';
   if (spawnSync(PY, ['-c', 'import cv2'], {encoding: 'utf8'}).status !== 0) return 'bỏ qua: chưa có opencv-python-headless (chế độ ảnh gọn vẫn chạy)';

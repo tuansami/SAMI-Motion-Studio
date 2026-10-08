@@ -1,0 +1,43 @@
+{
+ "name": "Tư liệu cắt dán giấy",
+ "description": "Bìa các-tông, giấy xé, chữ cắt từ báo, băng dính, nét bút đỏ. Hợp video kể chuyện, tư liệu, mùa lễ.",
+ "base": "paper",
+ "version": "1.0.0",
+ "fonts": {
+  "head": "Archivo Black",
+  "ui": "Inter",
+  "hand": "Caveat"
+ },
+ "fontWeights": [
+  400,
+  500,
+  700,
+  800
+ ],
+ "palette": {
+  "bg": "",
+  "ink": "",
+  "accent": "#D62828",
+  "accent2": ""
+ },
+ "motion": {
+  "ease": "cubic-bezier(0.22,1,0.36,1)",
+  "speed": 0.9,
+  "note": "Một easing cho cả phim; speed < 1 = chậm, trang trọng; > 1 = nhanh, tin nóng"
+ },
+ "texture": "giấy + hạt (kit)",
+ "sfx": [
+  "whoosh_a",
+  "pop",
+  "sub_hit"
+ ],
+ "music": "",
+ "tags": [
+  "collage",
+  "paper",
+  "documentary",
+  "handmade"
+ ],
+ "author": "SAMI Marketing Agency",
+ "license": "internal"
+}

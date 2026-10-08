@@ -1,5 +1,7 @@
 /* Khuôn SAMI: bộ kit dùng chung (nạp bằng <link href="_sami/khuon/kit.css">).
  * 3 theme đặt ở <html data-theme>: night (navy SAMI), paper (giấy kraft kiểu V22), light (sáng kiểu V23).
+ * 1.2: token màu / font theo data-theme; luật thành phần (kết cấu, em.hl, thẻ…) theo data-base, nên một phong cách mới
+ * (lib/hf/styles/<id>, base paper|night|light) tự thừa hưởng bố cục + kết cấu của base rồi chỉ ghi đè phần khác.
  * Màu thương hiệu (project.json → brand.colors) thắng màu theme: --c-accent, --c-ink, --c-paper… nếu brand có.
  * Mọi kích thước tính theo khung 1080 cạnh ngắn: --u = 1px ở 1080. */
 :root { --u: 1px; }
@@ -30,9 +32,9 @@
 [data-composition-id] { background: transparent; color: var(--k-ink); font-family: var(--k-ui); }
 .k-stage { position: absolute; inset: 0; background: var(--k-bg); overflow: hidden; }
 /* giấy: sợi + hạt (SVG turbulence tĩnh, không phụ thuộc thời gian) */
-[data-theme="paper"] .k-stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5; mix-blend-mode: multiply;
+[data-base="paper"] .k-stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5; mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .22  0 0 0 0 .1  0 0 0 .55 0'/></filter><rect width='400' height='400' filter='url(%23n)'/></svg>"); }
-[data-theme="night"] .k-stage::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+[data-base="night"] .k-stage::after { content: ""; position: absolute; inset: 0; pointer-events: none;
   background-image: linear-gradient(var(--c-line) 1px, transparent 1px), linear-gradient(90deg, var(--c-line) 1px, transparent 1px); background-size: 120px 120px; opacity: .35;
   -webkit-mask-image: radial-gradient(80% 70% at 50% 45%, #000 30%, transparent 90%); mask-image: radial-gradient(80% 70% at 50% 45%, #000 30%, transparent 90%); }
 .k-layer { position: absolute; inset: 0; z-index: 1; }
@@ -42,22 +44,22 @@
 .k-sub { font-family: var(--k-ui); font-weight: 500; color: var(--k-sub); line-height: 1.35; }
 .k-label { font-family: var(--k-mono); font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--k-accent); }
 .k-hand { font-family: var(--k-hand); font-weight: 700; color: var(--k-accent); line-height: 1.1; }
-[data-theme="paper"] em.hl, [data-theme="paper"] em.hl .w { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--k-accent); font-style: italic; }
-[data-theme="light"] em.hl, [data-theme="light"] em.hl .w { background: linear-gradient(120deg, var(--k-accent), var(--c-mint)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+[data-base="paper"] em.hl, [data-base="paper"] em.hl .w { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--k-accent); font-style: italic; }
+[data-base="light"] em.hl, [data-base="light"] em.hl .w { background: linear-gradient(120deg, var(--k-accent), var(--c-mint)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* khối */
 .k-card { background: var(--k-card); color: var(--k-cardInk); border: 1px solid var(--k-cardLine); border-radius: 28px; box-shadow: var(--k-shadow); }
-[data-theme="night"] .k-card { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: none; }
+[data-base="night"] .k-card { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: none; }
 .k-chip { display: inline-flex; align-items: center; gap: 12px; padding: 14px 28px; border-radius: 999px; background: var(--k-card); color: var(--k-cardInk); border: 1px solid var(--k-cardLine); font-family: var(--k-ui); font-weight: 600; white-space: nowrap; }
 .k-btn { display: inline-flex; align-items: center; gap: 14px; padding: 26px 54px; border-radius: 999px; background: var(--k-accent); color: #fff; font-family: var(--k-ui); font-weight: 800; white-space: nowrap; box-shadow: 0 16px 40px color-mix(in srgb, var(--k-accent) 45%, transparent); }
-[data-theme="night"] .k-btn { background: var(--grad); color: #0C0628; }
+[data-base="night"] .k-btn { background: var(--grad); color: #0C0628; }
 .k-ico { width: 1em; height: 1em; flex: none; display: inline-block; vertical-align: -0.12em; }
 .k-ico svg { width: 100%; height: 100%; display: block; }
 
 /* ảnh + chỗ trống khi chưa có ảnh */
 .k-img { background-size: cover; background-position: center; background-color: #CFC6B8; }
 .k-ph { background: repeating-linear-gradient(135deg, rgba(0,0,0,.06) 0 18px, rgba(0,0,0,.02) 18px 36px), #D9D2C5; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,.35); font: 700 28px var(--f-mono); letter-spacing: .1em; }
-[data-theme="night"] .k-ph { background: repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 18px, rgba(255,255,255,.02) 18px 36px), #1E1846; color: rgba(255,255,255,.35); }
+[data-base="night"] .k-ph { background: repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 18px, rgba(255,255,255,.02) 18px 36px), #1E1846; color: rgba(255,255,255,.35); }
 
 /* polaroid + băng dính */
 .k-polaroid { position: absolute; background: #FFFEFA; padding: 16px 16px 64px; box-shadow: var(--k-shadow); }
@@ -72,7 +74,7 @@
 .k-ransom .r1 { background: var(--k-accent2); color: #FFFDF8; font-family: var(--f-head); font-weight: 800; text-transform: uppercase; letter-spacing: .02em; font-size: .82em; padding-top: 10px; }
 .k-ransom .r2 { background: var(--k-accent); color: #FFFDF8; font-family: "Playfair Display", serif; font-weight: 700; }
 .k-ransom .r3 { background: #FFFDF8; color: var(--k-accent); font-family: "Playfair Display", serif; font-style: italic; font-weight: 700; }
-[data-theme="night"] .k-ransom .r { box-shadow: 0 10px 24px rgba(0,0,0,.4); }
+[data-base="night"] .k-ransom .r { box-shadow: 0 10px 24px rgba(0,0,0,.4); }
 
 /* con dấu */
 .k-stamp { display: inline-block; padding: 14px 34px; border: 7px solid var(--k-accent); border-radius: 14px; color: var(--k-accent); font-family: var(--f-head); font-weight: 900; letter-spacing: .06em; text-transform: uppercase; rotate: -11deg; white-space: nowrap;

@@ -36,5 +36,6 @@
   "offer-badge",
   "cta-contact",
   "endcard-logo"
- ]
+ ],
+ "style": "paper"
 }

@@ -39,5 +39,6 @@
   "chat-whatsapp",
   "cta-contact",
   "endcard-logo"
- ]
+ ],
+ "style": "light"
 }

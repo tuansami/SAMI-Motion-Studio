@@ -112,3 +112,11 @@ details.group>summary{list-style:revert}
 .card.hiddenP{opacity:.55;border-style:dashed}
 .srvWarn{background:#3a1d05;color:#FFD7A0;border-bottom:1px solid var(--amber);padding:8px 16px;font-size:13px}
 .ftAdd{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.ftDrop{border:2px dashed var(--line);border-radius:10px;padding:18px 12px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:8px}.ftDrop.on{border-color:var(--mint);color:var(--text)}
+/* 1.2 — quản lý cảnh: kéo thả, menu ⋯, thêm cảnh */
+.sc .grip{color:var(--muted);cursor:grab;font-size:13px;margin-right:-2px;opacity:.45}.sc:hover .grip{opacity:1}
+.sc .scMenu{padding:0 7px;opacity:.6;margin-left:4px;font-weight:700}.sc:hover .scMenu,.sc.on .scMenu{opacity:1}
+.sc.dragging{opacity:.4}.sc.dropA{box-shadow:inset 0 3px 0 var(--mint)}.sc.dropB{box-shadow:inset 0 -3px 0 var(--mint)}
+.scAdd{padding:10px 12px}.scAdd button{width:100%;padding:6px;border-style:dashed}
+.popMenu{position:fixed;z-index:70;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:5px;display:flex;flex-direction:column;min-width:230px;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.popMenu button{border:0;background:transparent;text-align:left;padding:7px 10px;border-radius:7px}.popMenu button:hover{background:var(--panel2)}
+.styleGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.styleCard{text-align:left;display:flex;flex-direction:column;gap:2px;padding:8px 10px}.styleCard small{color:var(--muted);font-size:11px}.styleCard.on{border-color:var(--mint);background:rgba(8,221,164,.08)}

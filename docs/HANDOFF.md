@@ -1,6 +1,6 @@
 # HAND-OFF — Nâng cấp SAMI Motion Studio (v0.6 → v1.0)
 
-Cập nhật: 2026-10-08 (sau v1.1.0) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
+Cập nhật: 2026-10-08 (sau v1.2.0) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
 
 Đọc file này đầu tiên khi mở phiên mới. Trả lời Tuấn bằng tiếng Việt, ngắn gọn; viết "SAMI" in hoa; không dùng em-dash trong copy hiển thị.
 
@@ -19,9 +19,11 @@ Cập nhật: 2026-10-08 (sau v1.1.0) · Người làm: Claude Code · Chủ d�
 | **v0.8.3 Khuôn + Dây chuyền** | ✅ 16 khuôn × 3 theme, 🧩 Khuôn trong Studio, dây chuyền promo / maps / menu, brand.json, sổ chi phí theo video (CHANGELOG 0.8.3, mục 3d). Tuấn bảo "triển khai, chưa push" (2026-10-08) |
 | **v0.9.0 Footage / PiP / B-roll** | ✅ tracks.video (main / broll / pip / screen), tab Footage, proxy 540p, VFR → CFR, tiếng footage + hạ nhạc, preset xuất, khối vẽ bằng code, 18 khuôn (CHANGELOG 0.9.0, mục 4). **Chờ Tuấn cho phép xuất thử** 60 s (1 chính, 2 B-roll, 1 PiP, vỗ tay kiểm lệch tiếng ≤ 1 khung, RAM < 12 GB) |
 | **v1.0.0 Hoàn thiện** | ✅ quản lý dự án (tìm / gom / tag / ẩn), sửa hộp Khuôn + tab Footage, khuôn từ storyboard (CATALOG.md, dây chuyền `storyboard`, `add`), **xuất Hyperframes thuần** (thử nghiệm), 3 template ngành, phân tích nhạc trong worker (CHANGELOG 1.0.0, mục 5b). Tuấn đồng ý xuất thử, OpenCV, push (2026-10-08) |
-| **v1.1.0** | ✅ carousel ảnh tách lớp OpenCV (`lib/py/sami_layers.py`), xuất thuần đã thử thật so với Remotion và sửa lệch 1 khung (CHANGELOG 1.1.0). Còn: âm thanh xuất thuần lệch 16 ms so với Remotion; gói `MCP-sami-media` chưa có remote GitHub |
+| **v1.1.0** | ✅ carousel ảnh tách lớp OpenCV (`lib/py/sami_layers.py`), xuất thuần đã thử thật so với Remotion và sửa lệch 1 khung (CHANGELOG 1.1.0). Còn: âm thanh xuất thuần lệch 16 ms so với Remotion |
+| **v1.2.0** | ✅ cột Cảnh kéo thả / nhân bản / xoá / thêm, khung 🎞 Ảnh động, phong cách `lib/hf/styles` + `tools/style-new.mjs` (2 mẫu: cat-dan, ban-tin-doc), TEMPLATE_STANDARD v2, README + repo **MCP-sami-media đã lên GitHub** (`https://github.com/tuansami/MCP-sami-media`, clone cạnh Studio). GitHub Release chưa tạo (bị chặn quyền) |
 
-- **Git:**
+- **Repo:** Studio `https://github.com/tuansami/SAMI-Motion-Studio` (main) · cổng AI `https://github.com/tuansami/MCP-sami-media` (main, private). Hai thư mục cạnh nhau; sửa cổng AI ở repo MCP, đẩy cả hai khi đổi.
+- **Git (lịch sử):**
   - Nhánh `feat/v0.6-nen-mong` (tách từ `main` @ v0.5.0), working tree sạch sau commit 0.8.2.
   - **Chưa push, chưa tag, chưa tạo GitHub Release.** Tuấn chọn "chưa đẩy". Phải hỏi lại trước khi push.
   - `gh` đã đăng nhập tài khoản `tuansami`.

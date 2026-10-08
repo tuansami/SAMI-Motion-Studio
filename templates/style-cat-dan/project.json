@@ -1,0 +1,485 @@
+{
+ "name": "Phong cách: Tư liệu cắt dán giấy",
+ "client": "",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {},
+ "look": {
+  "grain": 0.05,
+  "vignette": 0.4,
+  "theme": "cat-dan"
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook",
+   "start": 0,
+   "end": 121,
+   "engine": "hyperframes",
+   "src": "hf/S01.html",
+   "khuon": {
+    "id": "hook-words",
+    "v": 1
+   }
+  },
+  {
+   "id": "S02",
+   "label": "Vấn đề",
+   "start": 121,
+   "end": 271,
+   "engine": "hyperframes",
+   "src": "hf/S02.html",
+   "khuon": {
+    "id": "problem-stamp",
+    "v": 1
+   }
+  },
+  {
+   "id": "S03",
+   "label": "Số liệu",
+   "start": 271,
+   "end": 391,
+   "engine": "hyperframes",
+   "src": "hf/S03.html",
+   "khuon": {
+    "id": "stat-counter",
+    "v": 1
+   }
+  },
+  {
+   "id": "S04",
+   "label": "Lợi ích",
+   "start": 391,
+   "end": 571,
+   "engine": "hyperframes",
+   "src": "hf/S04.html",
+   "khuon": {
+    "id": "benefits-3",
+    "v": 1
+   }
+  },
+  {
+   "id": "S05",
+   "label": "Ảnh",
+   "start": 571,
+   "end": 721,
+   "engine": "hyperframes",
+   "src": "hf/S05.html",
+   "khuon": {
+    "id": "photo-collage",
+    "v": 1
+   }
+  },
+  {
+   "id": "S06",
+   "label": "Trích dẫn",
+   "start": 721,
+   "end": 871,
+   "engine": "hyperframes",
+   "src": "hf/S06.html",
+   "khuon": {
+    "id": "review-quote",
+    "v": 1
+   }
+  },
+  {
+   "id": "S07",
+   "label": "Kêu gọi",
+   "start": 871,
+   "end": 991,
+   "engine": "hyperframes",
+   "src": "hf/S07.html",
+   "khuon": {
+    "id": "cta-contact",
+    "v": 1
+   }
+  },
+  {
+   "id": "S08",
+   "label": "Kết",
+   "start": 991,
+   "end": 1111,
+   "engine": "hyperframes",
+   "src": "hf/S08.html",
+   "khuon": {
+    "id": "endcard-logo",
+    "v": 1
+   }
+  }
+ ],
+ "copy": {
+  "S01_label": {
+   "label": "Nhãn nhỏ phía trên (bỏ trống = ẩn)",
+   "scene": "S01",
+   "value": "TƯ LIỆU CẮT DÁN GIẤY"
+  },
+  "S01_headline": {
+   "label": "Câu hook (*từ* = tô màu, / = xuống dòng)",
+   "scene": "S01",
+   "value": "Eine Geschichte / in *30 Sekunden*",
+   "hint": "≤ 8 từ"
+  },
+  "S01_sub": {
+   "label": "Dòng phụ (bỏ trống = ẩn)",
+   "scene": "S01",
+   "value": "Beispieltext"
+  },
+  "S02_headline": {
+   "label": "Nỗi đau (*từ* = tô màu)",
+   "scene": "S02",
+   "value": "Das *Problem*"
+  },
+  "S02_p1": {
+   "label": "Lý do 1",
+   "scene": "S02",
+   "value": "Erster Grund"
+  },
+  "S02_p2": {
+   "label": "Lý do 2",
+   "scene": "S02",
+   "value": "Zweiter Grund"
+  },
+  "S02_p3": {
+   "label": "Lý do 3 (bỏ trống = ẩn)",
+   "scene": "S02",
+   "value": ""
+  },
+  "S02_stamp": {
+   "label": "Chữ trên con dấu",
+   "scene": "S02",
+   "value": "Stopp",
+   "hint": "1 đến 2 từ"
+  },
+  "S03_label": {
+   "label": "Nhãn nhỏ (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": ""
+  },
+  "S03_number": {
+   "label": "Con số (vd 87 hoặc 4,8)",
+   "scene": "S03",
+   "value": "68",
+   "type": "number"
+  },
+  "S03_prefix": {
+   "label": "Trước số (vd +, €) (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": ""
+  },
+  "S03_suffix": {
+   "label": "Sau số (vd %, ×, k)",
+   "scene": "S03",
+   "value": "%"
+  },
+  "S03_caption": {
+   "label": "Chú thích (*từ* = tô màu)",
+   "scene": "S03",
+   "value": "Beispielzahl *ersetzen*"
+  },
+  "S03_source": {
+   "label": "Nguồn (bỏ trống = ẩn)",
+   "scene": "S03",
+   "value": "Quelle: Beispiel"
+  },
+  "S04_title": {
+   "label": "Tiêu đề (*từ* = tô màu)",
+   "scene": "S04",
+   "value": "Drei *Punkte*"
+  },
+  "S04_b1": {
+   "label": "Lợi ích 1",
+   "scene": "S04",
+   "value": "Erster Punkt"
+  },
+  "S04_b2": {
+   "label": "Lợi ích 2",
+   "scene": "S04",
+   "value": "Zweiter Punkt"
+  },
+  "S04_b3": {
+   "label": "Lợi ích 3",
+   "scene": "S04",
+   "value": "Dritter Punkt"
+  },
+  "S04_b4": {
+   "label": "Lợi ích 4 (bỏ trống = ẩn)",
+   "scene": "S04",
+   "value": ""
+  },
+  "S05_headline": {
+   "label": "Câu dưới cùng (viết tay) (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": "Bilder *hier*"
+  },
+  "S05_p1_photo": {
+   "label": "Ảnh 1",
+   "scene": "S05",
+   "value": "lib:img/khuon-mau/placeholder_guests.jpg",
+   "type": "image"
+  },
+  "S05_c1": {
+   "label": "Chú thích 1 (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": "Bild 1"
+  },
+  "S05_p2_photo": {
+   "label": "Ảnh 2",
+   "scene": "S05",
+   "value": "lib:img/khuon-mau/placeholder_dish.jpg",
+   "type": "image"
+  },
+  "S05_c2": {
+   "label": "Chú thích 2 (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": "Bild 2"
+  },
+  "S05_p3_photo": {
+   "label": "Ảnh 3 (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": "",
+   "type": "image"
+  },
+  "S05_c3": {
+   "label": "Chú thích 3 (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": ""
+  },
+  "S05_p4_photo": {
+   "label": "Ảnh 4 (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": "",
+   "type": "image"
+  },
+  "S05_c4": {
+   "label": "Chú thích 4 (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": ""
+  },
+  "S05_p5_photo": {
+   "label": "Ảnh 5 (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": "",
+   "type": "image"
+  },
+  "S05_c5": {
+   "label": "Chú thích 5 (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": ""
+  },
+  "S05_p6_photo": {
+   "label": "Ảnh 6 (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": "",
+   "type": "image"
+  },
+  "S05_c6": {
+   "label": "Chú thích 6 (bỏ trống = ẩn)",
+   "scene": "S05",
+   "value": ""
+  },
+  "S06_quote": {
+   "label": "Lời đánh giá (*từ* = tô màu)",
+   "scene": "S06",
+   "value": "Ein Zitat als Beispiel, kurz und klar.",
+   "hint": "≤ 20 từ"
+  },
+  "S06_author": {
+   "label": "Người viết",
+   "scene": "S06",
+   "value": "Name"
+  },
+  "S06_meta": {
+   "label": "Nguồn / thời gian",
+   "scene": "S06",
+   "value": "Quelle"
+  },
+  "S06_rating": {
+   "label": "Số sao (1 đến 5)",
+   "scene": "S06",
+   "value": "5",
+   "type": "number"
+  },
+  "S06_headline": {
+   "label": "Câu phía trên (bỏ trống = ẩn)",
+   "scene": "S06",
+   "value": ""
+  },
+  "S07_headline": {
+   "label": "Câu kêu gọi (*từ* = tô màu)",
+   "scene": "S07",
+   "value": "Jetzt *handeln.*"
+  },
+  "S07_button": {
+   "label": "Chữ trên nút",
+   "scene": "S07",
+   "value": "Kontakt"
+  },
+  "S07_web": {
+   "label": "Website (bỏ trống = ẩn)",
+   "scene": "S07",
+   "value": "beispiel.de"
+  },
+  "S07_phone": {
+   "label": "Điện thoại (bỏ trống = ẩn)",
+   "scene": "S07",
+   "value": ""
+  },
+  "S07_whatsapp": {
+   "label": "WhatsApp (bỏ trống = ẩn)",
+   "scene": "S07",
+   "value": ""
+  },
+  "S07_address": {
+   "label": "Địa chỉ (bỏ trống = ẩn)",
+   "scene": "S07",
+   "value": ""
+  },
+  "S08_logo": {
+   "label": "Logo (ảnh PNG nền trong, bỏ trống = dùng tên chữ) (bỏ trống = ẩn)",
+   "scene": "S08",
+   "value": "",
+   "type": "image"
+  },
+  "S08_name": {
+   "label": "Tên thương hiệu (khi không có logo)",
+   "scene": "S08",
+   "value": "Marke"
+  },
+  "S08_tagline": {
+   "label": "Khẩu hiệu (*từ* = tô màu) (bỏ trống = ẩn)",
+   "scene": "S08",
+   "value": "Tư liệu cắt dán giấy"
+  },
+  "S08_web": {
+   "label": "Website (bỏ trống = ẩn)",
+   "scene": "S08",
+   "value": "beispiel.de"
+  }
+ },
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {
+   "font": "Be Vietnam Pro",
+   "weight": 700,
+   "color": "#FFFFFF",
+   "highlight": "#08DDA4",
+   "shadow": true
+  }
+ },
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "",
+   "gain": -4,
+   "edit": [],
+   "fadeOut": 2.5
+  },
+  "cues": [
+   {
+    "t": 0,
+    "sfx": "whoosh_b",
+    "gain": -18,
+    "label": "S01 vào"
+   },
+   {
+    "t": 0.5,
+    "sfx": "pop",
+    "gain": -16,
+    "label": "S01 hook"
+   },
+   {
+    "t": 4.783,
+    "sfx": "key_single",
+    "gain": -20,
+    "label": "S02 lý do"
+   },
+   {
+    "t": 7.033,
+    "sfx": "sub_hit",
+    "gain": -10,
+    "label": "S02 con dấu"
+   },
+   {
+    "t": 9.283,
+    "sfx": "whoosh_a",
+    "gain": -20,
+    "label": "S03 vòng"
+   },
+   {
+    "t": 10.533,
+    "sfx": "pop",
+    "gain": -14,
+    "label": "S03 số xong"
+   },
+   {
+    "t": 14.033,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S04 thẻ 1"
+   },
+   {
+    "t": 14.783,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S04 thẻ 2"
+   },
+   {
+    "t": 15.533,
+    "sfx": "pop",
+    "gain": -18,
+    "label": "S04 thẻ 3"
+   },
+   {
+    "t": 19.283,
+    "sfx": "whoosh_c",
+    "gain": -20,
+    "label": "S05 ảnh 1"
+   },
+   {
+    "t": 20.033,
+    "sfx": "whoosh_c",
+    "gain": -20,
+    "label": "S05 ảnh 3"
+   },
+   {
+    "t": 24.533,
+    "sfx": "pop",
+    "gain": -20,
+    "label": "S06 sao"
+   },
+   {
+    "t": 25.533,
+    "sfx": "whoosh_a",
+    "gain": -22,
+    "label": "S06 lời khách"
+   },
+   {
+    "t": 29.283,
+    "sfx": "whoosh_b",
+    "gain": -18,
+    "label": "S07 vào"
+   },
+   {
+    "t": 30.533,
+    "sfx": "pop",
+    "gain": -12,
+    "label": "S07 nút"
+   },
+   {
+    "t": 33.283,
+    "sfx": "sub_hit",
+    "gain": -14,
+    "label": "S08 logo"
+   }
+  ]
+ }
+}

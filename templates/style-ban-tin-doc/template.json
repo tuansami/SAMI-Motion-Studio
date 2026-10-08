@@ -1,0 +1,41 @@
+{
+ "id": "style-ban-tin-doc",
+ "name": "Phong cách: Bản tin dọc (tin nóng)",
+ "version": "1.0.0",
+ "studio": ">=1.2.0",
+ "category": "style",
+ "style": "ban-tin-doc",
+ "goal": [],
+ "description": "Nền than chì, đỏ tin nóng, chữ in hoa đứng (Anton), khối nhấn đỏ. Hợp tin nhanh 9:16. Template demo: 8 khuôn tiêu biểu mặc phong cách này; dùng làm điểm bắt đầu.",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "duration": 37,
+ "bpm": 120,
+ "languages": [
+  "de"
+ ],
+ "thumbFrame": 101,
+ "author": "SAMI Marketing Agency",
+ "license": "internal",
+ "tags": [
+  "style",
+  "ban-tin-doc",
+  "news",
+  "breaking",
+  "vertical",
+  "bold"
+ ],
+ "engine": "hyperframes",
+ "khuon": [
+  "hook-words",
+  "problem-stamp",
+  "stat-counter",
+  "benefits-3",
+  "photo-collage",
+  "review-quote",
+  "cta-contact",
+  "endcard-logo"
+ ]
+}

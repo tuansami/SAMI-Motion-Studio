@@ -10,7 +10,10 @@ import {readProject, writeProject} from './project.mjs';
 
 export const KHUON_DIR = path.join(LIB, 'hf', 'khuon');
 export const FPB = 15; // frames per beat (30 fps, 120 BPM)
-export const THEMES = ['night', 'paper', 'light'];
+import {styleIds, listStyles} from './styles.mjs';
+export const THEMES = ['night', 'paper', 'light']; // built-in; every style pack (lib/hf/styles) is also a theme → themes()
+export const themes = () => styleIds();
+export {listStyles};
 export const GROUPS = {hook: 'Mở đầu (hook)', 'van-de': 'Vấn đề', 'loi-ich': 'Lợi ích', 'so-lieu': 'Số liệu', maps: 'Google Maps', chat: 'Chat', anh: 'Ảnh', menu: 'Thực đơn', 'uu-dai': 'Ưu đãi', 'danh-gia': 'Đánh giá', 'thoi-gian': 'Thời gian', cta: 'Kêu gọi', ket: 'Kết'};
 
 export const listKhuon = () => {

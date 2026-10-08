@@ -1,0 +1,26 @@
+/* Phong cách: Tư liệu cắt dán giấy (base: paper). Nạp tự động cho mọi cảnh có theme "cat-dan".
+ * Bìa các-tông xám nâu, giấy xé mép răng cưa, chữ tiêu đề Archivo Black như cắt từ báo, nhấn = dải giấy đỏ dán chéo,
+ * chữ tay Caveat đỏ. Kết cấu giấy thừa hưởng từ base paper (kit.css). Không animation CSS (không seek được). */
+[data-theme="cat-dan"] {
+  --k-bg: radial-gradient(120% 95% at 50% 40%, transparent 50%, rgba(40,28,15,.35) 100%), var(--c-kraft, #B9A88E);
+  --k-ink: var(--c-ink, #1B1B1B); --k-sub: #3D342A; --k-accent: var(--c-accent, #D62828); --k-accent2: var(--c-ink, #1B1B1B);
+  --k-card: #F4EFE4; --k-cardInk: #1B1B1B; --k-cardLine: rgba(0,0,0,.10);
+  --k-paper: #F4EFE4; --k-paperInk: #1B1B1B; --k-shadow: 4px 10px 0 rgba(40,28,15,.28), 0 18px 34px rgba(40,28,15,.30);
+  --k-head: "Archivo Black", var(--f-head); --k-hand: "Caveat", cursive; --k-mono: var(--f-mono); --k-ui: "Inter", var(--f-ui);
+  --k-weight: 400; --k-track: -0.01em;
+}
+/* giấy xé: mép răng cưa nhỏ, góc vuông, bóng đổ cứng như dán lên bìa */
+html[data-theme="cat-dan"] .k-card { border-radius: 2px; border: 0;
+  clip-path: polygon(0 2%, 4% 0, 9% 1.5%, 15% 0, 22% 1%, 30% 0, 38% 1.8%, 46% 0, 55% 1.2%, 63% 0, 71% 1.6%, 80% 0, 88% 1.4%, 95% 0, 100% 2%, 99% 50%, 100% 98%, 94% 100%, 86% 98.6%, 77% 100%, 68% 98.8%, 58% 100%, 49% 98.4%, 40% 100%, 31% 98.7%, 22% 100%, 13% 98.5%, 5% 100%, 0 98%, 1% 50%); }
+html[data-theme="cat-dan"] .k-chip { border-radius: 2px; background: #1B1B1B; color: #F4EFE4; border: 0; font-family: var(--k-head); font-weight: 400; letter-spacing: .02em; text-transform: uppercase; }
+html[data-theme="cat-dan"] .k-btn { border-radius: 2px; background: var(--k-accent); font-family: var(--k-head); font-weight: 400; text-transform: uppercase; letter-spacing: .03em; box-shadow: 5px 6px 0 #1B1B1B; }
+html[data-theme="cat-dan"] .k-head { text-transform: uppercase; line-height: 1.08; }
+/* nhấn: chữ trắng trên dải giấy đỏ dán hơi lệch */
+html[data-theme="cat-dan"] em.hl:has(.w) { background: none; padding: 0; }
+html[data-theme="cat-dan"] em.hl, html[data-theme="cat-dan"] em.hl .w { font-style: normal; color: #FFF8EC; background: var(--k-accent); -webkit-background-clip: border-box; background-clip: border-box;
+  padding: 0 .14em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+html[data-theme="cat-dan"] .k-ransom .r0, html[data-theme="cat-dan"] .k-ransom .r3 { font-family: "Archivo Black", serif; font-style: normal; font-weight: 400; }
+html[data-theme="cat-dan"] .k-ransom .r1 { background: #1B1B1B; }
+html[data-theme="cat-dan"] .k-tape { background: rgba(232, 220, 180, .8); height: 48px; }
+html[data-theme="cat-dan"] .k-polaroid { padding: 14px 14px 58px; background: #F4EFE4; }
+html[data-theme="cat-dan"] .k-stamp { border-radius: 4px; font-family: "Archivo Black", sans-serif; font-weight: 400; }

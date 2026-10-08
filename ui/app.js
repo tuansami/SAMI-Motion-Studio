@@ -60,7 +60,7 @@ function showServerWarn() {
   w.textContent = `⚠ Studio đang chạy bản cũ (${S.state.bootVersion || '≤ 0.9'}) trong khi giao diện đã là ${UI_VER}. Một số tab (Footage, quản lý dự án…) sẽ trống hoặc báo "Not Found". Đóng cửa sổ Studio (cửa sổ đen) rồi mở lại Start-Studio.bat.`;
 }
 // ── 1.0: quản lý dự án — tìm, gom theo tháng / ngày / khách / trạng thái, sắp xếp, lọc tag, ẩn ──
-const UI_VER = '1.1.0';
+const UI_VER = '1.2.0';
 const HV_KEY = 'sami.homeView';
 const HV_DEF = {q: '', group: 'month', sort: 'date', status: '', type: '', tag: '', client: '', showHidden: false, view: 'cards', closed: {}};
 S.hv = (() => { try { return {...HV_DEF, ...JSON.parse(localStorage.getItem(HV_KEY) || '{}'), q: ''}; } catch { return {...HV_DEF}; } })();
@@ -209,8 +209,11 @@ function renderGallery() {
   const F = $('#tplFilters'); F.innerHTML = '';
   const cats = ['all', ...Object.keys(C).filter((c) => T.some((t) => t.category === c))];
   for (const c of cats) F.append(h('button', {class: S.tplCat === c ? 'on' : '', onclick: () => { S.tplCat = c; renderGallery(); }}, c === 'all' ? `Tất cả (${T.length})` : `${C[c]} (${T.filter((t) => t.category === c).length})`));
+  // 1.2: lọc theo phong cách (template.json → style)
+  const SL = [...new Set(T.map((t) => t.style).filter(Boolean))];
+  if (SL.length) F.append(h('span', {class: 'muted', style: 'font-size:12.5px;align-self:center;margin-left:8px'}, 'Phong cách:'), ...['', ...SL].map((st) => h('button', {class: (S.tplStyle || '') === st ? 'on' : '', onclick: () => { S.tplStyle = st; renderGallery(); }}, st ? '🎨 ' + ((S.state.styles || []).find((x) => x.id === st)?.name || st) : 'Mọi phong cách')));
   const G = $('#tplGrid'); G.innerHTML = '';
-  for (const t of T.filter((x) => S.tplCat === 'all' || x.category === S.tplCat)) {
+  for (const t of T.filter((x) => (S.tplCat === 'all' || x.category === S.tplCat) && (!S.tplStyle || x.style === S.tplStyle))) {
     const th = t.thumbs || {};
     G.append(h('div', {class: 'tpl' + ($('#npTemplate').value === t.id ? ' sel' : '')},
       h('div', {class: 'thumbs'}, ...(Object.keys(th).length ? ['16:9', '9:16', '1:1'].filter((r) => th[r]).map((r) => h('img', {src: th[r] + '?v=' + t.version, alt: r, title: r})) : [h('div', {class: 'ph'}, 'Chưa có ảnh bìa')])),
@@ -381,14 +384,124 @@ function setSceneLength(id, newLen) {
 }
 function renderScenes() {
   const L = $('#sceneList'); L.innerHTML = '';
+  const car = S.project.type === 'carousel';
   S.project.scenes.forEach((s, i) => {
     const len = (s.end - s.start) / BASE;
     const inp = h('input', {type: 'number', step: '0.5', min: '0.5', value: len.toFixed(2), title: 'Thời lượng (giây)', onclick: (e) => e.stopPropagation(), onchange: (e) => setSceneLength(s.id, parseFloat(e.target.value) * BASE)});
-    L.append(h('div', {class: 'sc' + (s.id === S.scene ? ' on' : ''), onclick: () => selectScene(s.id)},
-      h('div', {class: 'l1'}, h('span', {class: 'id'}, s.id), h('span', {class: 'nm'}, s.label || ''), (s.engine === 'hyperframes' || /\.html?$/i.test(s.src || '')) ? h('span', {class: 'eng', title: 'Cảnh HTML + CSS + GSAP (Hyperframes) — ' + (s.src || '')}, 'HTML') : null),
-      h('div', {class: 'l2'}, h('span', {}, fmtT(s.start / BASE)), h('span', {style: 'flex:1'}), h('button', {class: 'small', title: '−0,5 giây', onclick: (e) => { e.stopPropagation(); setSceneLength(s.id, s.end - s.start - 15); }}, '−'), inp, h('span', {}, 's'), h('button', {class: 'small', title: '+0,5 giây', onclick: (e) => { e.stopPropagation(); setSceneLength(s.id, s.end - s.start + 15); }}, '+'))));
+    const row = h('div', {class: 'sc' + (s.id === S.scene ? ' on' : ''), draggable: 'true', onclick: () => selectScene(s.id)},
+      h('div', {class: 'l1'}, h('span', {class: 'grip', title: 'Kéo để đổi thứ tự'}, '⠿'), h('span', {class: 'id'}, s.id), h('span', {class: 'nm'}, s.label || ''),
+        s.engine === 'blank' ? h('span', {class: 'eng', style: 'background:rgba(255,255,255,.08);color:var(--muted)', title: 'Cảnh trống: chỉ nền + footage / tiêu đề. Bấm 🧩 Khuôn → "Đổi" để biến thành cảnh có nội dung.'}, 'TRỐNG')
+          : (s.engine === 'hyperframes' || /\.html?$/i.test(s.src || '')) ? h('span', {class: 'eng', title: 'Cảnh HTML + CSS + GSAP (Hyperframes) — ' + (s.src || '')}, 'HTML') : null,
+        h('button', {class: 'small scMenu', title: 'Nhân bản, xoá, thêm cảnh', onclick: (e) => { e.stopPropagation(); sceneMenu(s, e.currentTarget); }}, '⋯')),
+      h('div', {class: 'l2'}, h('span', {}, fmtT(s.start / BASE)), h('span', {style: 'flex:1'}), h('button', {class: 'small', title: '−0,5 giây', onclick: (e) => { e.stopPropagation(); setSceneLength(s.id, s.end - s.start - 15); }}, '−'), inp, h('span', {}, 's'), h('button', {class: 'small', title: '+0,5 giây', onclick: (e) => { e.stopPropagation(); setSceneLength(s.id, s.end - s.start + 15); }}, '+')));
+    // kéo thả đổi thứ tự (1.2): thả lên nửa trên = đặt trước, nửa dưới = đặt sau
+    row.ondragstart = (e) => { S.dragScene = s.id; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/x-sami-scene', s.id); row.classList.add('dragging'); };
+    row.ondragend = () => { S.dragScene = null; row.classList.remove('dragging'); $$('.sc.dropA,.sc.dropB').forEach((x) => x.classList.remove('dropA', 'dropB')); };
+    row.ondragover = (e) => { if (!S.dragScene || S.dragScene === s.id) return; e.preventDefault(); const r = row.getBoundingClientRect(); const after = e.clientY > r.top + r.height / 2; row.classList.toggle('dropA', !after); row.classList.toggle('dropB', after); };
+    row.ondragleave = () => row.classList.remove('dropA', 'dropB');
+    row.ondrop = (e) => { e.preventDefault(); const from = S.dragScene; if (!from || from === s.id) return; const after = row.classList.contains('dropB'); row.classList.remove('dropA', 'dropB'); moveScene(from, s.id, after); };
+    L.append(row);
   });
+  L.append(h('div', {class: 'scAdd'}, h('button', {class: 'small', title: 'Thêm cảnh mới sau cảnh đang chọn', onclick: (e) => addSceneMenu(e.currentTarget)}, car ? '＋ Thêm slide' : '＋ Thêm cảnh')));
   $('#totalDur').textContent = 'Tổng ' + fmtT(totalSec());
+}
+
+// ── 1.2: sắp xếp / xoá / nhân bản / thêm cảnh ngay trong Studio ──
+// Mọi cảnh giữ nguyên độ dài; cảnh xếp lại liền nhau từ 0 (điểm cắt vẫn đúng lưới nhịp 15n+1). Tiêu đề, SFX, giọng đọc,
+// phụ đề, ảnh chèn, footage nằm trong một cảnh đi theo cảnh đó; nhạc nền giữ nguyên. Hoàn tác được (Ctrl+Z).
+/** p.scenes ← order (scene objects, same ids, maybe fewer / new ones with a length); remaps every timed item */
+function relayout(p, order) {
+  const car = p.type === 'carousel';
+  const old = p.scenes.map((s) => ({id: s.id, a: s.start, b: s.end}));
+  const extra = !car && old.length && (old[0].b - old[0].a) % 15 === 1 ? 1 : 0; // first cut sits on 15n+1
+  const lenOf = (s) => { const o = old.find((x) => x.id === s.id); const L = o ? o.b - o.a - (o === old[0] ? extra : 0) : s._len; return Math.max(15, L); };
+  let t = 0; const neu = {};
+  order.forEach((s, i) => { const L = lenOf(s) + (i === 0 ? extra : 0); neu[s.id] = t; s.start = t; s.end = t + L; t += L; delete s._len; });
+  const T0 = old.at(-1)?.b || 0;
+  // a time (s) → new time, or null when its scene was deleted
+  const map = (sec) => {
+    const f = sec * BASE; let o = old.find((x) => f >= x.a && f < x.b) || (f >= T0 ? old.at(-1) : old[0]);
+    if (!o || neu[o.id] == null) return null;
+    return +(sec + (neu[o.id] - o.a) / BASE).toFixed(3);
+  };
+  const shiftSpan = (it, a = 'start', b = 'end') => { const n = map(it[a]); if (n == null) return false; const d = n - it[a]; it[a] = n; if (b && it[b] != null) it[b] = +(it[b] + d).toFixed(3); return true; };
+  if (!car) {
+    p.titles = (p.titles || []).filter((x) => shiftSpan(x));
+    p.overlays = (p.overlays || []).filter((x) => x.whole || shiftSpan(x));
+    if (p.subtitles?.items) p.subtitles.items = p.subtitles.items.filter((x) => shiftSpan(x));
+    if (p.audio?.cues) p.audio.cues = p.audio.cues.filter((x) => shiftSpan(x, 't', null));
+    if (p.audio?.voice) p.audio.voice = p.audio.voice.filter((x) => shiftSpan(x, 't', null));
+    if (p.tracks?.video) p.tracks.video = p.tracks.video.filter((x) => shiftSpan(x, 'at', null));
+  }
+  const keep = new Set(order.map((s) => s.id));
+  for (const [k, v] of Object.entries(p.copy || {})) if (v?.scene && !keep.has(v.scene)) delete p.copy[k];
+  p.scenes = order;
+}
+function moveScene(id, target, after) {
+  commit((p) => {
+    const list = p.scenes.filter((s) => s.id !== id); const s = p.scenes.find((x) => x.id === id);
+    const i = list.findIndex((x) => x.id === target); list.splice(after ? i + 1 : i, 0, s);
+    if (list.map((x) => x.id).join() !== p.scenes.map((x) => x.id).join()) relayout(p, list);
+  });
+  saveStructural(); toast(`Đã chuyển ${id} ${after ? 'xuống sau' : 'lên trước'} ${target} · Ctrl+Z để hoàn tác`);
+}
+async function deleteScene(s) {
+  if (S.project.scenes.length < 2) return toast('Phim phải còn ít nhất 1 cảnh', true);
+  const items = [...(S.project.titles || []), ...(S.project.audio?.cues || []), ...(S.project.audio?.voice || [])].filter((x) => { const f = (x.start ?? x.t) * BASE; return f >= s.start && f < s.end; }).length;
+  if (!confirm(`Xoá cảnh ${s.id} "${s.label || ''}"?\n\nCác cảnh sau dồn lên ${fmtT((s.end - s.start) / BASE)}. ${items ? items + ' tiêu đề / SFX / giọng đọc nằm trong cảnh này cũng bị xoá. ' : ''}File cảnh trên ổ đĩa giữ nguyên; Ctrl+Z hoặc tab Lịch sử để lấy lại.`)) return;
+  try { await api('/api/history/snapshot', {id: S.id, label: `Trước khi xoá cảnh ${s.id}`}); } catch {}
+  if (S.scene === s.id) { const L = S.project.scenes; const i = L.findIndex((x) => x.id === s.id); S.scene = (L[i + 1] || L[i - 1]).id; }
+  commit((p) => relayout(p, p.scenes.filter((x) => x.id !== s.id)));
+  saveStructural(); renderTab(); toast(`Đã xoá ${s.id} · Ctrl+Z để hoàn tác`);
+}
+/** after a structural edit: save (HTML scenes preview from the saved file) then reload the scene iframes */
+const saveStructural = async () => { await save(); S.hfRev = Date.now(); pushPreview(); };
+const newSceneId = (p) => { const pre = (p.scenes.at(-1)?.id || 'S00').replace(/\d+$/, '') || 'S'; let n = Math.max(0, ...p.scenes.map((s) => +(String(s.id).match(/(\d+)$/)?.[1] || 0))) + 1, id; do { id = pre + String(n++).padStart(2, '0'); } while (p.scenes.some((s) => s.id === id)); return id; };
+async function duplicateScene(s) {
+  if (!(s.engine === 'hyperframes' || s.engine === 'blank' || /\.html?$/i.test(s.src || ''))) return toast('Cảnh Remotion (.tsx) chỉ nhân bản được qua Claude Code', true);
+  const id = newSceneId(S.project);
+  let src = s.src;
+  if (s.engine !== 'blank' && s.src && !s.src.startsWith('slides/photo')) { // own HTML file → copy it (ids inside are renamed)
+    try { src = (await api('/api/scene/duplicate', {id: S.id, scene: s.id, newId: id, src: s.src})).src; } catch (e) { return toast(e.message, true, 6000); }
+  }
+  commit((p) => {
+    const c = JSON.parse(JSON.stringify(s)); Object.assign(c, {id, label: (s.label || s.id) + ' (bản sao)', src, _len: s.end - s.start}); if (!src) delete c.src;
+    for (const [k, v] of Object.entries(p.copy || {})) if (v?.scene === s.id) p.copy[id + k.slice(s.id.length)] = {...JSON.parse(JSON.stringify(v)), scene: id};
+    const list = [...p.scenes]; list.splice(list.findIndex((x) => x.id === s.id) + 1, 0, c); relayout(p, list);
+  });
+  S.scene = id; saveStructural(); renderAll(); toast(`Đã nhân bản ${s.id} → ${id} (cả chữ). Sửa chữ ở tab Chữ.`);
+}
+function addBlank(afterId, seconds = 3) {
+  const id = newSceneId(S.project);
+  commit((p) => { const list = [...p.scenes]; const i = afterId ? list.findIndex((x) => x.id === afterId) + 1 : list.length; list.splice(i, 0, {id, label: 'Cảnh trống', engine: 'blank', _len: Math.round(seconds * 2) * 15}); relayout(p, list); });
+  S.scene = id; saveStructural(); renderAll(); toast(`Đã thêm ${id} (trống ${seconds} s). Bấm 🧩 Khuôn → "Đổi ${id}" để đặt nội dung, hoặc thả footage / tiêu đề lên.`, false, 7000);
+}
+function popMenu(anchor, items) {
+  $$('.popMenu').forEach((m) => m.remove());
+  const r = anchor.getBoundingClientRect();
+  const m = h('div', {class: 'popMenu', style: `left:${Math.min(r.left, innerWidth - 250)}px;top:${r.bottom + 4}px`}, ...items.filter(Boolean).map(([label, fn, cls]) => h('button', {class: cls || '', onclick: (e) => { e.stopPropagation(); m.remove(); fn(); }}, label)));
+  document.body.append(m);
+  setTimeout(() => addEventListener('mousedown', function off(e) { if (!m.contains(e.target)) { m.remove(); removeEventListener('mousedown', off); } }), 0);
+}
+function sceneMenu(s, anchor) {
+  const i = S.project.scenes.findIndex((x) => x.id === s.id), n = S.project.scenes.length;
+  popMenu(anchor, [
+    ['⧉ Nhân bản cảnh', () => duplicateScene(s)],
+    S.project.type === 'carousel' ? null : ['＋ Cảnh trống ngay sau', () => addBlank(s.id)],
+    ['🧩 Thêm từ khuôn ngay sau', () => { selectScene(s.id); $('#btnKhuon').click(); }],
+    i > 0 ? ['↑ Lên trước ' + S.project.scenes[i - 1].id, () => moveScene(s.id, S.project.scenes[i - 1].id, false)] : null,
+    i < n - 1 ? ['↓ Xuống sau ' + S.project.scenes[i + 1].id, () => moveScene(s.id, S.project.scenes[i + 1].id, true)] : null,
+    ['🗑 Xoá cảnh', () => deleteScene(s), 'danger'],
+  ]);
+}
+function addSceneMenu(anchor) {
+  const cur = S.scene;
+  popMenu(anchor, [
+    ['🧩 Từ khuôn (có sẵn chuyển động)', () => $('#btnKhuon').click()],
+    S.project.type === 'carousel' ? null : ['＋ Cảnh trống 3 giây (cho footage / tiêu đề)', () => addBlank(cur, 3)],
+    cur ? ['⧉ Nhân bản cảnh đang chọn (' + cur + ')', () => duplicateScene(sceneById(cur))] : null,
+    ['✨ Cảnh mới hoàn toàn: nhờ Claude Code', () => toast('Cảnh có chuyển động riêng do Claude Code viết (HTML). Thêm cảnh trống trước, rồi nói với Claude: "viết cảnh S0x: …"', false, 8000)],
+  ]);
 }
 function selectScene(id) {
   S.scene = id; renderScenes(); renderScrub();
@@ -443,7 +556,8 @@ $('#btnKhuon').onclick = async () => {
     }
   };
   const search = h('input', {type: 'search', placeholder: '🔎 Tìm khuôn: maps, ưu đãi, số liệu, chat, menu…', value: K.q, style: 'flex:1;min-width:220px', oninput: (e) => { K.q = e.target.value; drawGrid(); }});
-  const themeSeg = h('div', {class: 'seg'}, ...D.themes.map((t) => h('button', {class: K.theme === t ? 'on' : '', onclick: (e) => { K.theme = t; [...themeSeg.children].forEach((x) => x.classList.toggle('on', x === e.target)); }}, THEME_VI[t] || t)));
+  const SN = Object.fromEntries((D.styles || []).map((x) => [x.id, x.name]));
+  const themeSeg = h('select', {title: 'Phong cách của cảnh thêm / đổi', onchange: (e) => { K.theme = e.target.value; }}, ...D.themes.map((t) => h('option', {value: t, selected: K.theme === t}, '🎨 ' + (SN[t] || THEME_VI[t] || t))));
   modal(h('div', {},
     h('h3', {style: 'margin-top:0'}, '🧩 Khuôn cảnh'),
     h('p', {class: 'muted', style: 'font-size:13px;margin-top:-6px'}, 'Khuôn là cảnh HTML dựng sẵn có tham số: chữ, ảnh, màu lấy từ dự án. ', cur ? `"Đổi khuôn" thay cảnh ${cur.id}, giữ chữ của ô cùng tên. ` : '', '"Thêm" chèn cảnh mới sau cảnh đang chọn.'),
@@ -522,9 +636,39 @@ function tabText(B) {
     g.append(field(v.label || k, inp, v.hint));
   }
   B.append(g);
+  if (sc?.photo) B.append(photoPanel(sc));
   const others = all.filter(([, v]) => v.scene !== S.scene);
   if (others.length) B.append(h('details', {}, h('summary', {class: 'muted', style: 'cursor:pointer;margin-bottom:8px'}, `Tất cả chữ trong video (${all.length})`),
     ...all.map(([k, v]) => h('div', {class: 'item', onclick: () => selectScene(v.scene)}, h('span', {class: 't'}, v.scene), h('span', {class: 'x'}, `${v.label}: ${v.value}`)))));
+}
+
+// — 1.2: slide ảnh carousel: chỉnh chuyển động + tách lớp OpenCV (chữ bật theo nhịp, chủ thể có chiều sâu) —
+function photoPanel(sc) {
+  const P = {hit: 2, push: 0.035, shine: true, motes: 14, kick: true, depth: 0.025, pop: 0.05, ...sc.photo};
+  const set = (k, v) => { commit((p) => { p.scenes.find((s) => s.id === sc.id).photo[k] = v; }); saveStructural(); };
+  const rng = (k, min, max, step, label, fmt = (v) => v, hint) => field(`${label}: ${fmt(+P[k])}`, h('input', {type: 'range', min, max, step, value: P[k], oninput: (e) => { e.target.parentElement.firstChild.textContent = `${label}: ${fmt(+e.target.value)}`; }, onchange: (e) => { set(k, +e.target.value); renderTab(); }}), hint);
+  const pct = (v) => (v * 100).toFixed(1).replace(/\.0$/, '') + ' %';
+  const L = P.layers;
+  const box = h('div', {class: 'group'}, h('h4', {}, '🎞 Ảnh động (slide ảnh)'));
+  box.append(h('div', {class: 'hint', style: 'margin:0 0 10px'}, 'Slide làm từ ảnh đã thiết kế. Khung đầu và cuối vòng luôn đúng ảnh gốc (làm ảnh bìa, nối vòng liền). ',
+    h('b', {}, 'Tách lớp'), ' (OpenCV) tìm các khối chữ và chủ thể trong ảnh: chữ bật lần lượt đúng "nhịp chính", chủ thể phóng nhẹ như nổi khối. Xem kết quả ngay ở khung xem.'));
+  // ảnh xem lớp: khung đỏ = khối chữ, khung xanh = chủ thể
+  const cv = h('canvas', {width: 216, height: 270, style: 'width:216px;height:270px;border-radius:8px;background:#000;display:block'});
+  const img = new Image(); img.src = `/proj/${S.id}/public/${P.img}?${S.hfRev || 0}`;
+  img.onload = () => { const c = cv.getContext('2d'); c.drawImage(img, 0, 0, 216, 270); const k = 216 / 1080; c.lineWidth = 2;
+    if (L?.subject) { const b = L.subject.bbox; c.strokeStyle = '#08DDA4'; c.setLineDash([6, 4]); c.strokeRect(b[0] * k, b[1] * k, b[2] * k, b[3] * k); c.setLineDash([]); }
+    c.strokeStyle = '#FF5A5F'; for (const t of L?.text || []) c.strokeRect(t.x * k, t.y * k, t.w * k, t.h * k); };
+  const status = h('div', {style: 'font-size:12.5px'}, L ? [h('div', {class: 'v-ok'}, `✓ Đã tách: ${L.text.length} khối chữ (khung đỏ)`), h('div', {class: L.subject ? 'v-ok' : 'muted'}, L.subject ? `✓ Chủ thể (khung xanh, ${Math.round(L.subject.area * 100)} % ảnh)` : '· Không có chủ thể rõ: chỉ chữ bật, cả ảnh thở')] : h('div', {class: 'muted'}, 'Chưa tách lớp: cả ảnh thở nhẹ, vệt sáng, đốm sáng (chế độ gọn).'));
+  const run = async (opts = {}) => { status.textContent = '⏳ Đang tách lớp (5 đến 15 giây)…'; try { const r = await api('/api/carousel/layers', {id: S.id, scene: sc.id, ...opts}); commit((p) => { const x = p.scenes.find((s) => s.id === sc.id); x.photo.layers = r.layers; x.photo.depth ??= 0.025; x.photo.pop ??= 0.05; }); saveStructural(); renderTab(); toast(`Đã tách lớp ${sc.id}: ${r.layers.text.length} khối chữ${r.layers.subject ? ' + chủ thể' : ''}`); } catch (e) { status.textContent = ''; toast(e.message, true, 8000); renderTab(); } };
+  box.append(h('div', {class: 'row', style: 'gap:12px;align-items:flex-start;margin-bottom:10px'}, cv, h('div', {style: 'display:flex;flex-direction:column;gap:6px;flex:1'}, status,
+    h('button', {class: 'small primary', onclick: () => run()}, L ? '↻ Tách lớp lại' : '✂ Tách lớp (OpenCV)'),
+    L?.subject ? h('button', {class: 'small', title: 'Khung xanh chọn sai (ví dụ chọn nhầm tường): bỏ chủ thể, chỉ giữ chữ bật', onclick: () => run({noSubject: true})}, 'Bỏ chủ thể (chọn sai)') : null,
+    L ? h('button', {class: 'small', onclick: () => { commit((p) => { delete p.scenes.find((s) => s.id === sc.id).photo.layers; }); saveStructural(); renderTab(); }}, 'Tắt tách lớp (về chế độ gọn)') : null)));
+  const dur = (sc.end - sc.start) / BASE;
+  box.append(rng('hit', 0.5, Math.max(1, dur - 1), 0.25, 'Nhịp chính (giây)', (v) => v.toFixed(2) + ' s', 'Lúc chữ bật, vệt sáng quét, máy giật nhẹ. Nên trùng tiếng SFX (tab Âm thanh / cues).'));
+  box.append(h('div', {class: 'cols2'}, rng('push', 0, 0.08, 0.005, 'Thở (cả ảnh)', pct), L?.subject ? rng('depth', 0, 0.06, 0.005, 'Chiều sâu chủ thể', pct) : null, L?.text?.length ? rng('pop', 0, 0.12, 0.01, 'Độ bật chữ', pct) : null, rng('motes', 0, 30, 1, 'Đốm sáng', (v) => v)));
+  box.append(h('div', {class: 'row', style: 'gap:14px'}, ...[['shine', 'Vệt sáng quét'], ['kick', 'Giật máy ở nhịp chính']].map(([k, l]) => h('label', {class: 'chk', style: 'margin:0'}, h('input', {type: 'checkbox', checked: !!P[k], onchange: (e) => set(k, e.target.checked)}), l))));
+  return box;
 }
 
 // — shared text-style editor (titles & subtitles) —
@@ -784,6 +928,17 @@ function tabLook(B) {
   g.append(h('div', {class: 'cols2'}, ...COLORS.map(([k, l, d]) => field(l, h('input', {type: 'color', value: b.colors[k] || d, onchange: (e) => upd((p) => { p.brand.colors[k] = e.target.value; })})))));
   g.append(h('button', {class: 'small', onclick: () => { commit((p) => { p.brand.colors = {}; }); renderTab(); }}, 'Về màu mặc định SAMI'));
   B.append(g);
+  // 1.2: phong cách cả video = look.theme + theme của mọi cảnh dựng từ khuôn (cảnh HTML tự viết dùng nếu có data-theme)
+  const sg = h('div', {class: 'group'}, h('h4', {}, 'Phong cách'), h('div', {class: 'muted', style: 'font-size:12.5px'}, 'Đang tải…'));
+  B.append(sg);
+  api('/api/styles').then(({styles}) => {
+    const cur = S.project.look?.theme || 'night'; sg.lastChild.remove();
+    const nKh = S.project.scenes.filter((x) => x.khuon).length;
+    sg.append(h('div', {class: 'hint', style: 'margin:0 0 8px'}, `Đổi màu, font, thẻ, kết cấu của cả video một lần (${nKh} cảnh dựng từ khuôn đổi theo; chữ, thời lượng, âm thanh giữ nguyên). Từng cảnh vẫn chọn riêng được ở 🧩 Khuôn.`),
+      h('div', {class: 'styleGrid'}, ...styles.map((st) => h('button', {class: 'styleCard' + (st.id === cur ? ' on' : ''), title: st.description || '', onclick: () => {
+        commit((p) => { p.look ||= {}; p.look.theme = st.id; for (const x of p.scenes) if (x.khuon) x.khuon.theme = st.id; }); saveStructural(); renderTab(); toast('Phong cách: ' + st.name);
+      }}, h('b', {}, st.name), h('small', {}, (st.builtin ? 'có sẵn' : 'base ' + st.base) + (st.tags?.length ? ' · ' + st.tags.slice(0, 3).join(', ') : ''))))));
+  }).catch((e) => { sg.lastChild.textContent = e.message; });
   B.append(h('div', {class: 'group'}, h('h4', {}, 'Hiệu ứng phim'),
     field(`Hạt phim (grain): ${Math.round((look.grain ?? 0.05) * 100)}%`, h('input', {type: 'range', min: 0, max: 0.15, step: 0.005, value: look.grain ?? 0.05, oninput: (e) => upd((p) => { p.look.grain = +e.target.value; })})),
     field(`Tối viền (vignette): ${Math.round((look.vignette ?? 0.42) * 100)}%`, h('input', {type: 'range', min: 0, max: 0.8, step: 0.02, value: look.vignette ?? 0.42, oninput: (e) => upd((p) => { p.look.vignette = +e.target.value; })}))));

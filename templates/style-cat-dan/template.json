@@ -1,0 +1,41 @@
+{
+ "id": "style-cat-dan",
+ "name": "Phong cách: Tư liệu cắt dán giấy",
+ "version": "1.0.0",
+ "studio": ">=1.2.0",
+ "category": "style",
+ "style": "cat-dan",
+ "goal": [],
+ "description": "Bìa các-tông, giấy xé, chữ cắt từ báo, băng dính, nét bút đỏ. Hợp video kể chuyện, tư liệu, mùa lễ. Template demo: 8 khuôn tiêu biểu mặc phong cách này; dùng làm điểm bắt đầu.",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "duration": 37,
+ "bpm": 120,
+ "languages": [
+  "de"
+ ],
+ "thumbFrame": 101,
+ "author": "SAMI Marketing Agency",
+ "license": "internal",
+ "tags": [
+  "style",
+  "cat-dan",
+  "collage",
+  "paper",
+  "documentary",
+  "handmade"
+ ],
+ "engine": "hyperframes",
+ "khuon": [
+  "hook-words",
+  "problem-stamp",
+  "stat-counter",
+  "benefits-3",
+  "photo-collage",
+  "review-quote",
+  "cta-contact",
+  "endcard-logo"
+ ]
+}

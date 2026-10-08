@@ -20,6 +20,13 @@ Parameterised Hyperframes scenes: `khuon.json` (name, group, beats, themes, slot
 - Every pipeline warns about values for slots the khuôn does not have (they would be dropped silently), e.g. `headline` on `stat-counter` (its slot is `caption`).
 - Industry templates built only from khuôn (export without Remotion): `templates/hf-nha-hang`, `hf-nail-spa`, `hf-google-maps` (`node tools/khuon-templates.mjs --apply` rebuilds them).
 
+## Phong cách (style packs, Studio 1.2)
+- `lib/hf/styles/<id>/style.json` (name, base night|paper|light, fonts, palette, motion, sfx, tags) + `style.css` (tokens in `[data-theme="<id>"]`, component rules prefixed `html[data-theme="<id>"]`) + optional `style.js` (`SAMI.styleFx`) + `assets/`. Loaded automatically into every scene whose theme is `<id>` (`server/styles.mjs → styleHead`); `window.SAMI.style = {id, base, palette, motion, fonts}`.
+- kit.js sets `<html data-theme="<id>" data-base="<base>">`; kit.css token blocks key on data-theme, component rules (texture, em.hl, cards) on data-base, so a new style inherits its base and overrides only what differs. Khuôn scenes branch on `[data-base=…]` / `K.paper|K.night|K.light` (= base).
+- Create: `node tools/style-new.mjs <id> --name "…" --base paper [--head "Archivo Black"] [--accent "#D62828"]` → edit style.css → `node tools/style-new.mjs <id> --demo` (template `templates/style-<id>` + covers) → `node tools/khuon-thumbs.mjs --theme <id> --ratio 9:16` and Read the sheet. Selftest checks the CSS rules (no @keyframes/animation/transition).
+- Pitfalls seen: highlight backgrounds on `em.hl` show as empty colour boxes before words arrive → background on `em.hl .w` + `em.hl:has(.w){background:none}`; condensed fonts (Anton) need line-height ≥ 1.15 for Vietnamese diacritics; rules without the `html` prefix lose to kit.css.
+- Whole video: Studio tab Giao diện → Phong cách sets `look.theme` and every `scene.khuon.theme`. Examples shipped: `cat-dan` (paper collage), `ban-tin-doc` (vertical breaking news).
+
 ## Dây chuyền (`<app>/lib/pipelines/<name>.mjs`)
 ```bash
 node <app>/server/cli-pipeline.mjs example maps > brief.json      # edit the JSON only

@@ -36,5 +36,6 @@
   "chart-bars",
   "cta-contact",
   "endcard-logo"
- ]
+ ],
+ "style": "paper"
 }

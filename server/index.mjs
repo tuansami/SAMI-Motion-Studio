@@ -24,7 +24,7 @@ import * as chrome from 'sami-media/chrome';
 import {runWeb, plan as webPlan} from 'sami-media/runners';
 import {agentReady} from 'sami-media/agent';
 import {recycle} from './trash.mjs';
-import {listKhuon, applyKhuon, KHUON_DIR, GROUPS as KHUON_GROUPS, THEMES} from './khuon.mjs';
+import {listKhuon, applyKhuon, KHUON_DIR, GROUPS as KHUON_GROUPS, themes as khuonThemes, listStyles} from './khuon.mjs';
 import * as footage from './footage.mjs';
 import {support as nativeSupport} from './hf-native.mjs';
 import {linkOrCopy} from './fslink.mjs';
@@ -392,9 +392,36 @@ const server = http.createServer(async (req, res) => {
       return json(res, addJob({...o, id, dir, name: o.name || pj.name, by: 'Claude Code'}));
     }
     // ── Khuôn (lib/hf/khuon) + brand.json của khách ──
-    if (p === '/api/khuon') return json(res, {khuon: listKhuon(), groups: KHUON_GROUPS, themes: THEMES});
+    if (p === '/api/khuon') return json(res, {khuon: listKhuon(), groups: KHUON_GROUPS, themes: khuonThemes(), styles: listStyles()});
+    if (p === '/api/styles') return json(res, {styles: listStyles()});
     m = p.match(/^\/api\/khuon\/thumb\/([\w-]+)\/(thumb_\w+\.jpg)$/);
     if (m) return sendFile(req, res, path.join(KHUON_DIR, m[1], m[2]));
+    // 1.2: tách lớp một slide ảnh carousel bằng OpenCV (lib/py/sami_layers.py) → {layers}; làm mới slides/photo.html nếu là bản cũ
+    if (p === '/api/carousel/layers' && req.method === 'POST') {
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404);
+      const pj = readProject(dir); const sc = (pj.scenes || []).find((s) => s.id === b.scene); if (!sc?.photo?.img) return json(res, {error: 'Cảnh này không phải slide ảnh'}, 400);
+      const img = path.join(dir, 'public', sc.photo.img); const outRel = `img/layers/${sc.id}/`; const out = path.join(dir, 'public', outRel);
+      fs.rmSync(out, {recursive: true, force: true});
+      const PY = process.env.SAMI_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
+      const r = await new Promise((ok) => { const c = spawn(PY, [path.join(ROOT, 'lib', 'py', 'sami_layers.py'), img, out, ...(b.noSubject ? ['--no-subject'] : [])], {windowsHide: true}); let o = ''; c.stdout.on('data', (d) => (o += d)); c.stderr.on('data', (d) => (o += d)); c.on('exit', (code) => ok({code, o})); c.on('error', (e) => ok({code: -1, o: String(e)})); });
+      if (r.code !== 0 || !fs.existsSync(path.join(out, 'layers.json'))) return json(res, {error: /No module named 'cv2'|ENOENT/.test(r.o) ? 'Máy chưa có Python + OpenCV (pip install opencv-python-headless)' : 'Tách lớp lỗi: ' + r.o.slice(-400)}, 500);
+      const L = JSON.parse(fs.readFileSync(path.join(out, 'layers.json'), 'utf8'));
+      const ph = path.join(dir, 'slides', 'photo.html'); if (fs.existsSync(ph) && !fs.readFileSync(ph, 'utf8').includes('cfg.layers')) fs.copyFileSync(path.join(ROOT, 'lib', 'hf', 'photo-slide.html'), ph);
+      return json(res, {layers: {dir: outRel, text: L.text, subject: L.subject}});
+    }
+    // 1.2: nhân bản cảnh HTML: chép file cảnh, đổi mã cảnh bên trong (data-copy="S03_x" → "S09_x", composition id)
+    if (p === '/api/scene/duplicate' && req.method === 'POST') {
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404);
+      const old = String(b.scene || ''), nid = String(b.newId || ''); if (!/^[\w-]+$/.test(old) || !/^[\w-]+$/.test(nid)) return json(res, {error: 'Mã cảnh không hợp lệ'}, 400);
+      const src = String(b.src || '').replace(/\\/g, '/'); const from = path.resolve(dir, src);
+      if (!from.startsWith(path.resolve(dir) + path.sep) || !fs.existsSync(from)) return json(res, {error: 'Không thấy file cảnh ' + src}, 404);
+      const base = path.basename(src); const nb = base.includes(old) ? base.split(old).join(nid) : base.replace(/(\.[^.]+)$/, `-${nid}$1`);
+      const rel = path.posix.join(path.posix.dirname(src), nb); const to = path.join(dir, rel);
+      if (fs.existsSync(to)) return json(res, {error: 'Đã có file ' + rel}, 409);
+      const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      let html = fs.readFileSync(from, 'utf8').replace(new RegExp(`(["'\\s])${esc(old)}_`, 'g'), `$1${nid}_`).replace(new RegExp(`data-composition-id=(["'])${esc(old)}\\1`), `data-composition-id=$1${nid}$1`);
+      fs.writeFileSync(to, html); return json(res, {src: rel});
+    }
     if (p === '/api/khuon/apply' && req.method === 'POST') {
       // the UI sends its current (maybe unsaved) project: the khuôn is applied on top of it, then everything is saved
       const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404);
@@ -453,7 +480,7 @@ const server = http.createServer(async (req, res) => {
         const l = readLock(r.dir); return {...r, ...meta, id: register(r.dir), status, type, hidden: hiddenSet.has(idOf(r.dir)), lockedBy: l && !isMine(l) && lockAlive(l) ? l : null};
       });
       const templates = listTemplates();
-      return json(res, {recent, templates, categories: CATEGORIES, goals: GOALS, render: {...DEFAULT_RENDER, ...settings.render}, cpus: os.cpus().length, cpuModel: os.cpus()[0]?.model, platform: process.platform, gpu: gpuEncoders(), caps: caps(), ffmpeg: !!FFMPEG, hyperframes: HF_VERSION, library: LIBRARY, cache: CACHE, projectsRoot: settings.projectsRoot, sharedTemplates: settings.sharedTemplates || [], gpuInfo: gpuInfo(), allowCliRender: !!settings.allowCliRender, agent: agentReady(), ffmpegFull: caps()?.full?.version?.match(/version (\S+)/)?.[1] || null, userName: userName(), host: os.hostname(), version: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version, bootVersion: BOOT_VERSION});
+      return json(res, {recent, templates, categories: CATEGORIES, goals: GOALS, render: {...DEFAULT_RENDER, ...settings.render}, cpus: os.cpus().length, cpuModel: os.cpus()[0]?.model, platform: process.platform, gpu: gpuEncoders(), caps: caps(), ffmpeg: !!FFMPEG, hyperframes: HF_VERSION, library: LIBRARY, cache: CACHE, projectsRoot: settings.projectsRoot, sharedTemplates: settings.sharedTemplates || [], gpuInfo: gpuInfo(), allowCliRender: !!settings.allowCliRender, agent: agentReady(), ffmpegFull: caps()?.full?.version?.match(/version (\S+)/)?.[1] || null, userName: userName(), host: os.hostname(), version: JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version, bootVersion: BOOT_VERSION, styles: listStyles().map((x) => ({id: x.id, name: x.name}))});
     }
     if (p === '/api/settings' && req.method === 'POST') { const b = await jbody(req); if ('allowCliRender' in b && !!b.allowCliRender !== !!settings.allowCliRender) fs.appendFileSync(path.join(DATA, 'cli-render.log'), JSON.stringify({ts: new Date().toISOString(), action: b.allowCliRender ? 'enable' : 'disable', via: b.via || 'studio-ui'}) + '\n'); settings = {...settings, ...b, render: {...settings.render, ...(b.render || {})}}; saveSettings(settings); setSharedRoots(settings.sharedTemplates); return json(res, {ok: true}); }
     if (p === '/api/pick-folder') { const d = await pickFolder(); return json(res, {dir: d, supported: process.platform === 'win32'}); }

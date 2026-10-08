@@ -1,6 +1,6 @@
 # SAMI Motion Studio — Hướng dẫn sử dụng
 
-> **Phiên bản 1.1.0.** Mới ở 1.1: carousel **từ ảnh có sẵn tách lớp** (chữ bật theo nhịp, chủ thể nổi khối; mục 11e). Ở 1.0: **quản lý dự án** (tìm, gom theo tháng / ngày, tag, ẩn; mục 3), ô tìm khuôn, tab Footage chọn file trên máy, **xuất Hyperframes thuần** (mục 11), 3 template ngành. Ở 0.9: tab **Footage** (video quay thật, B-roll, PiP, bản ghi màn hình trong khung điện thoại; tiếng footage vào bản mix, nhạc tự hạ), **Preset xuất** (Reels, Feed 4:5, YouTube…), khối **vẽ bằng code** và 2 khuôn mới: biểu đồ cột, đường tới quán (mục 11h, 11). Ở 0.8.3: **🧩 Khuôn** (16 cảnh dựng sẵn có tham số, 3 phong cách: đêm, giấy kraft, sáng; thêm cảnh hoặc đổi khuôn giữ nguyên chữ) và **dây chuyền** promo / Google Maps / thực đơn: Claude chỉ điền một file brief, máy dựng cả video (mục 11g). Ở 0.8.2: **Chrome SAMI** (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng **kịch bản cố định** không tốn token, tab Xuất ghi **bộ mã hoá thật** (đo từ file), cổng AI tách thành gói `sami-media` (mục 11f). Ở 0.8.1: nút **＋ Tạo carousel**, **chọn nhiều dự án để xoá** (vào Thùng rác), **🧹 Dọn lịch sử**, **"Dùng ▾" + kéo thả media lên khung xem**, nút **✨ Tạo** cho ChatGPT / Gemini / Flow / Suno, **thẻ phần cứng + chọn bộ mã hoá** ở tab Xuất, công tắc **Cho phép Claude Code xuất video** (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab **Nguồn & AI** (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: **carousel động**. Ở 0.6: cảnh HTML (Hyperframes), **thư viện SAMI dùng chung**, ffmpeg đầy đủ.
+> **Phiên bản 1.2.0.** Mới ở 1.2: **sắp xếp / nhân bản / xoá / thêm cảnh** ngay trong cột Cảnh (kéo thả, mục 4), khung **🎞 Ảnh động** điều khiển slide ảnh carousel (mục 11e), **phong cách** đổi cả video một lần (mục 11i). Ở 1.1: carousel **từ ảnh có sẵn tách lớp** (chữ bật theo nhịp, chủ thể nổi khối; mục 11e). Ở 1.0: **quản lý dự án** (tìm, gom theo tháng / ngày, tag, ẩn; mục 3), ô tìm khuôn, tab Footage chọn file trên máy, **xuất Hyperframes thuần** (mục 11), 3 template ngành. Ở 0.9: tab **Footage** (video quay thật, B-roll, PiP, bản ghi màn hình trong khung điện thoại; tiếng footage vào bản mix, nhạc tự hạ), **Preset xuất** (Reels, Feed 4:5, YouTube…), khối **vẽ bằng code** và 2 khuôn mới: biểu đồ cột, đường tới quán (mục 11h, 11). Ở 0.8.3: **🧩 Khuôn** (16 cảnh dựng sẵn có tham số, 3 phong cách: đêm, giấy kraft, sáng; thêm cảnh hoặc đổi khuôn giữ nguyên chữ) và **dây chuyền** promo / Google Maps / thực đơn: Claude chỉ điền một file brief, máy dựng cả video (mục 11g). Ở 0.8.2: **Chrome SAMI** (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng **kịch bản cố định** không tốn token, tab Xuất ghi **bộ mã hoá thật** (đo từ file), cổng AI tách thành gói `sami-media` (mục 11f). Ở 0.8.1: nút **＋ Tạo carousel**, **chọn nhiều dự án để xoá** (vào Thùng rác), **🧹 Dọn lịch sử**, **"Dùng ▾" + kéo thả media lên khung xem**, nút **✨ Tạo** cho ChatGPT / Gemini / Flow / Suno, **thẻ phần cứng + chọn bộ mã hoá** ở tab Xuất, công tắc **Cho phép Claude Code xuất video** (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab **Nguồn & AI** (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: **carousel động**. Ở 0.6: cảnh HTML (Hyperframes), **thư viện SAMI dùng chung**, ffmpeg đầy đủ.
 >
 > Phiên bản 0.5 (giai đoạn 1: web app chạy trên máy). Mới ở 0.5: **Biến thể hàng loạt từ CSV** (11c), **làm việc nhóm**: trạng thái, khoá dự án, mẫu dùng chung (11d). Ở 0.4: **Gói duyệt khách**, **So sánh điểm neo**, **chuẩn âm lượng −14 LUFS**. Ở 0.3: **Lịch sử phiên bản / điểm neo** (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab **Ảnh chèn**, **Thư viện mẫu**. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà **không cần biết code**. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.
 
@@ -131,6 +131,12 @@ Nếu lỡ đóng trình duyệt khi chưa lưu, lần mở sau Studio hỏi **k
 - Khi đổi thời lượng, animation của cảnh được **giãn/nén tự động** (không phải làm lại hiệu ứng), các cảnh sau tự dời theo.
 - ☑ **Dời tiêu đề/SFX theo…** — tiêu đề, phụ đề, tiếng động nằm sau điểm cắt cũng dời theo (nên bật).
 - **Khớp nhịp** — làm tròn mọi điểm cắt về đúng nhịp nhạc. Bấm sau khi đã chỉnh tay nhiều cảnh.
+- **Sắp xếp, thêm, xoá cảnh (1.2)**:
+  - **Kéo thả** một cảnh (cầm ở ⠿) lên / xuống để đổi thứ tự. Vạch xanh cho biết chỗ thả (trên = đặt trước, dưới = đặt sau).
+  - Nút **⋯** ở mỗi cảnh: **Nhân bản** (chép cả chữ), **Cảnh trống ngay sau**, **Thêm từ khuôn ngay sau**, **↑ / ↓** một bậc, **🗑 Xoá cảnh**.
+  - Nút **＋ Thêm cảnh** cuối danh sách: từ khuôn, cảnh trống 3 giây (để đặt footage / tiêu đề, hoặc bấm 🧩 Khuôn → *Đổi* để biến thành cảnh có nội dung), nhân bản cảnh đang chọn. Cảnh có chuyển động riêng hoàn toàn mới thì nhờ Claude Code viết.
+  - Mỗi cảnh giữ nguyên độ dài, các cảnh xếp lại liền nhau, điểm cắt vẫn đúng nhịp. **Tiêu đề, SFX, giọng đọc, phụ đề, ảnh chèn, footage nằm trong một cảnh đi theo cảnh đó**; xoá cảnh thì chúng bị xoá theo (Studio hỏi trước và nói có bao nhiêu). Nhạc nền giữ nguyên.
+  - Các thao tác này **tự lưu**; **Ctrl+Z** để hoàn tác (rồi Lưu), và trước khi xoá luôn có điểm neo trong tab **Lịch sử**.
 
 > ⚠ Nếu dự án đang dùng **file nhạc mix sẵn** (như video 66 s), đổi thời lượng không làm file nhạc dài/ngắn theo → xem mục 9.
 
@@ -410,7 +416,13 @@ Bộ slide cho Instagram / Facebook / LinkedIn: **mỗi slide là 1 video MP4 l�
 1. Trang Dự án → **＋ Tạo carousel**.
    - **Từ chủ đề (motion):** tạo 5 slide mẫu; sau đó nhờ Claude Code (skill `sami-carousel`) viết nội dung và chuyển động theo chủ đề.
    - **Từ ảnh có sẵn:** chọn thư mục ảnh carousel đã thiết kế (JPG/PNG, xếp theo tên file, tối đa 20). Mỗi ảnh thành 1 slide động; khung đầu giữ nguyên ảnh gốc (làm ảnh bìa); ảnh không phải 4:5 được cắt giữa.
-     **1.1: tách lớp tự động (OpenCV)**: Studio tìm các khối chữ và chủ thể (món ăn, người, sản phẩm nổi trên nền). Khi chạy: cả ảnh thở nhẹ, chủ thể phóng thêm một chút như có chiều sâu, từng khối chữ bật lần lượt đúng nhịp, rồi mọi thứ về đúng ảnh gốc ở cuối vòng (nối vòng liền). Ảnh mà chủ thể không rõ (ví dụ cả bàn người) thì chỉ tách chữ. Không có OpenCV thì chạy chế độ gọn như cũ. Chỉnh độ mạnh: `scenes[].photo.depth` (chiều sâu, mặc định 0,025) và `pop` (độ bật chữ, 0,05).
+     **1.1: tách lớp tự động (OpenCV)**: Studio tìm các khối chữ và chủ thể (món ăn, người, sản phẩm nổi trên nền). Khi chạy: cả ảnh thở nhẹ, chủ thể phóng thêm một chút như có chiều sâu, từng khối chữ bật lần lượt đúng nhịp, rồi mọi thứ về đúng ảnh gốc ở cuối vòng (nối vòng liền). Ảnh mà chủ thể không rõ (ví dụ cả bàn người) thì chỉ tách chữ. Không có OpenCV thì chạy chế độ gọn như cũ.
+     **Điều khiển trong Studio (1.2)**: chọn slide ở cột Cảnh → tab **Chữ** → khung **🎞 Ảnh động**:
+     - ảnh nhỏ của slide với **khung đỏ** = các khối chữ đã tìm thấy, **khung xanh nét đứt** = chủ thể;
+     - **✂ Tách lớp / ↻ Tách lớp lại** (5 đến 15 giây), **Bỏ chủ thể (chọn sai)** khi khung xanh nằm nhầm chỗ (ví dụ chọn bức tường), **Tắt tách lớp** để về chế độ gọn;
+     - thanh trượt: **Nhịp chính** (giây chữ bật, vệt sáng quét; nên trùng tiếng SFX), **Thở** (cả ảnh phóng nhẹ), **Chiều sâu chủ thể**, **Độ bật chữ**, **Đốm sáng**; ô **Vệt sáng quét**, **Giật máy ở nhịp chính**.
+     Ví dụ: slide "Freitag ist Sushi-Abend" có tiêu đề trên dải tối và ảnh bàn tiệc → Tách lớp ra 3 khối chữ, không chủ thể (bàn đông người) → đặt Nhịp chính 1,5 s, Độ bật chữ 8 %: ba dòng chữ bật lần lượt lúc 1,5 s, ảnh thở nhẹ. Slide "Neu: Sushi" với một đĩa sushi giữa nền trơn → ra 1 khối chữ + chủ thể → Chiều sâu 4 %: đĩa sushi nổi lên khỏi nền.
+     Claude Code làm được y hệt khi bạn nói: "tách lớp lại slide P03, bỏ chủ thể, cho chữ bật mạnh hơn".
    - Chọn màu (SAMI, Kem, Cà chua, Rừng, Đen), tài khoản hiện trên slide, độ dài mỗi slide (4, 6, 8 giây).
 2. Trình soạn mở ở tỉ lệ **4:5 Feed**. Tab Chữ sửa chữ từng slide như video thường.
 3. Âm thanh: mỗi slide có SFX riêng (`scenes[].cues`), nền là groove 120 BPM hoặc một bài nhạc chạy tiếp qua các slide. Trong tab Nguồn & AI, "Dùng ▾" một file âm thanh để đặt nhạc carousel hoặc thêm SFX vào slide đang chọn.
@@ -471,6 +483,13 @@ Bộ slide cho Instagram / Facebook / LinkedIn: **mỗi slide là 1 video MP4 l�
 - **Template theo ngành (1.0)**, dựng toàn bằng khuôn: **Nhà hàng: món mới + ưu đãi**, **Nail / Spa: dịch vụ + đặt lịch**, **Dịch vụ Google Maps** (Thư viện mẫu). Chữ mẫu tiếng Đức, quán hư cấu, số liệu mẫu phải thay bằng số thật.
 - **Bộ nhận diện khách**: `SAMI_Library\brands\<khách>\brand.json` (màu, font, phong cách, logo, liên hệ, giọng, nhạc). Dây chuyền tự áp vào video. Có sẵn `brands\sami`.
 - Chi phí của một video (API + lượt Claude quy đổi): Claude chạy `ledger --project <thư mục>`.
+
+## 11i. Phong cách (mới ở 1.2)
+Phong cách là **bộ áo** cho cả video: màu, font, kiểu thẻ / nút / nhãn, cách nhấn chữ, kết cấu nền, gợi ý âm thanh. Mọi khuôn mặc được mọi phong cách.
+- **Đổi cả video**: tab **Giao diện → Phong cách** → bấm một ô. Mọi cảnh dựng từ khuôn đổi theo; chữ, thời lượng, âm thanh giữ nguyên. Đổi lại lúc nào cũng được.
+- **Từng cảnh**: 🧩 Khuôn → ô **🎨** chọn phong cách trước khi bấm Thêm / Đổi.
+- Có sẵn: **Đêm (navy SAMI)**, **Giấy kraft**, **Sáng**, và 2 phong cách mẫu mới: **Tư liệu cắt dán giấy**, **Bản tin dọc (tin nóng)**. Thư viện mẫu lọc được theo phong cách (hàng chip 🎨).
+- **Thêm phong cách mới** (Claude Code làm, khoảng 15 phút một phong cách): nói *"tạo phong cách Phim tư liệu: nền đen, chữ serif, ảnh đen trắng, chuyển cảnh chậm"*. Chuẩn chung một phong cách phải có (màu, chữ, thành phần, kết cấu, chuyển động, chuyển cảnh, âm thanh, xử lý ảnh): `docs/TEMPLATE_STANDARD.md` mục 2.
 
 ## 11h. Tab **Footage**: video quay thật, B-roll, PiP (mới ở 0.9)
 Footage nằm trên một **lớp riêng phía trên cảnh**; tiêu đề, phụ đề, ảnh chèn vẫn nằm trên footage (chữ tên người nói, chú thích: dùng tab **Tiêu đề**).
