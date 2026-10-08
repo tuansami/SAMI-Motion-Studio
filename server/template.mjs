@@ -149,7 +149,7 @@ export const listTemplates = () => roots().flatMap(({root, prefix, shared}) => {
   const t = prefix + f; const dir = path.join(root, f);
   try { const pj = readProject(dir); const m = readManifest(dir) || {};
   return {id: t, shared, root: shared ? root : null, name: m.name || pj.name, description: m.description || '', category: m.category || 'generic', style: m.style || null, engine: m.engine || null, goal: m.goal || [], tags: m.tags || [], version: m.version || '0', license: m.license || '', author: m.author || '',
-    formats: pj.formats, scenes: pj.scenes.length, seconds: +(pj.scenes.at(-1).end / 30).toFixed(1), hasManifest: !!readManifest(dir),
+    formats: pj.formats, scenes: pj.scenes.length, khuonScenes: pj.scenes.filter((s) => s.khuon).length, theme: pj.look?.theme || null, seconds: +(pj.scenes.at(-1).end / 30).toFixed(1), hasManifest: !!readManifest(dir),
     thumbs: Object.fromEntries(pj.formats.filter((r) => fs.existsSync(path.join(dir, 'preview', thumbName(r)))).map((r) => [r, `/tpl/${t}/preview/${thumbName(r)}`]))};
   } catch { return null; } }).filter(Boolean); } catch { return []; } }); // an offline NAS / broken template never breaks the gallery
 

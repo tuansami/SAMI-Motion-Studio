@@ -19,6 +19,24 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.2.1] — 2026-10-09 — Slide trống cho carousel; phong cách là lớp phủ tắt được
+Tuấn báo: không thêm được slide trống (dự án carousel), "nhờ Claude Code" lại đòi slide trống; bấm phong cách cắt dán xong không tắt được, chưa hiểu mẫu + phong cách kết hợp thế nào.
+
+### Sửa lỗi
+- **Carousel không thêm được slide trống**: 1.2.0 ẩn lựa chọn này cho carousel (cảnh `blank` kiểu video không có trong carousel). Giờ **＋ Thêm slide → Slide trống** tạo một slide HTML thật (`lib/hf/carousel-blank.html`: khung carousel + 3 ô chữ `<ID>_kicker/_big/_small`, nối vòng liền) qua `/api/carousel/blank-slide`, dài bằng các slide khác.
+- **"✨ … mới hoàn toàn: nhờ Claude Code"** giờ tự thêm cảnh / slide trống rồi mở hộp có câu lệnh mẫu (📋 Chép câu lệnh) để dán vào Claude Code, thay vì chỉ nhắc.
+- **Phong cách không tắt được**: 1.2.0 ghi phong cách đè vào `theme` của từng cảnh. Giờ phong cách là **lớp phủ** `look.style`: `themeOf()` = `look.style` > `scene.khuon.theme` > `look.theme`. Tab Giao diện có ô **○ Theo mẫu (không phủ)**, dấu ● ở phong cách đang dùng, dòng "Áp được cho X/Y cảnh · giao diện gốc của mẫu: …".
+
+### Thêm
+- Ô **Phong cách phủ (tuỳ chọn)** khi tạo dự án (mặc định "Theo mẫu"), gợi ý ngay bên dưới bao nhiêu cảnh của mẫu sẽ đổi, hoặc báo trước mẫu viết tay không đổi được; `project.json → template` ghi mẫu gốc.
+- Thẻ mẫu ghi **🎨 <phong cách gốc>** (dựng từ khuôn, đổi được) hoặc **✎ viết tay**; hàng chip đổi thành "Lọc mẫu theo phong cách" + dòng "Đang lọc… ✕ Bỏ lọc" (bộ lọc không áp gì vào dự án).
+- Hộp 🧩 Khuôn báo khi video đang phủ phong cách.
+- Hướng dẫn mục 11i viết lại: mẫu và phong cách (ví von quần áo), bảng so sánh, cách chọn / tắt, ví dụ đã thử.
+
+### Đã kiểm
+- Tạo dự án từ *Nhà hàng* (gốc Giấy kraft) + phủ *Cắt dán giấy* → cảnh nạp `styles/cat-dan` → **Theo mẫu** → về `paper` → *Bản tin dọc* → **Theo mẫu** → `paper`; `scene.khuon.theme` không bị ghi.
+- Carousel thử: ＋ Thêm slide → slide trống P03 (ảnh tĩnh: khung, 3 dòng chữ giữa slide), "nhờ Claude Code" thêm P04 + câu lệnh. Gợi ý tạo dự án đúng cho mẫu khuôn, mẫu viết tay (hf-starter, agency-promo). Selftest thêm kiểm thứ tự lớp phủ.
+
 ## [1.2.0] — 2026-10-08 — Quản lý cảnh trong Studio, khung Ảnh động, phong cách (style pack)
 Tuấn hỏi (2026-10-08): dùng OpenCV thế nào; cột Cảnh không xoá / thêm / sắp xếp được; template có dễ thêm không, chuẩn chung gồm gì.
 

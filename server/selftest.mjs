@@ -148,7 +148,10 @@ await t('khuôn: CATALOG.md khớp thư viện khuôn (cli-pipeline catalog --wr
   if (miss.length) throw new Error('chạy lại catalog --write: ' + miss.join(', ')); return listKhuon().length + ' khuôn';
 });
 await t('phong cách: style.json + style.css đúng chuẩn, cảnh khuôn nạp được', async () => {
-  const {listStyles, styleHead} = await import('./styles.mjs'); const out = [];
+  const {listStyles, styleHead, themeOf} = await import('./styles.mjs'); const out = [];
+  // phủ (look.style) > theme của cảnh > look.theme; tắt phủ = về theme của cảnh, không ghi đè gì
+  const sc = {khuon: {id: 'hook-words', theme: 'paper'}};
+  if (themeOf({look: {style: 'cat-dan', theme: 'night'}}, sc) !== 'cat-dan' || themeOf({look: {theme: 'night'}}, sc) !== 'paper' || themeOf({look: {theme: 'light'}}, {}) !== 'light' || themeOf({}, {}) !== 'night') throw new Error('thứ tự phong cách phủ sai');
   for (const s of listStyles().filter((x) => !x.builtin)) {
     const d = path.join(ROOT, 'lib', 'hf', 'styles', s.id); const css = fs.readFileSync(path.join(d, 'style.css'), 'utf8');
     if (!['night', 'paper', 'light'].includes(s.base)) throw new Error(`${s.id}: base phải là night | paper | light`);

@@ -1,6 +1,6 @@
 # HAND-OFF — Nâng cấp SAMI Motion Studio (v0.6 → v1.0)
 
-Cập nhật: 2026-10-08 (sau v1.2.0) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
+Cập nhật: 2026-10-09 (sau v1.2.1) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
 
 Đọc file này đầu tiên khi mở phiên mới. Trả lời Tuấn bằng tiếng Việt, ngắn gọn; viết "SAMI" in hoa; không dùng em-dash trong copy hiển thị.
 
@@ -21,6 +21,7 @@ Cập nhật: 2026-10-08 (sau v1.2.0) · Người làm: Claude Code · Chủ d�
 | **v1.0.0 Hoàn thiện** | ✅ quản lý dự án (tìm / gom / tag / ẩn), sửa hộp Khuôn + tab Footage, khuôn từ storyboard (CATALOG.md, dây chuyền `storyboard`, `add`), **xuất Hyperframes thuần** (thử nghiệm), 3 template ngành, phân tích nhạc trong worker (CHANGELOG 1.0.0, mục 5b). Tuấn đồng ý xuất thử, OpenCV, push (2026-10-08) |
 | **v1.1.0** | ✅ carousel ảnh tách lớp OpenCV (`lib/py/sami_layers.py`), xuất thuần đã thử thật so với Remotion và sửa lệch 1 khung (CHANGELOG 1.1.0). Còn: âm thanh xuất thuần lệch 16 ms so với Remotion |
 | **v1.2.0** | ✅ cột Cảnh kéo thả / nhân bản / xoá / thêm, khung 🎞 Ảnh động, phong cách `lib/hf/styles` + `tools/style-new.mjs` (2 mẫu: cat-dan, ban-tin-doc), TEMPLATE_STANDARD v2, README + repo **MCP-sami-media đã lên GitHub** (`https://github.com/tuansami/MCP-sami-media`, clone cạnh Studio). GitHub Release chưa tạo (bị chặn quyền) |
+| **v1.2.1** | ✅ slide trống carousel (`lib/hf/carousel-blank.html`), phong cách = lớp phủ `look.style` tắt được (`themeOf`), ô Phong cách phủ khi tạo dự án, nhãn 🎨 / ✎ trên thẻ mẫu. **Đừng ghi đè `scene.khuon.theme` để đổi phong cách cả video.** |
 
 - **Repo:** Studio `https://github.com/tuansami/SAMI-Motion-Studio` (main) · cổng AI `https://github.com/tuansami/MCP-sami-media` (main, private). Hai thư mục cạnh nhau; sửa cổng AI ở repo MCP, đẩy cả hai khi đổi.
 - **Git (lịch sử):**

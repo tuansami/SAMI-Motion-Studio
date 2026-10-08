@@ -44,7 +44,13 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <li><a href="#11e-carousel-ong-07-nut-tao-o-081">11e. Carousel động (0.7, nút tạo ở 0.8.1)</a></li>
 <li><a href="#11f-tab-nguon-ai-stock-tao-bang-ai-ua-vao-video-08-nang-cap-081">11f. Tab Nguồn &amp; AI: stock, tạo bằng AI, đưa vào video (0.8, nâng cấp 0.8.1)</a></li>
 <li><a href="#11g-khuon-va-day-chuyen-moi-o-083">11g. Khuôn và dây chuyền (mới ở 0.8.3)</a></li>
-<li><a href="#11i-phong-cach-moi-o-12">11i. Phong cách (mới ở 1.2)</a></li>
+<li><a href="#11i-mau-template-va-phong-cach-chon-ket-hop-tat-121">11i. Mẫu (template) và Phong cách: chọn, kết hợp, tắt (1.2.1)</a><ul>
+<li><a href="#cach-chon">Cách chọn</a></li>
+<li><a href="#hang-chip-loc-mau-theo-phong-cach-o-thu-vien-mau">Hàng chip "Lọc mẫu theo phong cách" ở Thư viện mẫu</a></li>
+<li><a href="#vi-du-ket-hop-a-thu">Ví dụ kết hợp (đã thử)</a></li>
+<li><a href="#them-phong-cach-moi">Thêm phong cách mới</a></li>
+</ul>
+</li>
 <li><a href="#11h-tab-footage-video-quay-that-b-roll-pip-moi-o-09">11h. Tab Footage: video quay thật, B-roll, PiP (mới ở 0.9)</a></li>
 <li><a href="#12-lam-video-moi-cung-claude-code-quy-trinh-chuan">12. Làm video mới cùng Claude Code (quy trình chuẩn)</a><ul>
 <li><a href="#cau-truc-1-thu-muc-du-an">Cấu trúc 1 thư mục dự án</a></li>
@@ -61,7 +67,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </div>
 </div><h1 id="sami-motion-studio-huong-dan-su-dung">SAMI Motion Studio — Hướng dẫn sử dụng</h1>
 <blockquote>
-<p><strong>Phiên bản 1.2.0.</strong> Mới ở 1.2: <strong>sắp xếp / nhân bản / xoá / thêm cảnh</strong> ngay trong cột Cảnh (kéo thả, mục 4), khung <strong>🎞 Ảnh động</strong> điều khiển slide ảnh carousel (mục 11e), <strong>phong cách</strong> đổi cả video một lần (mục 11i). Ở 1.1: carousel <strong>từ ảnh có sẵn tách lớp</strong> (chữ bật theo nhịp, chủ thể nổi khối; mục 11e). Ở 1.0: <strong>quản lý dự án</strong> (tìm, gom theo tháng / ngày, tag, ẩn; mục 3), ô tìm khuôn, tab Footage chọn file trên máy, <strong>xuất Hyperframes thuần</strong> (mục 11), 3 template ngành. Ở 0.9: tab <strong>Footage</strong> (video quay thật, B-roll, PiP, bản ghi màn hình trong khung điện thoại; tiếng footage vào bản mix, nhạc tự hạ), <strong>Preset xuất</strong> (Reels, Feed 4:5, YouTube…), khối <strong>vẽ bằng code</strong> và 2 khuôn mới: biểu đồ cột, đường tới quán (mục 11h, 11). Ở 0.8.3: <strong>🧩 Khuôn</strong> (16 cảnh dựng sẵn có tham số, 3 phong cách: đêm, giấy kraft, sáng; thêm cảnh hoặc đổi khuôn giữ nguyên chữ) và <strong>dây chuyền</strong> promo / Google Maps / thực đơn: Claude chỉ điền một file brief, máy dựng cả video (mục 11g). Ở 0.8.2: <strong>Chrome SAMI</strong> (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng <strong>kịch bản cố định</strong> không tốn token, tab Xuất ghi <strong>bộ mã hoá thật</strong> (đo từ file), cổng AI tách thành gói <code>sami-media</code> (mục 11f). Ở 0.8.1: nút <strong>＋ Tạo carousel</strong>, <strong>chọn nhiều dự án để xoá</strong> (vào Thùng rác), <strong>🧹 Dọn lịch sử</strong>, <strong>"Dùng ▾" + kéo thả media lên khung xem</strong>, nút <strong>✨ Tạo</strong> cho ChatGPT / Gemini / Flow / Suno, <strong>thẻ phần cứng + chọn bộ mã hoá</strong> ở tab Xuất, công tắc <strong>Cho phép Claude Code xuất video</strong> (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab <strong>Nguồn &amp; AI</strong> (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: <strong>carousel động</strong>. Ở 0.6: cảnh HTML (Hyperframes), <strong>thư viện SAMI dùng chung</strong>, ffmpeg đầy đủ.</p>
+<p><strong>Phiên bản 1.2.1.</strong> Mới ở 1.2.1: <strong>slide trống cho carousel</strong>, phong cách thành <strong>lớp phủ tắt được</strong> ("Theo mẫu"), chọn phong cách ngay khi tạo dự án (mục 11i). Ở 1.2: <strong>sắp xếp / nhân bản / xoá / thêm cảnh</strong> ngay trong cột Cảnh (kéo thả, mục 4), khung <strong>🎞 Ảnh động</strong> điều khiển slide ảnh carousel (mục 11e), <strong>phong cách</strong> đổi cả video một lần (mục 11i). Ở 1.1: carousel <strong>từ ảnh có sẵn tách lớp</strong> (chữ bật theo nhịp, chủ thể nổi khối; mục 11e). Ở 1.0: <strong>quản lý dự án</strong> (tìm, gom theo tháng / ngày, tag, ẩn; mục 3), ô tìm khuôn, tab Footage chọn file trên máy, <strong>xuất Hyperframes thuần</strong> (mục 11), 3 template ngành. Ở 0.9: tab <strong>Footage</strong> (video quay thật, B-roll, PiP, bản ghi màn hình trong khung điện thoại; tiếng footage vào bản mix, nhạc tự hạ), <strong>Preset xuất</strong> (Reels, Feed 4:5, YouTube…), khối <strong>vẽ bằng code</strong> và 2 khuôn mới: biểu đồ cột, đường tới quán (mục 11h, 11). Ở 0.8.3: <strong>🧩 Khuôn</strong> (16 cảnh dựng sẵn có tham số, 3 phong cách: đêm, giấy kraft, sáng; thêm cảnh hoặc đổi khuôn giữ nguyên chữ) và <strong>dây chuyền</strong> promo / Google Maps / thực đơn: Claude chỉ điền một file brief, máy dựng cả video (mục 11g). Ở 0.8.2: <strong>Chrome SAMI</strong> (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng <strong>kịch bản cố định</strong> không tốn token, tab Xuất ghi <strong>bộ mã hoá thật</strong> (đo từ file), cổng AI tách thành gói <code>sami-media</code> (mục 11f). Ở 0.8.1: nút <strong>＋ Tạo carousel</strong>, <strong>chọn nhiều dự án để xoá</strong> (vào Thùng rác), <strong>🧹 Dọn lịch sử</strong>, <strong>"Dùng ▾" + kéo thả media lên khung xem</strong>, nút <strong>✨ Tạo</strong> cho ChatGPT / Gemini / Flow / Suno, <strong>thẻ phần cứng + chọn bộ mã hoá</strong> ở tab Xuất, công tắc <strong>Cho phép Claude Code xuất video</strong> (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab <strong>Nguồn &amp; AI</strong> (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: <strong>carousel động</strong>. Ở 0.6: cảnh HTML (Hyperframes), <strong>thư viện SAMI dùng chung</strong>, ffmpeg đầy đủ.</p>
 <p>Phiên bản 0.5 (giai đoạn 1: web app chạy trên máy). Mới ở 0.5: <strong>Biến thể hàng loạt từ CSV</strong> (11c), <strong>làm việc nhóm</strong>: trạng thái, khoá dự án, mẫu dùng chung (11d). Ở 0.4: <strong>Gói duyệt khách</strong>, <strong>So sánh điểm neo</strong>, <strong>chuẩn âm lượng −14 LUFS</strong>. Ở 0.3: <strong>Lịch sử phiên bản / điểm neo</strong> (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
 <p><strong>Làm việc theo nhóm / với Claude:</strong> đọc <code>docs/QUY_TRINH_LAM_VIEC.md</code> (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).</p>
 </blockquote>
@@ -267,7 +273,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <li><strong>Sắp xếp, thêm, xoá cảnh (1.2)</strong>:</li>
 <li><strong>Kéo thả</strong> một cảnh (cầm ở ⠿) lên / xuống để đổi thứ tự. Vạch xanh cho biết chỗ thả (trên = đặt trước, dưới = đặt sau).</li>
 <li>Nút <strong>⋯</strong> ở mỗi cảnh: <strong>Nhân bản</strong> (chép cả chữ), <strong>Cảnh trống ngay sau</strong>, <strong>Thêm từ khuôn ngay sau</strong>, <strong>↑ / ↓</strong> một bậc, <strong>🗑 Xoá cảnh</strong>.</li>
-<li>Nút <strong>＋ Thêm cảnh</strong> cuối danh sách: từ khuôn, cảnh trống 3 giây (để đặt footage / tiêu đề, hoặc bấm 🧩 Khuôn → <em>Đổi</em> để biến thành cảnh có nội dung), nhân bản cảnh đang chọn. Cảnh có chuyển động riêng hoàn toàn mới thì nhờ Claude Code viết.</li>
+<li>Nút <strong>＋ Thêm cảnh</strong> (carousel: <strong>＋ Thêm slide</strong>) cuối danh sách: từ khuôn; <strong>cảnh trống 3 giây</strong> (video: để đặt footage / tiêu đề, hoặc 🧩 Khuôn → <em>Đổi</em>); <strong>slide trống</strong> (carousel: khung carousel + 3 dòng chữ sửa ở tab Chữ); nhân bản cảnh đang chọn; <strong>✨ … mới hoàn toàn: nhờ Claude Code</strong> = Studio thêm sẵn cảnh / slide trống rồi đưa câu lệnh mẫu (nút 📋 Chép câu lệnh) để bạn dán vào Claude Code.</li>
 <li>Mỗi cảnh giữ nguyên độ dài, các cảnh xếp lại liền nhau, điểm cắt vẫn đúng nhịp. <strong>Tiêu đề, SFX, giọng đọc, phụ đề, ảnh chèn, footage nằm trong một cảnh đi theo cảnh đó</strong>; xoá cảnh thì chúng bị xoá theo (Studio hỏi trước và nói có bao nhiêu). Nhạc nền giữ nguyên.</li>
 <li>Các thao tác này <strong>tự lưu</strong>; <strong>Ctrl+Z</strong> để hoàn tác (rồi Lưu), và trước khi xoá luôn có điểm neo trong tab <strong>Lịch sử</strong>.</li>
 </ul>
@@ -705,12 +711,62 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <li><strong>Bộ nhận diện khách</strong>: <code>SAMI_Library\brands\&lt;khách&gt;\brand.json</code> (màu, font, phong cách, logo, liên hệ, giọng, nhạc). Dây chuyền tự áp vào video. Có sẵn <code>brands\sami</code>.</li>
 <li>Chi phí của một video (API + lượt Claude quy đổi): Claude chạy <code>ledger --project &lt;thư mục&gt;</code>.</li>
 </ul>
-<h2 id="11i-phong-cach-moi-o-12">11i. Phong cách (mới ở 1.2)</h2>
-<p>Phong cách là <strong>bộ áo</strong> cho cả video: màu, font, kiểu thẻ / nút / nhãn, cách nhấn chữ, kết cấu nền, gợi ý âm thanh. Mọi khuôn mặc được mọi phong cách.
-- <strong>Đổi cả video</strong>: tab <strong>Giao diện → Phong cách</strong> → bấm một ô. Mọi cảnh dựng từ khuôn đổi theo; chữ, thời lượng, âm thanh giữ nguyên. Đổi lại lúc nào cũng được.
-- <strong>Từng cảnh</strong>: 🧩 Khuôn → ô <strong>🎨</strong> chọn phong cách trước khi bấm Thêm / Đổi.
-- Có sẵn: <strong>Đêm (navy SAMI)</strong>, <strong>Giấy kraft</strong>, <strong>Sáng</strong>, và 2 phong cách mẫu mới: <strong>Tư liệu cắt dán giấy</strong>, <strong>Bản tin dọc (tin nóng)</strong>. Thư viện mẫu lọc được theo phong cách (hàng chip 🎨).
-- <strong>Thêm phong cách mới</strong> (Claude Code làm, khoảng 15 phút một phong cách): nói <em>"tạo phong cách Phim tư liệu: nền đen, chữ serif, ảnh đen trắng, chuyển cảnh chậm"</em>. Chuẩn chung một phong cách phải có (màu, chữ, thành phần, kết cấu, chuyển động, chuyển cảnh, âm thanh, xử lý ảnh): <code>docs/TEMPLATE_STANDARD.md</code> mục 2.</p>
+<h2 id="11i-mau-template-va-phong-cach-chon-ket-hop-tat-121">11i. Mẫu (template) và Phong cách: chọn, kết hợp, tắt (1.2.1)</h2>
+<p><strong>Hình dung bằng quần áo:</strong> <em>mẫu</em> là <strong>người mẫu đã mặc sẵn một bộ đồ</strong> (đủ cảnh, chuyển động, chữ mẫu, giao diện riêng). <em>Phong cách</em> là <strong>một bộ áo khác khoác ra ngoài</strong>: đổi màu, font, kiểu thẻ / nút, cách tô chữ nhấn, nền giấy hay nền tối. Cởi áo khoác ra thì người mẫu vẫn mặc nguyên bộ đồ cũ.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Mẫu (template)</th>
+<th>Phong cách</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quyết định</td>
+<td>cảnh nào, theo thứ tự nào, chuyển động gì, chữ mẫu</td>
+<td>màu, font, thẻ, nút, chữ nhấn, nền, kết cấu</td>
+</tr>
+<tr>
+<td>Bắt buộc?</td>
+<td>có (mỗi dự án tạo từ một mẫu)</td>
+<td><strong>không</strong>: mặc định "Theo mẫu" = không phủ</td>
+</tr>
+<tr>
+<td>Đổi sau khi tạo?</td>
+<td>không (đã thành dự án)</td>
+<td>có, bất cứ lúc nào, tắt được</td>
+</tr>
+<tr>
+<td>Ghi ở</td>
+<td>các cảnh trong dự án</td>
+<td>một dòng <code>look.style</code> trong project.json (không sửa cảnh nào)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Phong cách chỉ đổi được cảnh dựng từ khuôn.</strong> Thẻ mẫu trong Thư viện ghi rõ:
+- <strong>🎨 …</strong> = mẫu dựng từ khuôn (ví dụ <em>Nhà hàng: món mới + ưu đãi</em>, <em>Nail / Spa</em>, <em>Dịch vụ Google Maps</em>, các mẫu <em>Phong cách: …</em>): đổi phong cách được;
+- <strong>✎ viết tay</strong> = cảnh viết riêng bằng code (ví dụ <em>Agency promo</em>, <em>Paper Search Ad</em>, <em>Carousel động SAMI</em>): phong cách phủ <strong>không</strong> đổi được giao diện các cảnh này (chỉ cảnh khuôn bạn thêm vào sau mới theo).</p>
+<h3 id="cach-chon">Cách chọn</h3>
+<ol>
+<li><strong>Lúc tạo dự án</strong> (trang chủ → Tạo dự án mới): chọn <strong>Mẫu</strong>, rồi ô <strong>Phong cách phủ (tuỳ chọn)</strong>:</li>
+<li>để <strong>"Theo mẫu (không phủ phong cách)"</strong> → video giống y mẫu;</li>
+<li>hoặc chọn một phong cách → các cảnh khuôn của mẫu mặc phong cách đó. Dòng gợi ý ngay dưới ô cho biết bao nhiêu cảnh sẽ đổi.</li>
+<li><strong>Trong dự án</strong>: tab <strong>Giao diện → Phong cách</strong>:</li>
+<li>ô <strong>○ Theo mẫu (không phủ)</strong> = tắt phong cách, về đúng giao diện gốc của mẫu (dòng xám ghi "Giao diện gốc của mẫu: …");</li>
+<li>bấm một phong cách = phủ lên; ô đang dùng có dấu <strong>●</strong>. Đổi qua lại bao nhiêu lần cũng được, chữ / thời lượng / âm thanh không đổi;</li>
+<li>dòng xám cho biết "Áp được cho X/Y cảnh"; cảnh viết tay, Remotion, footage giữ nguyên.</li>
+<li><strong>Từng cảnh</strong> (ít dùng): 🧩 Khuôn → ô 🎨 chọn giao diện riêng cho cảnh mới thêm / đổi. Khi video đang phủ phong cách, phong cách phủ thắng; tắt phủ thì giao diện riêng của cảnh hiện ra.</li>
+</ol>
+<h3 id="hang-chip-loc-mau-theo-phong-cach-o-thu-vien-mau">Hàng chip "Lọc mẫu theo phong cách" ở Thư viện mẫu</h3>
+<p>Chỉ là <strong>bộ lọc để tìm mẫu</strong>, không áp gì vào dự án. Đang lọc thì có dòng cam "Đang lọc… ✕ Bỏ lọc"; bấm lại chip đang chọn hoặc <strong>Tất cả</strong> cũng bỏ lọc.</p>
+<h3 id="vi-du-ket-hop-a-thu">Ví dụ kết hợp (đã thử)</h3>
+<ul>
+<li><em>Nhà hàng: món mới + ưu đãi</em> (gốc: Giấy kraft) + <strong>Tư liệu cắt dán giấy</strong> → 7/7 cảnh mặc giấy xé, chữ cắt báo → bấm <strong>Theo mẫu</strong> → về Giấy kraft → bấm <strong>Bản tin dọc</strong> → nền than chì đỏ → <strong>Theo mẫu</strong> → lại Giấy kraft.</li>
+<li><em>Agency promo</em> (viết tay) + bất kỳ phong cách → không đổi (Studio báo trước khi tạo).</li>
+</ul>
+<h3 id="them-phong-cach-moi">Thêm phong cách mới</h3>
+<p>Nói với Claude Code, ví dụ <em>"tạo phong cách Phim tư liệu: nền đen, chữ serif, ảnh đen trắng, chuyển cảnh chậm"</em>. Claude tạo bằng <code>tools/style-new.mjs</code>, chỉnh, chụp bảng ảnh mọi khuôn, dựng mẫu demo <em>Phong cách: …</em>. Chuẩn 8 mục của một phong cách: <code>docs/TEMPLATE_STANDARD.md</code> mục 2.</p>
 <h2 id="11h-tab-footage-video-quay-that-b-roll-pip-moi-o-09">11h. Tab <strong>Footage</strong>: video quay thật, B-roll, PiP (mới ở 0.9)</h2>
 <p>Footage nằm trên một <strong>lớp riêng phía trên cảnh</strong>; tiêu đề, phụ đề, ảnh chèn vẫn nằm trên footage (chữ tên người nói, chú thích: dùng tab <strong>Tiêu đề</strong>).</p>
 <table>

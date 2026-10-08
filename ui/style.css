@@ -120,3 +120,5 @@ details.group>summary{list-style:revert}
 .popMenu{position:fixed;z-index:70;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:5px;display:flex;flex-direction:column;min-width:230px;box-shadow:0 16px 40px rgba(0,0,0,.5)}
 .popMenu button{border:0;background:transparent;text-align:left;padding:7px 10px;border-radius:7px}.popMenu button:hover{background:var(--panel2)}
 .styleGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.styleCard{text-align:left;display:flex;flex-direction:column;gap:2px;padding:8px 10px}.styleCard small{color:var(--muted);font-size:11px}.styleCard.on{border-color:var(--mint);background:rgba(8,221,164,.08)}
+.filterNote{width:100%;font-size:12.5px;color:var(--amber);display:flex;gap:8px;align-items:center}
+.styleNow{font-size:12.5px;margin:0 0 8px;padding:6px 8px;border-radius:8px;background:#0A0722}

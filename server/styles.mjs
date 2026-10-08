@@ -32,6 +32,11 @@ export const listStyles = () => {
 export const styleIds = () => listStyles().map((s) => s.id);
 export const getStyle = (id) => listStyles().find((s) => s.id === id) || null;
 
+/** theme a scene really wears (1.2.1): the project's style overlay (look.style, switchable off) wins over the scene's own
+ *  theme from its template / khuôn (scene.khuon.theme), then the project default (look.theme). Turning the overlay off
+ *  (deleting look.style) gives back exactly what the template had: nothing in the scenes is overwritten. */
+export const themeOf = (p, s) => p?.look?.style || s?.khuon?.theme || p?.look?.theme || 'night';
+
 /** data a scene sees as window.SAMI.style */
 export const styleData = (id) => { const s = getStyle(id) || getStyle('night'); return {id: s.id, base: s.base, name: s.name, palette: s.palette || {}, motion: s.motion || {}, fonts: s.fonts || {}}; };
 

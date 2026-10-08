@@ -14,7 +14,7 @@ import {ROOT, NODE_MODULES, LIB, LIBRARY, cacheDir} from './paths.mjs';
 import {childEnv} from './env.mjs';
 import {junction} from './fslink.mjs';
 import {ASSETS} from './library.mjs';
-import {styleData, styleHead} from './styles.mjs';
+import {styleData, styleHead, themeOf} from './styles.mjs';
 
 export const OV = 8; // = engine/src/core/constants.ts
 export const STAGES = {'16:9': {w: 1920, h: 1080}, '9:16': {w: 1080, h: 1920}, '1:1': {w: 1080, h: 1080}, '4:5': {w: 1080, h: 1350}};
@@ -46,7 +46,7 @@ export const sceneData = (p, s, ratio, fps) => {
   return {copy, brand: {colors: {...DEFAULT_COLORS, ...(p.brand?.colors || {})}, gradient: p.brand?.gradient || null, fonts: p.brand?.fonts || {}},
     ratio, w: st.w, h: st.h, fps, scene: s.id, dur: +sceneSpan(p, s).dur.toFixed(4), t0: isCarousel(p) ? 0 : OV / 30, project: p.name || '',
     // khuôn (lib/hf/khuon): which template this scene came from + its theme (night | paper | light)
-    khuon: s.khuon || null, theme: s.khuon?.theme || p.look?.theme || 'night', style: styleData(s.khuon?.theme || p.look?.theme || 'night'), // 1.2: phong cách
+    khuon: s.khuon || null, theme: themeOf(p, s), style: styleData(themeOf(p, s)), // 1.2.1: phong cách phủ (look.style) > theme của cảnh > look.theme
     ...(isCarousel(p) ? carouselData(p, s) : {})};
 };
 /** carousel: slide index/count + where this slide sits in the whole carousel (for continuing progress / protagonist) */
@@ -81,7 +81,7 @@ export const stageHtml = (dir, p, s, ratio, fps, {preview = false, audio = null}
     ? `window.__samiData=${liveStr};window.SAMI=${data};(function(S){try{var o=JSON.parse(sessionStorage.getItem('sami:'+S.scene+':'+S.ratio)||'null');if(o){S.copy=o.copy||S.copy;var b=o.brand||{};S.brand={colors:Object.assign({},S.brand.colors,b.colors||{}),gradient:b.gradient||S.brand.gradient,fonts:b.fonts||S.brand.fonts};}}catch(e){}})(window.SAMI);`
     : `window.SAMI=${data};`;
   const head = `<meta charset="utf-8"><script>${dataJs}</script><link rel="stylesheet" href="_sami/sami.css">` + brandFontLinks(p) +
-    (/_gsap\/gsap(\.min)?\.js/.test(html) ? '' : '<script src="_gsap/gsap.min.js"></script>') + '<script src="_sami/sami-hf.js"></script>' + styleHead(s.khuon?.theme || p.look?.theme || 'night') +
+    (/_gsap\/gsap(\.min)?\.js/.test(html) ? '' : '<script src="_gsap/gsap.min.js"></script>') + '<script src="_sami/sami-hf.js"></script>' + styleHead(themeOf(p, s)) +
     (isCarousel(p) ? '<link rel="stylesheet" href="_sami/carousel.css"><script src="_sami/carousel.js"></script>' : '');
   html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, (h) => h + head) : html.replace(/<html[^>]*>/i, (h) => h + '<head>' + head + '</head>');
   // carousel slides carry their own sound (seamless-loop mix) → Hyperframes muxes it into the slide MP4

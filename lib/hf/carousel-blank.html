@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<style>
+  /* __ID__ · Slide trống (Studio 1.2.1): khung carousel + 3 dòng chữ sửa ở tab Chữ. Nhờ Claude Code viết chuyển động riêng:
+   * "viết slide __ID__: …" (skill sami-carousel). Khung 0 = thiết kế hoàn chỉnh, mọi chuyển động là hàm của t (nối vòng liền). */
+  /* bố cục: khối chữ giữa slide, lề an toàn 72 px, chữ lớn tự xuống dòng (không tràn khung) */
+  #txt { position: absolute; left: 72px; right: 72px; top: 50%; transform: translateY(-55%); display: flex; flex-direction: column; gap: 28px; }
+  #txt .cx-big { font-size: 150px; line-height: 1.02; white-space: normal; overflow-wrap: anywhere; }
+  #glow { position: absolute; left: 50%; top: 42%; width: 900px; height: 900px; margin: -450px; border-radius: 50%; background: radial-gradient(closest-side, rgba(118, 103, 254, .22), transparent); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="__ID__">
+  <div id="frame">
+    <div id="glow"></div>
+    <div id="txt">
+      <div class="cx-kicker" data-copy="__ID___kicker"></div>
+      <div class="cx-big" data-copy="__ID___big"></div>
+      <div class="cx-small" data-copy="__ID___small"></div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, X = window.CX;
+  S.bindCopy();
+  const chrome = X.chrome(document.getElementById('frame'));
+  const glow = document.getElementById('glow');
+  X.loop((t) => { chrome(t); glow.style.transform = `scale(${1 + 0.06 * X.wave(t, S.dur / 2)})`; }); // chu kỳ = nửa slide → nối vòng liền
+</script>
+</body>
+</html>

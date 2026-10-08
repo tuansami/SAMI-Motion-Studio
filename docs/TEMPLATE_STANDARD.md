@@ -8,7 +8,7 @@
 > | **Phong cách** | Bộ nhận diện hình ảnh: màu, font, thẻ, kết cấu, cách chuyển động, âm thanh. Mặc lên **mọi** khuôn | `lib/hf/styles/<id>/` | Tư liệu cắt dán giấy, Bản tin dọc |
 > | **Template** | Một dự án mẫu: chuỗi cảnh (thường là khuôn) + một phong cách + chữ / ảnh / nhạc mẫu | `templates/<id>/` | Nhà hàng: món mới + ưu đãi |
 >
-> Một phong cách mới = mọi khuôn (18 cái) tự có thêm một bộ áo mới, mọi template đổi sang được bằng một cú bấm (tab **Giao diện → Phong cách**).
+> Một phong cách mới = mọi khuôn (18 cái) tự có thêm một bộ áo mới. Phong cách là **lớp phủ** (`project.json → look.style`): chọn khi tạo dự án hoặc ở tab **Giao diện → Phong cách**, tắt bằng "Theo mẫu", không ghi đè cảnh nào. Thứ tự: phong cách phủ > giao diện riêng của cảnh (`scene.khuon.theme`) > giao diện của mẫu (`look.theme`). Chỉ cảnh dựng từ khuôn đổi theo; cảnh viết tay / Remotion giữ nguyên.
 > Mọi mẫu vào thư viện phải qua `node server/cli-template.mjs check templates/<id>` (hoặc nút **Kiểm tra** trong thư viện).
 
 ---

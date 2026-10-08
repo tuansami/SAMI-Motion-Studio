@@ -44,7 +44,7 @@ async function loadHome() {
   renderProjects(); renderSelBar();
   const sel = $('#npTemplate'); sel.innerHTML = '';
   for (const t of S.state.templates) sel.append(h('option', {value: t.id}, `${t.name} — ${t.scenes} cảnh, ${t.seconds}s, ${t.formats.join(' / ')}`));
-  renderGallery(); renderTeam();
+  fillStyleSelect(); renderGallery(); renderTeam();
   $('#npLocation').value = S.state.projectsRoot;
   const g = S.state.gpu;
   $('#sysInfo').textContent = `Máy: ${S.state.cpuModel} · ${S.state.cpus} luồng CPU · GPU mã hoá: ${g.nvenc ? 'NVIDIA NVENC ✓' : g.qsv ? 'Intel QSV' : g.amf ? 'AMD AMF' : 'không phát hiện (render bằng CPU)'} · ffmpeg ${S.state.ffmpeg ? '✓' : '✗'}`;
@@ -60,7 +60,7 @@ function showServerWarn() {
   w.textContent = `⚠ Studio đang chạy bản cũ (${S.state.bootVersion || '≤ 0.9'}) trong khi giao diện đã là ${UI_VER}. Một số tab (Footage, quản lý dự án…) sẽ trống hoặc báo "Not Found". Đóng cửa sổ Studio (cửa sổ đen) rồi mở lại Start-Studio.bat.`;
 }
 // ── 1.0: quản lý dự án — tìm, gom theo tháng / ngày / khách / trạng thái, sắp xếp, lọc tag, ẩn ──
-const UI_VER = '1.2.0';
+const UI_VER = '1.2.1';
 const HV_KEY = 'sami.homeView';
 const HV_DEF = {q: '', group: 'month', sort: 'date', status: '', type: '', tag: '', client: '', showHidden: false, view: 'cards', closed: {}};
 S.hv = (() => { try { return {...HV_DEF, ...JSON.parse(localStorage.getItem(HV_KEY) || '{}'), q: ''}; } catch { return {...HV_DEF}; } })();
@@ -211,21 +211,37 @@ function renderGallery() {
   for (const c of cats) F.append(h('button', {class: S.tplCat === c ? 'on' : '', onclick: () => { S.tplCat = c; renderGallery(); }}, c === 'all' ? `Tất cả (${T.length})` : `${C[c]} (${T.filter((t) => t.category === c).length})`));
   // 1.2: lọc theo phong cách (template.json → style)
   const SL = [...new Set(T.map((t) => t.style).filter(Boolean))];
-  if (SL.length) F.append(h('span', {class: 'muted', style: 'font-size:12.5px;align-self:center;margin-left:8px'}, 'Phong cách:'), ...['', ...SL].map((st) => h('button', {class: (S.tplStyle || '') === st ? 'on' : '', onclick: () => { S.tplStyle = st; renderGallery(); }}, st ? '🎨 ' + ((S.state.styles || []).find((x) => x.id === st)?.name || st) : 'Mọi phong cách')));
+  // chỉ là BỘ LỌC để tìm mẫu (không áp gì vào dự án); áp phong cách: ô "Phong cách phủ" khi tạo, hoặc tab Giao diện
+  if (SL.length) F.append(h('span', {class: 'muted', style: 'font-size:12.5px;align-self:center;margin-left:8px'}, 'Lọc mẫu theo phong cách:'), ...['', ...SL].map((st) => h('button', {class: (S.tplStyle || '') === st ? 'on' : '', onclick: () => { S.tplStyle = S.tplStyle === st ? '' : st; renderGallery(); }}, st ? '🎨 ' + styleName(st) : 'Tất cả')));
+  if (S.tplStyle) F.append(h('div', {class: 'filterNote'}, `Đang lọc: chỉ hiện mẫu phong cách "${styleName(S.tplStyle)}". Bộ lọc chỉ để tìm mẫu, không áp gì vào dự án. `, h('button', {class: 'small', onclick: () => { S.tplStyle = ''; renderGallery(); }}, '✕ Bỏ lọc')));
   const G = $('#tplGrid'); G.innerHTML = '';
   for (const t of T.filter((x) => (S.tplCat === 'all' || x.category === S.tplCat) && (!S.tplStyle || x.style === S.tplStyle))) {
     const th = t.thumbs || {};
     G.append(h('div', {class: 'tpl' + ($('#npTemplate').value === t.id ? ' sel' : '')},
       h('div', {class: 'thumbs'}, ...(Object.keys(th).length ? ['16:9', '9:16', '1:1'].filter((r) => th[r]).map((r) => h('img', {src: th[r] + '?v=' + t.version, alt: r, title: r})) : [h('div', {class: 'ph'}, 'Chưa có ảnh bìa')])),
       h('div', {class: 'body'}, h('b', {}, t.name), h('p', {}, t.description || '—'),
-        h('div', {class: 'badges'}, h('span', {}, (C[t.category] || t.category)), h('span', {}, t.seconds + 's'), h('span', {}, t.scenes + ' cảnh'), ...t.formats.map((f) => h('span', {}, f)), h('span', {}, 'v' + t.version), t.shared ? h('span', {style: 'color:var(--mint)', title: t.root}, 'dùng chung') : null, !t.hasManifest ? h('span', {style: 'color:var(--amber)'}, 'thiếu template.json') : null)),
+        h('div', {class: 'badges'}, h('span', {}, (C[t.category] || t.category)), h('span', {}, t.seconds + 's'), h('span', {}, t.scenes + ' cảnh'), ...t.formats.map((f) => h('span', {}, f)), h('span', {title: t.khuonScenes ? `${t.khuonScenes}/${t.scenes} cảnh dựng từ khuôn: đổi được phong cách` : 'Cảnh viết tay: phong cách phủ không áp được'}, t.khuonScenes ? '🎨 ' + (t.style ? styleName(t.style) : 'đổi được') : '✎ viết tay'), h('span', {}, 'v' + t.version), t.shared ? h('span', {style: 'color:var(--mint)', title: t.root}, 'dùng chung') : null, !t.hasManifest ? h('span', {style: 'color:var(--amber)'}, 'thiếu template.json') : null)),
       h('div', {class: 'acts'},
         h('button', {class: 'small primary', onclick: () => { $('#npTemplate').value = t.id; renderGallery(); $('#newProj').scrollIntoView({behavior: 'smooth'}); $('#npName').focus(); }}, 'Dùng mẫu này'),
         h('button', {class: 'small', onclick: () => checkTpl(t.id)}, 'Kiểm tra'),
         h('button', {class: 'small', title: 'Nén thành .zip để gửi đồng nghiệp / văn phòng khác', onclick: async () => { try { const r = await api('/api/template/export', {tpl: t.id}); toast('Đã xuất: ' + r.out, false, 6000); } catch (e) { toast(e.message, true); } }}, 'Xuất .zip'))));
   }
 }
-$('#npTemplate').onchange = () => renderGallery();
+$('#npTemplate').onchange = () => { renderGallery(); styleHint(); };
+// 1.2.1: phong cách phủ khi tạo dự án — "Theo mẫu" = không phủ, giữ đúng giao diện của mẫu
+const styleName = (id) => (S.state.styles || []).find((x) => x.id === id)?.name || id;
+function fillStyleSelect() {
+  const sel = $('#npStyle'); const cur = sel.value; sel.innerHTML = '';
+  sel.append(h('option', {value: ''}, 'Theo mẫu (không phủ phong cách)'), ...(S.state.styles || []).map((x) => h('option', {value: x.id, selected: x.id === cur}, '🎨 ' + x.name)));
+  sel.onchange = styleHint; styleHint();
+}
+function styleHint() {
+  const t = (S.state.templates || []).find((x) => x.id === $('#npTemplate').value); const el = $('#npStyleHint'); if (!el || !t) return;
+  const st = $('#npStyle').value;
+  el.textContent = !t.khuonScenes ? `Mẫu "${t.name}" là cảnh viết tay: phong cách phủ không đổi được giao diện mẫu này (chỉ cảnh khuôn thêm vào sau mới theo).`
+    : st ? `${t.khuonScenes}/${t.scenes} cảnh của mẫu sẽ mặc "${styleName(st)}". Tắt lúc nào cũng được: tab Giao diện → Phong cách → "Theo mẫu".`
+    : `Giữ đúng giao diện của mẫu${t.style ? ' (' + styleName(t.style) + ')' : ''}. ${t.khuonScenes}/${t.scenes} cảnh đổi được phong cách sau này.`;
+}
 function showCheck(title, r, extra) {
   modal(h('div', {}, h('h3', {}, title), extra || null,
     r.fail.length ? h('p', {class: 'v-fail'}, h('b', {}, `${r.fail.length} lỗi phải sửa trước khi đưa vào thư viện:`)) : h('p', {class: 'v-ok'}, h('b', {}, 'Đạt chuẩn mẫu v1 ✓')),
@@ -252,7 +268,7 @@ $('#btnCreate').onclick = async () => {
   const name = $('#npName').value.trim(); if (!name) return toast('Nhập tên dự án', true);
   $('#npMsg').textContent = 'Đang tạo…';
   try {
-    const r = await api('/api/project/new', {name, client: $('#npClient').value.trim(), template: $('#npTemplate').value, location: $('#npLocation').value.trim(), assetsDir: $('#npAssets').value.trim() || null, brand: {mint: $('#npC1').value, purple: $('#npC2').value}});
+    const r = await api('/api/project/new', {name, client: $('#npClient').value.trim(), template: $('#npTemplate').value, style: $('#npStyle').value || null, location: $('#npLocation').value.trim(), assetsDir: $('#npAssets').value.trim() || null, brand: {mint: $('#npC1').value, purple: $('#npC2').value}});
     $('#npMsg').textContent = r.report ? `Đã nhập ${r.report.files.length} tệp (${r.report.img} ảnh, ${r.report.video} video, ${r.report.audio} âm thanh, ${r.report.docs} tài liệu).` : '';
     openProject({id: r.id});
   } catch (e) { $('#npMsg').textContent = ''; toast(e.message, true); }
@@ -471,10 +487,32 @@ async function duplicateScene(s) {
   });
   S.scene = id; saveStructural(); renderAll(); toast(`Đã nhân bản ${s.id} → ${id} (cả chữ). Sửa chữ ở tab Chữ.`);
 }
-function addBlank(afterId, seconds = 3) {
-  const id = newSceneId(S.project);
-  commit((p) => { const list = [...p.scenes]; const i = afterId ? list.findIndex((x) => x.id === afterId) + 1 : list.length; list.splice(i, 0, {id, label: 'Cảnh trống', engine: 'blank', _len: Math.round(seconds * 2) * 15}); relayout(p, list); });
-  S.scene = id; saveStructural(); renderAll(); toast(`Đã thêm ${id} (trống ${seconds} s). Bấm 🧩 Khuôn → "Đổi ${id}" để đặt nội dung, hoặc thả footage / tiêu đề lên.`, false, 7000);
+async function addBlank(afterId, seconds = 3, {quiet = false} = {}) {
+  const id = newSceneId(S.project); const car = S.project.type === 'carousel';
+  // carousel: a real HTML slide (lib/hf/carousel-blank.html: carousel chrome + 3 text fields), same length as the other slides
+  let scene = {id, label: 'Cảnh trống', engine: 'blank', _len: Math.round(seconds * 2) * 15};
+  if (car) {
+    try { const r = await api('/api/carousel/blank-slide', {id: S.id, newId: id}); const L = S.project.scenes[0] ? S.project.scenes[0].end - S.project.scenes[0].start : 180; scene = {id, label: 'Slide trống', engine: 'hyperframes', src: r.src, _len: L, cues: []}; }
+    catch (e) { toast(e.message, true, 6000); return null; }
+  }
+  commit((p) => {
+    const list = [...p.scenes]; const i = afterId ? list.findIndex((x) => x.id === afterId) + 1 : list.length; list.splice(i, 0, scene); relayout(p, list);
+    if (car) { p.copy ||= {}; for (const [k, label, v] of [['kicker', 'Dòng nhỏ phía trên', 'SLIDE MỚI'], ['big', 'Chữ lớn', 'Chữ lớn'], ['small', 'Dòng giải thích', 'Sửa ở tab Chữ, hoặc nhờ Claude Code viết slide này']]) p.copy[`${id}_${k}`] = {label: `${label} (${id})`, scene: id, value: v}; }
+  });
+  S.scene = id; await saveStructural(); renderAll();
+  if (!quiet) toast(car ? `Đã thêm ${id} (slide trống: khung carousel + 3 dòng chữ). Sửa chữ ở tab Chữ, hoặc nhờ Claude Code viết chuyển động riêng.` : `Đã thêm ${id} (trống ${seconds} s). Bấm 🧩 Khuôn → "Đổi ${id}" để đặt nội dung, hoặc thả footage / tiêu đề lên.`, false, 7000);
+  return id;
+}
+/** "✨ Cảnh mới hoàn toàn": thêm cảnh / slide trống rồi đưa câu lệnh mẫu để dán vào Claude Code */
+async function askClaudeScene(afterId) {
+  const car = S.project.type === 'carousel';
+  const id = await addBlank(afterId, 4, {quiet: true}); if (!id) return;
+  const prompt = car ? `Viết slide ${id} cho carousel ${S.project.name} (${S.dir}): <mô tả nội dung + chuyển động>. Giữ khung carousel, chữ để trong copy.`
+    : `Viết cảnh ${id} cho dự án ${S.project.name} (${S.dir}): <mô tả nội dung + chuyển động>. Cảnh HTML (Hyperframes), chữ để trong copy, đúng lưới nhịp.`;
+  const ta = h('textarea', {rows: 4, style: 'width:100%'}); ta.value = prompt;
+  modal(h('div', {style: 'min-width:min(560px,90vw)'}, h('h3', {style: 'margin-top:0'}, `✨ Đã thêm ${car ? 'slide' : 'cảnh'} trống ${id}`),
+    h('p', {class: 'muted', style: 'font-size:13px'}, `Bây giờ mở Claude Code (bấm "Tạo bằng Claude Code" hoặc phiên Claude của dự án), dán câu dưới đây và thay phần <…> bằng ý bạn muốn. Claude viết file ${car ? 'slides' : 'hf'}/${id}.html; Studio tự tải lại khi file đổi.`),
+    ta, h('div', {class: 'row', style: 'margin-top:8px'}, h('button', {class: 'primary', onclick: () => { navigator.clipboard?.writeText(ta.value); toast('Đã chép câu lệnh'); }}, '📋 Chép câu lệnh'))));
 }
 function popMenu(anchor, items) {
   $$('.popMenu').forEach((m) => m.remove());
@@ -487,7 +525,7 @@ function sceneMenu(s, anchor) {
   const i = S.project.scenes.findIndex((x) => x.id === s.id), n = S.project.scenes.length;
   popMenu(anchor, [
     ['⧉ Nhân bản cảnh', () => duplicateScene(s)],
-    S.project.type === 'carousel' ? null : ['＋ Cảnh trống ngay sau', () => addBlank(s.id)],
+    [S.project.type === 'carousel' ? '＋ Slide trống ngay sau' : '＋ Cảnh trống ngay sau', () => addBlank(s.id)],
     ['🧩 Thêm từ khuôn ngay sau', () => { selectScene(s.id); $('#btnKhuon').click(); }],
     i > 0 ? ['↑ Lên trước ' + S.project.scenes[i - 1].id, () => moveScene(s.id, S.project.scenes[i - 1].id, false)] : null,
     i < n - 1 ? ['↓ Xuống sau ' + S.project.scenes[i + 1].id, () => moveScene(s.id, S.project.scenes[i + 1].id, true)] : null,
@@ -498,9 +536,9 @@ function addSceneMenu(anchor) {
   const cur = S.scene;
   popMenu(anchor, [
     ['🧩 Từ khuôn (có sẵn chuyển động)', () => $('#btnKhuon').click()],
-    S.project.type === 'carousel' ? null : ['＋ Cảnh trống 3 giây (cho footage / tiêu đề)', () => addBlank(cur, 3)],
+    S.project.type === 'carousel' ? ['＋ Slide trống (khung carousel + 3 dòng chữ)', () => addBlank(cur)] : ['＋ Cảnh trống 3 giây (cho footage / tiêu đề)', () => addBlank(cur, 3)],
     cur ? ['⧉ Nhân bản cảnh đang chọn (' + cur + ')', () => duplicateScene(sceneById(cur))] : null,
-    ['✨ Cảnh mới hoàn toàn: nhờ Claude Code', () => toast('Cảnh có chuyển động riêng do Claude Code viết (HTML). Thêm cảnh trống trước, rồi nói với Claude: "viết cảnh S0x: …"', false, 8000)],
+    ['✨ ' + (S.project.type === 'carousel' ? 'Slide' : 'Cảnh') + ' mới hoàn toàn: nhờ Claude Code', () => askClaudeScene(cur)],
   ]);
 }
 function selectScene(id) {
@@ -560,6 +598,7 @@ $('#btnKhuon').onclick = async () => {
   const themeSeg = h('select', {title: 'Phong cách của cảnh thêm / đổi', onchange: (e) => { K.theme = e.target.value; }}, ...D.themes.map((t) => h('option', {value: t, selected: K.theme === t}, '🎨 ' + (SN[t] || THEME_VI[t] || t))));
   modal(h('div', {},
     h('h3', {style: 'margin-top:0'}, '🧩 Khuôn cảnh'),
+    S.project.look?.style ? h('div', {class: 'filterNote', style: 'margin:-4px 0 8px'}, `Video đang phủ phong cách "${SN[S.project.look.style] || S.project.look.style}": cảnh thêm vào sẽ mặc phong cách đó. Ô 🎨 dưới đây là giao diện riêng của cảnh, hiện ra khi tắt phong cách phủ (tab Giao diện → Theo mẫu).`) : null,
     h('p', {class: 'muted', style: 'font-size:13px;margin-top:-6px'}, 'Khuôn là cảnh HTML dựng sẵn có tham số: chữ, ảnh, màu lấy từ dự án. ', cur ? `"Đổi khuôn" thay cảnh ${cur.id}, giữ chữ của ô cùng tên. ` : '', '"Thêm" chèn cảnh mới sau cảnh đang chọn.'),
     h('div', {class: 'row', style: 'flex-wrap:wrap;gap:8px;margin-bottom:10px'}, search,
       h('select', {onchange: (e) => { K.group = e.target.value; drawGrid(); }}, h('option', {value: ''}, 'Mọi nhóm'), ...Object.entries(D.groups).filter(([g]) => D.khuon.some((k) => k.group === g)).map(([g, t]) => h('option', {value: g, selected: K.group === g}, t))),
@@ -928,16 +967,22 @@ function tabLook(B) {
   g.append(h('div', {class: 'cols2'}, ...COLORS.map(([k, l, d]) => field(l, h('input', {type: 'color', value: b.colors[k] || d, onchange: (e) => upd((p) => { p.brand.colors[k] = e.target.value; })})))));
   g.append(h('button', {class: 'small', onclick: () => { commit((p) => { p.brand.colors = {}; }); renderTab(); }}, 'Về màu mặc định SAMI'));
   B.append(g);
-  // 1.2: phong cách cả video = look.theme + theme của mọi cảnh dựng từ khuôn (cảnh HTML tự viết dùng nếu có data-theme)
+  // 1.2.1: PHONG CÁCH PHỦ = look.style. Không ghi đè cảnh nào: "Theo mẫu" (xoá look.style) trả lại đúng giao diện của mẫu.
   const sg = h('div', {class: 'group'}, h('h4', {}, 'Phong cách'), h('div', {class: 'muted', style: 'font-size:12.5px'}, 'Đang tải…'));
   B.append(sg);
   api('/api/styles').then(({styles}) => {
-    const cur = S.project.look?.theme || 'night'; sg.lastChild.remove();
-    const nKh = S.project.scenes.filter((x) => x.khuon).length;
-    sg.append(h('div', {class: 'hint', style: 'margin:0 0 8px'}, `Đổi màu, font, thẻ, kết cấu của cả video một lần (${nKh} cảnh dựng từ khuôn đổi theo; chữ, thời lượng, âm thanh giữ nguyên). Từng cảnh vẫn chọn riêng được ở 🧩 Khuôn.`),
-      h('div', {class: 'styleGrid'}, ...styles.map((st) => h('button', {class: 'styleCard' + (st.id === cur ? ' on' : ''), title: st.description || '', onclick: () => {
-        commit((p) => { p.look ||= {}; p.look.theme = st.id; for (const x of p.scenes) if (x.khuon) x.khuon.theme = st.id; }); saveStructural(); renderTab(); toast('Phong cách: ' + st.name);
-      }}, h('b', {}, st.name), h('small', {}, (st.builtin ? 'có sẵn' : 'base ' + st.base) + (st.tags?.length ? ' · ' + st.tags.slice(0, 3).join(', ') : ''))))));
+    sg.lastChild.remove();
+    const cur = S.project.look?.style || ''; const SC = S.project.scenes; const nKh = SC.filter((x) => x.khuon).length;
+    const own = [...new Set(SC.filter((x) => x.khuon).map((x) => x.khuon.theme || S.project.look?.theme || 'night'))];
+    const nm = (id) => styles.find((x) => x.id === id)?.name || id;
+    const setStyle = (id) => { commit((p) => { p.look ||= {}; if (id) p.look.style = id; else delete p.look.style; }); saveStructural(); renderTab(); toast(id ? `Phong cách phủ: ${nm(id)} · bấm "Theo mẫu" để tắt` : 'Đã tắt phong cách phủ: về đúng giao diện của mẫu'); };
+    sg.append(h('div', {class: 'hint', style: 'margin:0 0 8px'},
+      'Phong cách là một lớp "áo" phủ lên các cảnh dựng từ khuôn: đổi màu, font, thẻ, nút, cách nhấn chữ, nền. Không sửa chữ, thời lượng, âm thanh, và không ghi đè gì: chọn "Theo mẫu" là về y như cũ.'),
+      h('div', {class: 'styleNow'}, nKh ? `Áp được cho ${nKh}/${SC.length} cảnh (cảnh khuôn). ${SC.length - nKh ? (SC.length - nKh) + ' cảnh viết tay / Remotion / footage giữ nguyên. ' : ''}Giao diện gốc của mẫu: ${own.map(nm).join(', ') || '—'}.`
+        : 'Dự án này không có cảnh dựng từ khuôn (cảnh viết tay hoặc Remotion) nên phong cách phủ chưa làm đổi gì. Thêm cảnh từ 🧩 Khuôn thì cảnh đó sẽ theo phong cách đang chọn.'),
+      h('div', {class: 'styleGrid'},
+        h('button', {class: 'styleCard' + (!cur ? ' on' : ''), onclick: () => setStyle('')}, h('b', {}, '○ Theo mẫu (không phủ)'), h('small', {}, 'mỗi cảnh giữ giao diện gốc')),
+        ...styles.map((st) => h('button', {class: 'styleCard' + (st.id === cur ? ' on' : ''), title: st.description || '', onclick: () => setStyle(st.id)}, h('b', {}, (st.id === cur ? '● ' : '') + st.name), h('small', {}, (st.builtin ? 'có sẵn' : 'base ' + st.base) + (st.tags?.length ? ' · ' + st.tags.slice(0, 3).join(', ') : ''))))));
   }).catch((e) => { sg.lastChild.textContent = e.message; });
   B.append(h('div', {class: 'group'}, h('h4', {}, 'Hiệu ứng phim'),
     field(`Hạt phim (grain): ${Math.round((look.grain ?? 0.05) * 100)}%`, h('input', {type: 'range', min: 0, max: 0.15, step: 0.005, value: look.grain ?? 0.05, oninput: (e) => upd((p) => { p.look.grain = +e.target.value; })})),

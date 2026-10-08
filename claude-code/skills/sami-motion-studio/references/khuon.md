@@ -25,7 +25,7 @@ Parameterised Hyperframes scenes: `khuon.json` (name, group, beats, themes, slot
 - kit.js sets `<html data-theme="<id>" data-base="<base>">`; kit.css token blocks key on data-theme, component rules (texture, em.hl, cards) on data-base, so a new style inherits its base and overrides only what differs. Khuôn scenes branch on `[data-base=…]` / `K.paper|K.night|K.light` (= base).
 - Create: `node tools/style-new.mjs <id> --name "…" --base paper [--head "Archivo Black"] [--accent "#D62828"]` → edit style.css → `node tools/style-new.mjs <id> --demo` (template `templates/style-<id>` + covers) → `node tools/khuon-thumbs.mjs --theme <id> --ratio 9:16` and Read the sheet. Selftest checks the CSS rules (no @keyframes/animation/transition).
 - Pitfalls seen: highlight backgrounds on `em.hl` show as empty colour boxes before words arrive → background on `em.hl .w` + `em.hl:has(.w){background:none}`; condensed fonts (Anton) need line-height ≥ 1.15 for Vietnamese diacritics; rules without the `html` prefix lose to kit.css.
-- Whole video: Studio tab Giao diện → Phong cách sets `look.theme` and every `scene.khuon.theme`. Examples shipped: `cat-dan` (paper collage), `ban-tin-doc` (vertical breaking news).
+- Whole video (1.2.1): the style is an OVERLAY `project.json → look.style` (Studio tab Giao diện → Phong cách, or the "Phong cách phủ" field when creating a project). `server/styles.mjs → themeOf(p, s)` = `look.style` > `scene.khuon.theme` > `look.theme` > night. Never rewrite scene themes to restyle a video; delete `look.style` to return to the template. Only khuôn scenes react; hand-written HTML / TSX scenes ignore it. Examples shipped: `cat-dan` (paper collage), `ban-tin-doc` (vertical breaking news).
 
 ## Dây chuyền (`<app>/lib/pipelines/<name>.mjs`)
 ```bash

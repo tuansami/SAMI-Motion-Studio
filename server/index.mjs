@@ -409,6 +409,15 @@ const server = http.createServer(async (req, res) => {
       const ph = path.join(dir, 'slides', 'photo.html'); if (fs.existsSync(ph) && !fs.readFileSync(ph, 'utf8').includes('cfg.layers')) fs.copyFileSync(path.join(ROOT, 'lib', 'hf', 'photo-slide.html'), ph);
       return json(res, {layers: {dir: outRel, text: L.text, subject: L.subject}});
     }
+    // 1.2.1: slide trống cho carousel = slides/<ID>.html từ lib/hf/carousel-blank.html (khung carousel + 3 ô chữ)
+    if (p === '/api/carousel/blank-slide' && req.method === 'POST') {
+      const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404);
+      const nid = String(b.newId || ''); if (!/^[\w-]+$/.test(nid)) return json(res, {error: 'Mã slide không hợp lệ'}, 400);
+      const rel = `slides/${nid}.html`; const to = path.join(dir, rel); if (fs.existsSync(to)) return json(res, {error: 'Đã có file ' + rel}, 409);
+      fs.mkdirSync(path.dirname(to), {recursive: true});
+      fs.writeFileSync(to, fs.readFileSync(path.join(ROOT, 'lib', 'hf', 'carousel-blank.html'), 'utf8').split('__ID__').join(nid));
+      return json(res, {src: rel});
+    }
     // 1.2: nhân bản cảnh HTML: chép file cảnh, đổi mã cảnh bên trong (data-copy="S03_x" → "S09_x", composition id)
     if (p === '/api/scene/duplicate' && req.method === 'POST') {
       const b = await jbody(req); const dir = dirs.get(b.id); if (!dir) return json(res, {error: 'Chưa mở dự án'}, 404);
@@ -513,6 +522,8 @@ const server = http.createServer(async (req, res) => {
       copyDir(tpl, dir, (name) => ['out', '_engine', 'template.json', 'preview', 'README.md', 'brief', '.claude', 'CLAUDE.md'].includes(name));
       const pj = readProject(dir); pj.name = b.name || pj.name; pj.client = b.client || pj.client;
       if (b.brand) pj.brand = {...pj.brand, colors: {...(pj.brand?.colors || {}), ...b.brand}};
+      pj.template = b.template || pj.template || null; // 1.2.1: mẫu gốc (để biết khi tắt phong cách là về đâu)
+      if (b.style) pj.look = {...(pj.look || {}), style: b.style}; // 1.2.1: phong cách phủ chọn ngay lúc tạo (bỏ trống = theo mẫu)
       let report = null;
       if (b.assetsDir && fs.existsSync(b.assetsDir)) report = importAssets(b.assetsDir, dir);
       writeProject(dir, pj);
