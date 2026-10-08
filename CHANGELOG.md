@@ -19,6 +19,45 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [0.8.2] — 2026-10-08 — Chrome SAMI, kịch bản ChatGPT cố định, bộ mã hoá thật, cổng AI tách thành gói `sami-media`
+Quyết định của Tuấn 2026-10-08 (HANDOFF mục 3b). Lần thử 2026-10-08 trong Chrome chính bị hộp "Lưu ở đâu" và hỏi Allow mỗi lần nối: 0.8.2 chuyển mọi tự động hoá sang một Chrome riêng.
+
+### Thêm
+- **Chrome SAMI**: hồ sơ Chrome riêng cho tự động hoá `Z:\SAMI_Video\.chrome-sami` (ngoài git), mở với `--remote-debugging-port=9333`.
+  - Hồ sơ không mặc định nên Chrome **không hỏi Allow** khi nối CDP.
+  - Trước lần mở đầu ghi `Default/Preferences`: thư mục tải `Z:\SAMI_Video\.sami-cache\downloads`, `prompt_for_download: false`, `savefile` cùng chỗ; mỗi lần nối còn gọi CDP `Browser.setDownloadBehavior`. Không ai chọn thư mục tải.
+  - Tab **Nguồn & AI** (nguồn gói web): khung Chrome SAMI có nút **Mở Chrome SAMI**, trạng thái **đã đăng nhập** ChatGPT / Google (Gemini, Flow) / Suno (chỉ đọc tên cookie), nút **Mở trang đăng nhập**, ↻, và dòng "Chạy lần lượt" cho biết người chạy nào dùng được.
+  - Route `/api/providers/chrome`, `/api/providers/chrome/open`.
+- **Kịch bản ChatGPT cố định** (0 token, CDP thẳng vào Chrome SAMI): mở tab → dừng nếu chưa đăng nhập / CAPTCHA → dán prompt, so **nguyên văn** (không khớp thì không gửi) → gửi **một lần** → chờ đủ ảnh → đọc `img.currentSrc`, `fetch` trong trang (có cookie) → ingest kèm prompt + giấy phép → đóng tab.
+- **Chuỗi người chạy gói web**: kịch bản cố định → Jev → Claude Code (`claude -p`, Sonnet). Prompt gửi **tối đa một lần** cho cả chuỗi: đã gửi rồi thì Claude chạy chế độ **chỉ lấy kết quả**. Gặp trang đăng nhập / CAPTCHA thì dừng cả chuỗi.
+  - **Jev** (`C:\Users\Tuan\tools\jev-ultrafast`): chỉ gõ + gửi khi kịch bản hỏng **trước** lúc gửi; ảnh vẫn do kịch bản lấy. **Tắt** cho tới khi Tuấn thử và bật (`providers.json → opts["chatgpt-web"].jev = true`); `.env` của Jev hiện thiếu `TEXT_MODEL_API_KEY`.
+  - Claude Code dùng browser-harness **trỏ sang Chrome SAMI** (`BU_CDP_URL=http://127.0.0.1:9333`, `BU_NAME=sami-agent`); MCP browser-harness cấp user vẫn giữ Chrome chính cho việc khác.
+- **Bộ mã hoá thật** của mỗi lượt xuất: trước khi ghép, ffprobe đoạn đầu (tag `encoder` của stream, nếu không có thì dấu x264 / x265 trong bitstream) → `j.encoder` = "GPU · h264_nvenc" / "CPU · libx264", `j.encoderReal`; cảnh báo nếu đã chọn NVENC mà file do CPU mã hoá. Carousel đọc slide đầu. Lượt xuất xong ghi một dòng vào `.studio/renders.jsonl`.
+
+### Thay đổi
+- **Cổng AI tách khỏi Studio** thành gói độc lập **`sami-media`** ở `Z:\SAMI_Video\MCP-sami-media` (repo private `tuansami/MCP-sami-media`, chưa push).
+  - Studio phụ thuộc `"sami-media": "file:../MCP-sami-media"`; thư mục `providers/` bị xoá, một bản mã duy nhất. Studio bỏ phụ thuộc trực tiếp `@modelcontextprotocol/sdk` (nằm trong gói).
+  - Gói tự có `paths` (đường dẫn qua biến môi trường), phần index thư viện, `childEnv` tối giản; `synth-sfx` tìm `sami_audio.py` qua `SAMI_STUDIO`.
+  - `server/paths.mjs` đặt `SAMI_LIBRARY`, `SAMI_CACHE`, `SAMI_USERDATA`, `SAMI_STUDIO` cho gói; `server/library.mjs` re-export index / search / meta của gói (Studio giữ phần dự án: `materialize`, `libRefs`, brands).
+  - MCP `sami-media` đăng ký lại (cấp user): `node Z:/SAMI_Video/MCP-sami-media/bin/mcp.mjs`, env `SAMI_STUDIO`. Thêm tool `chrome_status`. CLI mới: `bin/cli.mjs` (`chrome`, `web --request`, `downloads` đọc thư mục cố định).
+- Nút gói web: "✨ Tạo (kịch bản cố định)" khi có kịch bản, "✨ Tạo bằng Claude Code" khi không; bị mờ khi Chrome SAMI chưa mở.
+- Skill `sami-motion-studio` (`references/providers.md`), `CLAUDE.md`, `docs/HUONG_DAN_SU_DUNG.{md,html}` (mục 11f, tab Xuất, xử lý sự cố).
+
+### Đã kiểm
+- `npm run check` đạt, gồm 20 phép thử của gói (`npm test` trong `MCP-sami-media`): Chrome SAMI ghi đúng thư mục tải; Chrome đóng thì chuỗi web dừng **trước khi gửi**, không gọi Claude, không ghi sổ; Jev tắt khi thiếu khoá hoặc chưa bật; người chạy Claude chỉ được browser-harness (nối Chrome SAMI) + 2 lệnh CLI; `probeEncoder` đọc đúng `libx264` từ một file thật (clip 0,2 s từ ảnh tĩnh, CPU).
+- Thật trên máy: bấm **Mở Chrome SAMI** trong Studio thử (cổng 5179) → Chrome mở 3 trang đăng nhập, CDP nối được ngay không hỏi Allow, Preferences giữ thư mục tải; kịch bản ChatGPT nhận ra **chưa đăng nhập** và dừng (không gửi); gõ prompt nhiều dòng vào ô nhập ChatGPT rồi xoá (không gửi). Phát hiện ChatGPT 2026-10 không còn `#prompt-textarea`: kịch bản dò ô nhập theo nhiều cách (ProseMirror hoặc textarea đang hiện).
+- `claude mcp get sami-media`: ✔ Connected với gói mới.
+- **Chưa thử**: một lượt ChatGPT thật (cần Tuấn đăng nhập trong Chrome SAMI và đồng ý gửi), Jev, NVENC thật trong một lượt xuất (cần Tuấn cho phép xuất 3 s). **Không chạy render nào.**
+
+### File chính
+- **Gói mới** `Z:\SAMI_Video\MCP-sami-media`: `src/{paths, env, library, cdp, chrome}.mjs`, `src/runners/{index, chatgpt, jev}.mjs`, `bin/{cli, mcp}.mjs`, `test/{run, selftest}.mjs`, `README.md`; chuyển từ `providers/`: gateway, config, ledger, tokens, pricing, net, agent, adapters, recipes, workflows.
+- **Studio:** `server/{paths, library, index, render, ffmpeg, selftest}.mjs`, `ui/app.js`, `package.json`, `.gitignore`, `CLAUDE.md`, skill `sami-motion-studio/references/providers.md`, `docs/HUONG_DAN_SU_DUNG.{md,html}`. **Xoá:** `providers/`.
+
+### Roll back
+`git checkout v0.8.1` (hoặc commit 0.8.1), `npm install`, rồi đăng ký lại MCP cũ: `claude mcp remove sami-media -s user` và `claude mcp add -s user sami-media -- node "Z:/SAMI_Video/SAMI_Motion_Studio/providers/mcp.mjs"`. Dữ liệu (`%APPDATA%\SAMI`, SAMI_Library) không đổi định dạng. Hồ sơ Chrome SAMI và thư mục tải nằm ngoài git, xoá được.
+
+---
+
 ## [0.8.1] — 2026-10-08 — Giao diện cho 0.7 / 0.8: tạo carousel, dùng media trong lúc sửa, xoá dự án, dọn lịch sử, phần cứng xuất, Claude Code xuất video (có công tắc)
 Phản hồi của Tuấn sau khi mở Studio 0.8.0: không thấy chỗ tạo carousel, có ô prompt mà không có nút tạo, ảnh lấy về không dùng được trong lúc sửa, thiếu xoá dự án và dọn lịch sử, tab Xuất không cho thấy ffmpeg / GPU.
 

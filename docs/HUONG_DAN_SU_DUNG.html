@@ -57,7 +57,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 </div>
 </div><h1 id="sami-motion-studio-huong-dan-su-dung">SAMI Motion Studio — Hướng dẫn sử dụng</h1>
 <blockquote>
-<p><strong>Phiên bản 0.8.1.</strong> Mới ở 0.8.1: nút <strong>＋ Tạo carousel</strong>, <strong>chọn nhiều dự án để xoá</strong> (vào Thùng rác), <strong>🧹 Dọn lịch sử</strong>, <strong>"Dùng ▾" + kéo thả media lên khung xem</strong>, nút <strong>✨ Tạo bằng Claude Code</strong> cho ChatGPT / Gemini / Flow / Suno, <strong>thẻ phần cứng + chọn bộ mã hoá</strong> ở tab Xuất, công tắc <strong>Cho phép Claude Code xuất video</strong> (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab <strong>Nguồn &amp; AI</strong> (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: <strong>carousel động</strong>. Ở 0.6: cảnh HTML (Hyperframes), <strong>thư viện SAMI dùng chung</strong>, ffmpeg đầy đủ.</p>
+<p><strong>Phiên bản 0.8.2.</strong> Mới ở 0.8.2: <strong>Chrome SAMI</strong> (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng <strong>kịch bản cố định</strong> không tốn token, tab Xuất ghi <strong>bộ mã hoá thật</strong> (đo từ file), cổng AI tách thành gói <code>sami-media</code> (mục 11f). Ở 0.8.1: nút <strong>＋ Tạo carousel</strong>, <strong>chọn nhiều dự án để xoá</strong> (vào Thùng rác), <strong>🧹 Dọn lịch sử</strong>, <strong>"Dùng ▾" + kéo thả media lên khung xem</strong>, nút <strong>✨ Tạo</strong> cho ChatGPT / Gemini / Flow / Suno, <strong>thẻ phần cứng + chọn bộ mã hoá</strong> ở tab Xuất, công tắc <strong>Cho phép Claude Code xuất video</strong> (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab <strong>Nguồn &amp; AI</strong> (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: <strong>carousel động</strong>. Ở 0.6: cảnh HTML (Hyperframes), <strong>thư viện SAMI dùng chung</strong>, ffmpeg đầy đủ.</p>
 <p>Phiên bản 0.5 (giai đoạn 1: web app chạy trên máy). Mới ở 0.5: <strong>Biến thể hàng loạt từ CSV</strong> (11c), <strong>làm việc nhóm</strong>: trạng thái, khoá dự án, mẫu dùng chung (11d). Ở 0.4: <strong>Gói duyệt khách</strong>, <strong>So sánh điểm neo</strong>, <strong>chuẩn âm lượng −14 LUFS</strong>. Ở 0.3: <strong>Lịch sử phiên bản / điểm neo</strong> (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab <strong>Ảnh chèn</strong>, <strong>Thư viện mẫu</strong>. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà <strong>không cần biết code</strong>. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.</p>
 <p><strong>Làm việc theo nhóm / với Claude:</strong> đọc <code>docs/QUY_TRINH_LAM_VIEC.md</code> (quy trình chuẩn, cổng duyệt, câu lệnh mẫu, cách tiết kiệm token).</p>
 </blockquote>
@@ -468,7 +468,7 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 - <strong>Chỉ cảnh Sxx</strong> — xuất riêng cảnh đang chọn (duyệt nhanh 1 cảnh).
 - <strong>Preset: bản nháp nhanh</strong> — Full HD, 30 fps, CRF 26.</p>
 <p><strong>Dung lượng ước tính</strong> hiện ngay dưới tên file (vàng = cảnh báo). Ví dụ ProRes 2K 60 fps ≈ 780 Mbps → 66 s ≈ 6,4 GB.</p>
-<p><strong>Hàng đợi render</strong>: thanh tiến độ, số khung đã vẽ / đã mã hoá, thời gian còn lại, bộ mã hoá đang dùng (GPU NVENC hay CPU), nút <strong>Huỷ</strong>, <strong>Mở video</strong>, <strong>Mở thư mục out</strong>, <strong>Dọn xong</strong>. Có thể tiếp tục chỉnh dự án khác khi đang render (mỗi bản render dùng dữ liệu <strong>đã Lưu</strong> tại lúc nó bắt đầu chạy — Studio tự lưu khi bấm Xuất).</p>
+<p><strong>Hàng đợi render</strong>: thanh tiến độ, số khung đã vẽ / đã mã hoá, thời gian còn lại, bộ mã hoá đang dùng (GPU NVENC hay CPU; từ 0.8.2, trước khi ghép các đoạn Studio đọc lại file và ghi <strong>bộ mã hoá thật</strong>, ví dụ "GPU · h264_nvenc" hay "CPU · libx264", kèm cảnh báo nếu đã chọn GPU mà file do CPU mã hoá; mỗi lượt xuất xong ghi một dòng vào <code>.studio/renders.jsonl</code>), nút <strong>Huỷ</strong>, <strong>Mở video</strong>, <strong>Mở thư mục out</strong>, <strong>Dọn xong</strong>. Có thể tiếp tục chỉnh dự án khác khi đang render (mỗi bản render dùng dữ liệu <strong>đã Lưu</strong> tại lúc nó bắt đầu chạy — Studio tự lưu khi bấm Xuất).</p>
 <h3 id="goi-duyet-khach-moi-o-04">Gói duyệt khách (mới ở 0.4)</h3>
 <p>Dùng để khách hoặc sếp góp ý theo từng cảnh <strong>mà không cần render video</strong>.
 1. Vào tab Xuất → <strong>📋 Tạo gói duyệt</strong>. Mất khoảng 2–4 phút, chạy nền.
@@ -610,11 +610,12 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 | Nguồn | Nút | Chi phí |
 |---|---|---|
 | Miễn phí: Edge TTS (giọng nháp), SFX tổng hợp, Kokoro / ComfyUI cục bộ | <strong>✨ Tạo</strong> | 0 |
-| Gói web: ChatGPT (5 ảnh/lệnh), Gemini, Flow / Veo, Suno | <strong>✨ Tạo bằng Claude Code</strong> | Hạn mức Claude (khoảng 0,5 đến 2 USD quy đổi mỗi lượt) + credit của gói web (Flow, Suno) |
+| Gói web: ChatGPT (5 ảnh/lệnh), Gemini, Flow / Veo, Suno | <strong>✨ Tạo (kịch bản cố định)</strong> hoặc <strong>✨ Tạo bằng Claude Code</strong> | ChatGPT: 0 (kịch bản cố định). Nguồn khác, hoặc khi kịch bản hỏng: hạn mức Claude (khoảng 0,5 đến 2 USD quy đổi mỗi lượt). Cộng credit của gói web (Flow, Suno) |
 | Trả tiền: ElevenLabs, OpenAI, Gemini API, Flux, fal, Replicate | <strong>✨ Tạo… (xem chi phí trước)</strong> → <strong>Xác nhận tạo</strong> | Theo bảng giá, trong trần ngày/tháng |</p>
 <ul>
 <li>Nguồn trả tiền chưa có khoá: ô <strong>Dán khoá</strong> hiện ngay tại chỗ.</li>
-<li><strong>Tạo bằng Claude Code:</strong> Studio chạy Claude Code ngầm, mở một tab mới trong <strong>Chrome thật của bạn</strong>, gửi đúng prompt một lần, tải kết quả về và lưu kèm meta. Chrome phải đang mở và đã đăng nhập dịch vụ đó. Gặp trang đăng nhập, CAPTCHA hay hết lượt thì Claude dừng và báo. Có nút <strong>Dừng</strong>. Thường 2 đến 6 phút.</li>
+<li><strong>Chrome SAMI (gói web):</strong> một cửa sổ Chrome <strong>riêng</strong> cho tự động hoá (hồ sơ <code>Z:\SAMI_Video\.chrome-sami</code>), không đụng Chrome bạn đang dùng. Chọn nguồn gói web → khung <strong>Chrome SAMI</strong> → <strong>Mở Chrome SAMI</strong>. Lần đầu cửa sổ mở sẵn ChatGPT, Gemini, Suno: đăng nhập <strong>một lần</strong>, sau đó Studio nhớ. Khung báo "✓ đã đăng nhập" hay "chưa đăng nhập" (bấm <strong>Mở trang đăng nhập</strong>), nút ↻ để kiểm lại. Mọi file tải về tự vào <code>Z:\SAMI_Video\.sami-cache\downloads</code>: không bao giờ hiện hộp "Lưu ở đâu".</li>
+<li><strong>✨ Tạo (gói web):</strong> Studio mở một tab mới trong Chrome SAMI, gửi đúng prompt <strong>một lần</strong>, chờ kết quả, tải về và lưu kèm meta. Chạy lần lượt, rẻ trước: <strong>kịch bản cố định</strong> (ChatGPT, không tốn token) → <strong>Jev</strong> (khi đã bật) → <strong>Claude Code</strong> (tốn hạn mức Claude). Prompt đã gửi rồi thì người chạy sau chỉ lấy kết quả, không gửi lại. Gặp trang đăng nhập, CAPTCHA hay hết lượt thì dừng và báo. Có nút <strong>Dừng</strong>. Thường 1 đến 6 phút.</li>
 <li>Nguồn trả tiền: lệnh nào cũng hiện giá trước, bấm <strong>Xác nhận</strong> mới chạy. Vượt trần ngày / tháng thì không chạy được. Lỗi thì không tự chạy lại.</li>
 </ul>
 <p><strong>Dùng file trong video ("Dùng ▾"):</strong>
@@ -735,8 +736,12 @@ blockquote{border-left:3px solid #7667FE;margin:12px 0;padding:6px 14px;backgrou
 <td>Dán khoá vào ô ngay dưới, hoặc mục Khoá API. Stock Wikimedia và nguồn miễn phí không cần khoá</td>
 </tr>
 <tr>
-<td>✨ Tạo bằng Claude Code báo "DỪNG: …"</td>
-<td>Đọc lý do: thường là chưa đăng nhập ChatGPT / Gemini trong Chrome, hoặc hết lượt. Đăng nhập rồi bấm lại</td>
+<td>✨ Tạo (gói web) báo "DỪNG: …"</td>
+<td>Đọc lý do: thường là Chrome SAMI chưa mở, chưa đăng nhập ChatGPT / Gemini trong cửa sổ Chrome SAMI, hoặc hết lượt. Mở / đăng nhập rồi bấm lại</td>
+</tr>
+<tr>
+<td>Nút ✨ Tạo (gói web) bị mờ</td>
+<td>Chrome SAMI chưa mở: bấm <strong>Mở Chrome SAMI</strong> trong khung ngay trên nút</td>
 </tr>
 <tr>
 <td>Claude Code báo "Studio đang TẮT Cho phép Claude Code xuất video"</td>

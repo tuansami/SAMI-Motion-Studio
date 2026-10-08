@@ -18,9 +18,11 @@ import {stageHtml, resolveStaged, isHf, lintScene, HF_VERSION} from './hf.mjs';
 import * as library from './library.mjs';
 import * as history from './history.mjs';
 import {CMP_ROOT} from './review.mjs';
-import * as providers from '../providers/gateway.mjs';
-import * as pcfg from '../providers/config.mjs';
-import {startWebAgent, agentReady} from '../providers/agent.mjs';
+import * as providers from 'sami-media/gateway';
+import * as pcfg from 'sami-media/config';
+import * as chrome from 'sami-media/chrome';
+import {runWeb, plan as webPlan} from 'sami-media/runners';
+import {agentReady} from 'sami-media/agent';
 import {recycle} from './trash.mjs';
 import {probeGpu, gpuInfo} from './gpu.mjs';
 
@@ -237,17 +239,17 @@ const startTask = (id, dir, kind, args) => {
   child.on('exit', (code) => { if (t.status === 'running') { t.status = 'error'; t.error = `Tiến trình dừng (mã ${code})\n` + log.replace(/\x1b\[[0-9;]*m/g, '').slice(-800); } t.child = null; pub(); setTimeout(() => tasks.delete(t.id), 3600e3); });
   pub(); return {task: t.id};
 };
-// "Tạo bằng Claude Code" (gói web) → headless Claude Code run; progress → SSE "task" (kind "agent")
+// "✨ Tạo" on a web subscription (ChatGPT, Gemini, Flow, Suno) → sami-media runners in Chrome SAMI: fixed script → Jev →
+// Claude Code; the prompt is sent at most once. Progress → SSE "task" (kind "agent")
 const startAgentTask = (projectId, req, destDir) => {
-  for (const t of tasks.values()) if (t.kind === 'agent' && t.status === 'running') throw new Error('Claude Code đang chạy một lượt tạo khác. Chờ xong rồi bấm tiếp.');
-  const t = {id: ++taskSeq, project: projectId, kind: 'agent', status: 'running', msg: 'Đang mở Claude Code…', p: 0, result: null, error: null, started: Date.now(), provider: req.provider};
+  for (const t of tasks.values()) if (t.kind === 'agent' && t.status === 'running') throw new Error('Đang có một lượt tạo qua trình duyệt. Chờ xong rồi bấm tiếp.');
+  const t = {id: ++taskSeq, project: projectId, kind: 'agent', status: 'running', msg: 'Đang nối Chrome SAMI…', p: 0, result: null, error: null, started: Date.now(), provider: req.provider, runner: null};
   const pub = () => { const {child: _c, ...x} = t; broadcast('task', x); };
-  const run = startWebAgent({req, destDir, onEvent: (e) => { if (t.status === 'running') { t.msg = e.msg; pub(); } }});
-  t.child = run.child; tasks.set(t.id, t); pub();
+  const run = runWeb({req: {...req, confirmedBy: 'Studio · ' + userName()}, dest: destDir || 'library', destDir, onEvent: (e) => { if (t.status === 'running') { t.msg = e.msg; t.runner = e.runner || t.runner; pub(); } }});
+  t.child = {kill: run.cancel}; tasks.set(t.id, t); pub();
   run.done.then((r) => {
-    const files = providers.ledgerSummary({limit: 200}).recent.filter((x) => x.provider === req.provider && x.out && x.ts >= r.since).map((x) => x.out).reverse();
-    t.child = null; t.p = 1; t.result = {text: r.text, files, costUsd: r.costUsd, turns: r.turns};
-    if (t.status === 'running') { t.status = r.ok || files.length ? 'done' : 'error'; if (t.status === 'error') t.error = r.text; }
+    t.child = null; t.p = 1; t.result = {text: r.text, files: r.files || [], costUsd: r.costUsd ?? null, turns: r.turns ?? null, runner: r.runner, sent: r.sent, steps: r.steps};
+    if (t.status === 'running') { t.status = r.ok ? 'done' : 'error'; if (t.status === 'error') t.error = r.text; }
     pub(); setTimeout(() => tasks.delete(t.id), 3600e3);
   });
   return {task: t.id};
@@ -348,7 +350,7 @@ const server = http.createServer(async (req, res) => {
       fs.appendFileSync(path.join(DATA, 'cli-render.log'), JSON.stringify({ts: new Date().toISOString(), via: 'studio', dir, request: b.request, opts: o}) + '\n');
       return json(res, addJob({...o, id, dir, name: o.name || pj.name, by: 'Claude Code'}));
     }
-    // ── Nguồn & AI (providers/gateway.mjs): keys never leave config.mjs, paid runs need the one-time token ──
+    // ── Nguồn & AI (sami-media gateway): keys never leave config.mjs, paid runs need the one-time token ──
     if (p.startsWith('/api/providers')) {
       const b = req.method === 'POST' ? await jbody(req) : {};
       const destFor = (x) => (x.to === 'project' ? dirs.get(x.id) || (() => { throw new Error('Chưa mở dự án'); })() : 'library');
@@ -363,6 +365,9 @@ const server = http.createServer(async (req, res) => {
         const r = await providers.generate({...b.req, dest: destFor(b)}, {token: b.token, confirmedBy: 'Studio · ' + userName(), onProgress: (x) => broadcast('provider', {id: b.id, ...x})});
         return json(res, {usd: r.usd, files: r.files.map((f) => ({uri: f.uri, rel: f.rel, path: f.path, duplicate: f.duplicate}))});
       }
+      // Chrome SAMI (automation profile): status + which sites are logged in (cookie names only) + what would run per web source
+      if (p === '/api/providers/chrome') return json(res, {...(await chrome.status()), plans: Object.fromEntries(['chatgpt-web', 'gemini-web', 'flow-web', 'suno-web'].map((id) => [id, webPlan(id)]))});
+      if (p === '/api/providers/chrome/open' && req.method === 'POST') { const site = chrome.SITES[b.site]; return json(res, await chrome.open({urls: site ? [site.url] : []})); }
       if (p === '/api/providers/agent' && req.method === 'POST') return json(res, startAgentTask(b.id, b.req, b.to === 'project' ? dirs.get(b.id) : null));
       if (p === '/api/providers/agent/cancel' && req.method === 'POST') { const t = tasks.get(+b.task); if (t?.child) { t.status = 'error'; t.error = 'Đã huỷ'; t.child.kill(); } return json(res, {ok: true}); }
       if (p === '/api/providers/ledger') return json(res, providers.ledgerSummary({limit: +(u.searchParams.get('limit') || 30)}));

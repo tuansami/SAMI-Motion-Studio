@@ -862,15 +862,17 @@ const pickBtn = (type, onPick) => h('button', {class: 'small', title: 'Chọn t�
   });
 })();
 
-// ─────────────────────────── NGUỒN & AI (providers/gateway.mjs) ───────────────────────────
+// ─────────────────────────── NGUỒN & AI (sami-media gateway) ───────────────────────────
 const KIND_LABEL = {img: 'Ảnh', video: 'Video', music: 'Nhạc', sfx: 'Hiệu ứng âm thanh', voice: 'Giọng đọc'};
 const usdT = (x) => (+x || 0).toFixed(3).replace(/0+$/, '').replace(/\.$/, '') + ' USD';
 S.ai = {q: '', kind: 'img', provider: 'auto', orientation: '', items: null, errors: [], gen: {kind: 'img', provider: '', prompt: '', n: 1, ratio: '9:16', seconds: 30, voice: '', model: ''}, est: null, to: 'project', busy: false, results: [], task: null};
+const RUNNER_LABEL = {script: 'kịch bản cố định', jev: 'Jev', claude: 'Claude Code'};
+const WEB_SITE = {'chatgpt-web': 'chatgpt', 'gemini-web': 'google', 'flow-web': 'google', 'suno-web': 'suno'};
 const onAgentTask = (t) => {
   if (t.kind !== 'agent') return; S.ai.task = t;
   if (t.status === 'done' || t.status === 'error') {
     S.ai.busy = false; if (t.result?.files?.length) { S.ai.results = [...t.result.files, ...S.ai.results].slice(0, 40); if (S.id) api('/api/project/assets?id=' + S.id).then((a) => (S.assets = a)).catch(() => {}); }
-    toast(t.status === 'done' ? `Claude Code xong: ${t.result?.files?.length || 0} file` : 'Claude Code dừng: ' + (t.error || '').slice(0, 160), t.status !== 'done', 8000);
+    toast(t.status === 'done' ? `Xong (${RUNNER_LABEL[t.result?.runner] || 'trình duyệt'}): ${t.result?.files?.length || 0} file` : 'Dừng: ' + (t.error || '').slice(0, 160), t.status !== 'done', 8000);
     if (S.tab === 'ai') renderTab();
   } else { const el = $('#aiProgress'); if (el) el.textContent = t.msg; }
 };
@@ -879,7 +881,7 @@ async function tabAI(B) {
   let P; try { P = await api('/api/providers'); } catch (e) { B.append(h('div', {class: 'v-fail'}, e.message)); return; }
   if (S.tab !== 'ai') return;
   const L = P.ledger;
-  B.append(h('div', {class: 'hint', style: 'margin:0 0 10px'}, `Tìm hoặc tạo media rồi bấm "Dùng ▾" (hoặc kéo thả lên khung xem) để đưa vào video. Thứ tự nên dùng: thư viện SAMI → stock miễn phí → gói web qua Claude Code → API trả tiền. Hôm nay đã dùng ${usdT(L.day)} / ${P.caps.dailyUsd} USD · tháng ${usdT(L.month)} / ${P.caps.monthlyUsd} USD.`));
+  B.append(h('div', {class: 'hint', style: 'margin:0 0 10px'}, `Tìm hoặc tạo media rồi bấm "Dùng ▾" (hoặc kéo thả lên khung xem) để đưa vào video. Thứ tự nên dùng: thư viện SAMI → stock miễn phí → gói web trong Chrome SAMI → API trả tiền. Hôm nay đã dùng ${usdT(L.day)} / ${P.caps.dailyUsd} USD · tháng ${usdT(L.month)} / ${P.caps.monthlyUsd} USD.`));
   B.append(h('div', {class: 'seg', style: 'margin-bottom:12px'}, ...[['project', 'Lưu vào dự án'], ['library', 'Lưu vào thư viện SAMI (dùng chung)']].map(([v, t]) => h('button', {class: A.to === v ? 'on' : '', onclick: () => { A.to = v; renderTab(); }}, t))));
   const saved = async (refs) => { if (A.to === 'project') S.assets = await api('/api/project/assets?id=' + S.id); A.results = [...refs, ...A.results.filter((x) => !refs.includes(x))].slice(0, 40); };
 
@@ -917,7 +919,7 @@ async function tabAI(B) {
   const pv = P.providers.find((p) => p.id === G.provider);
   const gg = h('div', {class: 'group'}, h('h4', {}, 'Tạo bằng AI'));
   const setG = (k, v, re = false) => { G[k] = v; A.est = null; if (re) renderTab(); };
-  const tag = (p) => (p.web ? 'gói web, qua Claude Code' : p.paid ? 'trả tiền' : 'miễn phí');
+  const tag = (p) => (p.web ? 'gói web, Chrome SAMI' : p.paid ? 'trả tiền' : 'miễn phí');
   gg.append(h('div', {class: 'cols2'},
     field('Loại', h('select', {onchange: (e) => setG('kind', e.target.value, true)}, ...['img', 'voice', 'music', 'sfx', 'video'].map((k) => h('option', {value: k, selected: G.kind === k}, KIND_LABEL[k])))),
     field('Nguồn', h('select', {onchange: (e) => { G.model = ''; G.voice = ''; setG('provider', e.target.value, true); }}, ...gens.map((p) => h('option', {value: p.id, selected: p.id === G.provider}, `${p.label} · ${tag(p)}${!p.available && p.keyId ? ' · chưa có khoá' : !p.available ? ' · chưa chạy' : ''}`))))));
@@ -942,27 +944,44 @@ async function tabAI(B) {
     catch (e) { modal(h('div', {}, h('h3', {}, 'Tạo không thành công'), h('p', {class: 'v-fail', style: 'white-space:pre-wrap'}, e.message), h('p', {class: 'muted'}, 'Studio không tự chạy lại. Kiểm tra rồi bấm Tạo lại.'))); }
     A.busy = false; if (S.tab === 'ai') renderTab();
   };
+  // gói web: Chrome SAMI (hồ sơ riêng cho tự động hoá) + người chạy: kịch bản cố định → Jev → Claude Code
+  let C = null, plan = [];
+  if (pv?.web) {
+    if (!A.chrome) { try { A.chrome = await api('/api/providers/chrome'); } catch (e) { A.chrome = {error: e.message}; } if (S.tab !== 'ai') return; }
+    C = A.chrome; plan = C.plans?.[pv.id] || [];
+    const site = WEB_SITE[pv.id]; const logged = C.logins?.[site];
+    const openChrome = async (siteId) => { try { const r = await api('/api/providers/chrome/open', {site: siteId}); toast(r.started ? 'Đã mở Chrome SAMI' + (r.first ? ': đăng nhập ChatGPT, Google, Suno một lần trong cửa sổ này' : '') : 'Chrome SAMI đang mở', false, 7000); } catch (e) { toast(e.message, true, 8000); } A.chrome = null; renderTab(); };
+    gg.append(h('div', {class: 'estBox', style: 'margin:0 0 10px'},
+      h('div', {class: 'row', style: 'justify-content:space-between;flex-wrap:wrap'}, h('b', {}, 'Chrome SAMI ', h('span', {class: 'muted', style: 'font-weight:400;font-size:12px'}, '(cửa sổ Chrome riêng cho tự động hoá, không đụng Chrome bạn đang dùng)')),
+        h('div', {class: 'row', style: 'gap:6px'}, C.running ? null : h('button', {class: 'small primary', onclick: () => openChrome()}, 'Mở Chrome SAMI'), h('button', {class: 'small', title: 'Kiểm lại', onclick: () => { A.chrome = null; renderTab(); }}, '↻'))),
+      C.error ? h('div', {class: 'v-fail', style: 'font-size:12px;margin-top:4px'}, C.error)
+        : h('div', {style: 'font-size:12.5px;margin-top:4px'}, C.running ? '● Đang mở' : '○ Chưa mở', C.running && site ? [' · ', logged ? `✓ đã đăng nhập ${C.sites[site].label}` : h('span', {class: 'v-warn'}, `chưa đăng nhập ${C.sites[site].label} `), logged ? null : h('button', {class: 'small', onclick: () => openChrome(site)}, 'Mở trang đăng nhập')] : null),
+      h('div', {class: 'muted', style: 'font-size:12px;margin-top:4px'}, 'Chạy lần lượt: ', ...plan.flatMap((s, i) => [i ? ' → ' : '', h('span', {title: s.reason || '', style: s.ok ? '' : 'text-decoration:line-through;opacity:.7'}, s.label)]), '. Prompt chỉ gửi một lần; file tải về ', C.downloads ? h('code', {}, C.downloads) : 'thư mục cố định', '.')));
+  }
   const runAgent = () => {
     if (!G.prompt.trim()) return toast('Viết prompt trước', true);
     const credit = {'flow-web': 'Mỗi lần tạo tốn credit Google AI của bạn.', 'suno-web': 'Mỗi lượt tốn credit Suno (thường 10 credit, ra 2 bài).'}[pv.id];
-    modal(h('div', {style: 'max-width:520px'}, h('h3', {}, `Tạo bằng ${pv.label} qua Claude Code`),
-      h('p', {}, 'Claude Code sẽ chạy ngầm, mở một tab mới trong ', h('b', {}, 'Chrome thật của bạn'), ', gửi đúng prompt này ', h('b', {}, 'một lần'), ', chờ kết quả, tải về và lưu vào ', A.to === 'project' ? 'dự án' : 'thư viện SAMI', ' kèm prompt + giấy phép.'),
-      h('ul', {class: 'muted', style: 'font-size:13px;padding-left:18px'}, h('li', {}, 'Chrome phải đang mở và đã đăng nhập ' + pv.label.replace(' (web)', '') + '. Gặp trang đăng nhập hay CAPTCHA, Claude dừng và báo lại.'), h('li', {}, 'Tốn hạn mức Claude của bạn (khoảng 0,5 đến 2 USD quy đổi mỗi lượt, tuỳ số bước).'), credit ? h('li', {}, credit) : null, h('li', {}, 'Thường mất 2 đến 6 phút. Studio vẫn dùng được trong lúc chờ.')),
+    const script = plan.find((s) => s.id === 'script')?.ok;
+    modal(h('div', {style: 'max-width:520px'}, h('h3', {}, `Tạo bằng ${pv.label} trong Chrome SAMI`),
+      h('p', {}, 'Studio mở một tab mới trong ', h('b', {}, 'Chrome SAMI'), ', gửi đúng prompt này ', h('b', {}, 'một lần'), ', chờ kết quả, tải về và lưu vào ', A.to === 'project' ? 'dự án' : 'thư viện SAMI', ' kèm prompt + giấy phép.'),
+      h('ul', {class: 'muted', style: 'font-size:13px;padding-left:18px'},
+        h('li', {}, script ? 'Chạy bằng kịch bản cố định (0 token). Kịch bản không làm được thì mới nhờ Claude Code (tốn hạn mức Claude, khoảng 0,5 đến 2 USD quy đổi).' : 'Nguồn này chưa có kịch bản cố định: Claude Code làm (tốn hạn mức Claude, khoảng 0,5 đến 2 USD quy đổi mỗi lượt).'),
+        h('li', {}, 'Gặp trang đăng nhập hay CAPTCHA: dừng và báo lại.'), credit ? h('li', {}, credit) : null, h('li', {}, 'Thường mất 1 đến 6 phút. Studio vẫn dùng được trong lúc chờ.')),
       h('pre', {style: 'white-space:pre-wrap;background:#0A0722;padding:8px;border-radius:8px;font-size:12px;max-height:160px;overflow:auto'}, G.prompt),
-      h('div', {class: 'row'}, h('button', {class: 'primary', onclick: async () => { $('#modal').hidden = true; try { const r = await api('/api/providers/agent', {req: reqNow(), id: S.id, to: A.to}); A.busy = true; A.task = {id: r.task, status: 'running', msg: 'Đang mở Claude Code…'}; renderTab(); } catch (e) { toast(e.message, true, 8000); } }}, 'Đồng ý, bắt đầu'))));
+      h('div', {class: 'row'}, h('button', {class: 'primary', onclick: async () => { $('#modal').hidden = true; try { const r = await api('/api/providers/agent', {req: reqNow(), id: S.id, to: A.to}); A.busy = true; A.task = {id: r.task, status: 'running', msg: 'Đang nối Chrome SAMI…'}; renderTab(); } catch (e) { toast(e.message, true, 8000); } }}, 'Đồng ý, bắt đầu'))));
   };
   const busyAgent = A.task?.status === 'running';
-  const label = pv?.web ? '✨ Tạo bằng Claude Code' : pv?.paid ? '✨ Tạo… (xem chi phí trước)' : '✨ Tạo';
-  const canRun = pv && !A.busy && !busyAgent && (pv.web ? P.agent?.ok !== false : pv.available);
+  const label = pv?.web ? (plan.find((s) => s.id === 'script')?.ok ? '✨ Tạo (kịch bản cố định)' : '✨ Tạo bằng Claude Code') : pv?.paid ? '✨ Tạo… (xem chi phí trước)' : '✨ Tạo';
+  const canRun = pv && !A.busy && !busyAgent && (pv.web ? !!C?.running && plan.some((s) => s.ok) : pv.available);
   gg.append(h('div', {class: 'row', style: 'flex-wrap:wrap'}, h('button', {class: 'primary', disabled: !canRun, onclick: async () => {
     if (!G.prompt.trim()) return toast(G.kind === 'voice' ? 'Viết lời thoại trước' : 'Viết prompt trước', true);
     if (pv.web) return runAgent();
     if (!pv.paid) return run(null);
     try { A.est = await api('/api/providers/estimate', {req: reqNow(), id: S.id, to: A.to}); } catch (e) { A.est = {error: e.message}; } renderTab();
-  }}, label), pv?.web && P.agent?.ok === false ? h('span', {class: 'v-warn', style: 'font-size:12px'}, P.agent.reason) : null));
+  }}, label), pv?.web && C && !C.running ? h('span', {class: 'v-warn', style: 'font-size:12px'}, 'Mở Chrome SAMI trước') : null));
   const E = A.est;
-  if (busyAgent || A.busy) gg.append(h('div', {class: 'estBox'}, h('div', {class: 'row', style: 'justify-content:space-between'}, h('b', {}, busyAgent ? 'Claude Code đang làm…' : 'Đang tạo…'), busyAgent ? h('button', {class: 'small danger', onclick: async () => { await api('/api/providers/agent/cancel', {task: A.task.id}); }}, 'Dừng') : null), h('div', {class: 'muted', style: 'font-size:12.5px;margin-top:4px', id: 'aiProgress'}, A.task?.msg || 'Không đóng Studio trong lúc chờ')));
-  else if (A.task && A.task.status !== 'running' && A.task.result) gg.append(h('div', {class: 'hint', style: 'margin:8px 0 0'}, `Lượt Claude Code gần nhất: ${A.task.result.text?.slice(0, 200) || ''}${A.task.result.costUsd != null ? ` · ≈ ${usdT(A.task.result.costUsd)} hạn mức Claude` : ''}`));
+  if (busyAgent || A.busy) gg.append(h('div', {class: 'estBox'}, h('div', {class: 'row', style: 'justify-content:space-between'}, h('b', {}, busyAgent ? `Đang chạy trong Chrome SAMI${A.task.runner ? ' · ' + RUNNER_LABEL[A.task.runner] : ''}…` : 'Đang tạo…'), busyAgent ? h('button', {class: 'small danger', onclick: async () => { await api('/api/providers/agent/cancel', {task: A.task.id}); }}, 'Dừng') : null), h('div', {class: 'muted', style: 'font-size:12.5px;margin-top:4px', id: 'aiProgress'}, A.task?.msg || 'Không đóng Studio trong lúc chờ')));
+  else if (A.task && A.task.status !== 'running' && A.task.result) gg.append(h('div', {class: 'hint', style: 'margin:8px 0 0'}, `Lượt gần nhất (${RUNNER_LABEL[A.task.result.runner] || 'trình duyệt'}): ${A.task.result.text?.slice(0, 200) || ''}${A.task.result.costUsd != null ? ` · ≈ ${usdT(A.task.result.costUsd)} hạn mức Claude` : ''}`));
   if (E?.error) gg.append(h('div', {class: 'v-fail', style: 'margin-top:8px;white-space:pre-wrap'}, E.error));
   else if (E) {
     const box = h('div', {class: 'estBox'}, h('div', {}, h('b', {}, E.label), ` · ${E.units}`), h('div', {class: 'big'}, '≈ ' + usdT(E.usd)), E.notes ? h('div', {class: 'hint', style: 'margin:4px 0 0'}, E.notes) : null,

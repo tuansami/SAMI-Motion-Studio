@@ -1,6 +1,6 @@
 # SAMI Motion Studio — Hướng dẫn sử dụng
 
-> **Phiên bản 0.8.1.** Mới ở 0.8.1: nút **＋ Tạo carousel**, **chọn nhiều dự án để xoá** (vào Thùng rác), **🧹 Dọn lịch sử**, **"Dùng ▾" + kéo thả media lên khung xem**, nút **✨ Tạo bằng Claude Code** cho ChatGPT / Gemini / Flow / Suno, **thẻ phần cứng + chọn bộ mã hoá** ở tab Xuất, công tắc **Cho phép Claude Code xuất video** (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab **Nguồn & AI** (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: **carousel động**. Ở 0.6: cảnh HTML (Hyperframes), **thư viện SAMI dùng chung**, ffmpeg đầy đủ.
+> **Phiên bản 0.8.2.** Mới ở 0.8.2: **Chrome SAMI** (cửa sổ Chrome riêng cho tự động hoá, tải về thư mục cố định), ChatGPT chạy bằng **kịch bản cố định** không tốn token, tab Xuất ghi **bộ mã hoá thật** (đo từ file), cổng AI tách thành gói `sami-media` (mục 11f). Ở 0.8.1: nút **＋ Tạo carousel**, **chọn nhiều dự án để xoá** (vào Thùng rác), **🧹 Dọn lịch sử**, **"Dùng ▾" + kéo thả media lên khung xem**, nút **✨ Tạo** cho ChatGPT / Gemini / Flow / Suno, **thẻ phần cứng + chọn bộ mã hoá** ở tab Xuất, công tắc **Cho phép Claude Code xuất video** (mục 0, 3, 11, 11b, 11e, 11f). Ở 0.8: tab **Nguồn & AI** (stock, tạo ảnh / giọng / nhạc, khoá API, trần chi phí). Ở 0.7: **carousel động**. Ở 0.6: cảnh HTML (Hyperframes), **thư viện SAMI dùng chung**, ffmpeg đầy đủ.
 >
 > Phiên bản 0.5 (giai đoạn 1: web app chạy trên máy). Mới ở 0.5: **Biến thể hàng loạt từ CSV** (11c), **làm việc nhóm**: trạng thái, khoá dự án, mẫu dùng chung (11d). Ở 0.4: **Gói duyệt khách**, **So sánh điểm neo**, **chuẩn âm lượng −14 LUFS**. Ở 0.3: **Lịch sử phiên bản / điểm neo** (mục 11b). Ở 0.2: render chống treo + tiếp tục, sửa GPU NVENC, tab **Ảnh chèn**, **Thư viện mẫu**. Dành cho đội SAMI: chỉnh chữ, thời lượng, tiêu đề, phụ đề, âm thanh và xuất video mà **không cần biết code**. Phần code (vẽ cảnh mới) do Claude Code làm theo tài nguyên bạn đưa vào.
 
@@ -266,7 +266,7 @@ Bấm để Studio đo file nhạc: **BPM**, phách đầu, **DROP** (điểm b�
 
 **Dung lượng ước tính** hiện ngay dưới tên file (vàng = cảnh báo). Ví dụ ProRes 2K 60 fps ≈ 780 Mbps → 66 s ≈ 6,4 GB.
 
-**Hàng đợi render**: thanh tiến độ, số khung đã vẽ / đã mã hoá, thời gian còn lại, bộ mã hoá đang dùng (GPU NVENC hay CPU), nút **Huỷ**, **Mở video**, **Mở thư mục out**, **Dọn xong**. Có thể tiếp tục chỉnh dự án khác khi đang render (mỗi bản render dùng dữ liệu **đã Lưu** tại lúc nó bắt đầu chạy — Studio tự lưu khi bấm Xuất).
+**Hàng đợi render**: thanh tiến độ, số khung đã vẽ / đã mã hoá, thời gian còn lại, bộ mã hoá đang dùng (GPU NVENC hay CPU; từ 0.8.2, trước khi ghép các đoạn Studio đọc lại file và ghi **bộ mã hoá thật**, ví dụ "GPU · h264_nvenc" hay "CPU · libx264", kèm cảnh báo nếu đã chọn GPU mà file do CPU mã hoá; mỗi lượt xuất xong ghi một dòng vào `.studio/renders.jsonl`), nút **Huỷ**, **Mở video**, **Mở thư mục out**, **Dọn xong**. Có thể tiếp tục chỉnh dự án khác khi đang render (mỗi bản render dùng dữ liệu **đã Lưu** tại lúc nó bắt đầu chạy — Studio tự lưu khi bấm Xuất).
 
 ### Gói duyệt khách (mới ở 0.4)
 Dùng để khách hoặc sếp góp ý theo từng cảnh **mà không cần render video**.
@@ -410,11 +410,12 @@ Bộ slide cho Instagram / Facebook / LinkedIn: **mỗi slide là 1 video MP4 l�
 | Nguồn | Nút | Chi phí |
 |---|---|---|
 | Miễn phí: Edge TTS (giọng nháp), SFX tổng hợp, Kokoro / ComfyUI cục bộ | **✨ Tạo** | 0 |
-| Gói web: ChatGPT (5 ảnh/lệnh), Gemini, Flow / Veo, Suno | **✨ Tạo bằng Claude Code** | Hạn mức Claude (khoảng 0,5 đến 2 USD quy đổi mỗi lượt) + credit của gói web (Flow, Suno) |
+| Gói web: ChatGPT (5 ảnh/lệnh), Gemini, Flow / Veo, Suno | **✨ Tạo (kịch bản cố định)** hoặc **✨ Tạo bằng Claude Code** | ChatGPT: 0 (kịch bản cố định). Nguồn khác, hoặc khi kịch bản hỏng: hạn mức Claude (khoảng 0,5 đến 2 USD quy đổi mỗi lượt). Cộng credit của gói web (Flow, Suno) |
 | Trả tiền: ElevenLabs, OpenAI, Gemini API, Flux, fal, Replicate | **✨ Tạo… (xem chi phí trước)** → **Xác nhận tạo** | Theo bảng giá, trong trần ngày/tháng |
 
 - Nguồn trả tiền chưa có khoá: ô **Dán khoá** hiện ngay tại chỗ.
-- **Tạo bằng Claude Code:** Studio chạy Claude Code ngầm, mở một tab mới trong **Chrome thật của bạn**, gửi đúng prompt một lần, tải kết quả về và lưu kèm meta. Chrome phải đang mở và đã đăng nhập dịch vụ đó. Gặp trang đăng nhập, CAPTCHA hay hết lượt thì Claude dừng và báo. Có nút **Dừng**. Thường 2 đến 6 phút.
+- **Chrome SAMI (gói web):** một cửa sổ Chrome **riêng** cho tự động hoá (hồ sơ `Z:\SAMI_Video\.chrome-sami`), không đụng Chrome bạn đang dùng. Chọn nguồn gói web → khung **Chrome SAMI** → **Mở Chrome SAMI**. Lần đầu cửa sổ mở sẵn ChatGPT, Gemini, Suno: đăng nhập **một lần**, sau đó Studio nhớ. Khung báo "✓ đã đăng nhập" hay "chưa đăng nhập" (bấm **Mở trang đăng nhập**), nút ↻ để kiểm lại. Mọi file tải về tự vào `Z:\SAMI_Video\.sami-cache\downloads`: không bao giờ hiện hộp "Lưu ở đâu".
+- **✨ Tạo (gói web):** Studio mở một tab mới trong Chrome SAMI, gửi đúng prompt **một lần**, chờ kết quả, tải về và lưu kèm meta. Chạy lần lượt, rẻ trước: **kịch bản cố định** (ChatGPT, không tốn token) → **Jev** (khi đã bật) → **Claude Code** (tốn hạn mức Claude). Prompt đã gửi rồi thì người chạy sau chỉ lấy kết quả, không gửi lại. Gặp trang đăng nhập, CAPTCHA hay hết lượt thì dừng và báo. Có nút **Dừng**. Thường 1 đến 6 phút.
 - Nguồn trả tiền: lệnh nào cũng hiện giá trước, bấm **Xác nhận** mới chạy. Vượt trần ngày / tháng thì không chạy được. Lỗi thì không tự chạy lại.
 
 **Dùng file trong video ("Dùng ▾"):**
@@ -486,7 +487,8 @@ Nhắn Claude Code: *"Thêm bố cục riêng 9:16 và 1:1 cho các cảnh (dùn
 | Render lỗi "Ổ đĩa đầy" | ProRes/4K rất nặng — giải phóng ổ đĩa rồi bấm **Tiếp tục** |
 | Render chậm | Tăng số luồng, chọn MP4 H.264 + GPU Tự động, dùng Full HD 30 fps cho bản nháp |
 | Tab Nguồn & AI: "Chưa có khoá …" | Dán khoá vào ô ngay dưới, hoặc mục Khoá API. Stock Wikimedia và nguồn miễn phí không cần khoá |
-| ✨ Tạo bằng Claude Code báo "DỪNG: …" | Đọc lý do: thường là chưa đăng nhập ChatGPT / Gemini trong Chrome, hoặc hết lượt. Đăng nhập rồi bấm lại |
+| ✨ Tạo (gói web) báo "DỪNG: …" | Đọc lý do: thường là Chrome SAMI chưa mở, chưa đăng nhập ChatGPT / Gemini trong cửa sổ Chrome SAMI, hoặc hết lượt. Mở / đăng nhập rồi bấm lại |
+| Nút ✨ Tạo (gói web) bị mờ | Chrome SAMI chưa mở: bấm **Mở Chrome SAMI** trong khung ngay trên nút |
 | Claude Code báo "Studio đang TẮT Cho phép Claude Code xuất video" | Bật công tắc ở tab Xuất nếu muốn Claude xuất, hoặc tự bấm ▶ Xuất video |
 | Không thấy tính năng mới sau khi cập nhật | Đóng hẳn cửa sổ đen của Studio, mở lại `Start-Studio.bat`, rồi tải lại trang (Ctrl+F5) |
 | Bộ mã hoá hiện "CPU" dù có card NVIDIA | Tab Xuất → **🩺 Chẩn đoán GPU** → làm theo hướng dẫn hiện ra (thường: cập nhật driver NVIDIA, tắt OBS/app ghi màn hình). Nhớ: ProRes luôn dùng CPU |

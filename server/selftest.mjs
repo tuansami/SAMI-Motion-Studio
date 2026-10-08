@@ -80,16 +80,18 @@ await t('python audio synth (numpy): seamless 2 s mix', async () => {
     const n = fs.statSync(path.join(d, 'm.wav')).size; if (Math.abs(n - (44 + 2 * 48000 * 4)) > 64) throw new Error('length ' + n);
   } finally { fs.rmSync(d, {recursive: true, force: true}); }
 });
-// ── 0.8: AI gateway (mock adapters, throw-away key/ledger/library folders, no network) ──
-await t('providers/* parse', () => { const d = path.join(ROOT, 'providers'); for (const f of [...fs.readdirSync(d).filter((x) => x.endsWith('.mjs')).map((x) => path.join(d, x)), ...fs.readdirSync(path.join(d, 'adapters')).map((x) => path.join(d, 'adapters', x))]) { const r = spawnSync(process.execPath, ['--check', f], {encoding: 'utf8'}); if (r.status) throw new Error(path.basename(f) + ': ' + r.stderr.split('\n').slice(0, 3).join(' ')); } });
+// ── 0.8 / 0.8.2: AI gateway = the sami-media package (../MCP-sami-media); its own tests use throw-away folders, no network ──
 {
-  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-gw-'));
-  try {
-    const r = spawnSync(process.execPath, [path.join(ROOT, 'providers', 'selftest.mjs')], {encoding: 'utf8', env: {...process.env, SAMI_PROVIDERS_TEST: '1', SAMI_USERDATA: path.join(d, 'ud'), SAMI_LIBRARY: path.join(d, 'lib')}});
-    for (const line of (r.stdout || '').split('\n').filter(Boolean)) line.startsWith('✗') ? fail('gateway: ' + line.slice(2)) : ok('gateway: ' + line.slice(2));
-    if (r.status && !/✗/.test(r.stdout || '')) fail('gateway selftest — ' + (r.stderr || '').slice(-300));
-  } finally { fs.rmSync(d, {recursive: true, force: true}); }
+  const pkg = path.join(ROOT, 'node_modules', 'sami-media');
+  if (!fs.existsSync(path.join(pkg, 'test', 'run.mjs'))) fail('sami-media chưa cài (npm install; cần thư mục ../MCP-sami-media)');
+  else {
+    const r = spawnSync(process.execPath, [path.join(pkg, 'test', 'run.mjs')], {encoding: 'utf8', cwd: fs.realpathSync(pkg)});
+    for (const line of (r.stdout || '').split('\n').filter((l) => /^[✓✗]/.test(l))) line.startsWith('✗') ? fail('sami-media: ' + line.slice(2)) : ok('sami-media: ' + line.slice(2));
+    if (r.status && !/✗/.test(r.stdout || '')) fail('sami-media test — ' + (r.stderr || '').slice(-300));
+  }
 }
+await t('Studio and sami-media share one SAMI_Library', async () => { const L = await import('./library.mjs'); const P = await import('./paths.mjs'); if (path.resolve(L.ASSETS) !== path.join(P.LIBRARY, 'assets')) throw new Error(L.ASSETS); return P.LIBRARY; });
+await t('no second copy of the gateway in the Studio', () => { if (fs.existsSync(path.join(ROOT, 'providers'))) throw new Error('providers/ vẫn còn: mã cổng AI chỉ nằm trong sami-media'); });
 // ── 0.8.1: Claude Code never renders without the Studio switch + Tuấn's request ──
 await t('cli-render / cli-carousel refuse without --request', () => {
   for (const [f, a] of [['cli-render.mjs', [path.join(TEMPLATES, 'hf-starter')]], ['cli-carousel.mjs', [path.join(TEMPLATES, 'carousel-sami'), 'render']]]) {
@@ -97,7 +99,16 @@ await t('cli-render / cli-carousel refuse without --request', () => {
     if (r.status === 0 || !/--request/.test(r.stderr)) throw new Error(f + ' không từ chối: ' + (r.stderr || r.stdout).slice(0, 200));
   }
 });
-await t('agent (Tạo bằng Claude Code): instructions lock tools to browser-harness + ingest', () => { const s = fs.readFileSync(path.join(ROOT, 'providers', 'agent.mjs'), 'utf8'); if (!/'--allowedTools', 'mcp__browser-harness'/.test(s) || !/--strict-mcp-config/.test(s) || /dangerously|bypassPermissions/.test(s)) throw new Error('allowedTools'); });
+// ── 0.8.2: the encoder that really wrote a file (tiny 0.2 s clip from a still, CPU only; not a video export) ──
+await t('probeEncoder reads libx264 from a real file', async () => {
+  const {probeEncoder, ffAsync} = await import('./ffmpeg.mjs');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'sami-enc-')); const f = path.join(d, 'x.mp4');
+  try {
+    const r = await ffAsync(['-v', 'error', '-y', '-loop', '1', '-i', path.join(ROOT, 'engine', 'public', 'grain0.png'), '-t', '0.2', '-vf', 'scale=160:120', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', f]);
+    if (r.code !== 0) return 'ffmpeg không có libx264 (bỏ qua)';
+    const e = await probeEncoder(f); if (e.encoder !== 'libx264' || e.gpu) throw new Error(JSON.stringify(e)); return e.label + ' (' + e.how + ')';
+  } finally { fs.rmSync(d, {recursive: true, force: true}); }
+});
 await t('encoder caps (async probe, NVENC/QSV/AMF)', async () => { const {capsReady} = await import('./ffmpeg.mjs'); const c = await capsReady(); return `Remotion NVENC ${c.remotion.nvenc ? '✓' : '–'} · ffmpeg ${c.full.full ? 'đầy đủ' : 'đi kèm'} NVENC ${c.full.nvenc ? '✓' : '–'}`; });
 
 // version history round trip on a throw-away copy of a template

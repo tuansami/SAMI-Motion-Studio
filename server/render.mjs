@@ -15,7 +15,7 @@ import {isCarousel, renderCarousel} from './carousel.mjs';
 import {childEnv} from './env.mjs';
 import {fileURLToPath} from 'url';
 import {readProject, codeHash} from './project.mjs';
-import {gpuEncoders, capsReady, ffAsync, fprobeAsync, normalizeLoudness} from './ffmpeg.mjs';
+import {gpuEncoders, capsReady, ffAsync, fprobeAsync, normalizeLoudness, probeEncoder} from './ffmpeg.mjs';
 import {DATA} from './paths.mjs';
 
 export const SCALE = {'540p': 0.5, FHD: 1, '2K': 4 / 3, '4K': 2};
@@ -34,7 +34,7 @@ let seq = 0;
 export const jobs = [];
 const listeners = new Set();
 export const onJobs = (fn) => { listeners.add(fn); return () => listeners.delete(fn); };
-const pub = (j) => ({id: j.id, name: j.name, status: j.status, progress: j.progress, stage: j.stage, out: j.out, error: j.error, opts: j.opts, started: j.started, finished: j.finished, eta: j.eta, encoder: j.encoder, parts: j.parts, partsDone: j.partsDone, attempt: j.attempt, note: j.note, canResume: ['error', 'cancelled', 'interrupted'].includes(j.status) && !!j.partsDir});
+const pub = (j) => ({id: j.id, name: j.name, status: j.status, progress: j.progress, stage: j.stage, out: j.out, error: j.error, opts: j.opts, started: j.started, finished: j.finished, eta: j.eta, encoder: j.encoder, encoderReal: j.encoderReal, parts: j.parts, partsDone: j.partsDone, attempt: j.attempt, note: j.note, canResume: ['error', 'cancelled', 'interrupted'].includes(j.status) && !!j.partsDir});
 export const publicJobs = () => jobs.map(pub);
 let lastSave = 0;
 const persist = () => {
@@ -98,6 +98,7 @@ const pump = async () => {
     if (j.status !== 'cancelled') { j.status = 'error'; j.error = humanError(String(e?.message || e)); j.stage = 'Lỗi' + (j.partsDone ? ` — đã xong ${j.partsDone}/${j.parts} đoạn, sửa xong bấm Tiếp tục` : ''); }
   }
   j.finished = Date.now(); running = null; j.child = null; lastSave = 0; emit(); setTimeout(pump, 50);
+  if (j.status === 'done') try { fs.appendFileSync(path.join(DATA, 'renders.jsonl'), JSON.stringify({ts: new Date().toISOString(), name: j.name, out: j.out, by: j.opts?.by || 'Studio', gpu: j.opts?.gpu, codec: j.opts?.codec, encoder: j.encoder, encoderReal: j.encoderReal || null, seconds: Math.round((j.finished - j.started) / 1000)}) + '\n'); } catch {}
 };
 
 const humanError = (m) => {
@@ -184,7 +185,8 @@ const runCarouselJob = async (j, project) => {
     workers: Math.max(1, Math.min(4, Math.floor(threads / 2))), onChild: (c) => { j.child = c; }, cancelled: () => j.status === 'cancelled',
     onStage: (msg, p) => { j.stage = msg; j.progress = Math.min(0.99, p); emit(); }});
   if (j.status === 'cancelled') return;
-  j.out = r.preview; j.encoder = 'Hyperframes (carousel)';
+  const enc = r.slides[0]?.mp4 ? await probeEncoder(r.slides[0].mp4).catch(() => null) : null;
+  j.out = r.preview; j.encoder = 'Hyperframes (carousel)' + (enc?.encoder ? ' · ' + enc.label : ''); j.encoderReal = enc?.encoder || null;
   const bad = r.slides.filter((s) => !s.audio || (s.seamPsnr != null && s.seamPsnr < 22));
   j.note = `${r.slides.length} slide MP4 · ${path.basename(r.outDir)}` + (bad.length ? ` · cần xem: ${bad.map((s) => s.id + (!s.audio ? ' (không tiếng)' : ' (nối vòng)')).join(', ')}` : ' · QA đạt');
   j.status = 'done'; j.progress = 1; j.stage = 'Hoàn tất'; j.eta = null;
@@ -308,6 +310,14 @@ const run = async (j) => {
     if (fs.existsSync(norm + '.ok')) { muxAudio = norm; try { const r = JSON.parse(fs.readFileSync(norm + '.ok', 'utf8')); j.loudNote = `Âm lượng ${r.from.toFixed(1)} → ${r.to.toFixed(1)} LUFS`; } catch {} }
   }
   if (j.status === 'cancelled') return;
+
+  // which encoder really wrote the parts (the join copies the stream, so this is what the film is made of)
+  const real = await probeEncoder(partFile(0)).catch(() => null);
+  if (real?.encoder) {
+    j.encoderReal = real.encoder; j.encoder = real.label;
+    if (useNvenc && !real.gpu) j.note = `Đã chọn GPU NVENC nhưng file do ${real.encoder} mã hoá (Remotion tự lùi về CPU)`;
+    fs.writeFileSync(path.join(partsDir, 'encoder-real.json'), JSON.stringify(real));
+  }
 
   // join parts without re-encoding + mux audio
   j.stage = 'Ghép các đoạn' + (wantAudio ? ' + âm thanh' : ''); j.progress = 0.97; emit();

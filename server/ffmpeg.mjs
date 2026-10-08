@@ -35,6 +35,25 @@ const run = (bin, args, {timeout = 0} = {}) => new Promise((ok) => {
 });
 export const ffAsync = (args) => run(FFMPEG, args);
 export const fprobeAsync = (args) => run(FFPROBE, args);
+/** which encoder REALLY wrote a video file → {codec, encoder, how: 'tag'|'sei'|'guess', label}
+ *  1. stream tag "encoder" (the ffmpeg CLI writes e.g. "Lavc62.28.103 libx264" / "… h264_nvenc")
+ *  2. the banner x264 / x265 leave in the bitstream ("x264 - core 165", "x265 (build 217)")
+ *  3. h264 / hevc with neither → NVENC (the only other encoder the Studio uses), marked as a guess */
+export const probeEncoder = async (file) => {
+  const r = await fprobeAsync(['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=codec_name:stream_tags=encoder', '-of', 'json', file]);
+  let s = {}; try { s = JSON.parse(r.stdout).streams?.[0] || {}; } catch {}
+  const codec = s.codec_name || null;
+  let encoder = (String(s.tags?.encoder || '').match(/\b(lib\w+|\w+_nvenc|\w+_qsv|\w+_amf|prores\w*)\b/) || [])[1] || null, how = encoder ? 'tag' : null;
+  if (!encoder && codec) {
+    let head = ''; try { const fd = fs.openSync(file, 'r'); const b = Buffer.alloc(Math.min(4 << 20, fs.fstatSync(fd).size)); fs.readSync(fd, b, 0, b.length, 0); fs.closeSync(fd); head = b.toString('latin1'); } catch {}
+    if (/x264 - core \d+/.test(head)) { encoder = 'libx264'; how = 'sei'; }
+    else if (/x265 \(build \d+\)/.test(head)) { encoder = 'libx265'; how = 'sei'; }
+    else if (codec === 'h264' || codec === 'hevc') { encoder = codec === 'h264' ? 'h264_nvenc' : 'hevc_nvenc'; how = 'guess'; }
+    else if (codec === 'prores') { encoder = 'prores_ks'; how = 'guess'; }
+  }
+  const gpu = /nvenc|qsv|amf/.test(encoder || '');
+  return {codec, encoder, how, gpu, label: encoder ? `${gpu ? 'GPU' : 'CPU'} · ${encoder}${how === 'guess' ? ' (suy ra)' : ''}` : 'không đọc được bộ mã hoá'};
+};
 export const durationAsync = async (file) => parseFloat((await fprobeAsync(['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file])).stdout);
 
 // ── capabilities (cached) ──────────────────────────────────────────

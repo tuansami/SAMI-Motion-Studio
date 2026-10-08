@@ -2,27 +2,21 @@
 //   <LIBRARY>/assets/<kind>/<slug>.<ext> + <slug>.<ext>.meta.json   (meta: licence, source, prompt, tags, bpm, lufs…)
 //   <LIBRARY>/brands/<client>/brand.json
 //   <LIBRARY>/index.json  (generated: rebuildIndex())
+// Index, search and meta live in the sami-media package (one copy of the code, shared with its MCP server and CLI);
+// this module adds the Studio's project side.
 // Projects reference library files as  lib:<kind>/<file.ext>  (e.g. lib:sfx/whoosh-soft.mp3).
 // materialize() hardlinks every referenced file into <project>/public/_lib/<kind>/<file> → staticFile('_lib/…') works in
 // preview AND render, offline, with 0 extra bytes on the same drive.
 import fs from 'fs';
 import path from 'path';
-import crypto from 'crypto';
 import {LIBRARY} from './paths.mjs';
 import {linkOrCopy} from './fslink.mjs';
+import {ASSETS, resolveLib} from 'sami-media/library';
 
-export const KINDS = ['sfx', 'music', 'voice', 'img', 'video', 'lottie', 'fonts', 'luts', 'masks'];
-export const ASSETS = path.join(LIBRARY, 'assets');
+export {KINDS, ASSETS, ensureLibrary, resolveLib, isLib, metaPath, writeMeta, sha256, rebuildIndex, readIndex, search} from 'sami-media/library';
 export const LIB_RE = /lib:((?:sfx|music|voice|img|video|lottie|fonts|luts|masks)\/[^\s'"`)<>?#]+?\.[a-z0-9]{2,5})(?=$|[\s'"`)<>?#])/gi;
+if (path.resolve(ASSETS) !== path.join(LIBRARY, 'assets')) throw new Error(`sami-media dùng thư viện khác Studio: ${ASSETS} ≠ ${path.join(LIBRARY, 'assets')}`);
 
-export const ensureLibrary = () => { for (const k of KINDS) fs.mkdirSync(path.join(ASSETS, k), {recursive: true}); fs.mkdirSync(path.join(LIBRARY, 'brands'), {recursive: true}); };
-/** 'lib:sfx/a.mp3' → absolute path (or null if not a lib URI / escapes the library) */
-export const resolveLib = (uri) => {
-  if (typeof uri !== 'string' || !uri.startsWith('lib:')) return null;
-  const f = path.resolve(ASSETS, uri.slice(4));
-  return f.startsWith(path.resolve(ASSETS) + path.sep) ? f : null;
-};
-export const isLib = (s) => typeof s === 'string' && s.startsWith('lib:');
 /** project-relative public path used by the engine for a lib URI */
 export const libPublic = (uri) => '_lib/' + uri.slice(4);
 
@@ -45,47 +39,6 @@ export const materialize = (dir) => {
     linkOrCopy(src, path.join(dir, 'public', libPublic(r))); linked++;
   }
   return {linked, missing, refs};
-};
-
-// ── index + search ──────────────────────────────────────────────────
-const readMeta = (f) => { try { return JSON.parse(fs.readFileSync(f + '.meta.json', 'utf8')); } catch { return null; } };
-export const metaPath = (f) => f + '.meta.json';
-export const writeMeta = (f, meta) => fs.writeFileSync(metaPath(f), JSON.stringify(meta, null, 1));
-export const sha256 = (f) => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
-
-export const rebuildIndex = () => {
-  ensureLibrary();
-  const items = [];
-  for (const kind of KINDS) {
-    const d = path.join(ASSETS, kind);
-    const walk = (dd, rel = '') => {
-      for (const e of fs.readdirSync(dd, {withFileTypes: true})) {
-        const p = path.join(dd, e.name), r = rel ? rel + '/' + e.name : e.name;
-        if (e.isDirectory()) { walk(p, r); continue; }
-        if (e.name.endsWith('.meta.json') || e.name.startsWith('.') || e.name === 'Thumbs.db') continue;
-        const m = readMeta(p) || {};
-        const st = fs.statSync(p);
-        items.push({uri: `lib:${kind}/${r}`, kind, file: r, title: m.title || e.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '), tags: m.tags || [], licence: m.licence || null, source: m.source || null, duration: m.duration ?? null, bpm: m.bpm ?? null, lufs: m.lufs ?? null, w: m.w ?? null, h: m.h ?? null, bytes: st.size, mtime: st.mtimeMs, hasMeta: !!readMeta(p)});
-      }
-    };
-    walk(d);
-  }
-  const idx = {built: new Date().toISOString(), root: LIBRARY, count: items.length, items};
-  fs.writeFileSync(path.join(LIBRARY, 'index.json'), JSON.stringify(idx));
-  return idx;
-};
-let _idx = null, _idxAt = 0;
-export const readIndex = () => {
-  const f = path.join(LIBRARY, 'index.json');
-  try { const st = fs.statSync(f); if (!_idx || st.mtimeMs !== _idxAt) { _idx = JSON.parse(fs.readFileSync(f, 'utf8')); _idxAt = st.mtimeMs; } return _idx; }
-  catch { return fs.existsSync(ASSETS) ? rebuildIndex() : {count: 0, items: []}; }
-};
-const fold = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase();
-/** search({q:'whoosh soft', kind:'sfx', limit:50}) — every word must match title/tags/file/prompt */
-export const search = ({q = '', kind = null, limit = 60} = {}) => {
-  const words = fold(q).split(/\s+/).filter(Boolean);
-  const res = readIndex().items.filter((it) => (!kind || it.kind === kind) && words.every((w) => fold([it.title, it.file, ...(it.tags || []), it.source?.prompt].join(' ')).includes(w)));
-  return res.slice(0, limit);
 };
 
 // ── brands ───────────────────────────────────────────────────────────

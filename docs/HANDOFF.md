@@ -1,6 +1,6 @@
 # HAND-OFF — Nâng cấp SAMI Motion Studio (v0.6 → v1.0)
 
-Cập nhật: 2026-10-08 (sau v0.8.0) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
+Cập nhật: 2026-10-08 (sau v0.8.2) · Người làm: Claude Code · Chủ dự án: Tuấn (CEO SAMI)
 
 Đọc file này đầu tiên khi mở phiên mới. Trả lời Tuấn bằng tiếng Việt, ngắn gọn; viết "SAMI" in hoa; không dùng em-dash trong copy hiển thị.
 
@@ -15,13 +15,13 @@ Cập nhật: 2026-10-08 (sau v0.8.0) · Người làm: Claude Code · Chủ d�
 | **v0.7.0 Carousel động** | ✅ commit `88604e6` |
 | **v0.8.0 Cổng AI** | ✅ commit trên cùng nhánh (xem `git log`); còn 2 phép thử cần Tuấn, mục 3 |
 | **v0.8.1 Giao diện 0.7/0.8** | ✅ tạo carousel, Dùng ▾ + kéo thả, xoá dự án (Thùng rác), dọn lịch sử, thẻ phần cứng, `cli-render.mjs` (công tắc mặc định TẮT + `--request`), nút "Tạo bằng Claude Code". Xem CHANGELOG 0.8.1 |
-| v0.8.2 Chrome SAMI, mã hoá thật, ChatGPT script, Jev, tách sami-media | ⏳ **việc tiếp theo** (mục 3b) |
-| Khuôn + Dây chuyền | sau 0.8.2 (mục 3b) |
+| **v0.8.2 Chrome SAMI, mã hoá thật, ChatGPT script, Jev, tách sami-media** | ✅ (xem CHANGELOG 0.8.2, mục 3c). Còn chờ Tuấn: đăng nhập Chrome SAMI + một lượt ChatGPT thật, điền khoá Jev, cho phép xuất 3 s thử NVENC, OK để push gói `MCP-sami-media` |
+| Khuôn + Dây chuyền | ⏳ **việc tiếp theo**: viết spec `docs/specs/khuon-day-chuyen.md`, Tuấn duyệt rồi mới làm (mục 3b phần "Sau 0.8.2") |
 | v0.9.0 Footage / PiP / B-roll | sau Khuôn |
 | v1.0.0 Hoàn thiện | chưa làm |
 
 - **Git:**
-  - Nhánh `feat/v0.6-nen-mong` (tách từ `main` @ v0.5.0), working tree sạch.
+  - Nhánh `feat/v0.6-nen-mong` (tách từ `main` @ v0.5.0), working tree sạch sau commit 0.8.2.
   - **Chưa push, chưa tag, chưa tạo GitHub Release.** Tuấn chọn "chưa đẩy". Phải hỏi lại trước khi push.
   - `gh` đã đăng nhập tài khoản `tuansami`.
 - **Chi tiết từng bản:** `CHANGELOG.md` mục 0.6.0, 0.7.0, 0.8.0. Spec: `docs/specs/v0.6-nen-mong.md`, `docs/specs/v0.8-cong-ai.md`. Lộ trình: `docs/KE_HOACH_PHAT_TRIEN.md`.
@@ -80,11 +80,19 @@ Tuấn đã trả lời: làm cả 4 nhóm (stock + cục bộ → ElevenLabs �
 - **Luật Tuấn (2026-10-08): tuyệt đối không tự render khi Tuấn chưa yêu cầu.** Kể cả khi kiểm thử tính năng: chỉ kiểm đường từ chối.
 - Cài đặt xuất đã lưu của Tuấn đang là `gpu: "off"` (CPU) + H.265: đã báo Tuấn, không tự đổi.
 
-## 3b. VIỆC TIẾP THEO: v0.8.2 (Tuấn chốt 2026-10-08), sau đó Khuôn + Dây chuyền, rồi v0.9
+## 3c. v0.8.2 ĐÃ LÀM (2026-10-08): đọc trước khi đụng cổng AI
 
-Đọc CHANGELOG 0.8.1 trước. Phiên trước rất dài; phiên này làm gọn, mỗi bản một phiên.
+- **Mã cổng AI giờ ở gói riêng `Z:\SAMI_Video\MCP-sami-media`** (git riêng, nhánh `main`, đã commit cục bộ, **chưa push** lên `tuansami/MCP-sami-media`: chờ Tuấn xem thư mục và OK). Studio dùng qua `node_modules/sami-media` (junction tới thư mục đó). Sửa gateway / adapter / runner ở gói, chạy `npm test` ở gói, rồi `npm run check` ở Studio. **Không tạo lại `providers/` trong Studio** (selftest sẽ báo lỗi).
+- MCP `sami-media` cấp user đã đăng ký lại: `node Z:/SAMI_Video/MCP-sami-media/bin/mcp.mjs`, env `SAMI_STUDIO`.
+- **Chrome SAMI**: hồ sơ `Z:\SAMI_Video\.chrome-sami` đã tạo (lần mở thử 2026-10-08, cửa sổ để mở cho Tuấn đăng nhập ChatGPT / Google / Suno). CDP `127.0.0.1:9333`. Thư mục tải `Z:\SAMI_Video\.sami-cache\downloads`.
+- **ChatGPT 2026-10 đã đổi DOM**: không còn `#prompt-textarea`; khi chưa đăng nhập ô nhập là `textarea` "Ask ChatGPT". Kịch bản dò ô nhập theo nhiều cách. **Phần chờ ảnh / lấy ảnh (`REPLY_STATE` trong `src/runners/chatgpt.mjs`) chưa chạy trên trang đã đăng nhập**: lượt thật đầu tiên có thể phải sửa selector (`data-message-author-role`, nút stop). Thử khi Tuấn có mặt, đã đăng nhập, đồng ý gửi.
+- **Jev**: `.env` còn thiếu `TEXT_MODEL_API_KEY` (đã kiểm chỉ tên biến, không đọc giá trị). Jev tắt mặc định; bật bằng `providers.json → opts["chatgpt-web"].jev = true` sau khi thử.
+- **Claude runner**: model Sonnet. Không bỏ được CLAUDE.md: `claude --bare` bỏ CLAUDE.md nhưng chỉ nhận `ANTHROPIC_API_KEY` (Tuấn dùng đăng nhập gói, không có khoá API) nên chưa dùng.
+- **Bộ mã hoá thật**: `server/ffmpeg.mjs → probeEncoder()`; render ghi `j.encoderReal` + `.studio/renders.jsonl`. NVENC thật chưa thử (cần Tuấn cho phép xuất 3 s; cài đặt của Tuấn vẫn `gpu: off`, chưa đổi).
 
-### v0.8.2: việc cụ thể
+## 3b. Kế hoạch v0.8.2 (đã làm, giữ để tra), sau đó Khuôn + Dây chuyền, rồi v0.9
+
+### v0.8.2: việc cụ thể (✅ xong, chi tiết ở 3c và CHANGELOG 0.8.2)
 1. **Chrome SAMI riêng cho tự động hoá** (Tuấn chọn):
    - Hồ sơ `Z:\SAMI_Video\.chrome-sami` (ngoài git), mở bằng `chrome.exe --remote-debugging-port=<cổng cố định, vd 9333> --user-data-dir=Z:\SAMI_Video\.chrome-sami`. Hồ sơ không phải mặc định nên Chrome **không hỏi Allow** mỗi lần kết nối.
    - Trước lần mở đầu, ghi `Default/Preferences`: `download.default_directory = Z:\SAMI_Video\.sami-cache\downloads`, `download.prompt_for_download = false`, `savefile.default_directory` cùng chỗ. Mỗi phiên còn gọi CDP `Browser.setDownloadBehavior {behavior: 'allow', downloadPath}` cho chắc.

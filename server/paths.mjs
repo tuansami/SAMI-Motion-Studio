@@ -22,4 +22,7 @@ export const LIBRARY = path.resolve(process.env.SAMI_LIBRARY || cfg.libraryRoot 
 export const CACHE = path.resolve(process.env.SAMI_CACHE || cfg.cacheRoot || path.join(ROOT, '..', '.sami-cache'));
 /** per-user secrets + cost ledger (API keys never live in the repo or in projects) */
 export const USERDATA = path.resolve(process.env.SAMI_USERDATA || path.join(process.env.APPDATA || path.join(os.homedir(), '.config'), 'SAMI'));
+// the sami-media package (../MCP-sami-media) reads the same folders from env: set them before any of its modules load
+// (every Studio module imports paths.mjs before sami-media), and tell it where the Studio is (synth-sfx, ffmpeg)
+Object.assign(process.env, {SAMI_LIBRARY: LIBRARY, SAMI_CACHE: CACHE, SAMI_USERDATA: USERDATA, SAMI_STUDIO: process.env.SAMI_STUDIO || ROOT});
 export const cacheDir = (...p) => { const d = path.join(CACHE, ...p); fs.mkdirSync(d, {recursive: true}); return d; };

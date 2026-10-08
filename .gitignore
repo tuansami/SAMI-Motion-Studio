@@ -20,5 +20,4 @@ vendor/
 **/public/_hf/
 **/public/_lib/
 
-# machine-specific ComfyUI workflows (providers/workflows/README.md)
-providers/workflows/*.json
+# (ComfyUI workflows now live in ../MCP-sami-media/workflows)

@@ -1,15 +1,15 @@
 # Media gateway (Studio 0.8+): stock, AI generation, costs
 
-All media sourcing goes through `<app>/providers/gateway.mjs`. Three doors, same rules:
-- **MCP `sami-media`** (preferred in Claude Code): `list_providers`, `library_search`, `search_stock`, `fetch_stock`, `estimate`, `generate`, `ingest_file`, `ledger`.
-- **CLI** `node <app>/providers/cli.mjs list | stock | fetch | estimate | gen | ingest | ledger` (run without args for help).
-- **Studio** tab "Nguồn & AI" (Tuấn: keys, caps, one-click stock, generate with a confirm button).
+All media sourcing goes through the **sami-media** package (`Z:\SAMI_Video\MCP-sami-media`, `<mm>` below; since Studio 0.8.2 it is no longer inside the Studio). Three doors, same rules:
+- **MCP `sami-media`** (preferred in Claude Code): `list_providers`, `library_search`, `search_stock`, `fetch_stock`, `estimate`, `generate`, `ingest_file`, `ledger`, `chrome_status`.
+- **CLI** `node <mm>/bin/cli.mjs list | stock | fetch | estimate | gen | ingest | downloads | chrome | ledger` (run without args for help).
+- **Studio** tab "Nguồn & AI" (Tuấn: keys, caps, one-click stock, generate with a confirm button, Chrome SAMI).
 
 ## Order (cheapest and safest first)
 1. `library_search` (SAMI_Library) and the client's own assets.
 2. Free stock: `search_stock` (`auto` = Pexels, Pixabay, Unsplash with keys + Wikimedia without key; licence-filtered) → `fetch_stock`. Videos: `kind: "video"`.
 3. Free generators: `edge-tts` (draft VO only, licence unclear), `synth-sfx` (names: `python <app>/lib/py/sami_audio.py list`), local `kokoro` / `comfyui` when running.
-4. Subscriptions in Tuấn's browser: `chatgpt-web` (5 images per prompt), `gemini-web`, `flow-web` (Veo), `suno-web`. Follow `<app>/providers/recipes/<name>.md` with the browser-harness skill, then `ingest_file`. Tuấn can also press **"✨ Tạo bằng Claude Code"** in the Studio tab "Nguồn & AI": the Studio starts a headless `claude -p` (Sonnet, only browser-harness + `providers/cli.mjs downloads|ingest` allowed) that does the same recipe; his click = approval to submit that prompt once.
+4. Subscriptions in **Chrome SAMI** (a separate Chrome profile for automation: `Z:\SAMI_Video\.chrome-sami`, CDP `http://127.0.0.1:9333`, no "Allow" prompt, every download lands in `Z:\SAMI_Video\.sami-cache\downloads`): `chatgpt-web` (5 images per prompt), `gemini-web`, `flow-web` (Veo), `suno-web`. Tuấn presses **"✨ Tạo"** in the Studio tab "Nguồn & AI" (his click = approval to submit that prompt once). The chain: fixed CDP script (ChatGPT, 0 tokens) → Jev (only when turned on) → headless `claude -p` (Sonnet, browser-harness pointed at Chrome SAMI + `bin/cli.mjs downloads|ingest`; collect-only when the prompt was already sent). Check `chrome_status` first. By hand: follow `<mm>/recipes/<name>.md` with browser-harness on Chrome SAMI (`BU_CDP_URL=http://127.0.0.1:9333`, never Tuấn's everyday Chrome), then `ingest_file`. **Never choose a download folder**: a "Save as" dialog means stop.
 5. Paid APIs: `elevenlabs-tts|music|sfx`, `openai-image`, `gemini-image`, `bfl-flux`, `fal`, `replicate`.
 
 ## Paid calls (hard rules, enforced by the gateway)
