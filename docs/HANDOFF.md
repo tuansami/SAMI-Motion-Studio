@@ -15,7 +15,9 @@ Cập nhật: 2026-10-08 (sau v0.8.0) · Người làm: Claude Code · Chủ d�
 | **v0.7.0 Carousel động** | ✅ commit `88604e6` |
 | **v0.8.0 Cổng AI** | ✅ commit trên cùng nhánh (xem `git log`); còn 2 phép thử cần Tuấn, mục 3 |
 | **v0.8.1 Giao diện 0.7/0.8** | ✅ tạo carousel, Dùng ▾ + kéo thả, xoá dự án (Thùng rác), dọn lịch sử, thẻ phần cứng, `cli-render.mjs` (công tắc mặc định TẮT + `--request`), nút "Tạo bằng Claude Code". Xem CHANGELOG 0.8.1 |
-| v0.9.0 Footage / PiP / B-roll | ⏳ **việc tiếp theo** |
+| v0.8.2 Chrome SAMI, mã hoá thật, ChatGPT script, Jev, tách sami-media | ⏳ **việc tiếp theo** (mục 3b) |
+| Khuôn + Dây chuyền | sau 0.8.2 (mục 3b) |
+| v0.9.0 Footage / PiP / B-roll | sau Khuôn |
 | v1.0.0 Hoàn thiện | chưa làm |
 
 - **Git:**
@@ -77,6 +79,37 @@ Tuấn đã trả lời: làm cả 4 nhóm (stock + cục bộ → ElevenLabs �
 - Không có adapter Veo API (trần 2 USD/ngày không đủ); video AI đi qua Flow web.
 - **Luật Tuấn (2026-10-08): tuyệt đối không tự render khi Tuấn chưa yêu cầu.** Kể cả khi kiểm thử tính năng: chỉ kiểm đường từ chối.
 - Cài đặt xuất đã lưu của Tuấn đang là `gpu: "off"` (CPU) + H.265: đã báo Tuấn, không tự đổi.
+
+## 3b. VIỆC TIẾP THEO: v0.8.2 (Tuấn chốt 2026-10-08), sau đó Khuôn + Dây chuyền, rồi v0.9
+
+Đọc CHANGELOG 0.8.1 trước. Phiên trước rất dài; phiên này làm gọn, mỗi bản một phiên.
+
+### v0.8.2: việc cụ thể
+1. **Chrome SAMI riêng cho tự động hoá** (Tuấn chọn):
+   - Hồ sơ `Z:\SAMI_Video\.chrome-sami` (ngoài git), mở bằng `chrome.exe --remote-debugging-port=<cổng cố định, vd 9333> --user-data-dir=Z:\SAMI_Video\.chrome-sami`. Hồ sơ không phải mặc định nên Chrome **không hỏi Allow** mỗi lần kết nối.
+   - Trước lần mở đầu, ghi `Default/Preferences`: `download.default_directory = Z:\SAMI_Video\.sami-cache\downloads`, `download.prompt_for_download = false`, `savefile.default_directory` cùng chỗ. Mỗi phiên còn gọi CDP `Browser.setDownloadBehavior {behavior: 'allow', downloadPath}` cho chắc.
+   - browser-harness nối vào bằng biến `BU_CDP_URL=http://127.0.0.1:<cổng>` (đã kiểm: `browser_harness/daemon.py` đọc `BU_CDP_URL`/`BU_CDP_WS`). `providers/agent.mjs` đặt biến này trong `mcp.json` (`env`). MCP browser-harness cấp user (Chrome chính) giữ nguyên cho việc khác.
+   - Studio: nút "Mở Chrome SAMI" (tab Nguồn & AI) + trạng thái đã đăng nhập ChatGPT / Gemini / Flow / Suno chưa. Tuấn đăng nhập một lần.
+   - `cli.mjs downloads` đọc thư mục tải cố định; Claude/agent **không bao giờ** chọn thư mục tải (nguyên nhân hộp "Lưu ở đâu" ở lần thử 2026-10-08).
+2. **Ghi bộ mã hoá thật** vào kết quả mỗi lượt xuất: ffprobe một đoạn (part) trước khi ghép (`stream=codec_name` + encoder), ghi "h264_nvenc" / "libx264" vào `j.encoder`. Cài đặt đã lưu của Tuấn là `gpu: off`: chỉ báo, không tự đổi. Chưa chạy được thử NVENC thật (cần Tuấn cho phép một lượt xuất 3 s).
+3. **Kịch bản cố định cho ChatGPT** (0 token): `providers/runners/chatgpt.mjs` dùng CDP (browser-harness hoặc nối thẳng cổng Chrome SAMI): mở tab, dán prompt, gửi, chờ đủ ảnh, lấy ảnh (ưu tiên đọc `src` ảnh rồi tải bằng fetch trong trang có cookie, ghi file; nút Download là phương án 2), ingest kèm meta. Thất bại thì chuyển sang người chạy kế tiếp.
+4. **Thử Jev** (`C:\Users\Tuan\tools\jev-ultrafast`, gói Python, cần `TYPESAFE_API_KEY` + `TEXT_MODEL_API_KEY` trong `.env` của nó, Tuấn kiểm đã điền chưa) với lượt ChatGPT. Tốt thì thứ tự chạy: **kịch bản cố định → Jev → Claude (`agent.mjs`, đổi sang Haiku/Sonnet, bỏ nạp CLAUDE.md nếu được)**. Jev không hỗ trợ tải lên, tab bật ra, iframe, canvas.
+5. **Tách sami-media thành gói độc lập** (Tuấn chọn): `Z:\SAMI_Video\MCP-sami-media` → repo **private** `https://github.com/tuansami/MCP-sami-media` (đã tạo, đang trống).
+   - Bỏ phụ thuộc vào Studio: tự có `paths` (USERDATA, LIBRARY, cache qua biến môi trường), phần index thư viện (`rebuildIndex`, `writeMeta`, `search`), `childEnv` tối giản; `synth-sfx` tìm `sami_audio.py` qua biến `SAMI_STUDIO` (không có thì báo không dùng được).
+   - Studio dùng lại gói (`"sami-media": "file:../MCP-sami-media"` hoặc submodule), xoá bản trong `providers/`, một bản mã duy nhất. Đăng ký MCP trỏ sang gói mới.
+   - README giải thích tường tận: sơ đồ luồng (Claude → MCP stdio → gateway → adapter → file + meta + sổ), từng file, dữ liệu ở đâu, luật chi phí/mã xác nhận, DPAPI, thêm adapter mới thế nào.
+   - **Cho Tuấn xem thư mục trước, Tuấn OK mới push.**
+6. Release 0.8.2: bump, CHANGELOG, `npm run check`, commit. Push / Release Studio vẫn chờ Tuấn.
+
+### Sau 0.8.2: Khuôn + Dây chuyền (bài học Tuấn gửi 2026-10-08: "trả tiền nghĩ một lần")
+- A. Thư viện **khuôn Hyperframes có tham số** (mọi chữ/ảnh/màu từ `project.json`), lấy từ cảnh đẹp nhất của V22, V23, case study; mục tiêu 20 đến 30 khuôn; nút **"Đổi khuôn"** giữ chữ, giọng, nhạc.
+- B. **Dây chuyền dạng lệnh cố định** (Claude chỉ điền JSON): carousel từ ảnh (có), promo 30 s từ brief, video Google Maps, video thực đơn / ưu đãi, webinar → 5 short (cần v0.9).
+- C. **Bộ nhận diện từng khách** `SAMI_Library/brands/<khách>/brand.json` (màu, font, logo, giọng, nhạc).
+- D. **Kỷ luật phiên:** 1 video = 1 phiên; 1 bản Studio = 1 phiên; trạng thái trong file.
+- E. **Chia model:** Opus cho kịch bản/storyboard; Sonnet cho dựng cảnh + trình duyệt; script/Haiku cho việc lặp.
+- F. **Sổ chi phí theo video:** ghi cả phần Claude quy đổi (`total_cost_usd` của mỗi `claude -p`) vào ledger theo dự án.
+- G. Tự động trình duyệt: kịch bản cố định → Jev → Claude.
+Viết spec `docs/specs/khuon-day-chuyen.md`, Tuấn duyệt rồi mới làm. Sau đó v0.9 Footage.
 
 ## 4. v0.9.0 Footage / B-roll / PiP / trim
 - **Nhập footage:** `media/` của dự án. Route `/api/media/import` → ffprobe → proxy NVENC 540p (`-g 15`) vào `media/.cache/proxy`.
