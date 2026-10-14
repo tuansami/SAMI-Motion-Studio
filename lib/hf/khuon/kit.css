@@ -29,6 +29,9 @@
   --k-head: var(--f-head); --k-hand: "Caveat", cursive; --k-mono: var(--f-mono); --k-ui: var(--f-ui);
   --k-weight: 800; --k-track: -0.04em;
 }
+/* 1.3.2: chữ tiếng Việt (kit.js đặt data-lang="vi") → chữ tay Dancing Script vì Caveat không có dấu tiếng Việt.
+ * html[…] mạnh hơn [data-theme] của theme lẫn phong cách (styles/<id>/style.css). Cảnh dùng .k-hand phải nạp _fonts/dancing-script/700.css. */
+html[data-lang="vi"] { --k-hand: "Dancing Script", cursive; }
 [data-composition-id] { background: transparent; color: var(--k-ink); font-family: var(--k-ui); }
 .k-stage { position: absolute; inset: 0; background: var(--k-bg); overflow: hidden; }
 /* giấy: sợi + hạt (SVG turbulence tĩnh, không phụ thuộc thời gian) */

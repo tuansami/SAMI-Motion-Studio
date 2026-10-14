@@ -1,7 +1,7 @@
 {
  "name": "Vấn đề: lý do + con dấu",
  "group": "van-de",
- "version": 1,
+ "version": 2,
  "beats": 10,
  "themes": ["paper", "night", "light"],
  "from": "V22 S06",

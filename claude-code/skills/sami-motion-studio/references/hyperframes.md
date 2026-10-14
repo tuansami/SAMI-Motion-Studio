@@ -15,7 +15,7 @@ No `scenes/index.ts` entry is needed. A project may mix HTML and TSX scenes.
 | `public/img/x.jpg`, `public/video/…` | project media |
 | `hf/parts/x.css`, `hf/x.svg` | files next to scenes |
 | `lib/<kind>/<file>` | shared SAMI_Library (e.g. `lib/img/textures/paper.jpg`) |
-| `_fonts/<family>/<weight>.css` | local fonts (fontsource): `be-vietnam-pro`, `inter`, `jetbrains-mono`, `anton`, `fraunces`, `playfair-display`, `montserrat`, `oswald`, `dm-sans`, `space-grotesk`, `bricolage-grotesque`, `caveat`, `cormorant`, `lora`, `nunito`, `roboto`, `fredoka`, `archivo-black`, `dm-serif-display`, `ibm-plex-mono`, `silkscreen`, `vt323` |
+| `_fonts/<family>/<weight>.css` | local fonts (fontsource): `be-vietnam-pro`, `inter`, `jetbrains-mono`, `anton`, `fraunces`, `playfair-display`, `montserrat`, `oswald`, `dm-sans`, `space-grotesk`, `bricolage-grotesque`, `caveat`, `dancing-script` (hand font with Vietnamese), `cormorant`, `lora`, `nunito`, `roboto`, `fredoka`, `archivo-black`, `dm-serif-display`, `ibm-plex-mono`, `silkscreen`, `vt323` |
 | `_gsap/gsap.min.js` | GSAP 3 (auto-injected; plugins: `_gsap/MotionPathPlugin.min.js`, `_gsap/DrawSVGPlugin.min.js`, `_gsap/SplitText.min.js`, …) |
 | `_lottie/lottie_svg.min.js` | lottie-web 5.13 (auto-injected when the scene uses `SAMI.lottie`): see `references/lottie.md` |
 | `_sami/sami.css`, `_sami/sami-hf.js` | SAMI runtime (auto-injected) |

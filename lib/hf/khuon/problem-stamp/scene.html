@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="_fonts/playfair-display/700.css">
 <link rel="stylesheet" href="_fonts/playfair-display/700-italic.css">
 <link rel="stylesheet" href="_fonts/caveat/700.css">
+<link rel="stylesheet" href="_fonts/dancing-script/700.css">
 <link rel="stylesheet" href="_sami/khuon/kit.css">
 <script src="_sami/khuon/kit.js"></script>
 <style>
@@ -15,8 +16,12 @@
   #head { font-size: 124px; max-width: 1100px; margin-bottom: 56px; }
   .p { display: flex; align-items: center; gap: 22px; font-family: var(--k-hand); font-weight: 700; color: var(--k-accent); font-size: 72px; line-height: 1.15; margin: 8px 0; }
   .p .k-ico { width: .8em; height: .8em; }
+  .p > span:last-child { text-wrap: balance; }
   #stampw { position: absolute; right: 9%; top: 50%; margin-top: -90px; }
   .k-stamp { font-size: 96px; }
+  /* 16:9: con dấu lên góc phải trên, câu nỗi đau hẹp lại, để lý do dài không chui dưới con dấu */
+  [data-ratio="16x9"] #head { max-width: 820px; text-wrap: balance; }
+  [data-ratio="16x9"] #stampw { right: 5%; top: 11%; margin-top: 0; }
   [data-ratio="9x16"] #wrap { left: calc(var(--safe-side) + 10px); bottom: calc(var(--safe-bottom) + 260px); }
   [data-ratio="9x16"] #head { font-size: 124px; }
   [data-ratio="9x16"] .p { font-size: 80px; }

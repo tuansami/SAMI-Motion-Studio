@@ -27,7 +27,7 @@ Mỗi phong cách phải trả lời đủ 8 câu hỏi. Ghi vào `style.json` +
 | # | Thành phần | Quyết định | Ghi ở |
 |---|---|---|---|
 | 1 | **Màu** | nền, chữ, chữ phụ, màu nhấn 1–2, màu thẻ; tương phản đủ đọc trên điện thoại | `style.css` token `--k-bg --k-ink --k-sub --k-accent --k-accent2 --k-card` |
-| 2 | **Chữ (typography)** | font tiêu đề, font chữ thường, font tay / phụ; độ đậm, chữ hoa hay thường, khoảng cách dòng (≥ 1,15 với font hẹp để dấu tiếng Việt không chồng) | `style.json → fonts` (tên họ font có trong `@fontsource`), `--k-head --k-ui --k-hand --k-weight --k-track` |
+| 2 | **Chữ (typography)** | font tiêu đề, font chữ thường, font tay / phụ; độ đậm, chữ hoa hay thường, khoảng cách dòng (≥ 1,15 với font hẹp để dấu tiếng Việt không chồng; font tay phải có subset vietnamese, nếu không thì chữ tiếng Việt tự đổi sang Dancing Script) | `style.json → fonts` (tên họ font có trong `@fontsource`), `--k-head --k-ui --k-hand --k-weight --k-track` |
 | 3 | **Thành phần** | thẻ, nút, nhãn, khung ảnh, con dấu, cách **nhấn chữ** (`*từ*`) | `style.css`: `.k-card .k-btn .k-chip .k-polaroid .k-stamp em.hl …` |
 | 4 | **Kết cấu** | hạt phim, giấy, vạch quét, lưới; luôn **tĩnh** (không phụ thuộc thời gian) | `.k-stage::after`, ảnh trong `assets/` |
 | 5 | **Chuyển động** | một easing cho cả phim, tốc độ (trang trọng = chậm, tin nóng = nhanh), cách chữ / thẻ vào và ra | `style.json → motion`, `style.js → SAMI.styleFx` |

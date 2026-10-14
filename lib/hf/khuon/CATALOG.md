@@ -29,7 +29,7 @@ Dựng: `cli-pipeline.mjs storyboard brief.json --out <dự án>` hoặc thêm t
 - **maps-profile** (12 nhịp, light/paper/night): Hồ sơ Google Maps của quán trên điện thoại: dải 3 ảnh, tên, sao đếm lên, giờ mở cửa, 4 nút bấm sáng lần lượt. Câu dẫn bên cạnh.
   ô: `headline` `sub?` `name` `rating` `count` `category` `hours` `p1_photo`[ảnh] `p2_photo`[ảnh] `p3_photo`[ảnh]
 - **maps-search** (12 nhịp, paper/night/light): Điện thoại Google Maps: gõ từ khoá, danh sách quán hiện ra, quán của khách sáng lên và ghim rơi xuống bản đồ. Câu dẫn bên cạnh (ngang) hoặc phía trên (dọc).
-  ô: `headline` `sub?` `query` `r1_name` `r1_rating` `r1_count` `r1_meta` `r1_photo?`[ảnh] `r2_name` `r2_rating` `r3_name` `r3_rating`
+  ô: `headline` `sub?` `query` `r1_name` `r1_rating` `r1_count` `r1_meta` `r1_status?` `r1_photo?`[ảnh] `r2_name` `r2_rating` `r2_meta` `r3_name` `r3_rating` `r3_meta`
 
 ## Chat
 - **chat-whatsapp** (12 nhịp, night/light/paper): Màn hình WhatsApp: 3 đến 4 tin nhắn qua lại, có dấu ba chấm đang gõ trước tin đến. Câu dẫn bên cạnh (ngang) hoặc phía trên (dọc).

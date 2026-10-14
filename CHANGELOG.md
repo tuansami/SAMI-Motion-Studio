@@ -19,6 +19,22 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.3.2] — 2026-10-14 — Sửa 3 lỗi khuôn phát hiện khi dựng S01 series VN Maps
+Lỗi thấy ở dự án `261014-V36-maps-vn-s01-near-me-*-v.1` (đã vá tạm bằng `brief/patch_s01.py` của từng dự án; các dự án đó giữ nguyên, vì HTML khuôn được chép vào `hf/` của dự án).
+
+### Sửa lỗi
+- **Chữ tay tiếng Việt bị tách** ("tố i", "cử a", "lờ i"): `@fontsource/caveat` không có subset vietnamese nên chữ có dấu lấy font khác. `kit.js` đặt `<html data-lang="vi">` khi chữ của dự án có chữ cái tiếng Việt (ă đ ơ ư ĩ ũ, khối U+1EA0–1EF9); `kit.css` khi đó đổi `--k-hand` sang **Dancing Script** (có subset vietnamese), thắng cả theme lẫn phong cách. Dự án tiếng Đức giữ Caveat. 7 khuôn dùng chữ tay nạp thêm `_fonts/dancing-script/700.css`: calendar-date, hook-ransom, hook-words, maps-profile, maps-search, photo-collage, problem-stamp.
+- **maps-search** (khuôn v2): bỏ chữ ghi cứng. Ô mới `r1_status` (dòng xanh của quán 1, mặc định "Đang mở cửa", bỏ trống = ẩn), `r2_meta`, `r3_meta` (mặc định giữ "Nhà hàng · 600 m", "Nhà hàng · 1,1 km").
+- **problem-stamp** (khuôn v2) ở 16:9: con dấu lên góc phải trên (right 5%, top 11%), câu nỗi đau `max-width: 820px` + `text-wrap: balance`, dòng lý do `text-wrap: balance`. Con dấu không còn đè dòng lý do dài.
+
+### File chính
+`lib/hf/khuon/kit.js`, `lib/hf/khuon/kit.css`, `lib/hf/khuon/{maps-search,problem-stamp}/{scene.html,khuon.json,thumb_*.jpg}`, 5 `scene.html` khác (link font), `lib/hf/khuon/CATALOG.md`, `docs/TEMPLATE_STANDARD.md`, skill `references/khuon.md`, `references/hyperframes.md`.
+
+### Roll back
+`git checkout v1.3.1 -- lib/hf/khuon`. Dự án đã dựng không bị ảnh hưởng; cảnh khuôn mới dựng sau bản này có thêm 3 ô của maps-search (bỏ qua được).
+
+---
+
 ## [1.3.1] — 2026-10-12 — Lottie trong cảnh HTML (Hyperframes)
 Tuấn đề xuất bổ sung lottie-web cho skill. lottie-web đã có trong `package.json`, nhưng cảnh HTML chưa có đường dùng nó (chỉ có lớp phủ Lottie, xuất bằng Remotion).
 
