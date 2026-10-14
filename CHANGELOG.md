@@ -19,6 +19,24 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.3.1] — 2026-10-12 — Lottie trong cảnh HTML (Hyperframes)
+Tuấn đề xuất bổ sung lottie-web cho skill. lottie-web đã có trong `package.json`, nhưng cảnh HTML chưa có đường dùng nó (chỉ có lớp phủ Lottie, xuất bằng Remotion).
+
+### Thêm
+- `SAMI.lottie(tl, el, {src|data, at, dur, loop, speed, fit})` trong `lib/hf/sami-hf.js`: mỗi khung hình là hàm thuần của giờ timeline (tween đồng hồ gọi `goToAndStop(frame, true)`), vô hiệu goToAndStop của adapter Lottie có sẵn trong Hyperframes (nó bỏ qua giờ bắt đầu riêng).
+- `server/hf.mjs`: route `_lottie/` → `node_modules/lottie-web/build/player`, tự nạp `lottie_svg.min.js` khi cảnh có `SAMI.lottie` / `data-lottie` / `_lottie/`, junction khi dựng thư mục xuất.
+- Skill: `references/lottie.md`, dòng trong `SKILL.md` và `hyperframes.md`.
+
+### Đã kiểm
+Cảnh thử (chấm tròn chạy ngang): vị trí tại 4 mốc thời gian khớp công thức ở cả snapshot nhanh và `--exact` (xuất clip thật). `cli-validate` sạch.
+
+### File chính
+`lib/hf/sami-hf.js`, `server/hf.mjs`, `claude-code/skills/sami-motion-studio/`.
+
+### Roll back
+`git checkout v1.3.0`. Cảnh cũ không bị ảnh hưởng (chỉ thêm).
+
+---
 ## [1.3.0] — 2026-10-11 — Theme TNG (cobalt) cho carousel
 Series "Thiết kế website cho nhà hàng" cần một look thứ hai ngoài SAMI: nền xanh cobalt, pill trắng chữ navy, dòng script vàng.
 

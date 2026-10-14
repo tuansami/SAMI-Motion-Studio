@@ -15,7 +15,7 @@ Premium motion ads for SAMI Marketing Agency and its hospitality clients (restau
 - **Naming:** folder, `project.json name` and exports = `YYMMDD-V<NN>-<tieu-de-khong-dau>-v.<n>` (e.g. `261007-V22-maps-cuoi-nam-berlin-v.1`). Next free V-number from `<app>/projects`; a new version keeps V and bumps `v.N`.
 
 ## Session protocol (token-safe, mandatory)
-1. One video = one project folder = one fresh session; work only inside it.
+1. One fresh session per video, or per 1–3 videos on one topic that share assets (e.g. the 3 industry versions of one master post); work only inside those project folders. Multi-video series are dispatched by an orchestrator session (skill `sami-content-plan` → `references/dieu-phoi.md`); a worker session updates its own row in the series `DIEU_PHOI.json` when done.
 2. Read in order: `CLAUDE.md` → `brief/TRANG_THAI.md` → only the files the task names.
 3. Never read `node_modules/`, `out/`, `public/_engine|_lib|_hf/`, other projects, app engine code (unless an error points there), whole videos. Look only at stills you need.
 4. End every session by updating `brief/TRANG_THAI.md` (stage · locked decisions · next · client feedback by round · tech notes), ≤ 1 page.
@@ -38,6 +38,7 @@ Both engines live in one timeline: crossfades, warp (TSX only), titles, subtitle
 | Images / video / music / voice to find or generate | `references/providers.md` (MCP `sami-media`): library → stock → browser subscriptions → paid API only after estimate + Tuấn's OK |
 | Reusable template | `<app>/docs/TEMPLATE_STANDARD.md`; `node <app>/server/cli-template.mjs check templates/<id>` without ✗ |
 | Motion carousel (Instagram/Facebook slides that move) | skill **sami-carousel** (`type: "carousel"`, one loop MP4 per slide) |
+| Animated icon / check / loader / confetti in an HTML scene | **Lottie** `SAMI.lottie(tl, el, {src:'lib/lottie/x.json', at})` → `references/lottie.md` (never autoplay / own loadAnimation) |
 | ANY new video, before writing scenes | **Khuôn first**: read `<app>/lib/hf/khuon/CATALOG.md` (≈ 2k tokens, every khuôn + its slots) and pick a khuôn per storyboard row; only rows no khuôn covers get hand-written HTML → `references/khuon.md` |
 | Common video (promo ~30 s, Google Maps, menu / offer) | **Dây chuyền** first: write `brief.json`, run `server/cli-pipeline.mjs` → `references/khuon.md` |
 | New visual style ("phong cách": collage, breaking news, documentary, 3Blue1Brown …) | **Style pack** `lib/hf/styles/<id>/` via `tools/style-new.mjs` (8-point checklist, then `--demo` + `khuon-thumbs --theme <id>`) → `<app>/docs/TEMPLATE_STANDARD.md` §2 and `references/khuon.md`. A style is NOT a template: it re-skins every khuôn |
@@ -61,7 +62,7 @@ Both engines live in one timeline: crossfades, warp (TSX only), titles, subtitle
 - Command (run in the background, wait for the completion notice, don't poll):
   `node <app>/server/cli-render.mjs <project dir> --request "<Tuấn's request, verbatim>" [--ratio 9:16] [--res 540p|FHD|2K|4K] [--fps 30] [--codec h264|h265] [--scene S03] [--draft]`
 - It refuses unless the Studio switch "Cho phép Claude Code xuất video" (tab Xuất) is ON. If off: tell Tuấn; only if he says to turn it on: `node <app>/server/cli-render.mjs --enable --request "<his words>"`. Check with `--status`.
-- `--engine native` (1.0): export with Hyperframes only, no Remotion (client packages / licence). Only for projects whose scenes are all HTML (khuôn included), no Lottie, H.264 or ProRes, FHD or 4K. Check first in Studio tab Xuất → Bộ dựng, or `references/render-ffmpeg.md`.
+- `--engine native` (1.0): export with Hyperframes only, no Remotion (client packages / licence). Only for projects whose scenes are all HTML (khuôn included; Lottie inside scenes via `SAMI.lottie` is fine, Lottie **overlays** are not), H.264 or ProRes, FHD or 4K. Check first in Studio tab Xuất → Bộ dựng, or `references/render-ffmpeg.md`.
 - Studio open → the job joins the Studio queue (visible, cancellable). Studio closed → renders in the CLI process. Same engine, same NVENC. Every enable/render is logged in `<app>/.studio/cli-render.log`.
 
 ## House rules
@@ -78,4 +79,4 @@ One easing `cubic-bezier(0.22,1,0.36,1)` (`tw/keys/arrive` in TSX, `SAMI.EASE`/`
 - GPU: Studio 0.6 probes NVENC correctly (0.5's probe always failed → CPU). Diagnose: tab Xuất → Chẩn đoán GPU. ProRes is CPU.
 
 ## References (read only what the task needs)
-`references/khuon.md` (khuôn library, dây chuyền, brand.json, session/model discipline, cost per video) · `references/footage.md` (footage layer, proxy, B-roll, PiP, screen, footage sound, drawn-in-code blocks, export presets) · `references/hyperframes.md` (HTML scene API + skeleton) · `references/remotion.md` (TSX scenes) · `references/mixing.md` (both engines, clips, stills) · `references/schema.md` (project.json fields) · `references/library.md` (SAMI_Library, `lib:` URIs, licences) · `references/audio-sfx.md` (grid, cues, music edit, voice ducking) · `references/assets.md` (stock/AI generation rules) · `references/qa.md` (validate, stills, lint, export checks) · `references/render-ffmpeg.md` (GPU, formats, cache cleanup).
+`references/khuon.md` (khuôn library, dây chuyền, brand.json, session/model discipline, cost per video) · `references/footage.md` (footage layer, proxy, B-roll, PiP, screen, footage sound, drawn-in-code blocks, export presets) · `references/hyperframes.md` (HTML scene API + skeleton) · `references/lottie.md` (Lottie in HTML scenes: `SAMI.lottie`) · `references/remotion.md` (TSX scenes) · `references/mixing.md` (both engines, clips, stills) · `references/schema.md` (project.json fields) · `references/library.md` (SAMI_Library, `lib:` URIs, licences) · `references/audio-sfx.md` (grid, cues, music edit, voice ducking) · `references/assets.md` (stock/AI generation rules) · `references/qa.md` (validate, stills, lint, export checks) · `references/render-ffmpeg.md` (GPU, formats, cache cleanup).

@@ -22,9 +22,12 @@ export const HF_BIN = path.join(NODE_MODULES, 'hyperframes', 'bin', 'hyperframes
 export const HF_RUNTIME = path.join(NODE_MODULES, 'hyperframes', 'dist', 'hyperframe.runtime.iife.js');
 export const HF_VERSION = (() => { try { return JSON.parse(fs.readFileSync(path.join(NODE_MODULES, 'hyperframes', 'package.json'), 'utf8')).version; } catch { return null; } })();
 const GSAP_DIST = path.join(NODE_MODULES, 'gsap', 'dist');
+const LOTTIE_DIST = path.join(NODE_MODULES, 'lottie-web', 'build', 'player'); // 1.3: _lottie/lottie_svg.min.js (Hyperframes' own Lottie adapter seeks window.lottie animations)
 const FONTS = path.join(NODE_MODULES, '@fontsource');
 const DEFAULT_COLORS = {navy: '#0C0628', navyDeep: '#06031A', navyLift: '#16103A', mint: '#08DDA4', purple: '#7667FE', white: '#FFFFFF', text: '#F4F2FF', muted: '#A8A3C9', dim: '#6E6893', red: '#FF5A5F'};
 
+/** scene uses Lottie (SAMI.lottie / data-lottie / _lottie/) → the runtime is injected like GSAP */
+export const usesLottie = (html) => /SAMI\.lottie|\bS\.lottie|data-lottie|_lottie\//.test(html);
 export const isHf = (s) => !!s && (s.engine === 'hyperframes' || /\.html?$/i.test(s.src || ''));
 export const hfScenes = (p) => (p.scenes || []).filter(isHf);
 export const ratioTag = (r) => String(r).replace(':', 'x');
@@ -81,7 +84,7 @@ export const stageHtml = (dir, p, s, ratio, fps, {preview = false, audio = null}
     ? `window.__samiData=${liveStr};window.SAMI=${data};(function(S){try{var o=JSON.parse(sessionStorage.getItem('sami:'+S.scene+':'+S.ratio)||'null');if(o){S.copy=o.copy||S.copy;var b=o.brand||{};S.brand={colors:Object.assign({},S.brand.colors,b.colors||{}),gradient:b.gradient||S.brand.gradient,fonts:b.fonts||S.brand.fonts};}}catch(e){}})(window.SAMI);`
     : `window.SAMI=${data};`;
   const head = `<meta charset="utf-8"><script>${dataJs}</script><link rel="stylesheet" href="_sami/sami.css">` + brandFontLinks(p) +
-    (/_gsap\/gsap(\.min)?\.js/.test(html) ? '' : '<script src="_gsap/gsap.min.js"></script>') + '<script src="_sami/sami-hf.js"></script>' + styleHead(themeOf(p, s)) +
+    (/_gsap\/gsap(\.min)?\.js/.test(html) ? '' : '<script src="_gsap/gsap.min.js"></script>') + (usesLottie(html) && !/_lottie\/lottie/.test(html) ? '<script src="_lottie/lottie_svg.min.js"></script>' : '') + '<script src="_sami/sami-hf.js"></script>' + styleHead(themeOf(p, s)) +
     (isCarousel(p) ? '<link rel="stylesheet" href="_sami/carousel.css"><script src="_sami/carousel.js"></script>' : '');
   html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, (h) => h + head) : html.replace(/<html[^>]*>/i, (h) => h + '<head>' + head + '</head>');
   // carousel slides carry their own sound (seamless-loop mix) → Hyperframes muxes it into the slide MP4
@@ -116,6 +119,7 @@ export const resolveStaged = (dir, rel) => {
   if (rel === '_hfrt.js') return HF_RUNTIME;
   if (rel.startsWith('_sami/')) return pick(path.join(LIB, 'hf'), rel.slice(6));
   if (rel.startsWith('_gsap/')) return pick(GSAP_DIST, rel.slice(6));
+  if (rel.startsWith('_lottie/')) return pick(LOTTIE_DIST, rel.slice(8));
   if (rel.startsWith('_fonts/')) return pick(FONTS, rel.slice(7));
   if (rel.startsWith('lib/')) return pick(ASSETS, rel.slice(4));
   if (rel.startsWith('public/') || rel.startsWith('hf/') || rel.startsWith('slides/') || rel.startsWith('media/')) return pick(dir, rel); // media/ = footage (0.9)
@@ -132,6 +136,7 @@ export const stageDir = (dir, p, s, ratio, fps, {audio = null} = {}) => {
   fs.writeFileSync(path.join(out, 'index.html'), html);
   junction(path.join(LIB, 'hf'), path.join(out, '_sami'));
   junction(GSAP_DIST, path.join(out, '_gsap'));
+  if (usesLottie(html)) junction(LOTTIE_DIST, path.join(out, '_lottie'));
   if (fs.existsSync(path.join(dir, 'public'))) junction(path.join(dir, 'public'), path.join(out, 'public'));
   for (const sub of ['hf', 'slides', 'media']) if (fs.existsSync(path.join(dir, sub))) junction(path.join(dir, sub), path.join(out, sub));
   if (fs.existsSync(ASSETS) && /["'(]lib\/|"lib:/.test(html)) junction(ASSETS, path.join(out, 'lib')); // "lib: = a copy value (khuôn image slot)

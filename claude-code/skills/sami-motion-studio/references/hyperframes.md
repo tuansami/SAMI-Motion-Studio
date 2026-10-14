@@ -17,6 +17,7 @@ No `scenes/index.ts` entry is needed. A project may mix HTML and TSX scenes.
 | `lib/<kind>/<file>` | shared SAMI_Library (e.g. `lib/img/textures/paper.jpg`) |
 | `_fonts/<family>/<weight>.css` | local fonts (fontsource): `be-vietnam-pro`, `inter`, `jetbrains-mono`, `anton`, `fraunces`, `playfair-display`, `montserrat`, `oswald`, `dm-sans`, `space-grotesk`, `bricolage-grotesque`, `caveat`, `cormorant`, `lora`, `nunito`, `roboto`, `fredoka`, `archivo-black`, `dm-serif-display`, `ibm-plex-mono`, `silkscreen`, `vt323` |
 | `_gsap/gsap.min.js` | GSAP 3 (auto-injected; plugins: `_gsap/MotionPathPlugin.min.js`, `_gsap/DrawSVGPlugin.min.js`, `_gsap/SplitText.min.js`, …) |
+| `_lottie/lottie_svg.min.js` | lottie-web 5.13 (auto-injected when the scene uses `SAMI.lottie`): see `references/lottie.md` |
 | `_sami/sami.css`, `_sami/sami-hf.js` | SAMI runtime (auto-injected) |
 
 ## `window.SAMI` runtime (`lib/hf/sami-hf.js`)
@@ -28,6 +29,7 @@ No `scenes/index.ts` entry is needed. A project may mix HTML and TSX scenes.
 | `SAMI.EASE`, `SAMI.bezier()` | the ONE easing |
 | `SAMI.beat(n)`, `SAMI.bar(n)`, `SAMI.t0`, `SAMI.dur`, `SAMI.fps` | grid + timing |
 | `SAMI.arrive(tl, target, at, {dist, blur, dur, stagger})` / `SAMI.leave(…)` | standard rise + un-blur + fade (same as TSX `arrive`) |
+| `SAMI.lottie(tl, el, {src, at, dur, loop, speed})` | Lottie JSON in the scene, time-driven by the timeline (1.3.1). Never autoplay: `references/lottie.md` |
 | `SAMI.words(el)` | split into `span.w` for word stagger (keeps highlight) |
 | `SAMI.fit(el, maxW)` | shrink font to fit a width (measured once) |
 | `SAMI.ratio`, `SAMI.w`, `SAMI.h`, `SAMI.portrait/square/landscape`, `SAMI.pick({'16:9':a,'9:16':b,default:c})`, `SAMI.SAFE` | per-ratio layout; CSS: `[data-ratio="9x16"] .x {…}`, vars `--safe-top/bottom/side`, `--w`, `--h` |
