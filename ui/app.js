@@ -182,7 +182,7 @@ function renderSelBar() {
 $('#btnNewVideo').onclick = () => { $('#newProj').scrollIntoView({behavior: 'smooth'}); $('#npName').focus(); };
 $('#btnNewCarousel').onclick = () => {
   const name = h('input', {placeholder: 'VD: 261008-V30-maps-3-hebel-v.1'}), client = h('input', {placeholder: 'Khách hàng (tuỳ chọn)'});
-  const theme = h('select', {}, ...[['sami', 'SAMI (tím, xanh)'], ['cream', 'Kem'], ['tomato', 'Cà chua'], ['forest', 'Rừng'], ['noir', 'Đen']].map(([v, l]) => h('option', {value: v}, l)));
+  const theme = h('select', {}, ...[['sami', 'SAMI (tím, xanh)'], ['cream', 'Kem'], ['tomato', 'Cà chua'], ['forest', 'Rừng'], ['noir', 'Đen'], ['tng', 'TNG xanh cobalt (pill + script)'], ['tng-sky', 'TNG trời sáng']].map(([v, l]) => h('option', {value: v}, l)));
   const handle = h('input', {value: 'sami.agency'}), dur = h('select', {}, ...[4, 6, 8].map((d) => h('option', {value: d, selected: d === 6}, d + ' giây / slide')));
   const imgs = h('input', {placeholder: 'Để trống = 5 slide motion mẫu để Claude Code dựng theo chủ đề'});
   let mode = 'motion';

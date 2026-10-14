@@ -19,6 +19,22 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.3.0] — 2026-10-11 — Theme TNG (cobalt) cho carousel
+Series "Thiết kế website cho nhà hàng" cần một look thứ hai ngoài SAMI: nền xanh cobalt, pill trắng chữ navy, dòng script vàng.
+
+### Thêm
+- `lib/hf/carousel.css`: 2 theme `tng` (cobalt) và `tng-sky` (trời sáng) với `--k-*` và biến `--tng-navy --tng-pill --tng-script`; theme `tng` ẩn topbar mặc định (tab logo thay vào).
+- `ui/app.js`: 2 lựa chọn theme mới khi tạo carousel.
+- Font `@fontsource/dancing-script` (dòng script, có dấu tiếng Việt).
+- Thành phần TNG đang nằm trong dự án mẫu `261011-V25-web-nha-hang-p02-*` (`slides/_tng.css`, `_tng.js`: nền, tab logo, pill, script, từ khoá, khung điện thoại, icon); chưa đưa lên `lib/hf`.
+
+### File chính
+`lib/hf/carousel.css`, `ui/app.js`, `package.json`.
+
+### Roll back
+`git checkout v1.2.1`. Dự án cũ không bị ảnh hưởng (chỉ thêm theme).
+
+---
 ## [1.2.1] — 2026-10-09 — Slide trống cho carousel; phong cách là lớp phủ tắt được
 Tuấn báo: không thêm được slide trống (dự án carousel), "nhờ Claude Code" lại đòi slide trống; bấm phong cách cắt dán xong không tắt được, chưa hiểu mẫu + phong cách kết hợp thế nào.
 
