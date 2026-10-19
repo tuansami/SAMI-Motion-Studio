@@ -13,6 +13,12 @@ Gọi `add_repo` cho `tuansami/mcp-sami-media` và `tuansami/lemo-opuscar`, rồ
 Đã thử 19.10: Studio chạy trên Linux; render 9:16 FHD CPU ≈ 12 phút cho 32 s (Hyperframes clip + Remotion ghép) → video 75 s ≈ 25–30 phút mỗi tỉ lệ. Chạy render ở chế độ nền (run_in_background), không poll.
 `npm run check` còn 2 ✗ đã biết, không chặn việc làm video (placeholder ảnh khuôn thiếu trong thư viện; trộn âm "xuất thuần").
 
+## Bài học từ các phiên trước (đọc kỹ)
+- SA01: chạy cả `cloud-setup.sh` một lần có thể bị bộ lọc quyền chặn → chạy từng bước trong script bằng tay.
+- SA01: `project.json → audio.music.fadeOut` phải > 0 (0 làm Remotion lỗi inputRange).
+- SA02: lệnh `cli-render.mjs … --request` có lúc bị bộ lọc quyền auto mode từ chối. KHÔNG lách: báo phiên điều phối, làm tiếp phần không cần render, chờ.
+- Tham khảo chất lượng/cấu trúc: `videos/SA01-ads-maps/` (11 cảnh Hyperframes viết tay, nhạc numpy) — chỉ học kỹ thuật, không lặp look/mạch kể.
+
 ## Nơi lưu
 - Dự án mỗi video: `campaigns/2610-sami-agency-intro/videos/<ID>-<ten-ngan>/` (Studio project hoặc lemo film folder). Commit nguồn, KHÔNG commit `out/`, `public/_hf|_engine|_lib`, `node_modules`, `.venv`, mp4.
 - MP4 giao Tuấn bằng **SendUserFile** trong phiên của video đó (+ contact sheet JPG).

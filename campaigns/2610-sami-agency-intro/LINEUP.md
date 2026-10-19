@@ -146,8 +146,8 @@ Thời lượng mục tiêu 60–90 s. Thứ tự = thứ tự sản xuất (ch�
 ## Trạng thái (phiên điều phối cập nhật)
 | ID | Phiên | 9:16 | 16:9 | Ghi chú |
 |---|---|---|---|---|
-| SA01 | session_012QrHSduNM6bvuDj6kNrZW7 (đang làm) | ▢ | ▢ | |
-| SA02 | session_019jB8QgD4kPFYqUgR1Z2mrw (đang làm) | ▢ | ▢ | |
+| SA01 | session_012QrHSduNM6bvuDj6kNrZW7 | ✓ | ✓ | 89,5 s, đã gửi Tuấn |
+| SA02 | session_019jB8QgD4kPFYqUgR1Z2mrw | ▢ | ▢ | dựng xong, chờ Tuấn duyệt quyền chạy cli-render |
 | SA03 | — | ▢ | ▢ | |
 | SA04 | — | ▢ | ▢ | |
 | SA05 | — | ▢ | ▢ | |
