@@ -19,7 +19,7 @@
   #page { left: 50%; top: 34px; width: 600px; height: 830px; margin-left: -300px; background: #F7F2EA; color: #232220; padding: 46px 44px; box-sizing: border-box; }
   #page .guide { position: absolute; background: rgba(118,103,254,.55); }
   #mh { display: flex; align-items: center; gap: 18px; padding-bottom: 18px; border-bottom: 2px solid currentColor; }
-  #mh img { width: 120px; height: 80px; object-fit: contain; }
+  #mh .lg { width: 84px; height: 84px; flex: none; }
   #mt { font: 700 54px/1 "Playfair Display", serif; letter-spacing: -0.01em; }
   #rows { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
   .row { display: flex; align-items: center; gap: 20px; }
@@ -30,18 +30,22 @@
   .row .nm .al { font: 600 18px var(--f-mono); opacity: .7; }
   .row .ds { font: 400 21px/1.25 var(--f-ui); opacity: .72; margin-top: 6px; }
   #all { position: absolute; left: 44px; right: 44px; bottom: 34px; font: 500 16px/1.35 var(--f-mono); opacity: .75; }
-  #page.v1 { background: #232220; color: #E9DCC6; } #page.v1 .nm { color: #C29B70; }
+  #page.v1 { background: #1B1B1B; color: #EDE3D1; } #page.v1 .nm { color: #C9A227; }
   #page.v2 .row { flex-direction: row-reverse; text-align: right; } #page.v2 .row .nm { flex-direction: row-reverse; }
-  #page.v3 { background: #6B4E2E; color: #F3E9DA; } #page.v3 .row .ph { border-radius: 50%; }
-  #page.v4 { background: #232220; color: #E9DCC6; } #page.v4 .nm { color: #C29B70; } #page.v4 .row .ph { border-radius: 50%; box-shadow: 0 0 0 3px #C29B70; }
+  #page.v3 { background: #C8402F; color: #F7EEE0; } #page.v3 .row .ph { border-radius: 50%; }
+  #page.v4 { background: #0F3D3E; color: #F3E9D8; } #page.v4 .nm { color: #C9A227; } #page.v4 .row .ph { border-radius: 50%; box-shadow: 0 0 0 3px #C9A227; }
   .lbl2 { font: 600 18px var(--f-mono); letter-spacing: .1em; color: #8f8ba6; margin: 0 0 10px; }
   .var { width: 100%; height: 86px; border-radius: 10px; margin-bottom: 12px; box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); }
   .var.on { box-shadow: 0 0 0 4px var(--c-mint); }
   #out { position: absolute; left: 0; right: 0; top: 520px; height: 1000px; }
-  #print { position: absolute; left: 50px; top: 120px; width: 640px; height: 450px; border-radius: 24px; box-shadow: var(--shadow); }
+  #print { position: absolute; left: 50px; top: 120px; width: 640px; height: 450px; border-radius: 24px; box-shadow: var(--shadow); background: #E9E1D3; overflow: hidden; }
+  #pcov { position: absolute; left: 7%; top: 9%; width: 44%; height: 82%; border-radius: 6px 14px 14px 6px; background: #0F3D3E; color: #C9A227; box-shadow: 10px 12px 24px rgba(0,0,0,.35); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; transform: rotate(-4deg); }
+  #pcov b { font: 700 34px "Playfair Display", serif; } #pcov span { font: 600 13px var(--f-ui); letter-spacing: .3em; text-transform: uppercase; opacity: .85; }
+  #pph { position: absolute; right: 7%; top: 14%; width: 38%; height: 72%; border-radius: 10px; box-shadow: 8px 10px 22px rgba(0,0,0,.35); transform: rotate(4deg); }
+  #ptag { position: absolute; right: 12px; top: 10px; font: 600 14px var(--f-mono); letter-spacing: .12em; padding: 4px 8px; border-radius: 5px; background: rgba(255,90,95,.9); color: #fff; }
   #phone { left: 620px; top: 0; width: 380px; height: 790px; }
-  #om { position: absolute; inset: 0; background: #232220; color: #E9DCC6; padding: 80px 26px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; }
-  #om .ot { font: 700 40px "Playfair Display", serif; color: #C29B70; margin-bottom: 6px; }
+  #om { position: absolute; inset: 0; background: #0F3D3E; color: #F3E9D8; padding: 80px 26px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; }
+  #om .ot { font: 700 40px "Playfair Display", serif; color: #C9A227; margin-bottom: 6px; }
   #om .orow { display: flex; gap: 14px; align-items: center; background: rgba(255,255,255,.06); border-radius: 16px; padding: 10px; }
   #om .orow .ph { width: 86px; height: 86px; border-radius: 12px; flex: none; }
   #om .orow b { font: 700 24px/1.15 "Playfair Display", serif; color: #fff; }
@@ -65,7 +69,7 @@
   <div id="chap" class="chapter"></div>
   <div id="head" class="head" data-copy="S05_head"></div>
   <div id="out">
-    <div id="print" data-img="S05_print_photo"></div>
+    <div id="print"><div id="pcov"></div><div id="pph" data-img="S05_print_photo"></div><div id="ptag" data-copy="S04_concept"></div></div>
     <div id="phone" class="phone"><div class="notch"></div><div class="scr"><div id="om"><div class="ot" data-copy="S05_title"></div></div></div></div>
     <div id="tPrint" class="chip tagc"><i></i><span data-copy="S05_print"></span></div>
     <div id="tOnline" class="chip tagc"><i></i><span data-copy="S05_online"></span></div>
@@ -74,18 +78,20 @@
 </div>
 <script src="hf/parts/sami-logo.js"></script>
 <script src="hf/parts/intro.js"></script>
+<script src="hf/parts/concept-brand.js"></script>
 <script>
   const S = window.SAMI, tl = S.timeline(), B = S.beat, $ = I.$;
   const [num, name] = S.text('S05_chapter').split('|').map((x) => x.trim());
   $('#chap').innerHTML = '<b>' + num + '</b><span>' + name + '</span>';
   $('#sub .ic').innerHTML = I.icon('check', {sw: 3});
-  const A = I.app($('#root'), S.text('S05_title') + ' · A4 · v8', 'A');
+  const CB = window.CONCEPT, BRAND = S.text('S04_brand');
+  const A = I.app($('#root'), BRAND + ' · ' + S.text('S05_title') + ' · A4', 'A');
   $('#root').insertBefore(A.app, $('#out'));
   const hud = I.hud($('#root'), S.text('S04_ff'), 16); hud.id = 'hud';
   // trang menu A4
   const page = I.el('div', 'art', A.canvas); page.id = 'page';
-  page.innerHTML = '<div id="mh"><img alt=""><div id="mt"></div></div><div id="rows"></div><div id="all"></div>';
-  page.querySelector('img').src = I.src('S04_logo') || '';
+  page.innerHTML = '<div id="mh"><div class="lg"></div><div id="mt"></div></div><div id="rows"></div><div id="all"></div>';
+  const LG = CB.mark(page.querySelector('.lg'), 84, {color: '#C9A227', body: '#C8402F', sw: 6});
   $('#mt').textContent = S.text('S05_title');
   $('#all').textContent = S.text('S05_allergen');
   const AL = ['D, F', 'D', 'D', 'A, F', 'D, N'];
@@ -100,7 +106,7 @@
   const guides = [[44, 0, 2, 830], [554, 0, 2, 830], [0, 46, 600, 2], [0, 790, 600, 2], [172, 0, 2, 830]].map((g) => { const e = I.el('div', 'guide', page); Object.assign(e.style, {left: g[0] + 'px', top: g[1] + 'px', width: g[2] + 'px', height: g[3] + 'px'}); return e; });
   // bảng phải: các biến thể bố cục
   A.panel.innerHTML = '<div class="lbl2">LAYOUT</div>';
-  const vcols = ['#F7F2EA', '#232220', '#EFE6DD', '#6B4E2E', '#232220'];
+  const vcols = ['#F7F2EA', '#1B1B1B', '#EFE6DD', '#C8402F', '#0F3D3E'];
   const vars = vcols.map((c) => { const v = I.el('div', 'var', A.panel); v.style.background = c; return v; });
 
   // ── timeline con: dàn trang tua nhanh (4 s) ─────────────────────
@@ -109,7 +115,7 @@
   ct.from(page, {opacity: 0, scale: 0.85, duration: 0.2}, 0);
   guides.forEach((g, i) => ct.from(g, {scaleX: g.offsetWidth > 10 ? 0 : 1, scaleY: g.offsetWidth > 10 ? 1 : 0, duration: 0.2}, 0.05 + i * 0.05));
   A.tool(ct, 'type', 0.4);
-  ct.from('#mh img', {opacity: 0, scale: 0.6, duration: 0.15}, 0.4);
+  ct.from('#mh .lg', {opacity: 0, scale: 0.6, duration: 0.15}, 0.4);
   I.type(ct, $('#mt'), S.text('S05_title'), 0.45, 30, false);
   rows.forEach((r, i) => {
     const at = 0.85 + i * 0.32;
@@ -140,6 +146,8 @@
   const om = $('#om');
   [1, 2, 3, 4].forEach((i) => { const r = I.el('div', 'orow', om, '<div class="ph" data-img="S05_d' + i + '_photo"></div><div><b></b><span></span></div>'); r.querySelector('b').textContent = S.text('S05_d' + i); r.querySelector('span').textContent = S.text('S05_d' + i + '_desc'); });
   I.bindImgs(om);
+  const pc = $('#pcov'); CB.mark(pc, 120, {color: '#C9A227', body: '#C8402F', sw: 5}); I.el('b', '', pc).textContent = BRAND; I.el('span', '', pc).textContent = S.text('S05_title');
+  I.bindImgs($('#print'));
   tl.fromTo('#print', {x: -500, rotation: -16, opacity: 0}, {x: 0, rotation: -5, opacity: 1, duration: 0.55}, B(7.2));
   tl.fromTo('#phone', {y: 700, rotation: 10, opacity: 0}, {y: 0, rotation: 3, opacity: 1, duration: 0.55}, B(7.6));
   tl.fromTo(I.$$('.orow'), {x: 60, opacity: 0}, {x: 0, opacity: 1, duration: 0.3, stagger: 0.08}, B(8.1));

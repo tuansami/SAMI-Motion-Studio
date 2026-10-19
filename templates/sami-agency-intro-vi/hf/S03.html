@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="hf/parts/intro.css">
+<style>
+  /* S03 · 8 dịch vụ: tiêu đề + 8 ô ảnh thật bay vào theo nửa nhịp, quét sáng, rồi lao vào ô Branding (nối sang S04) */
+  #head { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 6px); font-size: 86px; }
+  #grid { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 260px); bottom: calc(var(--safe-bottom) - 40px);
+    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, 1fr); gap: 22px; }
+  .tile { position: relative; border-radius: 30px; overflow: hidden; background: var(--c-navyLift); box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+  .tile .ph { position: absolute; inset: 0; }
+  .tile .sh { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,3,26,.15) 0%, rgba(6,3,26,.35) 45%, rgba(6,3,26,.92) 100%); }
+  .tile .ic { position: absolute; left: 22px; top: 22px; width: 64px; height: 64px; border-radius: 18px; background: rgba(6,3,26,.6); border: 2px solid rgba(255,255,255,.2); color: var(--c-mint); padding: 14px; box-sizing: border-box; }
+  .tile .n { position: absolute; right: 22px; top: 24px; font: 500 22px var(--f-mono); color: rgba(255,255,255,.8); }
+  .tile .lb { position: absolute; left: 24px; right: 20px; bottom: 20px; font: 700 34px/1.15 var(--f-ui); color: #fff; }
+  .tile .glint { position: absolute; top: -20%; bottom: -20%; width: 34%; left: -50%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.4), transparent); }
+  [data-ratio="16x9"] #head { top: 80px; left: 110px; right: 110px; font-size: 72px; }
+  [data-ratio="16x9"] #grid { left: 110px; right: 110px; top: 250px; bottom: 90px; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S03">
+  <div class="bg"></div><div class="dots"></div>
+  <div id="cam" class="clip">
+    <div id="head" class="head" data-copy="S03_head"></div>
+    <div id="grid"></div>
+  </div>
+</div>
+<script src="hf/parts/sami-logo.js"></script>
+<script src="hf/parts/intro.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), B = S.beat;
+  const icons = ['brand', 'menu', 'web', 'cal', 'bag', 'pin', 'ads', 'heart'];
+  const grid = I.$('#grid');
+  const tiles = icons.map((ic, i) => {
+    const t = I.el('div', 'tile', grid);
+    t.innerHTML = '<div class="ph" data-img="S03_s' + (i + 1) + '_photo"></div><div class="sh"></div><div class="ic">' + I.icon(ic) + '</div>' +
+      '<div class="n">0' + (i + 1) + '</div><div class="lb">' + S.html('S03_s' + (i + 1)) + '</div><div class="glint"></div>';
+    return t;
+  });
+  I.bindImgs(grid);
+  // tiêu đề
+  if (S.landscape) I.$('#head').innerHTML = I.$('#head').innerHTML.replace(/<br>/g, ' ');
+  S.arrive(tl, S.words(I.$('#head')), B(0), {stagger: 0.07, dist: 40, dur: 0.45});
+  // 8 ô bay vào, mỗi nửa nhịp một ô, hướng xen kẽ
+  tiles.forEach((t, i) => {
+    const from = [[-1, 0], [1, 0], [0, 1], [-1, 1], [1, 1], [0, -1], [-1, -1], [1, -1]][i];
+    tl.fromTo(t, {x: from[0] * 380, y: from[1] * 300, rotation: (i % 2 ? 8 : -8), scale: 0.6, opacity: 0, filter: 'blur(14px)'},
+      {x: 0, y: 0, rotation: 0, scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.4}, B(0.8 + i * 0.45));
+    tl.fromTo(t.querySelector('.ph'), {scale: 1.3}, {scale: 1.05, duration: 2.2}, B(0.8 + i * 0.45));
+    tl.fromTo(t.querySelector('.glint'), {left: '-50%'}, {left: '130%', duration: 0.5}, B(4.6 + i * 0.1));
+  });
+  // nhịp cuối: lao vào ô Branding (zoom xuyên sang chương 01)
+  const zoomAt = B(5.6), t0 = tiles[0];
+  const cx = t0.offsetLeft + grid.offsetLeft + t0.offsetWidth / 2, cy = t0.offsetTop + grid.offsetTop + t0.offsetHeight / 2;
+  tl.to('#cam', {scale: S.pick({'16:9': 6, default: 5}), transformOrigin: cx + 'px ' + cy + 'px', duration: 0.55, ease: S.EASE}, zoomAt);
+  tl.to(tiles.slice(1), {opacity: 0, duration: 0.25}, zoomAt);
+  tl.to('#head', {opacity: 0, duration: 0.2}, zoomAt);
+</script>
+</body>
+</html>

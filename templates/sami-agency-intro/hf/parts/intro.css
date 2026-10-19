@@ -15,6 +15,8 @@
 .photo { background-size: cover; background-position: center; background-repeat: no-repeat; }
 .head { font-family: var(--f-head); font-weight: 800; letter-spacing: -0.035em; line-height: 1.06; color: #fff; }
 .head em.hl, .head em.hl .w { padding-bottom: 0.08em; }
+/* tiếng Việt: dấu chồng (ể, ộ, ữ…) cần giãn dòng, chữ hơi thưa hơn */
+html[lang="vi"] .head { line-height: 1.18; letter-spacing: -0.025em; }
 .ui { font-family: var(--f-ui); }
 .mono { font-family: var(--f-mono); }
 .chip { display: inline-flex; align-items: center; gap: 0.5em; padding: 0.42em 0.95em; border-radius: 999px; border: 2px solid var(--glass2); background: var(--glass);

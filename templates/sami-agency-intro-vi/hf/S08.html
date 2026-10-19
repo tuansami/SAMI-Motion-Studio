@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="hf/parts/intro.css">
+<style>
+  /* S08 · 06 Local SEO + 07 Google Ads Maps: bản đồ tự vẽ (không giao diện/logo thật), tìm kiếm, ghim rơi,
+   * thẻ quán mình leo lên hạng 1 (nhãn Anzeige + Local SEO), đường đi tự vẽ tới quán */
+  #chap { left: var(--safe-side); top: calc(var(--safe-top) + 4px); font-size: 32px; gap: 14px; }
+  #chap b + span { margin-right: 22px; }
+  #head { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 80px); font-size: 80px; }
+  #mapc { position: absolute; left: 40px; top: 520px; width: 1000px; height: 990px; border-radius: 40px; overflow: hidden; background: #E9EDF0; box-shadow: var(--shadow); }
+  #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #sb { position: absolute; left: 30px; right: 30px; top: 30px; height: 96px; border-radius: 48px; background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.18);
+    display: flex; align-items: center; gap: 20px; padding: 0 30px; font: 500 36px var(--f-ui); color: #1c1b23; z-index: 5; }
+  #sb .ic { width: 42px; height: 42px; color: #6e6d7a; flex: none; }
+  #sb .caret { color: var(--c-purple); }
+  .pin { position: absolute; width: 56px; height: 74px; margin: -74px 0 0 -28px; z-index: 3; }
+  #me { position: absolute; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: #2F80ED; border: 6px solid #fff; box-shadow: 0 0 0 14px rgba(47,128,237,.22); z-index: 4; }
+  #meL { position: absolute; font: 600 24px var(--f-ui); color: #2F80ED; z-index: 4; white-space: nowrap; }
+  #you { position: absolute; width: 104px; height: 136px; margin: -136px 0 0 -52px; z-index: 6; }
+  #pulse { position: absolute; width: 160px; height: 160px; margin: -80px 0 0 -80px; border-radius: 50%; border: 6px solid var(--c-purple); z-index: 2; opacity: 0; }
+  #sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 470px; background: #fff; border-radius: 36px 36px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,.12); z-index: 8; }
+  #sheet .grab { width: 80px; height: 8px; border-radius: 4px; background: #d4d3db; margin: 14px auto 0; }
+  .card { position: absolute; left: 24px; right: 24px; height: 128px; border-radius: 24px; background: #fff; box-shadow: inset 0 0 0 2px #ece9f2; display: flex; align-items: center; gap: 22px; padding: 0 20px; }
+  .card .im { width: 96px; height: 96px; border-radius: 18px; flex: none; }
+  .card .im.sk { background: #e4e1ec; }
+  .card .tx { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .card .tx b { display: block; height: 24px; border-radius: 12px; background: #d9d6e2; }
+  .card .tx s { display: flex; gap: 6px; } .card .tx s i { width: 22px; height: 22px; color: #d9d6e2; display: inline-block; }
+  .card .rk { font: 700 30px var(--f-mono); color: #b9b5c8; width: 44px; text-align: center; }
+  .card.you { box-shadow: 0 0 0 5px var(--c-purple), 0 18px 40px rgba(118,103,254,.35); z-index: 3; }
+  .card.you .rk { color: var(--c-purple); }
+  .card.you .nm { font: 800 34px var(--f-head); color: #1c1b23; }
+  .card.you .chips { display: flex; gap: 10px; }
+  .card.you .c { font: 700 20px var(--f-ui); padding: 6px 14px; border-radius: 10px; }
+  .c.ad { background: #1c1b23; color: #fff; } .c.seo { background: rgba(8,221,164,.18); color: #037a5a; }
+  .card.you .rt { display: flex; align-items: center; gap: 10px; height: 64px; padding: 0 22px; border-radius: 32px; background: #2F80ED; color: #fff; font: 700 26px var(--f-ui); }
+  .card.you .rt .ic { width: 30px; height: 30px; }
+  [data-ratio="16x9"] #chap { left: 110px; top: 120px; }
+  [data-ratio="16x9"] #head { left: 110px; right: auto; width: 600px; top: 200px; font-size: 76px; }
+  [data-ratio="16x9"] #mapc { left: 760px; top: 90px; width: 1060px; height: 900px; }
+  [data-ratio="16x9"] #sheet { height: 430px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S08">
+  <div class="bg"></div><div class="dots"></div>
+  <div id="chap" class="chapter"></div>
+  <div id="head" class="head" data-copy="S08_head"></div>
+  <div id="mapc">
+    <svg id="map"></svg>
+    <div id="pulse"></div>
+    <div id="sb"><div class="ic"></div><div id="q"></div></div>
+    <div id="sheet"><div class="grab"></div></div>
+  </div>
+</div>
+<script src="hf/parts/sami-logo.js"></script>
+<script src="hf/parts/intro.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), B = S.beat, $ = I.$;
+  const ch = S.text('S08_chapter').split('|').map((x) => x.trim());
+  $('#chap').innerHTML = '<b>' + ch[0] + '</b><span>' + ch[1] + '</span><b>' + ch[2] + '</b><span>' + ch[3] + '</span>';
+  $('#sb .ic').innerHTML = I.icon('search', {sw: 2.4});
+  const mc = $('#mapc'), MW = mc.offsetWidth, MH = mc.offsetHeight, sheetH = $('#sheet').offsetHeight, visH = MH - sheetH;
+  // ── bản đồ tự vẽ: nền, công viên, sông, đường lớn/nhỏ ──
+  const svg = $('#map'); svg.setAttribute('viewBox', '0 0 ' + MW + ' ' + MH);
+  I.svg('rect', {x: 0, y: 0, width: MW, height: MH, fill: '#E9EDF0'}, svg);
+  I.svg('path', {d: `M${MW * 0.62} ${MH * 0.16} h${MW * 0.3} v${MH * 0.2} h-${MW * 0.26} z`, fill: '#CDEBD3'}, svg);
+  I.svg('path', {d: `M${MW * 0.04} ${MH * 0.5} h${MW * 0.22} v${MH * 0.12} h-${MW * 0.22} z`, fill: '#CDEBD3'}, svg);
+  I.svg('path', {d: `M-20 ${MH * 0.3} C ${MW * 0.3} ${MH * 0.22}, ${MW * 0.45} ${MH * 0.5}, ${MW + 20} ${MH * 0.42}`, fill: 'none', stroke: '#B7D9F2', 'stroke-width': 46}, svg);
+  const roads = I.svg('g', {stroke: '#fff', 'stroke-linecap': 'round', fill: 'none'}, svg);
+  for (let i = 0; i < 9; i++) { const x = MW * (i + 0.5) / 9 + (S.rnd(i) - 0.5) * 40; I.svg('line', {x1: x, y1: -20, x2: x + (S.rnd(i + 20) - 0.5) * 120, y2: MH + 20, 'stroke-width': i % 3 ? 10 : 22}, roads); }
+  for (let j = 0; j < 9; j++) { const y = MH * (j + 0.5) / 9 + (S.rnd(j + 40) - 0.5) * 40; I.svg('line', {x1: -20, y1: y, x2: MW + 20, y2: y + (S.rnd(j + 60) - 0.5) * 110, 'stroke-width': j % 3 ? 10 : 22}, roads); }
+  // ghim (khách, quán khác, quán mình)
+  const PIN = (c) => '<svg viewBox="0 0 24 32"><path d="M12 31s10-10.4 10-18.5A10 10 0 0 0 2 12.5C2 20.6 12 31 12 31z" fill="' + c + '" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="12.5" r="4" fill="#fff"/></svg>';
+  const pinsAt = [[0.16, 0.26], [0.34, 0.2], [0.8, 0.27], [0.22, 0.44], [0.74, 0.5], [0.88, 0.4]];
+  const pins = pinsAt.map((p) => { const e = I.el('div', 'pin', mc, PIN('#A8A3B8')); e.style.left = p[0] * MW + 'px'; e.style.top = (150 + p[1] * (visH - 150)) + 'px'; return e; });
+  const YX = 0.56 * MW, YY = 150 + 0.36 * (visH - 150);
+  const you = I.el('div', '', mc, '<svg viewBox="0 0 24 32" style="width:100%;height:100%;overflow:visible"><defs><linearGradient id="yg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" style="stop-color:var(--c-mint)"/><stop offset="1" style="stop-color:var(--c-purple)"/></linearGradient></defs><path d="M12 31s10-10.4 10-18.5A10 10 0 0 0 2 12.5C2 20.6 12 31 12 31z" fill="url(#yg)" stroke="#fff" stroke-width="1.4"/><circle cx="12" cy="12.5" r="4.4" fill="#fff"/></svg>');
+  you.id = 'you'; you.style.left = YX + 'px'; you.style.top = YY + 'px';
+  Object.assign($('#pulse').style, {left: YX + 'px', top: (YY - 60) + 'px'});
+  const ME = [0.18 * MW, visH - 70];
+  const me = I.el('div', '', mc); me.id = 'me'; me.style.left = ME[0] + 'px'; me.style.top = ME[1] + 'px';
+  const meL = I.el('div', '', mc); meL.id = 'meL'; meL.textContent = S.text('S08_here'); meL.style.left = (ME[0] + 34) + 'px'; meL.style.top = (ME[1] - 16) + 'px';
+  // đường đi tự vẽ: chạy theo đường phố tới quán
+  const route = I.svg('path', {d: `M${ME[0]} ${ME[1]} L${ME[0]} ${YY + 40} L${YX - 120} ${YY + 40} L${YX - 120} ${YY - 30} L${YX} ${YY - 30}`, fill: 'none', stroke: '#2F80ED', 'stroke-width': 14, 'stroke-linecap': 'round', 'stroke-linejoin': 'round'}, svg);
+  const RL = route.getTotalLength(); route.style.strokeDasharray = RL; route.style.strokeDashoffset = RL;
+  // bảng kết quả
+  const sheet = $('#sheet'), CH = 128, GAP = 16, Y0 = 44;
+  const slotY = (k) => Y0 + k * (CH + GAP);
+  const comp = [1, 2, 3].map((i, k) => {
+    const c = I.el('div', 'card', sheet, '<div class="rk">' + (k + 1) + '</div><div class="im sk"></div><div class="tx"><b style="width:' + (70 - k * 12) + '%"></b><s>' + '<i>' + I.icon('star', {fill: 'currentColor', stroke: 'none'}) + '</i>'.repeat(1) + '</s></div>');
+    c.style.top = slotY(k) + 'px';
+    const st = c.querySelector('s'); st.innerHTML = Array(5).fill('<i>' + I.icon('star', {fill: 'currentColor', stroke: 'none'}) + '</i>').join('');
+    return c;
+  });
+  const yc = I.el('div', 'card you', sheet, '<div class="rk">1</div><div class="im" data-img="S08_you_photo"></div><div class="tx"><div class="nm"></div><div class="chips"><span class="c ad"></span><span class="c seo"></span></div></div><div class="rt"><span class="ic"></span><span></span></div>');
+  yc.querySelector('.nm').textContent = S.text('S08_you'); yc.querySelector('.ad').textContent = S.text('S08_ad'); yc.querySelector('.seo').textContent = S.text('S08_seo');
+  yc.querySelector('.rt .ic').innerHTML = I.icon('route', {sw: 2.4}); yc.querySelector('.rt span:last-child').textContent = S.text('S08_route');
+  yc.style.top = (slotY(3) + 40) + 'px';
+  I.bindImgs(mc);
+
+  // ── timeline ──
+  S.arrive(tl, '#chap', B(0), {dist: 20, blur: 6, dur: 0.4});
+  tl.fromTo(mc, {y: 160, opacity: 0}, {y: 0, opacity: 1, duration: 0.5}, B(0));
+  S.arrive(tl, S.words($('#head')), B(0.5), {stagger: 0.07, dist: 40, dur: 0.45});
+  tl.from(roads.childNodes, {opacity: 0, duration: 0.3, stagger: 0.02}, B(0.2));
+  I.type(tl, $('#q'), S.text('S08_query'), B(1), 26);
+  pins.forEach((p, i) => tl.fromTo(p, {y: -300, opacity: 0}, {y: 0, opacity: 1, duration: 0.3}, B(2 + i * 0.18)));
+  tl.fromTo('#me', {scale: 0}, {scale: 1, duration: 0.3}, B(2));
+  tl.fromTo('#meL', {opacity: 0, x: -10}, {opacity: 1, x: 0, duration: 0.3}, B(2.2));
+  tl.fromTo(sheet, {y: sheetH}, {y: 0, duration: 0.45}, B(2.6));
+  // quán mình leo hạng: 4 → 1 theo nhịp, các quán khác bị đẩy xuống
+  tl.fromTo(yc, {opacity: 0}, {opacity: 1, duration: 0.2}, B(4));
+  [3, 2, 1, 0].forEach((k, s) => {
+    const at = B(4 + s * 0.5);
+    tl.to(yc, {top: slotY(k), duration: 0.35}, at);
+    comp.forEach((c, j) => { const pos = j < k ? j : j + 1; tl.to(c, {top: slotY(Math.min(pos, 3)), opacity: pos > 2 ? 0.0 : 1, duration: 0.35}, at); c.querySelector('.rk') && tl.set(c.querySelector('.rk'), {textContent: String(pos + 1)}, at + 0.2); });
+    tl.set(yc.querySelector('.rk'), {textContent: String(k + 1)}, at + 0.2);
+  });
+  tl.fromTo('#you', {y: -500, opacity: 0}, {y: 0, opacity: 1, duration: 0.4}, B(5.2));
+  tl.to('#you', {scaleY: 0.82, scaleX: 1.12, transformOrigin: '50% 100%', duration: 0.08, yoyo: true, repeat: 1}, B(5.2) + 0.4);
+  pins.forEach((p) => tl.to(p, {opacity: 0.35, scale: 0.8, transformOrigin: '50% 100%', duration: 0.3}, B(5.4)));
+  for (let k = 0; k < 3; k++) tl.fromTo('#pulse', {scale: 0.3, opacity: 0.9}, {scale: 1.6, opacity: 0, duration: 0.9, immediateRender: false}, B(5.8 + k * 2));
+  tl.fromTo(yc.querySelectorAll('.c'), {scale: 0, opacity: 0}, {scale: 1, opacity: 1, duration: 0.3, stagger: 0.15}, B(6.2));
+  // đường đi
+  tl.fromTo(yc.querySelector('.rt'), {scale: 1}, {scale: 0.9, duration: 0.08, yoyo: true, repeat: 1}, B(7.4));
+  tl.to(route, {strokeDashoffset: 0, duration: 1.4, ease: 'none'}, B(7.6));
+</script>
+</body>
+</html>

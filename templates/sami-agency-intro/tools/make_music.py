@@ -3,8 +3,8 @@
 
 120 BPM, La thứ, vòng hợp âm Am | F | C | G (mỗi ô nhịp 2 s), nhịp đầu ở 0,03 s (lưới của Studio: nhịp n = 1 + 15n khung).
 Bố cục bám điểm cắt cảnh (tính bằng nhịp, 1 nhịp = 0,5 s):
-  0-7    S01 hook: pad lọc tối, hi-hat thưa, riser            7   DROP 1 (S02 logo): impact + stab
-  13-22  S03 8 dịch vụ: groove đầy đủ                         22  S04-S05 tua nhanh: thêm arpeggio 1/16 + tiếng tick
+  0-9    S01 hook Google Maps: pad lọc tối, hi-hat, riser     9   DROP 1 (S02 logo): impact + stab
+  15-22  S03 8 dịch vụ: groove đầy đủ                         22  S04-S05 tua nhanh: thêm arpeggio 1/16 + tiếng tick
   52-74  S06-S07 website, đặt bàn: groove + giai điệu pluck    74  S08-S09 maps, social: đỉnh năng lượng
   93-101 S10 dự án thật: breakdown, riser + trống dồn          101 DROP 2 (S11 offer)
   111    S12 FINAL HIT: impact + hợp âm ngân, tắt dần tới 120 (60,03 s)
@@ -28,7 +28,7 @@ TAU = 2 * math.pi
 rng = np.random.default_rng(20261019)
 
 # ── mốc (nhịp) ──
-DROP1, S03, LAPSE, S06, PEAK, BREAK, DROP2, FINAL = 7, 13, 22, 52, 74, 93, 101, 111
+DROP1, S03, LAPSE, S06, PEAK, BREAK, DROP2, FINAL = 9, 15, 22, 52, 74, 93, 101, 111
 
 
 def tb(beat):

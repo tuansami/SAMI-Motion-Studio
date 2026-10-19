@@ -2,82 +2,155 @@
 <html>
 <head>
 <link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/400.css">
 <link rel="stylesheet" href="_fonts/inter/500.css">
 <link rel="stylesheet" href="_fonts/inter/600.css">
-<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
 <link rel="stylesheet" href="hf/parts/intro.css">
 <style>
-  /* S01 · Hook: ảnh món thật, thanh tìm kiếm tự gõ, kết quả lướt qua không có quán mình, câu hook dập theo nhịp */
+  /* S01 · Hook Google Maps: điện thoại mở Google Maps (vẽ tay theo giao diện thật), khách gõ tìm, ghim đỏ rơi, danh sách kết quả cuộn,
+   * ghim quán mình mờ + dấu hỏi → "không có trong kết quả" → câu hook dập theo nhịp. Nền: ảnh món thật. */
   #photo { position: absolute; inset: -4%; }
-  #shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,3,26,.82) 0%, rgba(6,3,26,.25) 34%, rgba(6,3,26,.35) 52%, rgba(6,3,26,.92) 78%, rgba(6,3,26,.97) 100%); }
-  #time { position: absolute; left: var(--safe-side); top: calc(var(--safe-top) + 10px); font-size: 30px; }
+  #shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,3,26,.86) 0%, rgba(6,3,26,.55) 30%, rgba(6,3,26,.6) 60%, rgba(6,3,26,.95) 100%); }
+  #top { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 4px); display: flex; gap: 16px; align-items: center; }
+  #top .chip { font-size: 30px; }
+  #app .ic { width: 30px; height: 30px; }
   #time i { background: var(--red); }
-  #bar { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 90px); height: 128px; border-radius: 64px; background: #fff;
-    display: flex; align-items: center; gap: 26px; padding: 0 40px; box-shadow: 0 30px 80px rgba(0,0,0,.5); color: #1c1b23; font: 500 42px var(--f-ui); z-index: 5; }
-  #bar .ic { width: 50px; height: 50px; color: #6e6d7a; flex: none; }
-  #q { white-space: nowrap; overflow: hidden; }
-  #q .caret { color: var(--c-purple); font-weight: 400; margin-left: 2px; }
-  #res { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 250px); display: flex; flex-direction: column; gap: 18px; z-index: 4; }
-  .r { height: 150px; border-radius: 30px; background: rgba(255,255,255,.94); display: flex; align-items: center; gap: 26px; padding: 0 28px; box-shadow: 0 18px 40px rgba(0,0,0,.35); }
-  .r .th { width: 104px; height: 104px; border-radius: 20px; background: #d9d6e2; flex: none; }
-  .r .tx { flex: 1; display: flex; flex-direction: column; gap: 16px; }
-  .r .tx b { display: block; height: 24px; border-radius: 12px; background: #cfcbdb; }
-  .r .tx s { display: block; height: 18px; width: 60%; border-radius: 9px; background: #e4e1ec; }
-  .r .pn { width: 46px; height: 46px; color: #b9b5c8; flex: none; }
-  #head { position: absolute; left: var(--safe-side); right: var(--safe-side); bottom: calc(var(--safe-bottom) + 10px); font-size: 92px; }
+  #ph { position: absolute; left: 210px; top: 300px; width: 660px; height: 1220px; }
+  #ph > .scr { background: #F5F1EA; font-family: var(--f-ui); color: #202124; }
+  #mapw { position: absolute; inset: 0; transform-origin: 50% 40%; }
+  #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #sb { position: absolute; left: 22px; right: 22px; top: 74px; height: 96px; border-radius: 48px; background: #fff; box-shadow: 0 2px 6px rgba(60,64,67,.3), 0 6px 20px rgba(60,64,67,.15);
+    display: flex; align-items: center; gap: 18px; padding: 0 26px; z-index: 6; }
+  #sb .pin { width: 34px; height: 44px; flex: none; }
+  #q { flex: 1; font: 400 36px var(--f-ui); color: #202124; white-space: nowrap; overflow: hidden; }
+  #q .caret { color: #1a73e8; }
+  #sb .mic { width: 34px; height: 34px; color: #5f6368; flex: none; }
+  #sb .av { width: 52px; height: 52px; border-radius: 50%; background: #7e57c2; color: #fff; font: 600 26px/52px var(--f-ui); text-align: center; flex: none; }
+  #chips { position: absolute; left: 22px; right: 0; top: 186px; display: flex; gap: 12px; z-index: 6; }
+  .mc { display: flex; align-items: center; gap: 10px; height: 58px; padding: 0 18px; border-radius: 30px; background: #fff; box-shadow: 0 1px 4px rgba(60,64,67,.3); font: 500 24px var(--f-ui); color: #3c4043; white-space: nowrap; }
+  .mc .ic { width: 28px; height: 28px; color: #5f6368; }
+  .rpin { position: absolute; width: 50px; height: 68px; margin: -68px 0 0 -25px; z-index: 3; }
+  #ghost { position: absolute; width: 74px; height: 96px; margin: -96px 0 0 -37px; z-index: 4; }
+  #ghostL { position: absolute; z-index: 5; padding: 8px 16px; border-radius: 12px; background: rgba(255,255,255,.95); font: 700 26px var(--f-ui); color: #5f6368; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+  #miss { position: absolute; z-index: 5; padding: 10px 18px; border-radius: 14px; background: var(--red); color: #fff; font: 700 26px var(--f-ui); white-space: nowrap; box-shadow: 0 6px 16px rgba(255,90,95,.45); opacity: 0; }
+  #ring { position: absolute; width: 150px; height: 150px; margin: -75px 0 0 -75px; border-radius: 50%; border: 6px solid var(--red); z-index: 4; opacity: 0; }
+  #sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 560px; background: #fff; border-radius: 30px 30px 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,.18); z-index: 7; overflow: hidden; }
+  #sheet .grab { width: 70px; height: 8px; border-radius: 4px; background: #dadce0; margin: 14px auto 6px; }
+  #list { position: absolute; left: 0; right: 0; top: 34px; }
+  .rc { display: flex; gap: 20px; padding: 18px 26px; border-bottom: 2px solid #f1f3f4; }
+  .rc .th { width: 118px; height: 118px; border-radius: 16px; background: #e8eaed; color: #bdc1c6; padding: 30px; box-sizing: border-box; flex: none; }
+  .rc .tx { flex: 1; display: flex; flex-direction: column; gap: 9px; padding-top: 4px; }
+  .rc .nm { height: 26px; border-radius: 13px; background: #dadce0; }
+  .rc .st { display: flex; gap: 3px; align-items: center; } .rc .st i { width: 24px; height: 24px; display: inline-block; color: #fbbc04; } .rc .st i.off { color: #dadce0; }
+  .rc .st b { margin-left: 8px; width: 60px; height: 16px; border-radius: 8px; background: #e8eaed; display: inline-block; }
+  .rc .mt { font: 400 24px var(--f-ui); color: #5f6368; }
+  .rc .op { font: 600 24px var(--f-ui); color: #188038; }
+  #head { position: absolute; left: var(--safe-side); right: var(--safe-side); top: 1080px; font-size: 92px; }
   #head em.hl, #head em.hl .w { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--red); }
-  #head em.hl { display: inline-block; font-size: 1.62em; letter-spacing: -0.045em; line-height: 1; margin-top: 8px; position: relative; }
-  #uline { position: absolute; left: 0; right: 0; bottom: -10px; height: 16px; border-radius: 8px; background: var(--red); transform-origin: 0 50%; }
-  [data-ratio="16x9"] #photo { inset: -4% -4% -4% 38%; }
-  [data-ratio="16x9"] #shade { background: linear-gradient(90deg, rgba(6,3,26,.97) 0%, rgba(6,3,26,.9) 40%, rgba(6,3,26,.25) 70%, rgba(6,3,26,.5) 100%); }
-  [data-ratio="16x9"] #time { top: 110px; left: 110px; }
-  [data-ratio="16x9"] #bar { left: 110px; right: auto; width: 860px; top: 190px; height: 104px; font-size: 34px; }
-  [data-ratio="16x9"] #res { left: 110px; right: auto; width: 860px; top: 316px; }
-  [data-ratio="16x9"] .r { height: 112px; }
-  [data-ratio="16x9"] .r .th { width: 78px; height: 78px; }
-  [data-ratio="16x9"] #head { left: 110px; right: auto; width: 1000px; bottom: 110px; font-size: 76px; }
+  #head em.hl { display: inline-block; font-size: 1.5em; letter-spacing: -0.045em; line-height: 1.02; margin-top: 6px; position: relative; }
+  #uline { position: absolute; left: 0; right: 0; bottom: -8px; height: 16px; border-radius: 8px; background: var(--red); transform-origin: 0 50%; }
+  [data-ratio="16x9"] #photo { inset: -4%; }
+  [data-ratio="16x9"] #shade { background: linear-gradient(90deg, rgba(6,3,26,.96) 0%, rgba(6,3,26,.88) 45%, rgba(6,3,26,.55) 100%); }
+  [data-ratio="16x9"] #top { left: 110px; right: auto; top: 110px; }
+  [data-ratio="16x9"] #ph { left: 1180px; top: 50px; width: 540px; height: 980px; }
+  [data-ratio="16x9"] #head { left: 110px; right: auto; width: 960px; top: 420px; font-size: 88px; }
+  [data-ratio="16x9"] #sb { height: 84px; } [data-ratio="16x9"] #q { font-size: 26px; }
+  [data-ratio="16x9"] #sheet { height: 420px; }
+  [data-ratio="16x9"] .mc { font-size: 22px; height: 52px; padding: 0 16px; }
+  [data-ratio="16x9"] #chips { top: 172px; }
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="S01">
   <div id="photo" data-img="S01_photo"></div>
   <div id="shade"></div>
-  <div id="time" class="chip"><i></i><span data-copy="S01_time"></span></div>
-  <div id="bar"><div class="ic" id="sic"></div><div id="q"></div></div>
-  <div id="res"></div>
+  <div id="top"><div id="app" class="chip"><span class="ic"></span><span data-copy="S01_app"></span></div><div id="time" class="chip"><i></i><span data-copy="S01_time"></span></div></div>
+  <div id="ph" class="phone"><div class="notch"></div><div class="scr">
+    <div id="mapw"><svg id="map"></svg></div>
+    <div id="sb"><svg class="pin" viewBox="0 0 24 32"><path d="M12 31s10-10.4 10-18.5A10 10 0 0 0 2 12.5C2 20.6 12 31 12 31z" fill="#EA4335"/><circle cx="12" cy="12.5" r="4" fill="#B31412"/></svg><div id="q"></div><span class="mic"></span><span class="av">S</span></div>
+    <div id="chips"></div>
+    <div id="sheet"><div class="grab"></div><div id="list"></div></div>
+  </div></div>
   <div id="head" class="head" data-copy="S01_head"></div>
 </div>
 <script src="hf/parts/sami-logo.js"></script>
 <script src="hf/parts/intro.js"></script>
 <script>
-  const S = window.SAMI, tl = S.timeline(), B = S.beat;
-  I.bindImgs();
-  I.$('#sic').innerHTML = I.icon('search', {sw: 2.4});
-  const res = I.$('#res');
-  for (let i = 0; i < 6; i++) I.el('div', 'r', res, '<div class="th"></div><div class="tx"><b style="width:' + (82 - (i % 3) * 14) + '%"></b><s></s></div><div class="pn">' + I.icon('pin') + '</div>');
+  const S = window.SAMI, tl = S.timeline(), B = S.beat, $ = I.$;
+  $('#app .ic').innerHTML = '<svg viewBox="0 0 24 32" style="width:100%;height:100%"><path d="M12 31s10-10.4 10-18.5A10 10 0 0 0 2 12.5C2 20.6 12 31 12 31z" fill="#EA4335"/><circle cx="12" cy="12.5" r="4" fill="#fff"/></svg>';
+  $('#sb .mic').innerHTML = I.icon('mic');
+  const chipIc = ['food', 'clock', 'star'];
+  S.text('S01_chips').split('|').forEach((t, i) => { const c = I.el('div', 'mc', $('#chips'), '<span class="ic">' + I.icon(chipIc[i % 3]) + '</span><span></span>'); c.lastChild.textContent = t.trim(); });
+  // ── bản đồ kiểu Google Maps (tự vẽ): nền, khối nhà, công viên, sông, đường thường + đường chính vàng ──
+  const scr = $('#ph .scr'), W = scr.offsetWidth, H = scr.offsetHeight, svg = $('#map');
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  const g = (attrs) => I.svg('path', attrs, svg);
+  I.svg('rect', {x: 0, y: 0, width: W, height: H, fill: '#F5F1EA'}, svg);
+  for (let i = 0; i < 26; i++) { const x = (S.rnd(i) * 1.1 - 0.05) * W, y = (S.rnd(i + 50) * 1.1 - 0.05) * H; I.svg('rect', {x, y, width: 60 + S.rnd(i + 9) * 110, height: 40 + S.rnd(i + 19) * 90, rx: 6, fill: '#EDE8DF'}, svg); }
+  g({d: `M${W * 0.58} ${H * 0.2} l${W * 0.32} -20 l20 ${H * 0.18} l-${W * 0.3} 30 z`, fill: '#C8E6C0'});
+  g({d: `M${W * 0.05} ${H * 0.55} h${W * 0.26} v${H * 0.1} h-${W * 0.26} z`, fill: '#C8E6C0'});
+  g({d: `M-20 ${H * 0.36} C ${W * 0.3} ${H * 0.3}, ${W * 0.55} ${H * 0.52}, ${W + 20} ${H * 0.44}`, fill: 'none', stroke: '#A8D4F5', 'stroke-width': 38});
+  const road = (d, w, major) => { g({d, fill: 'none', stroke: major ? '#E8C25C' : '#DCD7CE', 'stroke-width': w + 4, 'stroke-linecap': 'round'}); g({d, fill: 'none', stroke: major ? '#FBE29B' : '#FFFFFF', 'stroke-width': w, 'stroke-linecap': 'round'}); };
+  for (let i = 0; i < 7; i++) { const x = W * (i + 0.5) / 7 + (S.rnd(i + 3) - 0.5) * 50; road(`M${x} -20 L${x + (S.rnd(i + 30) - 0.5) * 140} ${H + 20}`, 12, false); }
+  for (let j = 0; j < 9; j++) { const y = H * (j + 0.5) / 9 + (S.rnd(j + 70) - 0.5) * 50; road(`M-20 ${y} L${W + 20} ${y + (S.rnd(j + 80) - 0.5) * 120}`, 12, false); }
+  road(`M-20 ${H * 0.62} C ${W * 0.3} ${H * 0.58}, ${W * 0.6} ${H * 0.66}, ${W + 20} ${H * 0.6}`, 20, true);
+  road(`M${W * 0.36} -20 L${W * 0.44} ${H + 20}`, 18, true);
+  // ghim đỏ kết quả + ghim quán mình (mờ, nét đứt)
+  const PIN = '<svg viewBox="0 0 24 32" style="width:100%;height:100%;overflow:visible"><path d="M12 31s10-10.4 10-18.5A10 10 0 0 0 2 12.5C2 20.6 12 31 12 31z" fill="#EA4335" stroke="#B31412" stroke-width="1"/><circle cx="12" cy="12.5" r="4" fill="#B31412"/></svg>';
+  const pinXY = [[0.18, 0.31], [0.32, 0.26], [0.68, 0.3], [0.83, 0.38], [0.24, 0.47], [0.58, 0.49], [0.9, 0.24]];
+  const pins = pinXY.map((p) => { const e = I.el('div', 'rpin', $('#mapw'), PIN); e.style.left = p[0] * W + 'px'; e.style.top = p[1] * H + 'px'; return e; });
+  const GX = 0.47 * W, GY = 0.4 * H;
+  const ghost = I.el('div', '', $('#mapw'), '<svg viewBox="0 0 24 32" style="width:100%;height:100%;overflow:visible"><path d="M12 31s10-10.4 10-18.5A10 10 0 0 0 2 12.5C2 20.6 12 31 12 31z" fill="rgba(255,255,255,.55)" stroke="#80868b" stroke-width="1.4" stroke-dasharray="2.5 2"/><text x="12" y="16.5" text-anchor="middle" font-family="Inter" font-weight="700" font-size="11" fill="#80868b">?</text></svg>');
+  ghost.id = 'ghost'; ghost.style.left = GX + 'px'; ghost.style.top = GY + 'px';
+  const gl = I.el('div', '', $('#mapw')); gl.id = 'ghostL'; gl.textContent = S.text('S01_you'); gl.style.left = (GX + 44) + 'px'; gl.style.top = (GY - 76) + 'px';
+  const ring = I.el('div', '', $('#mapw')); ring.id = 'ring'; ring.style.left = GX + 'px'; ring.style.top = (GY - 48) + 'px';
+  const miss = I.el('div', '', $('#mapw')); miss.id = 'miss'; miss.textContent = S.text('S01_miss'); miss.style.left = Math.max(16, GX - 200) + 'px'; miss.style.top = (GY + 18) + 'px';
+  // danh sách kết quả (không có quán mình)
+  const list = $('#list');
+  for (let i = 0; i < 7; i++) {
+    const c = I.el('div', 'rc', list, '<div class="th">' + I.icon('food') + '</div><div class="tx"><div class="nm"></div><div class="st"></div><div class="mt"></div><div class="op"></div></div>');
+    c.querySelector('.nm').style.width = (62 - (i % 3) * 12) + '%';
+    c.querySelector('.st').innerHTML = [0, 1, 2, 3, 4].map((k) => '<i class="' + (k < 4 - (i % 2) ? '' : 'off') + '">' + I.icon('star', {fill: 'currentColor', stroke: 'none'}) + '</i>').join('') + '<b></b>';
+    c.querySelector('.mt').textContent = S.text('S01_meta'); c.querySelector('.op').textContent = S.text('S01_open');
+  }
 
-  // ảnh: đẩy vào chậm suốt cảnh, mất màu khi chữ "niemand?" đập xuống
+  // ── timeline ──
+  const wide = S.landscape;
   tl.fromTo('#photo', {scale: 1.0}, {scale: 1.1, duration: S.dur, ease: 'none'}, 0);
-  // nhãn giờ + thanh tìm kiếm đập vào
-  S.arrive(tl, '#time', B(0), {dist: 20, blur: 6, dur: 0.4});
-  tl.fromTo('#bar', {scale: 1.25, opacity: 0, filter: 'blur(14px)'}, {scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.45}, B(0.2));
-  I.type(tl, I.$('#q'), S.text('S01_query'), B(0.5), 30);
-  // kết quả rơi xuống, rồi lướt qua nhanh (không có quán mình)
-  const rs = I.$$('.r');
-  tl.fromTo(rs, {y: -60, opacity: 0}, {y: 0, opacity: 1, duration: 0.3, stagger: 0.06}, B(2.4));
-  tl.to(res, {y: S.pick({'16:9': -110, default: -340}), duration: 1.0, ease: 'none'}, B(2.7));
-  tl.to(rs, {opacity: 0, filter: 'blur(10px)', duration: 0.3, stagger: 0.03}, B(3.7));
-  tl.to('#bar', {y: -30, opacity: 0.0, filter: 'blur(8px)', duration: 0.4}, B(3.9));
-  tl.to('#time', {opacity: 0, duration: 0.3}, B(3.9));
-  // câu hook: dòng 1 theo nhịp 4, "niemand?" đập ở nhịp 5
-  const head = I.$('#head'), hl = head.querySelector('em.hl');
+  S.arrive(tl, I.$$('#top .chip'), B(0), {dist: 20, blur: 6, dur: 0.4, stagger: 0.1});
+  tl.fromTo('#ph', {y: 320, opacity: 0, rotation: -3}, {y: 0, opacity: 1, rotation: 0, duration: 0.55}, B(0));
+  tl.from(I.$$('.mc'), {opacity: 0, y: -10, duration: 0.3, stagger: 0.06}, B(0.6));
+  // chạm ô tìm kiếm, gõ, Enter
+  const tap = I.el('div', 'touch', scr); tap.style.cssText = 'position:absolute;left:300px;top:122px;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;background:rgba(26,115,232,.3);border:4px solid #fff;z-index:9;opacity:0';
+  tl.fromTo(tap, {scale: 1.5, opacity: 0}, {scale: 1, opacity: 1, duration: 0.12, immediateRender: false}, B(1));
+  tl.to(tap, {opacity: 0, scale: 1.3, duration: 0.25}, B(1.3));
+  I.type(tl, $('#q'), S.text('S01_query'), B(1.15), 26);
+  tl.set('#q .caret', {opacity: 0}, B(2.8));
+  // tìm: bản đồ zoom, ghim đỏ rơi, danh sách kéo lên
+  tl.fromTo('#mapw', {scale: 1}, {scale: 1.12, duration: 0.6}, B(2.8));
+  pins.forEach((p, i) => tl.fromTo(p, {y: -260, opacity: 0}, {y: 0, opacity: 1, duration: 0.28}, B(2.9 + i * 0.16)));
+  tl.fromTo('#ghost', {opacity: 0, scale: 0.6}, {opacity: 1, scale: 1, duration: 0.3, transformOrigin: '50% 100%'}, B(3.3));
+  tl.fromTo('#ghostL', {opacity: 0, x: -10}, {opacity: 1, x: 0, duration: 0.3}, B(3.5));
+  tl.fromTo('#sheet', {y: 580}, {y: 0, duration: 0.45}, B(3.4));
+  tl.to('#list', {y: -560, duration: 1.1, ease: 'none'}, B(3.9));
+  // quán mình không có trong kết quả
+  tl.fromTo('#ring', {scale: 0.3, opacity: 0}, {scale: 1, opacity: 1, duration: 0.3}, B(4.8));
+  tl.fromTo('#miss', {scale: 0.6, opacity: 0}, {scale: 1, opacity: 1, duration: 0.3}, B(4.9));
+  I.shake(tl, '#ghost', B(4.9), {amp: 8, n: 6});
+  // điện thoại lùi lên, câu hook dập theo nhịp
+  if (!wide) {
+    tl.to('#top', {opacity: 0, y: -20, duration: 0.3}, B(5.4));
+    tl.to('#ph', {scale: 0.72, y: -140, transformOrigin: '50% 0%', duration: 0.5}, B(5.4));
+  }
+  tl.to('#photo', {filter: 'grayscale(1) brightness(.5)', duration: 0.6}, B(6.6));
+  const head = $('#head'), hl = head.querySelector('em.hl');
   const ul = I.el('div', '', hl); ul.id = 'uline';
   const words = S.words(head), first = words.filter((w) => !hl.contains(w)), last = words.filter((w) => hl.contains(w));
-  S.arrive(tl, first, B(4), {stagger: 0.08, dist: 50, dur: 0.45});
-  tl.fromTo(last, {scale: 1.6, opacity: 0, filter: 'blur(18px)'}, {scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.3, transformOrigin: '0% 80%'}, B(5.2));
-  I.shake(tl, '#root', B(5.3), {amp: 14, n: 7});
-  tl.fromTo(ul, {scaleX: 0}, {scaleX: 1, duration: 0.4}, B(5.5));
-  tl.to('#photo', {filter: 'grayscale(1) brightness(.55)', duration: 0.5}, B(5.2));
+  S.arrive(tl, first, B(5.6), {stagger: 0.08, dist: 50, dur: 0.45});
+  tl.fromTo(last, {scale: 1.6, opacity: 0, filter: 'blur(18px)'}, {scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.3, transformOrigin: '0% 80%'}, B(6.6));
+  I.shake(tl, '#root', B(6.7), {amp: 14, n: 7});
+  tl.fromTo(ul, {scaleX: 0}, {scaleX: 1, duration: 0.4}, B(6.9));
 </script>
 </body>
 </html>

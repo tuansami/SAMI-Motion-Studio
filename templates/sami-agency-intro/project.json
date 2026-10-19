@@ -19,22 +19,22 @@
    "id": "S01",
    "label": "Hook: tìm kiếm, quán không hiện",
    "start": 0,
-   "end": 106,
+   "end": 136,
    "engine": "hyperframes",
    "src": "hf/S01.html"
   },
   {
    "id": "S02",
    "label": "SAMI xuất hiện",
-   "start": 106,
-   "end": 196,
+   "start": 136,
+   "end": 226,
    "engine": "hyperframes",
    "src": "hf/S02.html"
   },
   {
    "id": "S03",
    "label": "8 dịch vụ, 1 đầu mối",
-   "start": 196,
+   "start": 226,
    "end": 331,
    "engine": "hyperframes",
    "src": "hf/S03.html"
@@ -113,24 +113,53 @@
   }
  ],
  "copy": {
+  "S01_app": {
+   "label": "Nhãn ứng dụng phía trên điện thoại",
+   "scene": "S01",
+   "value": "Google Maps"
+  },
   "S01_time": {
-   "label": "Nhãn thời điểm phía trên thanh tìm kiếm",
+   "label": "Nhãn thời điểm phía trên điện thoại",
    "scene": "S01",
    "value": "Freitag, 19:12"
   },
   "S01_query": {
-   "label": "Chữ tự gõ trong thanh tìm kiếm",
+   "label": "Chữ khách gõ trong ô tìm kiếm Google Maps",
    "scene": "S01",
-   "value": "vietnamesisch essen in der Nähe"
+   "value": "vietnamesisch essen"
+  },
+  "S01_chips": {
+   "label": "Các nút lọc dưới ô tìm kiếm (cách nhau |)",
+   "scene": "S01",
+   "value": "Restaurants|Geöffnet|Top bewertet"
+  },
+  "S01_meta": {
+   "label": "Dòng loại quán trên thẻ kết quả",
+   "scene": "S01",
+   "value": "Vietnamesisch · €€"
+  },
+  "S01_open": {
+   "label": "Trạng thái mở cửa trên thẻ kết quả",
+   "scene": "S01",
+   "value": "Geöffnet"
+  },
+  "S01_you": {
+   "label": "Nhãn ghim quán của bạn (mờ, không có trên bản đồ)",
+   "scene": "S01",
+   "value": "Ihr Restaurant?"
+  },
+  "S01_miss": {
+   "label": "Nhãn đỏ khi quán không có trong kết quả",
+   "scene": "S01",
+   "value": "Nicht in den Ergebnissen"
   },
   "S01_head": {
    "label": "Câu hook lớn (dùng *…* để tô đỏ, / để xuống dòng)",
    "scene": "S01",
-   "value": "Ihr Essen ist gut. / Warum findet Sie *niemand?*",
-   "hint": "*…* = tô đỏ"
+   "value": "Ihr Essen ist gut. / Warum findet Sie *niemand?*"
   },
   "S01_photo": {
-   "label": "Ảnh món ăn nền cảnh hook (ảnh dọc)",
+   "label": "Ảnh món ăn nền sau điện thoại",
    "scene": "S01",
    "value": "lib:img/sami-cases/84kitchen/bangkok.webp"
   },
@@ -167,7 +196,7 @@
   "S03_s2_photo": {
    "label": "Ảnh nền ô dịch vụ 2",
    "scene": "S03",
-   "value": "lib:img/sami-cases/84kitchen/brand-4.webp"
+   "value": "lib:img/sami-cases/vi/spread.webp"
   },
   "S03_s3": {
    "label": "Tên dịch vụ ô 3",
@@ -242,52 +271,47 @@
   "S04_file": {
    "label": "Tên file trên thanh tiêu đề app thiết kế",
    "scene": "S04",
-   "value": "Brand Identity · v12"
+   "value": "Saigon Atelier · Brand Identity"
   },
   "S04_ff": {
    "label": "Nhãn HUD tua nhanh",
    "scene": "S04",
    "value": "ZEITRAFFER"
   },
-  "S04_logo": {
-   "label": "Logo vector (SVG) được vẽ nét trong app",
+  "S04_brand": {
+   "label": "Tên nhà hàng mẫu (hư cấu) được dựng brand",
    "scene": "S04",
-   "value": "lib:img/sami-cases/84kitchen/logo.svg"
+   "value": "Saigon Atelier"
+  },
+  "S04_brandsub": {
+   "label": "Dòng phụ dưới tên nhà hàng mẫu",
+   "scene": "S04",
+   "value": "Vietnamesische Küche"
+  },
+  "S04_concept": {
+   "label": "Nhãn bắt buộc cho nhà hàng hư cấu",
+   "scene": "S04",
+   "value": "KONZEPTBEISPIEL"
+  },
+  "S04_food_photo": {
+   "label": "Ảnh món cho ô hình ảnh của brandkit",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/vi/curry.webp"
+  },
+  "S04_food2_photo": {
+   "label": "Ảnh món phụ trong brandkit",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/vi/pomelo.webp"
   },
   "S04_palette": {
-   "label": "Bảng màu chốt (5 mã HEX, cách nhau dấu cách)",
+   "label": "Bảng màu chốt (5 mã HEX: màu đèn, màu logo, màu nền, màu kem, màu mực)",
    "scene": "S04",
-   "value": "#6B4E2E #C29B70 #232220 #E0DCD3 #D2D1CD"
+   "value": "#C8402F #C9A227 #0F3D3E #F3E9D8 #1B1B1B"
   },
   "S04_font": {
    "label": "Font tiêu đề được chốt (tên font có sẵn)",
    "scene": "S04",
    "value": "Playfair Display"
-  },
-  "S04_kit1_photo": {
-   "label": "Brandkit: bảng tổng (logo + ảnh món)",
-   "scene": "S04",
-   "value": "lib:img/sami-cases/84kitchen/brand-1.webp"
-  },
-  "S04_kit2_photo": {
-   "label": "Brandkit: bảng màu + chữ",
-   "scene": "S04",
-   "value": "lib:img/sami-cases/84kitchen/brand-2.webp"
-  },
-  "S04_kit3_photo": {
-   "label": "Brandkit: thẻ quà tặng",
-   "scene": "S04",
-   "value": "lib:img/sami-cases/84kitchen/brand-3.webp"
-  },
-  "S04_kit4_photo": {
-   "label": "Brandkit: bìa menu",
-   "scene": "S04",
-   "value": "lib:img/sami-cases/84kitchen/brand-4.webp"
-  },
-  "S04_kit5_photo": {
-   "label": "Brandkit: bộ ảnh món",
-   "scene": "S04",
-   "value": "lib:img/sami-cases/84kitchen/brand-5.webp"
   },
   "S04_kit6_photo": {
    "label": "Brandkit: ấn phẩm (dự án khác)",
@@ -305,14 +329,14 @@
    "value": "lib:img/sami-cases/mizuki/brand-5.webp"
   },
   "S04_ui": {
-   "label": "Nhãn giao diện app (cách nhau |): Ebenen|Füllung|Schrift|Raster|Logo|Farbpalette|Typografie|Brandkit|Ankerpunkte",
+   "label": "Nhãn giao diện app + brandkit (cách nhau |): Ebenen|Füllung|Schrift|Raster|Logo|Farbpalette|Typografie|Brandkit|Ankerpunkte|Bildsprache|Verpackung",
    "scene": "S04",
-   "value": "Ebenen|Füllung|Schrift|Raster|Logo|Farbpalette|Typografie|Brandkit|Ankerpunkte"
+   "value": "Ebenen|Füllung|Schrift|Raster|Logo|Farbpalette|Typografie|Brandkit|Ankerpunkte|Bildsprache|Verpackung"
   },
   "S04_sample": {
    "label": "Câu mẫu thử font trong app",
    "scene": "S04",
-   "value": "Modern Asian Kitchen"
+   "value": "Phở · Bánh Mì · Gỏi Cuốn"
   },
   "S04_done": {
    "label": "Con dấu khi brandkit xong",
@@ -342,87 +366,87 @@
   "S05_d1": {
    "label": "Tên món 1 trên menu",
    "scene": "S05",
-   "value": "Nigiri Variation"
+   "value": "Bánh Xèo"
   },
   "S05_d1_desc": {
    "label": "Mô tả món 1",
    "scene": "S05",
-   "value": "Lachs, Thunfisch, Garnele"
+   "value": "Knuspriger Reispfannkuchen, Garnelen, Kräuter"
   },
   "S05_d1_photo": {
    "label": "Ảnh món 1",
    "scene": "S05",
-   "value": "lib:img/sami-cases/84kitchen/nigiri-board.webp"
+   "value": "lib:img/sami-cases/vi/banhxeo.webp"
   },
   "S05_d2": {
    "label": "Tên món 2 trên menu",
    "scene": "S05",
-   "value": "Inside-Out Roll"
+   "value": "Gỏi Bưởi"
   },
   "S05_d2_desc": {
    "label": "Mô tả món 2",
    "scene": "S05",
-   "value": "Avocado, Gurke, Tobiko"
+   "value": "Pomelo-Salat, Garnelen, Minze"
   },
   "S05_d2_photo": {
    "label": "Ảnh món 2",
    "scene": "S05",
-   "value": "lib:img/sami-cases/84kitchen/insideout.webp"
+   "value": "lib:img/sami-cases/vi/pomelo.webp"
   },
   "S05_d3": {
    "label": "Tên món 3 trên menu",
    "scene": "S05",
-   "value": "Sashimi"
+   "value": "Vịt Xoài"
   },
   "S05_d3_desc": {
    "label": "Mô tả món 3",
    "scene": "S05",
-   "value": "Tagesfang, Wasabi, Ingwer"
+   "value": "Ente, Mango, frische Kräuter"
   },
   "S05_d3_photo": {
    "label": "Ảnh món 3",
    "scene": "S05",
-   "value": "lib:img/sami-cases/84kitchen/sashimi.webp"
+   "value": "lib:img/sami-cases/vi/duck.webp"
   },
   "S05_d4": {
    "label": "Tên món 4 trên menu",
    "scene": "S05",
-   "value": "Ramen"
+   "value": "Sườn Bò Om"
   },
   "S05_d4_desc": {
    "label": "Mô tả món 4",
    "scene": "S05",
-   "value": "Brühe, Rind, Frühlingslauch"
+   "value": "Geschmorte Rinderrippe, Rotwein"
   },
   "S05_d4_photo": {
    "label": "Ảnh món 4",
    "scene": "S05",
-   "value": "lib:img/sami-cases/84kitchen/ramen.webp"
+   "value": "lib:img/sami-cases/vi/rib.webp"
   },
   "S05_d5": {
    "label": "Tên món 5 trên menu",
    "scene": "S05",
-   "value": "Thunfisch-Tatar"
+   "value": "Cà Ri"
   },
   "S05_d5_desc": {
    "label": "Mô tả món 5",
    "scene": "S05",
-   "value": "Avocado, Sesam, Kresse"
+   "value": "Rotes Curry, Gemüse, Jasminreis"
   },
   "S05_d5_photo": {
    "label": "Ảnh món 5",
    "scene": "S05",
-   "value": "lib:img/sami-cases/84kitchen/tartar.webp"
+   "value": "lib:img/sami-cases/vi/curry.webp"
   },
   "S05_allergen": {
    "label": "Dòng chú thích dị ứng cuối menu",
    "scene": "S05",
-   "value": "Allergene: A Gluten · B Krebstiere · D Fisch · F Soja · N Sesam"
+   "value": "Allergene: A Gluten · B Krebstiere · D Fisch · E Erdnüsse · F Soja"
   },
   "S05_print_photo": {
-   "label": "Ảnh menu in (bìa)",
+   "label": "Ảnh món đặt cạnh bìa menu in",
    "scene": "S05",
-   "value": "lib:img/sami-cases/84kitchen/brand-4.webp"
+   "value": "lib:img/sami-cases/vi/spread-2.webp"
   },
   "S05_print": {
    "label": "Nhãn ảnh menu in",
@@ -963,7 +987,7 @@
   },
   "cues": [
    {
-    "t": 0.6,
+    "t": 0.9,
     "sfx": "typing_burst",
     "gain": -14,
     "label": "gõ tìm kiếm"

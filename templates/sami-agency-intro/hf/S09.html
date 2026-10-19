@@ -62,7 +62,7 @@
     for (let j = 0; j < 3; j++) {
       const h = I.el('div', 'fh', $('#root'), I.icon('heart', {fill: 'currentColor', stroke: 'none'}));
       const r = posts[k].getBoundingClientRect(); h.style.left = (r.left + r.width / 2 - 32 + (j - 1) * 40) + 'px'; h.style.top = (r.top + r.height / 2) + 'px';
-      tl.fromTo(h, {y: 0, opacity: 0, scale: 0.6}, {y: -260 - j * 60, opacity: 1, scale: 1, duration: 0.5, immediateRender: false}, at + 0.1 + j * 0.06);
+      tl.fromTo(h, {y: 0, opacity: 0, scale: 0.6}, {y: -140 - j * 35, opacity: 1, scale: 1, duration: 0.5, immediateRender: false}, at + 0.1 + j * 0.06);
       tl.to(h, {opacity: 0, duration: 0.25}, at + 0.5 + j * 0.06);
     }
   });

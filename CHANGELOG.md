@@ -19,6 +19,30 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.4.0] — 2026-10-19 — SAMI Agency Intro: bản tiếng Việt, cảnh 1 Google Maps rõ ràng, brand hư cấu thay +84
+Tuấn góp ý bản nháp (2026-10-19): làm 1 bản tiếng Việt cho chủ quán người Việt ở Đức xem; cảnh 1 chưa rõ, không thấy Google Maps; bỏ cảnh dựng brand +84 Kitchen, thay bằng brand giả tưởng.
+
+### Thêm
+- **Mẫu `templates/sami-agency-intro-vi/`** (sinh tự động, đừng sửa tay): cùng 12 cảnh, nhạc, ảnh; 46 ô chữ nói với chủ quán đổi sang tiếng Việt ("Món ngon mà khách tìm không ra?", "SAMI sửa chỗ đó.", "8 dịch vụ. Một đầu mối.", "Anh chị lo nấu. SAMI lo đăng bài.", "Kiểm tra miễn phí", "Nhắn SAMI qua WhatsApp"…); giao diện khách người Đức thấy (Google Maps, website, đặt bàn, đặt món, menu) giữ tiếng Đức. Thêm ý "Tư vấn bằng tiếng Việt" dưới logo.
+- `templates/sami-agency-intro/lang/vi.json` + `tools/build-lang.mjs <lang>`: bản ngôn ngữ = mẫu gốc + bảng chữ, cảnh đặt `<html lang>`; `intro.css` giãn dòng tiêu đề cho dấu tiếng Việt (`html[lang="vi"] .head`).
+- `hf/parts/concept-brand.js`: nhà hàng **hư cấu "Saigon Atelier"** (logo đèn lồng vẽ bằng nét, bảng màu đỏ / vàng / ngọc / kem / mực), nhãn KONZEPTBEISPIEL (bản Việt: "VÍ DỤ MINH HOẠ").
+
+### Thay đổi
+- **S01 dựng lại thành Google Maps rõ ràng** (4,5 s): điện thoại vẽ tay theo giao diện Google Maps (ô tìm kiếm, nút lọc Restaurants / Geöffnet / Top bewertet, bản đồ có đường vàng, ghim đỏ, danh sách có sao), gõ tìm, ghim rơi, danh sách cuộn, ghim quán mình nét đứt + dấu hỏi → khoanh đỏ "Nicht in den Ergebnissen", rồi câu hook. Nhãn "Google Maps" phía trên điện thoại.
+- **S04 Branding**: bỏ logo + brandkit +84 Kitchen; Pen vẽ nét logo đèn lồng, gõ tên quán, phối 8 bảng màu ngay trên logo, đổi 7 font ngay trên tên quán, ráp brandkit dựng bằng code (logo, bảng màu, ảnh món thật, menu, ly + túi giấy). 3 brandkit thật của dự án khác (MIZUKI, Vị) vẫn trượt lên cuối cảnh.
+- **S05 Speisekarte**: menu của Saigon Atelier, 5 món Việt bằng ảnh thật (Bánh Xèo, Gỏi Bưởi, Vịt Xoài, Sườn Bò Om, Cà Ri), bìa menu in dựng bằng code.
+- Nhịp: S01 7 → 9 nhịp, S03 9 → 7 nhịp (S04 trở đi giữ nguyên); nhạc dời drop 1 sang 4,5 s (`tools/make_music.py`), cli-grid vẫn khớp drop 2 / final hit ở S11 / S12. Ô dịch vụ "Speisekarte" ở S03 đổi ảnh (không còn menu +84).
+- S09: tim bay thấp hơn, không đè tiêu đề.
+
+### Đã kiểm
+- `cli-validate` + `cli-template check` đạt cả 2 mẫu; ảnh tĩnh mọi cảnh bản Việt 9:16 (dấu đủ, không chồng dòng), S01 / S04 / S05 ở 9:16 và 16:9; render thật bản Việt 9:16 FHD (Hyperframes thuần) để xem trên điện thoại.
+
+### File chính
+`templates/sami-agency-intro/` (hf/S01.html, S03.html, S04.html, S05.html, S09.html, hf/parts/concept-brand.js, intro.css, intro.js, lang/vi.json, tools/build-lang.mjs, tools/make_music.py, project.json, README.md, public/audio/sami-intro-120.mp3) · `templates/sami-agency-intro-vi/` · `package.json` (1.4.0).
+
+### Roll back
+`git checkout d9233bb -- templates/sami-agency-intro` (bản 1.3.0, chưa gắn tag) và xoá `templates/sami-agency-intro-vi/`.
+
 ## [1.3.0] — 2026-10-19 — Mẫu "SAMI Agency Intro" 60 s: 8 dịch vụ, dựng brandkit / menu / website tua nhanh, toàn ảnh thật
 Tuấn yêu cầu (2026-10-19): video motion graphic giới thiệu SAMI cho nhà hàng tại Đức, 60 s, 9:16 trước rồi 16:9, nhạc tự tạo, CTA WhatsApp; 8 dịch vụ; phải show quy trình dựng brandkit, menu, website bằng công cụ chuyên nghiệp với hiệu ứng tua nhanh, phối mẫu; không ảnh placeholder, toàn ảnh thật; ẩn tên quán ở cảnh số liệu; giữ "ohne Provision"; chỉ nhạc + SFX, không thoại.
 

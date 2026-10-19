@@ -1,0 +1,38 @@
+{
+ "id": "sami-agency-intro-vi",
+ "name": "SAMI Agency Intro – bản tiếng Việt cho chủ quán",
+ "version": "1.0.0",
+ "studio": ">=1.2.0",
+ "engine": "hyperframes",
+ "style": "night",
+ "category": "agency",
+ "goal": [
+  "gioi-thieu"
+ ],
+ "description": "Bản tiếng Việt của SAMI Agency Intro (60 giây, 12 cảnh) cho chủ nhà hàng người Việt tại Đức: hook Google Maps → logo SAMI → 8 dịch vụ → dựng brandkit, menu, website tua nhanh (nhà hàng mẫu hư cấu) → đặt bàn + đặt món → Maps/Ads → social → số đo thật → kiểm tra miễn phí + WhatsApp. Giao diện khách (Maps, web, menu) giữ tiếng Đức. Sinh tự động từ sami-agency-intro + lang/vi.json.",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "duration": 60,
+ "bpm": 120,
+ "languages": [
+  "vi"
+ ],
+ "thumbFrame": 182,
+ "author": "SAMI Marketing Agency",
+ "license": "internal",
+ "audioLicense": "Nhạc tự tổng hợp bằng code (tools/make_music.py, numpy), SAMI sở hữu, không bản quyền bên thứ ba.",
+ "tags": [
+  "agency",
+  "full-service",
+  "tieng-viet",
+  "chu-quan-viet",
+  "branding",
+  "menu",
+  "website",
+  "maps",
+  "time-lapse",
+  "whatsapp"
+ ]
+}

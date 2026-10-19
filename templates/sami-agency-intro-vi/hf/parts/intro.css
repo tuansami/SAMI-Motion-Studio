@@ -1,0 +1,72 @@
+/* SAMI Agency Intro: hệ thống hình chung cho 12 cảnh (nạp bằng <link rel="stylesheet" href="hf/parts/intro.css">).
+ * Màu từ brand (--c-*), không mã màu cứng trong cảnh. Không CSS animation/transition: mọi chuyển động ở timeline GSAP. */
+:root {
+  --red: var(--c-red, #FF5A5F);
+  --wa: #25D366;
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass2: rgba(255, 255, 255, 0.12);
+  --shadow: 0 40px 90px rgba(0, 0, 0, 0.55), 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.bg { position: absolute; inset: 0; background:
+  radial-gradient(60% 45% at 12% 88%, rgba(8, 221, 164, 0.16), transparent 62%),
+  radial-gradient(60% 45% at 88% 12%, rgba(118, 103, 254, 0.30), transparent 62%), var(--c-navy); }
+.dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1.2px, transparent 1.3px); background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(70% 70% at 50% 50%, #000 30%, transparent 85%); mask-image: radial-gradient(70% 70% at 50% 50%, #000 30%, transparent 85%); }
+.photo { background-size: cover; background-position: center; background-repeat: no-repeat; }
+.head { font-family: var(--f-head); font-weight: 800; letter-spacing: -0.035em; line-height: 1.06; color: #fff; }
+.head em.hl, .head em.hl .w { padding-bottom: 0.08em; }
+/* tiếng Việt: dấu chồng (ể, ộ, ữ…) cần giãn dòng, chữ hơi thưa hơn */
+html[lang="vi"] .head { line-height: 1.18; letter-spacing: -0.025em; }
+.ui { font-family: var(--f-ui); }
+.mono { font-family: var(--f-mono); }
+.chip { display: inline-flex; align-items: center; gap: 0.5em; padding: 0.42em 0.95em; border-radius: 999px; border: 2px solid var(--glass2); background: var(--glass);
+  font-family: var(--f-ui); font-weight: 600; color: #fff; white-space: nowrap; }
+.chip i { width: 0.55em; height: 0.55em; border-radius: 50%; background: var(--c-mint); display: inline-block; }
+
+/* nhãn chương: số lớn + tên dịch vụ */
+.chapter { position: absolute; display: flex; align-items: center; gap: 22px; font-family: var(--f-ui); font-weight: 700; color: #fff; }
+.chapter b { font-family: var(--f-mono); font-weight: 500; font-size: 0.8em; padding: 0.25em 0.55em; border-radius: 12px; background: var(--grad); color: var(--c-navyDeep); }
+.chapter span { letter-spacing: 0.02em; }
+
+/* khung điện thoại (vẽ bằng CSS) */
+.phone { position: absolute; border-radius: 64px; background: #0b0b10; padding: 18px; box-shadow: var(--shadow), inset 0 0 0 3px #2a2838; }
+.phone > .scr { position: relative; width: 100%; height: 100%; border-radius: 48px; overflow: hidden; background: #fff; }
+.phone > .notch { position: absolute; top: 30px; left: 50%; width: 140px; height: 34px; margin-left: -70px; border-radius: 20px; background: #0b0b10; z-index: 5; }
+
+/* khung trình duyệt */
+.browser { position: absolute; border-radius: 22px; overflow: hidden; background: #fff; box-shadow: var(--shadow); }
+.browser > .bar { height: 54px; background: #1d1b26; display: flex; align-items: center; gap: 12px; padding: 0 20px; }
+.browser > .bar i { width: 15px; height: 15px; border-radius: 50%; display: inline-block; }
+.browser > .bar i:nth-child(1) { background: #ff5f57; } .browser > .bar i:nth-child(2) { background: #febc2e; } .browser > .bar i:nth-child(3) { background: #28c840; }
+.browser > .bar .url { flex: 1; height: 30px; margin-left: 16px; border-radius: 8px; background: #2b2836; display: flex; align-items: center; gap: 10px; padding: 0 14px; color: #a9a6b8; font: 500 17px var(--f-ui); }
+.browser > .page { position: relative; width: 100%; height: calc(100% - 54px); overflow: hidden; background: #f4efe9; }
+
+/* HUD tua nhanh (time-lapse) */
+.hud { position: absolute; display: flex; align-items: center; gap: 18px; padding: 14px 22px; border-radius: 18px; background: rgba(6, 3, 26, 0.78); border: 2px solid rgba(255, 255, 255, 0.14);
+  font-family: var(--f-mono); color: #fff; z-index: 40; }
+.hud .ff { display: flex; gap: 2px; } .hud .ff svg { width: 30px; height: 30px; }
+.hud .lbl { font-weight: 500; letter-spacing: 0.14em; font-size: 22px; color: var(--c-mint); }
+.hud .x { font-weight: 700; font-size: 30px; }
+.hud .tc { font-weight: 500; font-size: 30px; font-variant-numeric: tabular-nums; color: #fff; }
+.hud .rec { width: 16px; height: 16px; border-radius: 50%; background: var(--red); }
+
+/* app thiết kế (tự vẽ, không logo phần mềm thật) */
+.app { position: absolute; border-radius: 26px; overflow: hidden; background: #1b1a22; box-shadow: var(--shadow); border: 2px solid #2c2a36; font-family: var(--f-ui); color: #d9d7e3; }
+.app .top { position: absolute; left: 0; right: 0; top: 0; height: 64px; background: #232230; display: flex; align-items: center; gap: 14px; padding: 0 22px; border-bottom: 2px solid #2f2d3b; font-size: 21px; }
+.app .top .dot { width: 14px; height: 14px; border-radius: 50%; background: #3a3848; }
+.app .top .file { margin-left: 10px; font-weight: 600; color: #fff; }
+.app .top .tag { margin-left: auto; font: 600 15px var(--f-mono); letter-spacing: 0.12em; padding: 6px 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.08); color: #bdb9d0; }
+.app .tools { position: absolute; left: 0; top: 64px; bottom: 0; width: 78px; background: #201f2b; border-right: 2px solid #2f2d3b; display: flex; flex-direction: column; align-items: center; gap: 10px; padding-top: 18px; }
+.app .tools .t { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.app .tools .t svg { width: 30px; height: 30px; stroke: #bdb9d0; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.app .tools .t.on { background: var(--c-purple); } .app .tools .t.on svg { stroke: #fff; }
+.app .panel { position: absolute; right: 0; top: 64px; bottom: 0; background: #201f2b; border-left: 2px solid #2f2d3b; padding: 20px 18px; font-size: 18px; }
+.app .panel h6 { margin: 0 0 12px; font: 600 14px var(--f-mono); letter-spacing: 0.14em; color: #8f8ba6; }
+.app .canvas { position: absolute; top: 64px; bottom: 0; background: #2a2935; overflow: hidden;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1.2px, transparent 1.3px); background-size: 28px 28px; }
+.app .art { position: absolute; background: #fff; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45); overflow: hidden; }
+.app .art-label { position: absolute; font: 500 16px var(--f-mono); color: #9a96b2; white-space: nowrap; }
+.sel { position: absolute; border: 3px solid var(--c-purple); pointer-events: none; z-index: 30; }
+.sel::before, .sel::after { content: ''; position: absolute; width: 14px; height: 14px; background: #fff; border: 3px solid var(--c-purple); }
+.sel::before { left: -9px; top: -9px; } .sel::after { right: -9px; bottom: -9px; }
+.sw { border-radius: 14px; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.12); }
