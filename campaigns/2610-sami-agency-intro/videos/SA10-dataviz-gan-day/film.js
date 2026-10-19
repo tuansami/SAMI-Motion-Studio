@@ -49,7 +49,7 @@ export function setup(data, w, h, logoImg) {
   } : {
     ph: { cx: 0, cy: 0, w: 470, h: 940, r: 58, ins: 17, sb: 54 },
     head: { x: 650, y1: -398, y2: -346, size: 42 },
-    cap: { x: 1180, y: 330, size: 37, maxW: 650, col: true }, src: { x: 1180, y: 905, size: 18, maxW: 650 },
+    cap: { x: 1180, y: 390, size: 37, maxW: 650, col: true }, src: { x: 1180, y: 905, size: 18, maxW: 650 },
     chart: { x0: -560, x1: 440, y0: -1060, k: 5.6 }, waf: { x: 1700, y: -1540, cell: 34, gap: 5, sep: 40 },
     camPhone: { x: 430, y: 0 }, camChart: { x: 300, y: -1340 }, margin: { l: -500, r: 615 }, note: 34,
   };
@@ -120,13 +120,13 @@ function camKeys() {
   const sbx = (G.sx0 + G.sx1) / 2, sby = (G.sy0 + G.sy1) / 2 + 40, cp = L.camPhone, cc = L.camChart;
   const wx = V ? L.waf.x : L.waf.x + 330, wy = V ? cc.y : cc.y - 20;
   const mg = mapGeom();
-  zK = monotone([[0, V ? 2.15 : 1.9], [b(5), V ? 2.05 : 1.8], [b(9), 1.0], [b(16), 1.0], [b(18), V ? 1.3 : 1.12], [b(30), V ? 1.3 : 1.12], [b(33), 1.0],
+  zK = monotone([[0, V ? 2.15 : 1.9], [b(5), V ? 2.05 : 1.8], [b(9), 1.0], [b(16), 1.0], [b(18), V ? 1.3 : 1.0], [b(30), V ? 1.3 : 1.0], [b(33), 1.0],
     [b(49.5), 1.0], [b(51.5), .82], [b(53.5), 1.0], [b(66), 1.0], [b(67), .9], [b(68), 1.0], [b(80), 1.0], [b(81.5), .88], [b(83), 1.0],
-    [b(86), 1.0], [b(88), 1.18], [b(102), 1.18], [b(104.5), 1.0], [b(140), 1.0]]);
+    [b(86), 1.0], [b(88), V ? 1.18 : 1.0], [b(102), V ? 1.18 : 1.0], [b(104.5), 1.0], [b(140), 1.0]]);
   xK = monotone([[0, sbx + (V ? 0 : 0)], [b(5), sbx], [b(9), cp.x], [b(49.5), cp.x], [b(53.5), cc.x], [b(66), cc.x], [b(68), wx], [b(80), wx], [b(83), cp.x],
-    [b(86), cp.x], [b(88), V ? mg.mx : cp.x - 60], [b(102), V ? mg.mx : cp.x - 60], [b(104.5), cp.x], [b(140), cp.x]]);
+    [b(86), cp.x], [b(88), V ? mg.mx : cp.x], [b(102), V ? mg.mx : cp.x], [b(104.5), cp.x], [b(140), cp.x]]);
   yK = monotone([[0, sby], [b(5), sby], [b(9), cp.y], [b(16), cp.y], [b(49.5), cp.y], [b(53.5), cc.y], [b(66), cc.y], [b(68), wy], [b(80), wy], [b(83), cp.y],
-    [b(86), cp.y], [b(88), mg.my - (V ? 40 : 0)], [b(102), mg.my - (V ? 40 : 0)], [b(104.5), cp.y], [b(140), cp.y]]);
+    [b(86), cp.y], [b(88), V ? mg.my - 40 : cp.y], [b(102), V ? mg.my - 40 : cp.y], [b(104.5), cp.y], [b(140), cp.y]]);
 }
 function rowFrac(t) {                                 // continuous index of the newest cell
   if (t <= C[0].t) return 0;
