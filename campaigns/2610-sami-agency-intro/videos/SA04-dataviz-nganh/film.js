@@ -17,10 +17,10 @@ export function setup(data, w, h, logoImg) {
     x0: -430, x1: 380, y0: 330, k: 6.6, dotR: 4.5,
     head: { x: -430, y1: -700, y2: -628, size: 60, oneLine: false }, rev: { x: -430, y: -540, size: 46 },
     cap: { x: 90, y: 1530, size: 40, maxW: 900 }, src: { x: 90, y: 1592, size: 20, maxW: 900 },
-    zoomB: 1.9, zoomC: 1.4, yB: -250, yC: -40, card: [-540, -960, 540, 960],
+    zoomB: 1.9, zoomC: 1.4, yB: -260, yC: 60, card: [-540, -960, 540, 960],
   } : {
-    x0: -860, x1: 170, y0: 300, k: 5.0, dotR: 4.6,
-    head: { x: -860, y1: -400, y2: -400, size: 54, oneLine: true }, rev: { x: -860, y: -335, size: 42 },
+    x0: -860, x1: 220, y0: 340, k: 6.2, dotR: 4.8,
+    head: { x: -860, y1: -452, y2: -452, size: 54, oneLine: true }, rev: { x: -860, y: -398, size: 40 },
     cap: { x: 1290, y: 560, size: 38, maxW: 560, col: true }, src: { x: 100, y: 1000, size: 19, maxW: 1700 },
     zoomB: 1.7, zoomC: 1.3, yB: -150, yC: 30, card: [-960, -540, 960, 540],
   };
@@ -66,8 +66,8 @@ function fracIndex(t) {                                  // continuous "where th
 const xAtIndex = f => { const i = Math.floor(f), u = f - i; return i >= M.length - 1 ? M[M.length - 1].x : lerp(M[i].x, M[i + 1].x, u); };
 let zoomK, yK, fullK;
 function camKeys() {
-  zoomK = monotone([[0, 1.0], [7.2, 1.06], [8.0, L.zoomB], [17.6, L.zoomB * .94], [20.8, L.zoomC], [29.6, L.zoomC * .95], [40.4, 1.0], [53.6, 1.0], [54.8, 1.42], [62.4, 1.42], [63.2, 1.0], [88, 1.0]]);
-  yK = monotone([[0, 0], [7.2, -40], [8.0, L.yB], [17.6, L.yB], [20.8, L.yC], [29.6, L.yC], [40.4, 0], [53.6, 0], [54.8, V ? -520 : -330], [62.4, V ? -520 : -330], [63.2, 0], [88, 0]]);
+  zoomK = monotone([[0, 1.0], [7.2, 1.06], [8.0, L.zoomB], [17.6, L.zoomB * .94], [20.8, L.zoomC], [29.6, L.zoomC * .95], [40.4, 1.0], [53.6, 1.0], [54.8, V ? 1.42 : 1.22], [62.4, V ? 1.42 : 1.22], [63.2, 1.0], [88, 1.0]]);
+  yK = monotone([[0, 0], [7.2, -40], [8.0, L.yB], [17.6, L.yB], [20.8, L.yC], [29.6, L.yC], [40.4, 0], [53.6, 0], [54.8, V ? -520 : -250], [62.4, V ? -520 : -250], [63.2, 0], [88, 0]]);
 }
 export function camAt(t) {
   if (!zoomK) camKeys();
@@ -79,7 +79,7 @@ export function camAt(t) {
   const tipFrac = V ? .6 : .55;
   let xt = fx - (tipFrac - .5) * viewW;
   xt = Math.max(xt, L.x0 - (V ? 95 : 110) + viewW / 2);  // keep the y axis in view
-  const xFull = 0, xHead = V ? -170 : -300;
+  const xFull = 0, xHead = V ? -170 : -330;
   let x = lerp(xFull, xt, w);
   x = lerp(x, xHead, seg(t, 53.6, 54.8) * (1 - seg(t, 62.4, 63.2)));
   // punch-in on the March 2020 drop: 2 frames in, decaying shake
@@ -100,13 +100,13 @@ function notes() {
   const s = V ? 1 : .92;
   NOTES = [
     { id: 'q', lines: ['Nếu năm 2019 là 100,', 'hôm nay còn bao nhiêu?'], x: V ? -360 : -700, y: V ? -170 : -110, size: 56 * s, col: P.blue, t0: T.q[0], dur: 1.8, t1: 8.4 },
-    { id: 'n1', lines: ['2019: bếp nóng, bàn kín.'], x: V ? -300 : L.x0 + 170, y: y100 - 62, size: 40 * s, col: P.blue, t0: 11.2, dur: 1.2, t1: 17.8, lead: [M[5].x, M[5].y - 10] },
+    { id: 'n1', lines: ['2019: bếp nóng, bàn kín.'], x: L.x0 + 4, y: yv(112) - 46, size: 40 * s, col: P.blue, t0: 11.2, dur: 1.2, t1: 17.8, lead: [M[5].x, M[5].y - 10] },
     { id: 'n2', lines: ['4/2020: còn 31'], x: L.x0 + 4, y: yv(14), size: 42 * s, col: P.red, t0: 21.0, dur: .9, t1: 63.2, lead: [apr.x + 2, apr.y + 8], ring: apr },
     { id: 'n3', lines: ['hai mùa đông đóng cửa'], x: V ? win.x - 20 : win.x - 10, y: yv(4), size: 38 * s, col: P.red, t0: 25.6, dur: 1.2, t1: 63.2, lead: [win.x + 1, win.y + 10] },
     { id: 'ref', lines: ['mức 2019'], x: L.x1 - 4, y: y100 - 14, size: 34 * s, col: P.blue, t0: T.refLine[1] - .2, dur: .6, t1: 63.2, align: 'right' },
     { id: 'br', lines: ['−21 %', 'TB 2025 so với 2019'], x: n25.x - 26, y: (y100 + y25) / 2 + 4, size: 44 * s, col: P.red, t0: T.bracket[0] + .2, dur: .8, t1: 63.2, align: 'right', sizes: [44 * s, 28 * s] },
     { id: 'nom', lines: ['doanh thu +7,7 %', '(TB 2025, tính bằng euro)'], x: L.x1 - 4, y: yv(108) - (V ? 52 : 46), size: 38 * s, col: P.blue, t0: T.nomNote, dur: .9, t1: 63.2, align: 'right', sizes: [38 * s, 26 * s] },
-    { id: 'gap', lines: ['giá tăng,', 'khách cân nhắc từng bữa'], x: V ? -90 : -330, y: yv(57), size: 42 * s, col: P.blue, t0: T.gapNote, dur: 1.4, t1: 63.2, lead: [V ? 40 : -150, yv(90)] },
+    { id: 'gap', lines: ['giá tăng,', 'khách cân nhắc từng bữa'], x: V ? -20 : -330, y: yv(57), size: 42 * s, col: P.blue, t0: T.gapNote, dur: 1.4, t1: 63.2, lead: [V ? 40 : -150, yv(90)] },
   ];
   return NOTES;
 }
@@ -320,7 +320,7 @@ const CARD_LINES_V = ['Trong một thị trường', 'như vậy, quán thắng'
 const CARD_LINES_H = ['Trong một thị trường như vậy,', 'quán thắng là quán được tìm thấy', 'trước và được tin trước.'];
 function cardGeom() {
   return V ? { x: -430, y: -560, size: 70, lh: 86, icY: 170, ic1: -220, ic2: 200, lab: 350, is: 1.7 }
-           : { x: -820, y: -250, size: 66, lh: 82, icY: 0, ic1: 380, ic2: 720, lab: 190, is: 1.2 };
+           : { x: -820, y: -230, size: 70, lh: 88, icY: 30, ic1: 330, ic2: 690, lab: 270, is: 1.9 };
 }
 function drawCard(g, t, cam, tips) {
   const k = cardGeom(), lines = V ? CARD_LINES_V : CARD_LINES_H, p = seg(t, T.cardText, T.cardText + 1.4);
@@ -352,8 +352,8 @@ function drawCard(g, t, cam, tips) {
     }
   }
   const lp = seg(t, 71.6, 72.8);
-  E.handText(g, 'Google Maps · Ads', k.ic1, k.icY + k.lab - k.icY + (V ? 0 : 0), { size: V ? 40 : 36, color: P.blue, progress: clamp(lp * 2), align: 'center', zoom: cam.zoom, weight: 400 });
-  E.handText(g, 'Website · đặt bàn', k.ic2, k.icY + k.lab - k.icY, { size: V ? 40 : 36, color: P.blue, progress: clamp(lp * 2 - 1), align: 'center', zoom: cam.zoom, weight: 400 });
+  E.handText(g, 'Google Maps · Ads', k.ic1, k.icY + k.lab - k.icY + (V ? 0 : 0), { size: 40, color: P.blue, progress: clamp(lp * 2), align: 'center', zoom: cam.zoom, weight: 400 });
+  E.handText(g, 'Website · đặt bàn', k.ic2, k.icY + k.lab - k.icY, { size: 40, color: P.blue, progress: clamp(lp * 2 - 1), align: 'center', zoom: cam.zoom, weight: 400 });
 }
 function pinPath(cx, cy, s) {                          // a map-pin silhouette: circle head, pointed foot at (cx, cy + s*.55)
   const out = [], R = s * .5, hy = cy - s * .45;
@@ -520,7 +520,7 @@ export function texts(t) {
     box('card', lines.join(' '), [k.x, k.y - k.size, k.x + w, k.y + (lines.length - 1) * k.lh + k.size * .3]);
   }
   if (t >= 71.6 && t < T.navy[0] + .3) {
-    const k = cardGeom(), s = V ? 40 : 36;
+    const k = cardGeom(), s = 40;
     for (const [id, s1, x] of [['lab1', 'Google Maps · Ads', k.ic1], ['lab2', 'Website · đặt bàn', k.ic2]]) { const w = E.measureHand(g, s1, s, 400, 'Patrick Hand'); box(id, s1, [x - w / 2, k.lab - s * .85, x + w / 2, k.lab + s * .3]); }
   }
   if (t >= T.end + .5) {
