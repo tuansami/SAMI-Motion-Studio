@@ -253,6 +253,11 @@ mix *= gate[:, None]
 end = int(DUR * SR); mix[end - int(1.2 * SR):end] *= np.linspace(1, 0, int(1.2 * SR))[:, None]; mix[end:] = 0
 mix = mix[:end]
 mix = np.stack([sfx.compress(mix[:, 0], .3, 2.5), sfx.compress(mix[:, 1], .3, 2.5)], 1)
+# tame hot transients (linked stereo look-ahead limiter) so the loudnorm stage keeps true peak under -1.2 dB
+from scipy.ndimage import maximum_filter1d, uniform_filter1d
+pk = np.abs(mix).max(1); ceil = np.percentile(pk[pk > 0], 99.7) if (pk > 0).any() else 1
+n = int(.006 * SR); gm = np.minimum(1, ceil / np.maximum(maximum_filter1d(pk, 2 * n + 1), 1e-9)); gm = uniform_filter1d(gm, n)
+mix = mix * gm[:, None]
 mix = mix / (np.abs(mix).max() + 1e-9) * .89
 os.makedirs(os.path.join(HERE, 'out'), exist_ok=True)
 outp = os.path.join(HERE, 'out', sys.argv[2] if len(sys.argv) > 2 else 'mix.wav')

@@ -8,7 +8,7 @@ Cập nhật: 19.10.2026
 - 9:16 stills + readcheck đạt. Nhạc `audio_src/score.py` (3 khoảng lặng thật, low/rest −2,2 dB).
 
 ## Đang làm / còn lại
-- [ ] 9:16 xuất (`sh build.sh 1080x1920`) + SendUserFile
+- [x] 9:16 xuất + đã SendUserFile (89,7 s, −13,9 LUFS, readcheck 33/33, không khung đen)
 - [ ] 16:9 stills + readcheck + xuất (`sh build.sh 1920x1080`) + SendUserFile
 - [ ] Báo phiên điều phối session_01ENDrWfgWowxtPX9WgXNUEt
 
