@@ -146,8 +146,8 @@ Thời lượng mục tiêu 60–90 s. Thứ tự = thứ tự sản xuất (ch�
 ## Trạng thái (phiên điều phối cập nhật)
 | ID | Phiên | 9:16 | 16:9 | Ghi chú |
 |---|---|---|---|---|
-| SA01 | — | ▢ | ▢ | |
-| SA02 | — | ▢ | ▢ | |
+| SA01 | session_012QrHSduNM6bvuDj6kNrZW7 (đang làm) | ▢ | ▢ | |
+| SA02 | session_019jB8QgD4kPFYqUgR1Z2mrw (đang làm) | ▢ | ▢ | |
 | SA03 | — | ▢ | ▢ | |
 | SA04 | — | ▢ | ▢ | |
 | SA05 | — | ▢ | ▢ | |
