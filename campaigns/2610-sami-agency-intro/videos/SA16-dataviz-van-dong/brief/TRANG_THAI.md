@@ -8,7 +8,7 @@ Cập nhật: 19.10.2026
 - Readcheck đạt cả 9:16 và 16:9. Nhạc `audio_src/score.py` (100 BPM, Em → G, 3 khoảng lặng thật).
 
 ## Đang làm / còn lại
-- [ ] 9:16 xuất + SendUserFile
+- [x] 9:16 xuất + SendUserFile (87 s, −13,9 LUFS, readcheck đạt, không khung đen)
 - [ ] 16:9 xuất + SendUserFile
 - [ ] Báo phiên điều phối session_01ENDrWfgWowxtPX9WgXNUEt
 
