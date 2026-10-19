@@ -150,8 +150,8 @@ Thời lượng mục tiêu 60–90 s. Thứ tự = thứ tự sản xuất (ch�
 | SA02 | session_019jB8QgD4kPFYqUgR1Z2mrw | ▢ | ▢ | dựng xong, chờ Tuấn duyệt quyền chạy cli-render |
 | SA03 | session_01FhzuzsYd4vvebqUAaWWNCt | ▢ | ▢ | dựng xong, chờ Tuấn duyệt quyền chạy cli-render |
 | SA04 | session_01RbeftYNso94htdZ74HhiMz | ✓ | ✓ | 89,6 s, Eurostat sts_setu_m (CC BY 4.0), đã gửi |
-| SA05 | session_019xTerQVmjKbHDBXh8baQ4H (đang làm) | ▢ | ▢ | |
-| SA06 | — | ▢ | ▢ | |
+| SA05 | session_019xTerQVmjKbHDBXh8baQ4H | ▢ | ▢ | dựng xong 87,5 s, chờ Tuấn duyệt quyền chạy cli-render |
+| SA06 | session_014qakdgwugRTztKeCbUtrUU (đang làm) | ▢ | ▢ | |
 | SA07 | — | ▢ | ▢ | |
 | SA08 | session_01JR29rVe3J9LQTVve5qQNpn | ✓ | ✓ | 87,5 s, đã gửi |
 | SA09 | — | ▢ | ▢ | |
