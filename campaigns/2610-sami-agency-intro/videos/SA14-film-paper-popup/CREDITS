@@ -1,0 +1,15 @@
+SA14 · "Từ một căn bếp nhỏ đến quán kín bàn" — tài sản bên thứ ba
+
+Fonts (SIL Open Font License 1.1, fonts/*_OFL.txt):
+- Nunito — https://github.com/google/fonts/tree/main/ofl/nunito
+- Baloo 2 — https://github.com/google/fonts/tree/main/ofl/baloo2
+- Lora — https://github.com/google/fonts/tree/main/ofl/lora
+
+3D / texture (CC0, Poly Haven, qua lemo-opuscar core/assets/polyhaven):
+- american_walnut_veneer (walnut_diff.jpg) — https://polyhaven.com/a/american_walnut_veneer
+- tea_set_01 — https://polyhaven.com/a/tea_set_01
+- desk_lamp_arm_01 — https://polyhaven.com/a/desk_lamp_arm_01
+
+Logo SAMI (assets/logo-white.svg) — tài sản của SAMI Marketing Agency.
+Hình giấy, nhân vật, giao diện minh hoạ, nhạc và foley: tạo bằng code trong dự án này (art.js, film.js, audio_src/score.py).
+"Quán Mây · Leipzig" là quán tưởng tượng.
