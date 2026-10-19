@@ -565,7 +565,7 @@ function overlays(g, out, t) {
     if (s.i === YOURS && t > L3 + 0.6 && t < S6 && g) { const a = seg(t, L3 + 0.6, L3 + 1); g.save(); g.globalAlpha = a; const fs = 26 * U; g.font = `700 ${fs}px "Be Vietnam Pro"`; const tw = g.measureText('Gesponsert').width; roundPanel(g, c[0] + 26 * sc, c[1] - 50 * sc, tw + 22 * U, fs * 1.5, 8 * U, '#fbbc04'); g.fillStyle = '#202124'; g.textBaseline = 'middle'; g.fillText('Gesponsert', c[0] + 26 * sc + 11 * U, c[1] - 50 * sc + fs * 0.76); g.restore(); }
   }
   // bong bóng tìm kiếm (S2) + cặp đôi (S3)
-  for (const a of ASK) { if (t < a.t0 || t >= a.t1) continue; const q = [a.x, 1.9, a.z], c = proj(q); if (!c) continue; searchBubble(g, out, 'b' + a.text, a.text, c[0], c[1], t - a.t0); }
+  for (const a of ASK) { if (t < a.t0 || t >= a.t1) continue; const q = [a.x, 1.9, a.z], c = proj(q); if (!c) continue; searchBubble(g, out, 'b' + a.text, a.text, c[0], c[1] - (!P && a.go === 3 && a.x > -10 ? 90 * U : 0), t - a.t0); }
   const cp = couple(t);
   if (cp && t >= 20.6 && t < 24.9) { const c = proj([cp[0][0], 1.9, cp[0][1]]); if (c) searchBubble(g, out, 'bcouple', 'Asiatisch essen', c[0], c[1], t - 20.6); }
   // S4: tin nhắn của chủ quán
