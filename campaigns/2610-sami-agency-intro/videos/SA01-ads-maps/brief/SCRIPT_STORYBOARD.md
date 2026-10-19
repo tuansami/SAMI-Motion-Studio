@@ -1,0 +1,25 @@
+# SA01 · Kịch bản + storyboard (lưới 120 BPM, 1 nhịp = 0,5 s, cắt tại 15n+1)
+
+Tổng 2686 khung = 89,5 s · xưng "bạn" · toàn bộ cảnh Hyperframes viết tay (`hf/S01–S11.html`), bản đồ dùng chung `hf/parts/nightmap.js` (cùng một thành phố ở mọi cảnh → match-cut).
+Thời gian đọc theo BIBLE: (số chữ ÷ 3) + 1 s.
+
+| Cảnh | Giây | Chữ trên màn hình | Hình / chuyển động | SFX | Đọc |
+|---|---|---|---|---|---|
+| S01 Hook | 0–6,5 | UI: ô tìm kiếm gõ „Pho in der Nähe" · HUD "19:12 · LEIPZIG" · Tiêu đề: "Một người đang đói, / cách quán bạn *400 mét.*" | Mở toàn màn hình là ô tìm kiếm khổng lồ, chữ gõ từng ký tự (con trỏ nhấp), Enter → camera kéo lùi xuyên qua ô tìm kiếm ra bản đồ đêm, một chấm người sáng giữa phố, thước đo 400 m vẽ tới ghim "Quán của bạn" | typing, click Enter, whoosh nhẹ | 10 chữ → 4,3 s (2,2–6,5) |
+| S02 Radar | 6,5–14,5 | "Họ gõ đúng món bạn nấu ngon nhất." → "Nhưng quán hiện lên đầu tiên / *lại là quán khác.*" · UI: danh sách kết quả (Minh họa) | Vòng radar quét từ chấm người, các ghim lần lượt sáng; danh sách kết quả trượt lên: 3 quán khác, "Phở Mây (quán của bạn)" mờ ở dưới cùng, có dấu "ngoài màn hình" | sonar ping mỗi vòng quét, tick khi ghim sáng | 20 chữ → 7,7 s |
+| S03 Rẽ hướng | 14,5–21,5 | "Họ không biết bạn nấu ngon hơn. / Họ chỉ đi theo *quán nào hiện ra trước.*" · HUD "ETA 3 phút" | Đường đi vẽ từ chấm người tới ghim đối thủ, chấm chạy theo đường; ghim quán bạn mờ dần, nhiệt bếp (hơi nóng) vẫn bốc | whoosh nhỏ, bước chân tick | 17 chữ → 6,7 s |
+| S04 Quy mô | 21,5–28 | "Mỗi tối, có bao nhiêu người như thế / *đi ngang qua quán bạn?*" · "Minh họa" | Camera lùi cao hơn: hàng chục chấm người, mỗi chấm một đường đi đến quán khác, lướt qua ghim quán bạn | rumble nhẹ | 14 chữ → 5,7 s |
+| S05 Đáy | 28–32 | "Bếp vẫn nóng. / *Bàn vẫn trống.*" | Nhịp tĩnh: tối gần như đen, chỉ ghim quán bạn và vòng hơi nóng; vòng radar co lại thành 1 điểm sáng (chuyển sang S06) | nhạc rút, chỉ còn pad + 1 ping | 6 chữ → 3 s |
+| S06 Quy trình | 32–47 | "SAMI dựng *quảng cáo Maps* / riêng cho quán bạn." + 4 module: ① "Bán kính quanh quán" · "Chỉ hiện với người đang ở gần." ② "Chạy theo giờ mở cửa" · "Ruhetag, quảng cáo cũng nghỉ." ③ "Từ khóa tiếng Đức theo món" · „Pho in der Nähe" „Vietnamesisch essen" „Sommerrollen" ④ "Gọi · Chỉ đường · Đặt bàn" · "Một chạm là tới bàn ăn." | Điểm sáng nổ thành bảng điều khiển HUD "SAMI · MAPS ADS SETUP", 4 module lắp lần lượt: vòng bán kính kéo giãn (thanh trượt), lịch tuần Di–So bật sáng, Mo tắt; chip từ khóa gõ vào; 3 nút bật lên; thanh tiến trình "Thiết lập 25/50/75/100 %" | click mỗi module, typing ở chip | header 9 chữ + 4 × ~9 chữ, cộng dồn (module mới mỗi 2,8 s, module cuối đọc tới 14,9 s) |
+| S07 **Chữ ký** | 47–55,5 | "Giờ, đúng lúc họ đói và đang ở gần, / *quán bạn hiện lên đầu tiên.*" · UI: thẻ kết quả #1 „Gesponsert · Phở Mây" | Bảng HUD gập lại thành ghim → radar quét qua phố, từng chấm người sáng mint, rồi TẤT CẢ đường đi bẻ cong về ghim quán bạn; ghim nhô lên, nhãn „Gesponsert", thẻ kết quả #1 trượt vào | sweep + chuỗi tick tăng dần, hit khi ghim nhô | 16 chữ → 6,3 s |
+| S08 Lợi ích | 55,5–68 | Nhãn "BA ĐIỀU BẠN NHẬN ĐƯỢC" · ① "Khách đã sẵn sàng ăn" · "Họ đang tìm, đang ở gần, chỉ còn chọn quán." ② "Trả tiền cho hành động thật" · "Bạn trả cho lượt bấm, không phải lượt lướt qua." ③ "Đo được từng cuộc gọi" · "Mỗi cuộc gọi, mỗi lượt chỉ đường đều được đếm." | 3 thẻ kính tối vào mỗi 3,4 s, mỗi thẻ có icon vẽ nét (bát phở bốc hơi, ngón tay chạm, bộ đếm tăng) | pop nhẹ mỗi thẻ | mỗi thẻ ~14 chữ → 5,3 s; thẻ 3 vào 7,2 s → đọc tới 12,5 s |
+| S09 Báo cáo | 68–76 | "Mỗi tuần, SAMI gửi bạn một báo cáo rõ ràng: / *tiền đi đâu, khách đến từ đâu.*" · Báo cáo "Tuần 43" (Minh họa) · tem "Không chi phí ẩn" | Thẻ báo cáo trượt lên, cột Cuộc gọi / Chỉ đường / Đặt bàn mọc, đường xu hướng vẽ; tem đóng dấu | paper slide, stamp | 16 chữ → 6,3 s |
+| S10 CTA | 76–83 | (1,5 s nhịp thở) → "Quán bạn đã nấu ngon rồi. / Giờ hãy để khách *tìm thấy bạn trước.*" | Màn tối, ghim quán bạn thở sáng một mình (nhịp thở), rồi chữ vào; vòng sóng mint nở chậm | nhạc tắt 1 nhịp, rồi vào lại | 14 chữ → 5,7 s (1,5–7) |
+| S11 End card | 83–89,5 | Bong bóng chat (vẽ code) "Nhắn WhatsApp cho SAMI" · "+49 155 60456888" · "Phân tích marketing miễn phí, không ràng buộc. Phản hồi trong 24 giờ." · logo SAMI · "Strategy • Automation • Marketing • Intelligence" · "sami-agency.de" | Vòng sóng mint co lại thành bong bóng chat, logo SAMI vào, tagline mono | pop ở CTA, sub-hit ở logo | CTA ≥ 3,5 s ✓ (đứng 5 s) |
+
+## Tự phản biện (vòng 1)
+- Đọc to: các câu nối mạch "Họ gõ… Nhưng… Họ không biết… Mỗi tối… Bếp vẫn nóng… SAMI dựng… Giờ, đúng lúc… " → liền một câu chuyện, không cụt.
+- Không số liệu bịa: "400 mét", "19:12", "ETA 3 phút" là chi tiết kể chuyện của một người hư cấu; báo cáo + kết quả tìm kiếm ghi "Minh họa".
+- "Bạn trả cho lượt bấm" đúng với cách tính phí theo lượt nhấp của Google Ads; không hứa doanh thu.
+- Không giá, không địa chỉ, không logo WhatsApp/Meta. Tiếng Đức chỉ trong UI.
+- 16:9: chữ trái (≈ 42 %), bản đồ/HUD phải; S06 xếp 4 module 2×2; S08 3 thẻ ngang.
