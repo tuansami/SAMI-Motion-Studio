@@ -148,12 +148,12 @@ Thời lượng mục tiêu 60–90 s. Thứ tự = thứ tự sản xuất (ch�
 |---|---|---|---|---|
 | SA01 | session_012QrHSduNM6bvuDj6kNrZW7 | ✓ | ✓ | 89,5 s, đã gửi Tuấn |
 | SA02 | session_019jB8QgD4kPFYqUgR1Z2mrw | ▢ | ▢ | dựng xong, chờ Tuấn duyệt quyền chạy cli-render |
-| SA03 | session_01FhzuzsYd4vvebqUAaWWNCt (đang làm) | ▢ | ▢ | |
+| SA03 | session_01FhzuzsYd4vvebqUAaWWNCt | ▢ | ▢ | dựng xong, chờ Tuấn duyệt quyền chạy cli-render |
 | SA04 | session_01RbeftYNso94htdZ74HhiMz (đang làm) | ▢ | ▢ | |
 | SA05 | — | ▢ | ▢ | |
 | SA06 | — | ▢ | ▢ | |
 | SA07 | — | ▢ | ▢ | |
-| SA08 | — | ▢ | ▢ | |
+| SA08 | session_01JR29rVe3J9LQTVve5qQNpn (đang làm) | ▢ | ▢ | |
 | SA09 | — | ▢ | ▢ | |
 | SA10 | — | ▢ | ▢ | |
 | SA11 | — | ▢ | ▢ | |
