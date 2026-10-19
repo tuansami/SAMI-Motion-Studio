@@ -45,13 +45,13 @@
   K.reveal = function (tl, el, at, o) {
     o = o || {};
     var li = K.lines(el);
-    tl.fromTo(li, {yPercent: 118}, {yPercent: 0, duration: o.dur || 0.62, stagger: o.stagger == null ? 0.11 : o.stagger, ease: S.EASE}, at);
+    tl.fromTo(li, {yPercent: 135}, {yPercent: 0, duration: o.dur || 0.62, stagger: o.stagger == null ? 0.11 : o.stagger, ease: S.EASE}, at);
     return at + (li.length - 1) * (o.stagger == null ? 0.11 : o.stagger) + (o.dur || 0.62);
   };
   /** chữ rời đi lên trên qua khe cắt */
   K.hide = function (tl, el, at, o) {
     o = o || {};
-    tl.to(K.lines(el), {yPercent: -118, duration: o.dur || 0.42, stagger: o.stagger == null ? 0.05 : o.stagger, ease: S.EASE}, at);
+    tl.to(K.lines(el), {yPercent: -150, duration: o.dur || 0.42, stagger: o.stagger == null ? 0.05 : o.stagger, ease: S.EASE}, at);
   };
 
   /** một đồng hồ cho cả cảnh: các hàm vẽ nhận t (giây trong clip) */

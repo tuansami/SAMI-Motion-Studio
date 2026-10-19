@@ -65,3 +65,13 @@
 .mod.rep { background: var(--ink); color: #fff; }
 .mod.rep .eur { background: var(--ex); color: var(--ink); }
 [data-ratio="16x9"] .mod .mt { font-size: 46px; }
+
+/* cảnh chặng (S05–S08) */
+.stg { position: absolute; z-index: 5; left: var(--m); top: 236px; width: calc(var(--w) - 2 * var(--m)); }
+.stg .slab { position: relative; width: 300px; }
+.stg .sword { position: relative; font-size: 168px; font-weight: 900; letter-spacing: -.055em; line-height: 1.02; margin-top: 18px; }
+.stg .sline { position: relative; font-size: 46px; font-weight: 600; color: var(--ink); margin-top: 22px; }
+.stg .schips { position: relative; margin-top: 30px; width: 900px; }
+[data-ratio="16x9"] .stg { top: 150px; width: 860px; }
+[data-ratio="16x9"] .stg .sword { font-size: 150px; }
+[data-ratio="16x9"] .stg .schips { width: 820px; }
