@@ -1,0 +1,96 @@
+{
+ "source": "Eurostat isoc_ci_dev_i (Individuals - devices used to access the internet), geo=DE, ind_type=IND_TOTAL (16-74), unit=PC_IND",
+ "updated": "2026-04-17T11:00:00+0200",
+ "license": "CC BY 4.0 (Eurostat reuse policy)",
+ "retrieved": "2026-10-19",
+ "values": {
+  "I_IUG_MP": {
+   "2016": [
+    73.4,
+    null
+   ],
+   "2018": [
+    81.89,
+    null
+   ],
+   "2021": [
+    77.31,
+    "b"
+   ],
+   "2023": [
+    82.86,
+    null
+   ],
+   "2025": [
+    87.4,
+    null
+   ]
+  },
+  "I_IUG_DKPC": {
+   "2016": [
+    60.0,
+    null
+   ],
+   "2018": [
+    58.74,
+    null
+   ],
+   "2021": [
+    34.46,
+    "b"
+   ],
+   "2023": [
+    31.51,
+    null
+   ],
+   "2025": [
+    32.71,
+    null
+   ]
+  },
+  "I_IUG_LPC": {
+   "2016": [
+    63.22,
+    null
+   ],
+   "2018": [
+    61.76,
+    null
+   ],
+   "2021": [
+    51.4,
+    "b"
+   ],
+   "2023": [
+    51.49,
+    null
+   ],
+   "2025": [
+    52.64,
+    null
+   ]
+  },
+  "I_IUG_TPC": {
+   "2016": [
+    49.17,
+    null
+   ],
+   "2018": [
+    43.83,
+    null
+   ],
+   "2021": [
+    33.69,
+    "b"
+   ],
+   "2023": [
+    37.49,
+    null
+   ],
+   "2025": [
+    41.05,
+    null
+   ]
+  }
+ }
+}
