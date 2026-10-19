@@ -1,0 +1,16 @@
+# SCRIPT / STORYBOARD · SA16 (100 BPM, 1 nhịp = 0,6 s)
+
+| # | giây | chữ trên màn hình | hình / chuyển động | SFX / nhạc | dừng đọc |
+|---|---|---|---|---|---|
+| 1 | 0–9,2 | Caption: "Đầu năm 2026, ngành nhà hàng, khách sạn ở Đức lập một kỷ lục không ai muốn: số vụ phá sản cao nhất trong cả chuỗi số từ 2015." · ghi chú đỏ "216 / cao nhất từ 2015" | cận cực đại: bút đỏ kéo một cột lên, xuyên thủng vạch trần khung | kéo chì, giấy thủng + sub E, nhịp tim thưa | 8,7 s |
+| 2 | 4,8–9,6 | — | máy lùi, lia trái; bút kẻ trục x về 2019; tiêu đề in "Số vụ phá sản ngành nhà hàng, khách sạn ở Đức, theo quý · chỉ số · trung bình năm 2021 = 100"; trục y 0–180 | thước kẻ, gõ chữ | tiêu đề 18 s |
+| 3 | 9,6–19,8 | Caption: "Hãy quay lại năm 2019, một năm bình thường. Rồi đại dịch đến: tiền hỗ trợ và luật tạm hoãn nộp đơn khiến con số lặng xuống." · ghi chú xanh "2019: một năm bình thường", "2020–2021: hỗ trợ COVID, tạm hoãn nghĩa vụ nộp đơn phá sản" | track theo bút, mỗi quý một cột (xanh = dưới mức 2019) | plonk mỗi quý, tim mỗi nhịp | 10 s |
+| 4 | 19,8–28 | Caption: "Nhưng từ 2023, các cột chỉ còn một hướng là đi lên. Đến năm 2025, khung biểu đồ cũ không còn đủ chỗ." | cột đỏ dần; 2025-Q2 chạm trần → khung lên nấc 180 → 200 (4 tiếng tách) | bass 8ths, tách gỗ | 8 s |
+| 5 | 28,2–29,1 | — (im lặng) | bút lưỡng lự, đổi đầu đỏ | im lặng thật | — |
+| 6 | 29,4–38,6 | ghi chú đỏ "quý I/2026: 216 / kỷ lục từ 2015" · Caption: "Nửa đầu 2026 cao hơn năm 2019 tới 36 %. Sau mỗi cột là những cánh cửa quán đóng lại thật." · "TB 2019: 156", "TB nửa đầu 2026: 212", ngoặc "+36 %" | cột 2026-Q1 nhập vào cột kỷ lục, punch-in; khung lên 8 nấc 200 → 240 | plonk kim loại + giấy thủng (tiếng đầu tiên sau im lặng) | 7,1 s |
+| 7 | 38,4–50,4 | "Năm 2025 so với 2019: số vụ phá sản theo nhóm ngành" · 8 thanh +49 % … +4 % · "8 / 8 nhóm ngành đều tăng" · Caption: "Và không riêng ngành nhà hàng. Năm 2025, cả tám nhóm ngành ở Đức đều có nhiều vụ phá sản hơn năm 2019." | 30 cột quét xuống thành thanh "Nhà hàng, khách sạn"; 7 thanh kẻ ra; vòng xanh quanh ngành của bạn | quét giấy, plonk mỗi thanh | 11 s |
+| 8 | 50,4–51,6 | — (im lặng) | pan xuống trang trắng | im lặng thật | — |
+| 9 | 51,6–65 | "Khó khăn không chừa ai." / "Vậy vì sao có quán vẫn đông?" · Caption: "Cùng con phố, cùng giá thuê, cùng hóa đơn điện, vậy mà có quán vẫn kín bàn. Không biểu đồ nào đo được, nhưng những quán ấy thường giống nhau ở bốn điều." · 4 dòng viết tay | bút viết tay, gạch chân đỏ; mỗi dòng một biểu tượng chì | Rhodes Sol trưởng, cọ, tiếng quán xa | 13 s |
+| 10 | 65,8–75,6 | nhãn mint: "Google Ads Maps · Local SEO" / "Ảnh món · Website" / "Đặt bàn · Đặt món online" / "Social media · Branding" · Caption: "SAMI làm cả bốn điều đó cho nhà hàng tại Đức, để quán của bạn là quán vẫn đông, dù năm nay khó đến đâu." | đóng dấu từng nhãn, tích đỏ | pop + celesta, kick + clap build | 9,6 s |
+| 11 | 75,6–76,8 | — | nhịp thở, bút rời khung | im lặng thật | — |
+| 12 | 76,8–87 | Logo SAMI · STRATEGY • AUTOMATION • MARKETING • INTELLIGENCE · "Thêm khách. Thêm doanh thu. Thêm thời gian." · "Nhắn WhatsApp cho SAMI, nhận phân tích marketing miễn phí, không ràng buộc." · +49 155 60456888 · sami-agency.de · phản hồi trong 24 giờ | cột navy mọc từ đáy lấp màn hình → end card, các cột mint mờ "thở" dưới đáy | sub-hit, Gmaj9, pop ở WhatsApp | 8,4 s |

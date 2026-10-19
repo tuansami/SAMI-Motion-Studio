@@ -40,8 +40,8 @@ export function setup(data, w, h, logoImg) {
   } : {
     X0: -560, X1: 440, HP: 640, hd: { x: -560, y: -790, size: 40 },
     cap: { x: 1180, y: 390, size: 37, maxW: 650, col: true }, src: { x: 1180, y: 905, size: 18, maxW: 650 },
-    full: { x: 280, y: 90 }, c2: { y: 1000, row: 58, rh: 36, nameX: -150, barX: -130, k: 9.4, size: 28 }, c2cam: { x: 280, y: 1395 },
-    F: { x: -560, y: 2230, qs: 52, is: 36, pitch: 142, maxW: 1000, one: true }, Fcam: { x: 280, y: 2640 }, note: 30, s: .92,
+    full: { x: 330, y: -330 }, c2: { y: 1000, row: 62, rh: 40, nameX: -150, barX: -130, k: 9.4, size: 30 }, c2cam: { x: 330, y: 1395 },
+    F: { x: -560, y: 2230, qs: 56, is: 42, pitch: 150, maxW: 1000, one: true }, Fcam: { x: 330, y: 2640 }, note: 30, s: .92,
   };
   const pitch = (L.X1 - L.X0) / D.quarters.length;
   Q = D.quarters.map((lab, i) => ({ i, lab, v: D.values[i], t: barTime(i), x: L.X0 + (i + .5) * pitch, w: pitch * .66 }));
@@ -99,7 +99,7 @@ let zK, xK, yK;
 function camKeys() {
   const hb = Q[HOOK], hy = -hb.v * L.HP / 180, f = L.full, c2 = L.c2cam, F = L.Fcam;
   const zH = V ? 2.3 : 2.0, zT = V ? 1.3 : 1.15;
-  const yT = V ? -270 : -120;                 // tracking height while building (baseline low in frame)
+  const yT = V ? -270 : -290;                 // tracking height while building (baseline low in frame)
   zK = monotone([[0, zH], [b(7), zH * .96], [b(10.5), 1.5], [b(13), 1.45], [b(16.5), zT], [b(31), zT], [b(35), 1.0], [b(63.5), 1.0], [b(66), .86], [b(68.5), 1.0],
     [b(84), 1.0], [b(86), 1.0], [b(91), V ? 1.06 : 1.0], [b(108), V ? 1.06 : 1.0], [b(110), 1.0], [b(200), 1.0]]);
   xK = monotone([[0, hb.x - 30], [b(7), hb.x - 30], [b(10.5), hb.x - 120], [b(13), L.X0 + 260], [b(16.5), L.X0 + 260], [b(35), f.x], [b(64), f.x], [b(68), c2.x],

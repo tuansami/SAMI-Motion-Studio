@@ -1,0 +1,5 @@
+Dữ liệu: Eurostat sts_rb_q (Business registration and bankruptcy index, quarterly; số liệu Destatis), Đức, 2015–2026, CC BY 4.0 — https://ec.europa.eu/eurostat/databrowser/view/sts_rb_q/
+Fonts (SIL OFL 1.1, Google Fonts): Newsreader, Patrick Hand, IBM Plex Mono, Be Vietnam Pro — fonts/*_OFL.txt
+Engine: phỏng theo lemo-opuscar styles/dataviz/demo/engine.js (qua SA04/SA10)
+Nhạc + SFX: tổng hợp bằng code (numpy/scipy, audio_src/score.py, lemo-opuscar core/audio/sfx.py), không sample bên ngoài
+Logo SAMI: tài sản của SAMI Marketing Agency
