@@ -1,0 +1,6 @@
+Dữ liệu: Google Trends (Đức, „in der Nähe", 1/2004–9/2026) — nguồn: Google Trends (https://trends.google.com), ghi nguồn theo hướng dẫn của Google
+Dữ liệu: Eurostat isoc_ci_dev_i (2025), CC BY 4.0 — https://ec.europa.eu/eurostat/databrowser/view/isoc_ci_dev_i/
+Fonts (SIL OFL 1.1, Google Fonts): Newsreader, Patrick Hand, IBM Plex Mono, Be Vietnam Pro — fonts/*_OFL.txt
+Engine: phỏng theo lemo-opuscar styles/dataviz/demo/engine.js (qua SA04)
+Nhạc + SFX: tổng hợp bằng code (numpy/scipy, audio_src/score.py, lemo-opuscar core/audio/sfx.py), không sample bên ngoài
+Logo SAMI: tài sản của SAMI Marketing Agency
