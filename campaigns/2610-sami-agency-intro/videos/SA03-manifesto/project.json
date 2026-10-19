@@ -1,0 +1,439 @@
+{
+ "name": "SA03-manifesto-quan-ngon-thoi-chua-du",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "mint": "#08DDA4",
+   "purple": "#7667FE",
+   "navy": "#0C0628"
+  }
+ },
+ "look": {
+  "grain": 0.0,
+  "vignette": 0.0
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook – chấm tím, lưới mọc, 3 câu nấu ngon",
+   "start": 0,
+   "end": 192,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Nhát dao – khách không nếm được qua màn hình",
+   "start": 192,
+   "end": 369,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Marketing rời rạc – khối lệch lưới",
+   "start": 369,
+   "end": 575,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Re-flow – SAMI dựng một hệ thống",
+   "start": 575,
+   "end": 738,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Chặng 01 Tìm thấy – bánh răng 1",
+   "start": 738,
+   "end": 900,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "Chặng 02 Tin tưởng – bánh răng 2",
+   "start": 900,
+   "end": 1062,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "Chặng 03 Đặt bàn – bánh răng 3",
+   "start": 1062,
+   "end": 1225,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "Chặng 04 Quay lại – bánh răng 4",
+   "start": 1225,
+   "end": 1387,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "Chữ ký – cỗ máy quay, mũi tên doanh thu",
+   "start": 1387,
+   "end": 1564,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "Ba bước Analyse · Strategie · Umsetzung",
+   "start": 1564,
+   "end": 1770,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "Minh bạch – báo cáo, không chi phí ẩn",
+   "start": 1770,
+   "end": 1948,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  },
+  {
+   "id": "S12",
+   "label": "Ba ngôn ngữ",
+   "start": 1948,
+   "end": 2125,
+   "engine": "hyperframes",
+   "src": "hf/S12.html"
+  },
+  {
+   "id": "S13",
+   "label": "Danh mục – 14 khách hàng tại Đức",
+   "start": 2125,
+   "end": 2302,
+   "engine": "hyperframes",
+   "src": "hf/S13.html"
+  },
+  {
+   "id": "S14",
+   "label": "Lời hứa + nhịp thở",
+   "start": 2302,
+   "end": 2449,
+   "engine": "hyperframes",
+   "src": "hf/S14.html"
+  },
+  {
+   "id": "S15",
+   "label": "CTA + end card SAMI",
+   "start": 2449,
+   "end": 2685,
+   "engine": "hyperframes",
+   "src": "hf/S15.html"
+  }
+ ],
+ "copy": {
+  "S01_l1": {
+   "label": "Câu 1 (dấu chấm = chấm tím mở đầu)",
+   "scene": "S01",
+   "value": "Bạn nấu ngon"
+  },
+  "S01_l2": {
+   "label": "Câu 2",
+   "scene": "S01",
+   "value": "Bạn mở cửa / đúng giờ."
+  },
+  "S01_l3a": {
+   "label": "Câu 3 – trước số",
+   "scene": "S01",
+   "value": "Bạn làm"
+  },
+  "S01_l3n": {
+   "label": "Câu 3 – số khổng lồ",
+   "scene": "S01",
+   "value": "12"
+  },
+  "S01_l3b": {
+   "label": "Câu 3 – sau số",
+   "scene": "S01",
+   "value": "tiếng mỗi ngày."
+  },
+  "S01_n1": {
+   "label": "Chú thích 1",
+   "scene": "S01",
+   "value": "01 · Bếp"
+  },
+  "S01_n2": {
+   "label": "Chú thích 2",
+   "scene": "S01",
+   "value": "02 · Giờ mở cửa"
+  },
+  "S01_n3": {
+   "label": "Chú thích 3",
+   "scene": "S01",
+   "value": "03 · Một ngày"
+  },
+  "S02_head": {
+   "label": "Tiêu đề",
+   "scene": "S02",
+   "value": "Nhưng khách / không nếm được / món ăn / *qua màn hình.*"
+  },
+  "S02_query": {
+   "label": "Ô tìm kiếm trong điện thoại (tiếng Đức)",
+   "scene": "S02",
+   "value": "Restaurant in der Nähe"
+  },
+  "S03_head": {
+   "label": "Tiêu đề",
+   "scene": "S03",
+   "value": "Còn marketing thì / *mỗi nơi một ít.*"
+  },
+  "S03_sub": {
+   "label": "Dòng phụ",
+   "scene": "S03",
+   "value": "Tháng nào cũng trả phí, / mà chẳng biết tiền đi đâu."
+  },
+  "S03_m1": {
+   "label": "Khối 1",
+   "scene": "S03",
+   "value": "Quảng cáo"
+  },
+  "S03_m2": {
+   "label": "Khối 2",
+   "scene": "S03",
+   "value": "Website"
+  },
+  "S03_m3": {
+   "label": "Khối 3",
+   "scene": "S03",
+   "value": "Mạng xã hội"
+  },
+  "S03_m4": {
+   "label": "Khối 4",
+   "scene": "S03",
+   "value": "Menu"
+  },
+  "S03_m5": {
+   "label": "Khối 5",
+   "scene": "S03",
+   "value": "Ảnh món"
+  },
+  "S03_ledger": {
+   "label": "Sổ góc",
+   "scene": "S03",
+   "value": "Báo cáo: không có"
+  },
+  "S04_head": {
+   "label": "Tiêu đề trong khối tím",
+   "scene": "S04",
+   "value": "SAMI không / làm lẻ tẻ. / SAMI dựng / *một hệ thống.*"
+  },
+  "S05_word": {
+   "label": "Chữ khổng lồ chặng 1",
+   "scene": "S05",
+   "value": "Tìm thấy."
+  },
+  "S05_line": {
+   "label": "Câu chặng 1",
+   "scene": "S05",
+   "value": "Khách gõ „Pho in der Nähe“, / quán bạn hiện ra."
+  },
+  "S05_chips": {
+   "label": "Dịch vụ chặng 1 (cách nhau bởi ·)",
+   "scene": "S05",
+   "value": "Quảng cáo Google Maps · Local SEO · Từ khóa tiếng Đức"
+  },
+  "S06_word": {
+   "label": "Chữ khổng lồ chặng 2",
+   "scene": "S06",
+   "value": "Tin tưởng."
+  },
+  "S06_line": {
+   "label": "Câu chặng 2",
+   "scene": "S06",
+   "value": "Chỉ vài giây, khách / quyết định có tin bạn."
+  },
+  "S06_chips": {
+   "label": "Dịch vụ chặng 2",
+   "scene": "S06",
+   "value": "Thương hiệu · Website · Ảnh món · Đánh giá Google"
+  },
+  "S07_word": {
+   "label": "Chữ khổng lồ chặng 3",
+   "scene": "S07",
+   "value": "Đặt bàn."
+  },
+  "S07_line": {
+   "label": "Câu chặng 3",
+   "scene": "S07",
+   "value": "Muốn ăn là đặt được, / ngay trên điện thoại."
+  },
+  "S07_chips": {
+   "label": "Dịch vụ chặng 3",
+   "scene": "S07",
+   "value": "Đặt bàn online · Đặt món mang về · Speisekarte có Allergene"
+  },
+  "S08_word": {
+   "label": "Chữ khổng lồ chặng 4",
+   "scene": "S08",
+   "value": "Quay lại."
+  },
+  "S08_line": {
+   "label": "Câu chặng 4",
+   "scene": "S08",
+   "value": "Đã đến một lần, giờ họ / nhớ đường quay lại."
+  },
+  "S08_chips": {
+   "label": "Dịch vụ chặng 4",
+   "scene": "S08",
+   "value": "Mạng xã hội · Gutschein · Trả lời đánh giá"
+  },
+  "S09_head": {
+   "label": "Tiêu đề chữ ký",
+   "scene": "S09",
+   "value": "Bốn chặng khớp nhau, / *doanh thu mới / bền vững.*"
+  },
+  "S09_tag": {
+   "label": "Nhãn mũi tên",
+   "scene": "S09",
+   "value": "Doanh thu · Minh họa"
+  },
+  "S10_head": {
+   "label": "Tiêu đề",
+   "scene": "S10",
+   "value": "Bắt đầu thế nào? / *Ba bước, / không đoán mò.*"
+  },
+  "S10_s1": {
+   "label": "Bước 1 (VI / DE / mô tả)",
+   "scene": "S10",
+   "value": "Phân tích / Analyse / Quán đang mất khách ở đâu"
+  },
+  "S10_s2": {
+   "label": "Bước 2",
+   "scene": "S10",
+   "value": "Chiến lược / Strategie / Đúng kênh, đúng ngân sách"
+  },
+  "S10_s3": {
+   "label": "Bước 3",
+   "scene": "S10",
+   "value": "Triển khai / Umsetzung / Làm, đo, tối ưu mỗi tuần"
+  },
+  "S11_head": {
+   "label": "Tiêu đề",
+   "scene": "S11",
+   "value": "Mỗi đồng bạn trả / *đều có tên / trong báo cáo.*"
+  },
+  "S11_sub": {
+   "label": "Dòng phụ",
+   "scene": "S11",
+   "value": "Báo cáo hằng tuần · hằng tháng"
+  },
+  "S11_stamp": {
+   "label": "Tem",
+   "scene": "S11",
+   "value": "Không chi phí ẩn"
+  },
+  "S12_w1": {
+   "label": "Chữ 1",
+   "scene": "S12",
+   "value": "Tiếng Việt."
+  },
+  "S12_w2": {
+   "label": "Chữ 2",
+   "scene": "S12",
+   "value": "Deutsch."
+  },
+  "S12_w3": {
+   "label": "Chữ 3",
+   "scene": "S12",
+   "value": "English."
+  },
+  "S12_sub": {
+   "label": "Dòng phụ",
+   "scene": "S12",
+   "value": "Bạn bàn bằng tiếng Việt. / Khách đọc bằng tiếng Đức."
+  },
+  "S13_head": {
+   "label": "Tiêu đề trong ô tím",
+   "scene": "S13",
+   "value": "*14 khách hàng / tại Đức* đã / chọn SAMI, từ / Berlin tới / Baden-Baden."
+  },
+  "S13_note": {
+   "label": "Chú thích nguồn",
+   "scene": "S13",
+   "value": "Một phần danh mục dự án · sami-agency.de"
+  },
+  "S14_l1": {
+   "label": "Lời hứa 1",
+   "scene": "S14",
+   "value": "Thêm khách."
+  },
+  "S14_l2": {
+   "label": "Lời hứa 2",
+   "scene": "S14",
+   "value": "Thêm doanh thu."
+  },
+  "S14_l3": {
+   "label": "Lời hứa 3",
+   "scene": "S14",
+   "value": "Thêm thời gian."
+  },
+  "S15_head": {
+   "label": "Câu CTA cảm xúc",
+   "scene": "S15",
+   "value": "Bạn cứ nấu ngon. / *Phần còn lại, / để SAMI lo.*"
+  },
+  "S15_cta": {
+   "label": "Bong bóng chat – lời mời",
+   "scene": "S15",
+   "value": "Nhắn WhatsApp cho SAMI"
+  },
+  "S15_phone": {
+   "label": "Bong bóng chat – số",
+   "scene": "S15",
+   "value": "+49 155 60456888"
+  },
+  "S15_offer": {
+   "label": "Ưu đãi",
+   "scene": "S15",
+   "value": "Phân tích marketing miễn phí, / không ràng buộc. Phản hồi trong 24 giờ."
+  },
+  "S15_tagline": {
+   "label": "Tagline",
+   "scene": "S15",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S15_web": {
+   "label": "Website",
+   "scene": "S15",
+   "value": "sami-agency.de"
+  }
+ },
+ "status": "draft",
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": []
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 1.5
+  },
+  "cues": []
+ }
+}

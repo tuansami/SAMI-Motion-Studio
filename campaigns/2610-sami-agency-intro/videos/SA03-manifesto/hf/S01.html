@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/inter/900.css">
+<link rel="stylesheet" href="hf/parts/sk.css">
+<style>
+  /* S01 · Hook: một chấm tím rơi xuống trang trống, lưới bắn ra từ chấm, chấm trượt lên thành dấu chấm của "Bạn nấu ngon." */
+  #dot { position: absolute; z-index: 7; left: 0; top: 0; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: var(--sig); will-change: transform; }
+  .st { position: absolute; z-index: 5; left: var(--m); }
+  .st .cap { width: 300px; margin-bottom: 22px; }
+  .st .hd { position: relative; font-size: 116px; }
+  #pd { display: inline-block; width: 26px; height: 26px; margin-left: 6px; }
+  #s1 { top: 262px; } #s2 { top: 492px; } #s3 { top: 884px; }
+  #num { position: relative; font-weight: 900; font-size: 370px; line-height: .86; letter-spacing: -.06em; color: var(--ink); margin: 6px 0 0 -26px; }
+  #num .ln { padding: .02em .02em .02em 0; margin: -.02em -.02em -.02em 0; }
+  #s3b { position: relative; }
+  [data-ratio="16x9"] #s1 { top: 150px; } [data-ratio="16x9"] #s2 { top: 420px; }
+  [data-ratio="16x9"] .st .hd { font-size: 104px; }
+  [data-ratio="16x9"] #s3 { left: 972px; top: 150px; }
+  [data-ratio="16x9"] #num { font-size: 520px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S01">
+  <div class="st" id="s1"><div class="cap" id="c1" data-copy="S01_n1"></div><div class="hd" id="l1"><span data-copy="S01_l1"></span><span id="pd"></span></div></div>
+  <div class="st" id="s2"><div class="cap" id="c2" data-copy="S01_n2"></div><div class="hd" id="l2" data-copy="S01_l2"></div></div>
+  <div class="st" id="s3"><div class="cap" id="c3" data-copy="S01_n3"></div><div class="hd" id="l3a" data-copy="S01_l3a"></div><div id="num" data-copy="S01_l3n"></div><div class="hd" id="l3b" data-copy="S01_l3b"></div></div>
+  <div id="dot"></div>
+</div>
+<script src="hf/parts/sk.js"></script>
+<script>
+  const S = window.SAMI, K = SK.init(0), tl = S.timeline(), $ = K.$;
+  const grid = K.grid(K.P ? [220, 1540] : [60, 1020]);
+  K.chrome();
+  // chữ: câu 1 có dấu chấm là chấm tím → gói span copy + #pd vào một dòng
+  const l1 = $('#l1'), sp = l1.querySelector('[data-copy]');
+  sp.innerHTML = S.html('S01_l1', 'Bạn nấu ngon'); sp.removeAttribute('data-copy');
+  l1.innerHTML = '<span class="ln"><span class="li">' + l1.innerHTML + '</span></span>';
+  ['#l2', '#l3a', '#num', '#l3b', '#c1', '#c2', '#c3'].forEach(K.bind);
+
+  const B = K.b;
+  // lưới bắn ra từ chấm (giữa khung): đường gần chấm mọc trước
+  const cxm = K.W / 2, cym = K.H / 2;
+  const gl = Array.from(grid.children);
+  K.draw((t) => {
+    gl.forEach((g) => {
+      const isC = g.classList.contains('gc');
+      const d = isC ? Math.abs(parseFloat(g.style.left) - cxm) / K.W : Math.abs(parseFloat(g.style.top) - cym) / K.H;
+      const k = K.E(t, B(1) + d * 0.5, B(1) + d * 0.5 + 0.55);
+      g.style.transform = isC ? 'scaleY(' + k.toFixed(4) + ')' : 'scaleX(' + k.toFixed(4) + ')';
+      g.style.transformOrigin = isC ? '50% ' + cym + 'px' : cxm + 'px 50%';
+    });
+    // chấm: rơi xuống giữa (b0→b1), đứng, rồi trượt thành dấu chấm của câu 1 (b2→b3)
+    const pd = $('#pd');
+    let px = 0, py = 0, el = pd; while (el && el.id !== 'root') { px += el.offsetLeft; py += el.offsetTop; el = el.offsetParent; }
+    px += 13; py += pd.offsetHeight - 13 - 5; px -= 2;
+    const fall = K.E(t, B(0) - 0.1, B(1));
+    const go = K.E(t, B(2), B(3));
+    const x = K.mix(cxm, px, go), y = K.mix(K.mix(cym - 420, cym, fall), py, go);
+    const s = K.mix(K.mix(0.4, 2.6, fall), 1, go);
+    $('#dot').style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + s.toFixed(3) + ')';
+    $('#dot').style.opacity = K.L(t, B(0) - 0.12, B(0) + 0.05);
+  });
+  K.run(tl);
+  K.reveal(tl, '#c1', B(2)); K.reveal(tl, '#l1', B(2.3));
+  K.reveal(tl, '#c2', B(4)); K.reveal(tl, '#l2', B(4.2));
+  K.reveal(tl, '#c3', B(6)); K.reveal(tl, '#l3a', B(6.1));
+  tl.fromTo(K.lines('#num'), {yPercent: 100}, {yPercent: 0, duration: 0.9, ease: S.EASE}, B(6.5));
+  K.reveal(tl, '#l3b', B(7));
+  tl.fromTo('.cap', {borderTopColor: 'rgba(12,6,40,0)'}, {borderTopColor: 'rgba(12,6,40,1)', duration: 0.3, stagger: 1}, B(2));
+</script>
+</body>
+</html>

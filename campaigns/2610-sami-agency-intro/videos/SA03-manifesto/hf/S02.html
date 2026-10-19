@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/inter/900.css">
+<link rel="stylesheet" href="hf/parts/sk.css">
+<style>
+  /* S02 · ba câu của S01 bị nhát dao cắt, gập về đường giữa → khung điện thoại mọc lên; "Nhưng khách không nếm được món ăn qua màn hình." */
+  .st { position: absolute; z-index: 5; left: var(--m); }
+  .st .cap { width: 300px; margin-bottom: 22px; }
+  .st .hd { position: relative; font-size: 116px; }
+  #pd { display: inline-block; width: 26px; height: 26px; margin-left: 4px; border-radius: 50%; background: var(--sig); vertical-align: baseline; }
+  #s1 { top: 262px; } #s2 { top: 492px; } #s3 { top: 884px; }
+  #num { position: relative; font-weight: 900; font-size: 370px; line-height: .86; letter-spacing: -.06em; color: var(--ink); margin: 6px 0 0 -26px; }
+  #num .ln { padding: .02em .02em .02em 0; margin: -.02em -.02em -.02em 0; }
+  [data-ratio="16x9"] #s1 { top: 150px; } [data-ratio="16x9"] #s2 { top: 420px; }
+  [data-ratio="16x9"] .st .hd { font-size: 104px; }
+  [data-ratio="16x9"] #s3 { left: 972px; top: 150px; }
+  [data-ratio="16x9"] #num { font-size: 520px; }
+
+  #head { left: var(--m); top: 262px; font-size: 120px; z-index: 6; }
+  #cap2 { position: absolute; z-index: 6; left: var(--m); top: 196px; width: 300px; }
+  [data-ratio="16x9"] #head { top: 230px; font-size: 118px; width: 820px; }
+  [data-ratio="16x9"] #cap2 { top: 150px; }
+  .phone { transform-origin: 50% 0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02">
+  <div class="st" id="s1"><div class="cap" data-copy="S01_n1"></div><div class="hd"><span class="ln"><span class="li"><span id="t1"></span><span id="pd"></span></span></span></div></div>
+  <div class="st" id="s2"><div class="cap" data-copy="S01_n2"></div><div class="hd" data-copy="S01_l2"></div></div>
+  <div class="st" id="s3"><div class="cap" data-copy="S01_n3"></div><div class="hd" data-copy="S01_l3a"></div><div id="num" data-copy="S01_l3n"></div><div class="hd" data-copy="S01_l3b"></div></div>
+  <div class="cap" id="cap2">04 · Khách của bạn</div>
+  <div class="hd" id="head" data-copy="S02_head"></div>
+</div>
+<script src="hf/parts/sk.js"></script>
+<script>
+  const S = window.SAMI, K = SK.init(192), tl = S.timeline(), $ = K.$, B = K.b;
+  K.grid(); K.chrome();
+  $('#t1').innerHTML = S.html('S01_l1', 'Bạn nấu ngon');
+  document.querySelectorAll('.st [data-copy]').forEach(K.bind);
+  K.bind('#head'); K.bind('#cap2');
+  const ph = K.phone();
+  const q = S.text('S02_query', 'Restaurant in der Nähe');
+  // nhát dao lần lượt qua 3 câu
+  K.knife(tl, '#s1', B(0.2)); K.knife(tl, '#s2', B(0.7)); K.knife(tl, '#s3', B(1.2));
+  K.reveal(tl, '#cap2', B(2.2)); tl.fromTo('#cap2', {borderTopColor: 'rgba(12,6,40,0)'}, {borderTopColor: 'rgba(12,6,40,1)', duration: 0.3}, B(2.2));
+  K.reveal(tl, '#head', B(2.4), {stagger: 0.12});
+  // điện thoại: khung mọc từ trên xuống (đường kẻ mọc theo chiều dài), hàng kết quả wipe vào
+  tl.fromTo(ph, {clipPath: 'inset(0 0 100% 0)'}, {clipPath: 'inset(0 0 0% 0)', duration: 0.9, ease: S.EASE}, B(3));
+  tl.fromTo(ph.querySelectorAll('.pr'), {opacity: 0, x: -40}, {opacity: 1, x: 0, duration: 0.45, stagger: 0.12}, B(5.5));
+  K.draw((t) => {
+    const n = Math.round(q.length * K.L(t, B(4), B(6.6)));
+    ph.querySelector('.pq').textContent = q.slice(0, n);
+    ph.querySelector('.caret').style.opacity = (Math.floor(t / 0.3) % 2 && n >= q.length) ? 0 : 1;
+  });
+  K.run(tl);
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="hf/parts/sk.css">
+<style>
+  /* S03 · điện thoại bị cắt; 5 khối marketing rơi lệch lưới, nghiêng, chồng nhau; sổ góc "Báo cáo: không có" đếm tháng */
+  #prev { left: var(--m); top: 262px; font-size: 120px; z-index: 6; }
+  #pcap { position: absolute; z-index: 6; left: var(--m); top: 196px; width: 300px; }
+  #head { left: var(--m); top: 262px; font-size: 120px; }
+  #sub { left: var(--m); top: 560px; }
+  #ledger { position: absolute; z-index: 6; left: var(--m); top: 700px; width: 520px; }
+  #ledger .row { display: flex; justify-content: space-between; font: 600 30px/1.3 var(--f); padding: 10px 0; border-bottom: 2px solid var(--rule2); }
+  #ledger .row b { font-weight: 800; }
+  #ledger .no { color: var(--sig); }
+  [data-ratio="16x9"] #prev { top: 230px; font-size: 118px; width: 820px; }
+  [data-ratio="16x9"] #pcap { top: 150px; }
+  [data-ratio="16x9"] #head { top: 200px; font-size: 112px; }
+  [data-ratio="16x9"] #sub { top: 480px; }
+  [data-ratio="16x9"] #ledger { top: 680px; width: 600px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S03">
+  <div class="cap" id="pcap">04 · Khách của bạn</div>
+  <div class="hd" id="prev" data-copy="S02_head"></div>
+  <div class="hd" id="head" data-copy="S03_head"></div>
+  <div class="sub" id="sub" data-copy="S03_sub"></div>
+  <div id="ledger"><div class="row"><span>Phí tháng</span><b id="mon">01</b></div><div class="row"><span data-copy="S03_ledger"></span><b class="no">?</b></div></div>
+</div>
+<script src="hf/parts/sk.js"></script>
+<script>
+  const S = window.SAMI, K = SK.init(369), tl = S.timeline(), $ = K.$, B = K.b;
+  K.grid(); K.chrome();
+  ['#pcap', '#prev', '#head', '#sub'].forEach(K.bind);
+  $('#ledger [data-copy]').innerHTML = S.html('S03_ledger'); $('#ledger [data-copy]').removeAttribute('data-copy');
+  const ph = K.phone(); ph.querySelector('.pq').textContent = S.text('S02_query'); ph.querySelector('.caret').style.display = 'none';
+  const mods = K.mods();
+  // thoát cảnh trước
+  K.hide(tl, '#prev', B(0.3)); tl.to('#pcap', {opacity: 0, duration: 0.3}, B(0.4));
+  K.knife(tl, ph, B(0.6), {y: K.phoneBox().y + 300});
+  // khối rơi lệch nhịp (cố tình không khớp phách), xoay lệch lưới
+  const T = [1.6, 2.15, 2.9, 3.3, 4.05];
+  mods.forEach((m, i) => {
+    const r = K.MESS[i]; K.placeMod(m, r);
+    tl.fromTo(m, {y: -380, rotation: r[4] * 3, opacity: 0}, {y: 0, rotation: r[4], opacity: 1, duration: 0.5, ease: S.EASE}, B(T[i]));
+  });
+  K.reveal(tl, '#head', B(1));
+  K.reveal(tl, '#sub', B(3.6));
+  tl.fromTo('#ledger', {clipPath: 'inset(0 100% 0 0)'}, {clipPath: 'inset(0 0% 0 0)', duration: 0.6, ease: S.EASE}, B(5));
+  K.draw((t) => {
+    // bộ đếm tháng chạy mỗi nhịp sau khi sổ hiện; tem € nhấp nháy theo tháng
+    const n = Math.max(1, Math.min(12, 1 + Math.floor((t - B(5)) / K.BEAT)));
+    $('#mon').textContent = 'Tháng ' + ('0' + n).slice(-2);
+    mods.forEach((m, i) => { m.querySelector('.eur').style.opacity = t > B(5) && ((Math.floor((t - B(5)) / K.BEAT) + i) % 5 === 0) ? 0.35 : 1; });
+  });
+  K.run(tl);
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="hf/parts/sk.css">
+<style>
+  /* S04 · re-flow: 5 khối thẳng lại, trượt về ô lưới (gần trước), ô 6 "Báo cáo" bật lên; khối tím mang câu "SAMI dựng một hệ thống", cuối cảnh khối tím phủ kín khung */
+  #head0 { left: var(--m); top: 262px; font-size: 120px; }
+  #sub0 { left: var(--m); top: 560px; }
+  #led0 { position: absolute; z-index: 6; left: var(--m); top: 700px; width: 520px; }
+  #led0 .row { display: flex; justify-content: space-between; font: 600 30px/1.3 var(--f); padding: 10px 0; border-bottom: 2px solid var(--rule2); }
+  #led0 .row b { font-weight: 800; } #led0 .no { color: var(--sig); }
+  #pb { position: absolute; z-index: 6; }
+  #head em.hl { color: var(--ink); -webkit-text-fill-color: var(--ink); }
+  #head { left: 0; top: 0; font-size: 112px; color: #fff; padding: 56px 52px; z-index: 7; position: absolute; }
+  [data-ratio="16x9"] #head0 { top: 200px; font-size: 112px; } [data-ratio="16x9"] #sub0 { top: 480px; } [data-ratio="16x9"] #led0 { top: 680px; width: 600px; }
+  [data-ratio="16x9"] #head { font-size: 104px; padding: 60px 64px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S04">
+  <div class="hd" id="head0" data-copy="S03_head"></div>
+  <div class="sub" id="sub0" data-copy="S03_sub"></div>
+  <div id="led0"><div class="row"><span>Phí tháng</span><b>Tháng 12</b></div><div class="row"><span id="lk"></span><b class="no">?</b></div></div>
+  <div id="pb" class="sig"></div>
+  <div class="hd" id="head" data-copy="S04_head"></div>
+</div>
+<script src="hf/parts/sk.js"></script>
+<script>
+  const S = window.SAMI, K = SK.init(575), tl = S.timeline(), $ = K.$, B = K.b;
+  K.grid(); K.chrome();
+  ['#head0', '#sub0', '#head'].forEach(K.bind);
+  $('#lk').innerHTML = S.html('S03_ledger');
+  const mods = K.mods();
+  const rep = document.createElement('div'); rep.className = 'mod rep'; rep.innerHTML = '<span class="mt">' + S.html('S04_m6', 'Báo cáo') + '</span><span class="eur">mỗi tuần</span>';
+  $('#root').appendChild(rep); K.placeMod(rep, K.GRIDPOS(5));
+  // vùng khối tím (bố cục cuối)
+  const PB = K.P ? [K.M, 262, K.cw(6), 700] : [K.M, 150, K.cw(6), 820];
+  const pb = $('#pb'); const hd = $('#head');
+  hd.style.left = PB[0] + 'px'; hd.style.top = PB[1] + 'px'; hd.style.width = PB[2] + 'px';
+  // thoát chữ S03
+  K.hide(tl, '#head0', B(0)); K.hide(tl, '#sub0', B(0.2));
+  tl.to('#led0', {clipPath: 'inset(0 0 0 100%)', duration: 0.4}, B(0.2));
+  // re-flow: thứ tự theo khoảng cách tới ô lưới (gần trước), mỗi khối một phách
+  const order = mods.map((m, i) => { const a = K.MESS[i], b = K.GRIDPOS(i); return {i, d: Math.hypot(a[0] - b[0], a[1] - b[1])}; }).sort((x, y) => x.d - y.d);
+  K.draw((t) => {
+    order.forEach((o, k) => {
+      const u = K.E(t, B(0.5 + k * 0.5), B(0.5 + k * 0.5) + 0.42);
+      const a = K.MESS[o.i], b = K.GRIDPOS(o.i);
+      K.placeMod(mods[o.i], a.map((v, j) => K.mix(v, b[j], u)));
+    });
+    // khối tím: wipe từ trái, cuối cảnh nở phủ kín khung
+    const w = K.E(t, B(0.4), B(1.6)), f = K.E(t, B(9.7), B(10.6));
+    const x = K.mix(PB[0], 0, f), y = K.mix(PB[1], 0, f), ww = K.mix(PB[2] * w, K.W, f), hh = K.mix(PB[3], K.H, f);
+    pb.style.left = x + 'px'; pb.style.top = y + 'px'; pb.style.width = ww + 'px'; pb.style.height = hh + 'px';
+  });
+  tl.fromTo(rep, {clipPath: 'inset(0 100% 0 0)'}, {clipPath: 'inset(0 0% 0 0)', duration: 0.5}, B(3.2));
+  K.reveal(tl, '#head', B(1.0), {stagger: 0.13});
+  K.run(tl);
+</script>
+</body>
+</html>
