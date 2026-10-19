@@ -19,6 +19,8 @@ Gọi `add_repo` cho `tuansami/mcp-sami-media` và `tuansami/lemo-opuscar`, rồ
 - SA02: lệnh `cli-render.mjs … --request` có lúc bị bộ lọc quyền auto mode từ chối. KHÔNG lách: báo phiên điều phối, làm tiếp phần không cần render, chờ.
 - Tham khảo chất lượng/cấu trúc: `videos/SA01-ads-maps/` (11 cảnh Hyperframes viết tay, nhạc numpy) — chỉ học kỹ thuật, không lặp look/mạch kể.
 
+- SA04 (dataviz): font Caveat của style thiếu dấu tiếng Việt → dùng Patrick Hand; GENESIS (Destatis) không cho tải bằng tài khoản khách → dùng Eurostat (cùng số liệu Destatis, CC BY 4.0). Video lemo không cần bước `cli-render --enable`.
+
 ## Nơi lưu
 - Dự án mỗi video: `campaigns/2610-sami-agency-intro/videos/<ID>-<ten-ngan>/` (Studio project hoặc lemo film folder). Commit nguồn, KHÔNG commit `out/`, `public/_hf|_engine|_lib`, `node_modules`, `.venv`, mp4.
 - MP4 giao Tuấn bằng **SendUserFile** trong phiên của video đó (+ contact sheet JPG).
