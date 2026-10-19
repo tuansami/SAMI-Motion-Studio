@@ -1,0 +1,6 @@
+Fonts (SIL OFL 1.1, Google Fonts): Be Vietnam Pro, IBM Plex Mono — fonts/*_OFL.txt
+Hình: thế giới thu nhỏ vẽ hoàn toàn bằng code (Canvas 2D, world.js / film.js); phong cách theo lemo-opuscar styles/tilt-shift (MIT)
+Công cụ: lemo-opuscar core/ (render, readcheck, events, mux) — MIT
+Nhạc + SFX: tổng hợp bằng numpy (audio_src/score.py), không sample bên ngoài
+Logo SAMI: tài sản của SAMI Marketing Agency. Ghim bản đồ, thẻ "Google Maps" là minh họa vẽ lại, không dùng ảnh chụp giao diện.
+Tên quán (Bếp Sen, Pizzeria Luna, Döner Eck, Café Linde, Sushi Hana, Taverna Kreta, Burger 21, Asia Garden, Curry Haus, Trattoria Sole) là hư cấu.
