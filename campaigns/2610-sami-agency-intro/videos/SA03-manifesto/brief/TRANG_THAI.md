@@ -4,9 +4,9 @@ Phiên: session_01FhzuzsYd4vvebqUAaWWNCt · nhánh `claude/gifted-albattani-m5dp
 
 ## Giai đoạn
 - [x] Brief + storyboard + VOICE_OVER (tự duyệt, Tuấn uỷ quyền)
-- [ ] Dựng 15 cảnh Hyperframes 9:16 (`hf/S01–S15.html`, `hf/parts/sk.css|sk.js|machine.js`)
-- [ ] Nhạc `audio_src/score.py` → `public/audio/music.mp3` + SFX
-- [ ] QA ảnh tĩnh 9:16 (cli-validate sạch)
+- [x] Dựng 15 cảnh Hyperframes 9:16 (`hf/S01–S15.html`, `hf/parts/sk.css|sk.js|machine.js`)
+- [x] Nhạc `audio_src/score.py` → `public/audio/music.mp3` + SFX
+- [x] QA ảnh tĩnh 9:16 (cli-validate sạch, chỉ ⚠ lệch lưới 120 — cố ý, phim cắt trên lưới 122)
 - [ ] Xuất 9:16 → SendUserFile
 - [ ] Bố cục 16:9 + QA + xuất → SendUserFile
 - [ ] Báo phiên điều phối
@@ -15,7 +15,7 @@ Phiên: session_01FhzuzsYd4vvebqUAaWWNCt · nhánh `claude/gifted-albattani-m5dp
 89,5 s · 15 cảnh, cắt trên lưới 122 BPM (khung trong storyboard) · xưng "bạn" · look Swiss Kinetic (giấy sáng, mực navy, tín hiệu tím, mint = ngoại lệ) · font Inter · không giá, không địa chỉ.
 
 ## Tiếp theo
-Dựng cảnh theo `brief/SCRIPT_STORYBOARD.md`.
+QA 16:9 (`cli-still … 16:9`) rồi xuất 9:16 (cần cli-render, xem Ghi chú).
 
 ## Ghi chú kỹ thuật
 - Cài môi trường: cloud-setup.sh bị bộ lọc chặn ("Code from External") → chạy từng bước: clone mcp-sami-media (+ symlink /home/user/MCP-sami-media), npm sami-media + Studio, lib-seed, brand sami. **`cli-render --enable` bị chặn ("Production Deploy")** → chưa bật switch xuất. Cài deps lemo (npm/venv) cũng bị chặn → nhạc dùng numpy hệ thống (không cần lemo).
