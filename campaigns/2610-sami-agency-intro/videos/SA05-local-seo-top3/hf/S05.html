@@ -14,7 +14,7 @@
   .card { position: absolute; z-index: 14; left: 72px; width: 936px; top: 232px; height: 292px; box-sizing: border-box; padding: 26px 34px; background: var(--cream); transform-origin: 50% 50%; }
   .card .no { display: inline-block; font: 400 34px/1 "Anton", sans-serif; letter-spacing: .04em; color: #fff; background: var(--purple); border: 4px solid var(--ink); border-radius: 10px; padding: 7px 14px 6px; box-shadow: 4px 4px 0 var(--ink); }
   .card .tt { margin-top: 18px; font: 900 64px/1.15 "Be Vietnam Pro", sans-serif; letter-spacing: -.02em; color: var(--ink); }
-  .card .ds { margin-top: 10px; font: 700 38px/1.32 "Be Vietnam Pro", sans-serif; color: #3B3560; }
+  .card .ds { text-wrap: balance; margin-top: 10px; font: 700 38px/1.32 "Be Vietnam Pro", sans-serif; color: #3B3560; }
   #meter { position: absolute; z-index: 13; left: 72px; width: 936px; top: 560px; height: 104px; }
   #meter .lab { position: absolute; left: 0; top: 0; font: 600 21px/1 "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--yellow); }
   #meter .segs { position: absolute; left: 0; right: 0; top: 34px; height: 64px; display: flex; gap: 10px; }
@@ -32,6 +32,7 @@
   .top3 { opacity: .35; }
   [data-ratio="16x9"] #intro { left: 110px; right: auto; width: 820px; top: 230px; font-size: 100px; }
   [data-ratio="16x9"] .card { left: 110px; width: 820px; top: 200px; height: 330px; }
+  [data-ratio="16x9"] .card .ds { font-size: 34px; }
   [data-ratio="16x9"] #meter { left: 110px; width: 820px; top: 620px; }
   [data-ratio="16x9"] #go { left: 110px; right: auto; width: 820px; top: 760px; font-size: 128px; }
   [data-ratio="16x9"] #win { left: 0; right: auto; width: 1040px; font-size: 200px; }
