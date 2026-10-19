@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/nr.css">
+<style>
+  /* S07 · KHOẢNH KHẮC CHỮ KÝ: radar quét qua phố, từng người đói sáng lên, mọi đường đi bẻ cong về ghim quán bạn → „Gesponsert" #1 */
+  .scrim.top { top: 0; height: 820px; background: linear-gradient(#070420 0%, rgba(7, 4, 32, .88) 45%, rgba(7, 4, 32, 0) 100%); }
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 290px; font-size: 76px; }
+  #spons { position: absolute; z-index: 7; white-space: nowrap; transform: translate(-50%, 0); font: 600 26px/1 "Be Vietnam Pro", sans-serif; color: #0C0628; background: #08DDA4; padding: 9px 16px; border-radius: 30px; box-shadow: 0 0 30px rgba(8, 221, 164, .6); }
+  #card { position: absolute; z-index: 7; left: var(--safe-side); right: var(--safe-side); bottom: calc(var(--safe-bottom) + 10px); padding: 26px 30px; border-color: rgba(8, 221, 164, .55); box-shadow: 0 0 70px rgba(8, 221, 164, .22), 0 30px 80px rgba(0, 0, 0, .5); }
+  #card .top { display: flex; align-items: center; gap: 16px; }
+  #card .one { font: 800 34px/1 "Be Vietnam Pro", sans-serif; color: #0C0628; background: linear-gradient(135deg, #08DDA4, #7667FE); width: 66px; height: 66px; border-radius: 18px; display: flex; align-items: center; justify-content: center; flex: none; }
+  #card .g { font: 600 22px/1 "IBM Plex Mono", monospace; letter-spacing: .1em; color: #08DDA4; }
+  #card .nm { font: 800 44px/1.15 "Be Vietnam Pro", sans-serif; color: #fff; margin-top: 4px; }
+  #card .meta { font: 500 24px/1.3 "IBM Plex Mono", monospace; color: #C9C6EA; margin-top: 4px; }
+  #card .btns { display: flex; gap: 12px; margin-top: 20px; }
+  #card .btn { font: 600 28px/1 "Be Vietnam Pro", sans-serif; color: #0C0628; padding: 15px 22px; border-radius: 40px; background: #E3E4F7; }
+  #card .btn.p { background: linear-gradient(120deg, #08DDA4, #7667FE); color: #fff; }
+  #demo { right: var(--safe-side); top: 236px; }
+  #flash { position: absolute; inset: 0; z-index: 6; pointer-events: none; background: radial-gradient(circle at 50% 58%, rgba(8, 221, 164, .4), rgba(8, 221, 164, 0) 45%); opacity: 0; }
+  [data-ratio="16x9"] .scrim.top { width: 1050px; right: auto; height: auto; bottom: 0; background: linear-gradient(90deg, #070420 0%, rgba(7, 4, 32, .88) 60%, rgba(7, 4, 32, 0) 100%); }
+  [data-ratio="16x9"] #hd { left: 120px; right: auto; width: 800px; top: 130px; font-size: 70px; }
+  [data-ratio="16x9"] #card { left: 120px; right: auto; width: 760px; bottom: 80px; }
+  [data-ratio="16x9"] #demo { top: 70px; right: 96px; }
+  [data-ratio="16x9"] #flash { background: radial-gradient(circle at 70% 55%, rgba(8, 221, 164, .4), rgba(8, 221, 164, 0) 40%); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S07">
+  <div class="grid" id="grid"></div>
+  <div id="nm"></div>
+  <div id="flash"></div>
+  <div class="scrim top"></div>
+  <div class="hd" id="hd" data-copy="S07_headline"></div>
+  <div class="tag-demo" id="demo">Minh họa</div>
+  <div id="spons">Gesponsert</div>
+  <div class="glass" id="card">
+    <div class="top"><span class="one">1</span><div><div class="g">Gesponsert · Pho in der Nähe</div><div class="nm">Phở Mây</div><div class="meta">Vietnamesisch · 400 m · Jetzt geöffnet</div></div></div>
+    <div class="btns"><span class="btn">Anrufen</span><span class="btn">Route</span><span class="btn p">Reservieren</span></div>
+  </div>
+</div>
+<script src="hf/parts/nightmap.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), NM = window.NM, $ = (s) => document.querySelector(s);
+  const L16 = S.landscape;
+  NM.init($('#nm'));
+  const radar = NM.radar();
+  const rivals = NM.RIVALS.map((r) => NM.pin(r, {kind: 'rival'}));
+  const you = NM.pin(NM.YOU, {kind: 'you', label: 'Phở Mây<small>quán của bạn</small>'});
+  const C = NM.YOU, R = 980, SW0 = 0.35, SWD = 2.4; // một vòng quét
+  const crowd = NM.crowd(44, C, 200, 960, 207).concat([Object.assign({}, NM.PERSON, {k: 0.1})]).map((p, i) => {
+    const b = Math.atan2(p.y - C.y, p.x - C.x) * 180 / Math.PI;
+    const rel = ((b + 90) % 360 + 360) % 360;
+    const tHit = SW0 + rel / 360 * SWD;
+    const fn = NM.curve(p, C, (p.k - 0.5) * 0.7); // đường đi bẻ cong về ghim
+    const go = Math.max(tHit + 0.15, 2.5 + p.k * 1.4);
+    return {p, fn, tHit, go, route: NM.route({color: '#08DDA4', w: 2.6}), dot: NM.dot({color: '#8D87B8', r: 7, halo: 20})};
+  });
+  const motes = NM.motes($('#root'), 26, 91);
+
+  NM.clock(tl, (t) => {
+    const z = NM.E(t, 0, S.dur);
+    NM.cam(C.x, C.y, (L16 ? 2700 : 2050) * NM.mix(1.06, 0.94, z), L16 ? 0.7 : 0.5, L16 ? 0.52 : 0.55);
+    $('#grid').style.transform = 'translate(' + (-t * 6).toFixed(1) + 'px,' + (-t * 4).toFixed(1) + 'px)';
+    const ang = -90 + 360 * NM.L(t, SW0, SW0 + SWD);
+    const ping = NM.L(t, SW0, SW0 + 1.2);
+    radar.draw(C, R, ang, NM.E(t, 0.05, 0.4) * (1 - NM.E(t, SW0 + SWD, SW0 + SWD + 0.8)), ping);
+    let arrived = 0;
+    crowd.forEach((c) => {
+      const lit = NM.E(t, c.tHit, c.tHit + 0.3);
+      c.dot.color(lit > 0.5 ? '#08DDA4' : '#8D87B8');
+      const u = NM.E(t, c.go, c.go + 2.2);
+      if (u > 0.98) arrived++;
+      c.route.draw(c.fn, u, 0.5 * lit * (1 - 0.6 * NM.L(t, 6.4, 7.6)));
+      const pos = c.fn(u);
+      c.dot.place(pos, (0.55 + 0.45 * lit) * (1 - NM.L(u, 0.9, 1)), t * 0.8 + c.p.k, 1 + 0.35 * Math.sin(NM.L(t, c.tHit, c.tHit + 0.4) * Math.PI));
+    });
+    rivals.forEach((p) => { p.o = 0.45; p.s = 0.7; });
+    // ghim quán bạn nhô lên
+    const up = NM.E(t, 4.5, 5.3);
+    you.lift = 46 * up; you.s = 1 + 0.45 * up + 0.04 * Math.sin(t * 4) * up; you.o = 1;
+    NM.placePins();
+    const q = NM.p(C);
+    $('#spons').style.left = q.x + 'px'; $('#spons').style.top = (q.y + 16) + 'px';
+    $('#spons').style.opacity = NM.E(t, 4.9, 5.3);
+    $('#flash').style.opacity = (0.9 * Math.sin(NM.L(t, 4.5, 5.6) * Math.PI)).toFixed(3);
+    motes(t);
+  });
+  S.arrive(tl, S.words($('#hd')), 1.0, {stagger: 0.06});
+  S.arrive(tl, '#card', 5.2, {dist: 120});
+  tl.fromTo('#card .btn', {opacity: 0, scale: 0.7}, {opacity: 1, scale: 1, duration: 0.4, stagger: 0.12}, 5.6);
+  S.arrive(tl, '#demo', 5.2, {dist: 0, blur: 0});
+</script>
+</body>
+</html>

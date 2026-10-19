@@ -1,0 +1,297 @@
+{
+ "name": "SA01-google-ads-maps-doi-va-dang-o-rat-gan",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "mint": "#08DDA4",
+   "purple": "#7667FE",
+   "navy": "#0C0628"
+  }
+ },
+ "look": {
+  "grain": 0.04,
+  "vignette": 0.38
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook – gõ „Pho in der Nähe“, kéo lùi ra bản đồ",
+   "start": 0,
+   "end": 196,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Radar quét – quán khác hiện đầu",
+   "start": 196,
+   "end": 436,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Khách đi sang quán khác",
+   "start": 436,
+   "end": 646,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Mỗi tối bao nhiêu người như vậy",
+   "start": 646,
+   "end": 841,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Bếp vẫn nóng, bàn vẫn trống",
+   "start": 841,
+   "end": 961,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "SAMI dựng quảng cáo Maps – 4 module",
+   "start": 961,
+   "end": 1411,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "Chữ ký – mọi đường đi về quán bạn",
+   "start": 1411,
+   "end": 1666,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "3 lợi ích",
+   "start": 1666,
+   "end": 2041,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "Báo cáo tuần minh bạch",
+   "start": 2041,
+   "end": 2281,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "Nhịp thở + CTA",
+   "start": 2281,
+   "end": 2491,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "End card SAMI + WhatsApp",
+   "start": 2491,
+   "end": 2686,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  }
+ ],
+ "copy": {
+  "S01_query": {
+   "label": "Chữ gõ trong ô tìm kiếm (tiếng Đức)",
+   "scene": "S01",
+   "value": "Pho in der Nähe"
+  },
+  "S01_headline": {
+   "label": "Tiêu đề mở đầu (dưới thanh tìm kiếm)",
+   "scene": "S01",
+   "value": "Một người đang đói, / cách quán bạn / *400 mét.*"
+  },
+  "S02_l1": {
+   "label": "Câu 1 phía trên danh sách kết quả",
+   "scene": "S02",
+   "value": "Họ gõ đúng món bạn nấu ngon nhất."
+  },
+  "S02_l2": {
+   "label": "Câu 2 (nỗi đau) phía trên danh sách kết quả",
+   "scene": "S02",
+   "value": "Nhưng quán hiện lên / đầu tiên lại là / *quán khác.*"
+  },
+  "S03_headline": {
+   "label": "Tiêu đề khi khách đi sang quán khác",
+   "scene": "S03",
+   "value": "Họ không biết / bạn nấu ngon hơn. / Họ chỉ đi theo / *quán nào hiện ra trước.*"
+  },
+  "S04_headline": {
+   "label": "Câu hỏi khi camera lùi xa",
+   "scene": "S04",
+   "value": "Mỗi tối, có bao nhiêu / người như thế / *đi ngang qua quán bạn?*"
+  },
+  "S05_l1": {
+   "label": "Dòng 1 giữa màn tối",
+   "scene": "S05",
+   "value": "Bếp vẫn nóng."
+  },
+  "S05_l2": {
+   "label": "Dòng 2 giữa màn tối",
+   "scene": "S05",
+   "value": "*Bàn vẫn trống.*"
+  },
+  "S06_title": {
+   "label": "Tiêu đề bảng điều khiển SAMI",
+   "scene": "S06",
+   "value": "SAMI dựng *quảng cáo Maps* / riêng cho quán bạn."
+  },
+  "S06_m1t": {
+   "label": "Module 1 – tiêu đề",
+   "scene": "S06",
+   "value": "Bán kính quanh quán"
+  },
+  "S06_m1": {
+   "label": "Module 1 – mô tả",
+   "scene": "S06",
+   "value": "Chỉ hiện với người đang ở gần."
+  },
+  "S06_m2t": {
+   "label": "Module 2 – tiêu đề",
+   "scene": "S06",
+   "value": "Chạy theo giờ mở cửa"
+  },
+  "S06_m2": {
+   "label": "Module 2 – mô tả",
+   "scene": "S06",
+   "value": "Ruhetag, quảng cáo cũng nghỉ."
+  },
+  "S06_m3t": {
+   "label": "Module 3 – tiêu đề",
+   "scene": "S06",
+   "value": "Từ khóa tiếng Đức theo món"
+  },
+  "S06_m3": {
+   "label": "Module 3 – mô tả",
+   "scene": "S06",
+   "value": "Khách gõ món gì, quán bạn có mặt."
+  },
+  "S06_m4t": {
+   "label": "Module 4 – tiêu đề",
+   "scene": "S06",
+   "value": "Gọi · Chỉ đường · Đặt bàn"
+  },
+  "S06_m4": {
+   "label": "Module 4 – mô tả",
+   "scene": "S06",
+   "value": "Một chạm là tới bàn ăn."
+  },
+  "S07_headline": {
+   "label": "Tiêu đề khoảnh khắc chữ ký",
+   "scene": "S07",
+   "value": "Giờ, đúng lúc họ đói / và đang ở gần, / *quán bạn hiện lên* / *đầu tiên.*"
+  },
+  "S08_eyebrow": {
+   "label": "Nhãn nhỏ trên 3 thẻ lợi ích",
+   "scene": "S08",
+   "value": "Ba điều bạn nhận được"
+  },
+  "S08_b1t": {
+   "label": "Lợi ích 1 – tiêu đề",
+   "scene": "S08",
+   "value": "Khách đã sẵn sàng ăn"
+  },
+  "S08_b1": {
+   "label": "Lợi ích 1 – mô tả",
+   "scene": "S08",
+   "value": "Họ đang tìm, đang ở gần, chỉ còn chọn quán."
+  },
+  "S08_b2t": {
+   "label": "Lợi ích 2 – tiêu đề",
+   "scene": "S08",
+   "value": "Trả tiền cho hành động thật"
+  },
+  "S08_b2": {
+   "label": "Lợi ích 2 – mô tả",
+   "scene": "S08",
+   "value": "Bạn trả cho lượt bấm, không phải lượt lướt qua."
+  },
+  "S08_b3t": {
+   "label": "Lợi ích 3 – tiêu đề",
+   "scene": "S08",
+   "value": "Đo được từng cuộc gọi"
+  },
+  "S08_b3": {
+   "label": "Lợi ích 3 – mô tả",
+   "scene": "S08",
+   "value": "Mỗi cuộc gọi, mỗi lượt chỉ đường đều được đếm."
+  },
+  "S09_headline": {
+   "label": "Tiêu đề cảnh báo cáo",
+   "scene": "S09",
+   "value": "Mỗi tuần, SAMI gửi bạn / một báo cáo rõ ràng: / *tiền đi đâu,* / *khách đến từ đâu.*"
+  },
+  "S09_stamp": {
+   "label": "Tem đóng dấu trên báo cáo",
+   "scene": "S09",
+   "value": "Không chi phí ẩn"
+  },
+  "S10_headline": {
+   "label": "Câu CTA cảm xúc",
+   "scene": "S10",
+   "value": "Quán bạn đã / nấu ngon rồi. / Giờ hãy để khách / *tìm thấy bạn trước.*"
+  },
+  "S11_cta": {
+   "label": "Bong bóng chat – lời mời",
+   "scene": "S11",
+   "value": "Nhắn WhatsApp cho SAMI"
+  },
+  "S11_phone": {
+   "label": "Bong bóng chat – số WhatsApp",
+   "scene": "S11",
+   "value": "+49 155 60456888"
+  },
+  "S11_offer": {
+   "label": "Dòng ưu đãi dưới bong bóng",
+   "scene": "S11",
+   "value": "Phân tích marketing miễn phí, không ràng buộc. / Phản hồi trong 24 giờ."
+  },
+  "S11_tagline": {
+   "label": "Tagline dưới logo",
+   "scene": "S11",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S11_web": {
+   "label": "Website",
+   "scene": "S11",
+   "value": "sami-agency.de"
+  }
+ },
+ "status": "draft",
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": []
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 0
+  },
+  "cues": []
+ }
+}

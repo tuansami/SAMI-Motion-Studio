@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/nr.css">
+<style>
+  /* S06 · điểm sáng nổ thành bảng điều khiển HUD: 4 module lắp lần lượt (quy trình nhìn thấy được) */
+  #nm { opacity: .16; filter: blur(2px); }
+  #burst { position: absolute; z-index: 9; left: 50%; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: #fff; box-shadow: 0 0 60px #08DDA4, 0 0 160px #7667FE; pointer-events: none; }
+  #wave { position: absolute; z-index: 9; left: 50%; top: 50%; width: 200px; height: 200px; margin: -100px 0 0 -100px; border-radius: 50%; border: 3px solid #08DDA4; pointer-events: none; }
+  #top { position: absolute; z-index: 5; left: var(--safe-side); right: var(--safe-side); top: 236px; }
+  #bar { display: flex; justify-content: space-between; align-items: center; }
+  #prog { margin-top: 14px; height: 6px; border-radius: 6px; background: rgba(227, 228, 247, .12); overflow: hidden; }
+  #prog i { display: block; height: 100%; width: 100%; background: var(--grad); transform-origin: 0 50%; transform: scaleX(0); }
+  #title { position: relative; margin-top: 34px; font-weight: 800; font-size: 74px; line-height: 1.16; letter-spacing: -.025em; text-wrap: balance; }
+  #mods { position: absolute; z-index: 5; left: var(--safe-side); right: var(--safe-side); top: 640px; display: grid; grid-template-columns: 1fr; gap: 22px; }
+  .mod { position: relative; display: grid; grid-template-columns: 170px 1fr; gap: 28px; align-items: center; padding: 26px 30px; min-height: 170px; }
+  .mod .vis { width: 170px; height: 170px; position: relative; }
+  .mod .vis svg { width: 100%; height: 100%; overflow: visible; }
+  .mod .no { font: 500 20px/1 "IBM Plex Mono", monospace; letter-spacing: .16em; color: #08DDA4; text-transform: uppercase; display: flex; gap: 14px; }
+  .mod .no b { color: #8D87B8; font-weight: 500; }
+  .mod .ok { position: absolute; right: 26px; top: 24px; font: 500 20px/1 "IBM Plex Mono", monospace; letter-spacing: .12em; color: #08DDA4; padding: 7px 10px; border: 1px solid rgba(8, 221, 164, .5); border-radius: 8px; }
+  .mod h3 { margin: 10px 0 6px; font-weight: 700; font-size: 44px; line-height: 1.18; letter-spacing: -.015em; color: #fff; }
+  .mod p { margin: 0; font-weight: 500; font-size: 34px; line-height: 1.3; color: #C9C6EA; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .chip { font: 500 23px/1 "IBM Plex Mono", monospace; color: #E3E4F7; padding: 9px 13px; border-radius: 10px; background: rgba(118, 103, 254, .22); border: 1px solid rgba(118, 103, 254, .55); white-space: nowrap; }
+  .btns { display: flex; gap: 10px; margin-top: 12px; }
+  .btn { font: 600 24px/1 "Be Vietnam Pro", sans-serif; color: #0C0628; padding: 11px 16px; border-radius: 30px; background: #E3E4F7; white-space: nowrap; }
+  .btn.p { background: linear-gradient(120deg, #08DDA4, #7667FE); color: #fff; }
+  .day { font: 500 24px/1 "IBM Plex Mono", monospace; fill: #A8A3C9; }
+  svg .st { fill: none; stroke: #08DDA4; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  [data-ratio="16x9"] #top { left: 110px; right: 110px; top: 70px; }
+  [data-ratio="16x9"] #title { font-size: 62px; margin-top: 22px; width: 1500px; }
+  [data-ratio="16x9"] #mods { left: 110px; right: 110px; top: 370px; grid-template-columns: 1fr 1fr; gap: 26px 30px; }
+  [data-ratio="16x9"] .mod { min-height: 290px; grid-template-columns: 190px 1fr; }
+  [data-ratio="16x9"] .mod .vis { width: 190px; height: 190px; }
+  [data-ratio="16x9"] .mod h3 { font-size: 42px; }
+  [data-ratio="16x9"] .mod p { font-size: 31px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S06">
+  <div class="grid" id="grid"></div>
+  <div id="nm"></div>
+  <div id="top">
+    <div id="bar"><span class="eyebrow">SAMI · Maps Ads Setup</span><span class="eyebrow" id="pct" style="color:#E3E4F7">Thiết lập 0 %</span></div>
+    <div id="prog"><i></i></div>
+    <div id="title" data-copy="S06_title"></div>
+  </div>
+  <div id="mods">
+    <div class="mod glass" id="m1">
+      <div class="vis"><svg viewBox="0 0 170 170">
+        <circle cx="85" cy="85" r="78" fill="rgba(8,221,164,.06)" stroke="rgba(8,221,164,.25)" stroke-width="2" stroke-dasharray="5 7"/>
+        <circle id="m1r" cx="85" cy="85" r="20" fill="rgba(8,221,164,.14)" stroke="#08DDA4" stroke-width="3"/>
+        <path d="M85 104 C85 104 70 87 70 76 A15 15 0 0 1 100 76 C100 87 85 104 85 104Z" fill="#08DDA4"/><circle cx="85" cy="76" r="5.5" fill="#0C0628"/>
+        <circle id="m1h" cx="85" cy="85" r="7" fill="#fff"/>
+      </svg></div>
+      <div><div class="no">01 <b>Umkreis</b></div><h3 data-copy="S06_m1t"></h3><p data-copy="S06_m1"></p></div>
+      <span class="ok">✓ Aktiv</span>
+    </div>
+    <div class="mod glass" id="m2">
+      <div class="vis"><svg viewBox="0 0 170 170" id="m2s"></svg></div>
+      <div><div class="no">02 <b>Zeitplan</b></div><h3 data-copy="S06_m2t"></h3><p data-copy="S06_m2"></p></div>
+      <span class="ok">✓ Aktiv</span>
+    </div>
+    <div class="mod glass" id="m3">
+      <div class="vis"><svg viewBox="0 0 170 170"><circle class="st" cx="72" cy="72" r="40"/><path class="st" d="M101 101 L140 140" stroke-width="8"/><path id="m3c" d="M56 72 H88" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg></div>
+      <div><div class="no">03 <b>Keywords</b></div><h3 data-copy="S06_m3t"></h3><p data-copy="S06_m3"></p>
+        <div class="chips"><span class="chip">Pho in der Nähe</span><span class="chip">Vietnamesisch essen</span><span class="chip">Sommerrollen</span></div></div>
+      <span class="ok">✓ Aktiv</span>
+    </div>
+    <div class="mod glass" id="m4">
+      <div class="vis"><svg viewBox="0 0 170 170"><circle id="m4w" cx="85" cy="70" r="20" fill="none" stroke="#08DDA4" stroke-width="3"/>
+        <path class="st" d="M78 150 L66 108 C63 99 74 95 78 103 L84 118 L84 64 C84 56 96 56 96 64 L96 100 C96 94 108 94 108 101 L108 104 C108 98 120 98 120 106 L120 110 C120 104 131 104 131 112 L128 136 C126 146 120 150 116 150 Z" stroke="#fff"/></svg></div>
+      <div><div class="no">04 <b>Aktionen</b></div><h3 data-copy="S06_m4t"></h3><p data-copy="S06_m4"></p>
+        <div class="btns"><span class="btn">Anrufen</span><span class="btn">Route</span><span class="btn p">Reservieren</span></div></div>
+      <span class="ok">✓ Aktiv</span>
+    </div>
+  </div>
+  <div id="wave"></div>
+  <div id="burst"></div>
+</div>
+<script src="hf/parts/nightmap.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), NM = window.NM, $ = (s) => document.querySelector(s);
+  NM.init($('#nm'));
+  NM.pin(NM.YOU, {kind: 'you'});
+  const motes = NM.motes($('#root'), 20, 71);
+  // lịch tuần: Mo = Ruhetag
+  const days = ['M', 'D', 'M', 'D', 'F', 'S', 'S'], m2 = $('#m2s'), bars = [];
+  days.forEach((d, i) => {
+    const x = 8 + i * 23;
+    NM.el('rect', {x: x, y: 20, width: 16, height: 110, rx: 5, fill: 'rgba(227,228,247,.08)'}, m2);
+    const b = NM.el('rect', {x: x, y: 20, width: 16, height: 110, rx: 5, fill: i === 0 ? 'rgba(255,90,95,.0)' : '#08DDA4'}, m2);
+    bars.push(b);
+    const tx = NM.el('text', {x: x + 8, y: 158, 'text-anchor': 'middle', class: 'day'}, m2); tx.textContent = d;
+    if (i === 0) { const c = NM.el('path', {d: 'M' + (x + 1) + ' 64 L' + (x + 15) + ' 86 M' + (x + 15) + ' 64 L' + (x + 1) + ' 86', stroke: '#FF5A5F', 'stroke-width': 3, 'stroke-linecap': 'round'}, m2); }
+  });
+  const AT = [2.0, 4.8, 7.6, 10.4]; // module xuất hiện (giây trong clip)
+  NM.clock(tl, (t) => {
+    NM.cam(NM.YOU.x, NM.YOU.y, (S.landscape ? 2600 : 1800) * (1 - 0.06 * t / S.dur), 0.5, 0.55);
+    NM.placePins();
+    $('#grid').style.transform = 'translate(' + (-t * 5).toFixed(1) + 'px,' + (-t * 3).toFixed(1) + 'px)';
+    // nổ điểm sáng
+    $('#burst').style.opacity = 1 - NM.E(t, 0.15, 0.7);
+    $('#burst').style.transform = 'scale(' + (4 + 10 * NM.E(t, 0, 0.6)).toFixed(2) + ')';
+    const w = NM.E(t, 0.1, 1.1);
+    $('#wave').style.opacity = (1 - w) * 0.9; $('#wave').style.transform = 'scale(' + (0.2 + 14 * w).toFixed(2) + ')';
+    // tiến trình
+    let done = 0; AT.forEach((a) => { done += NM.E(t, a + 0.3, a + 1.6); });
+    $('#prog i').style.transform = 'scaleX(' + (done / 4).toFixed(4) + ')';
+    $('#pct').textContent = 'Thiết lập ' + Math.round(done * 25) + ' %';
+    // module 1: bán kính kéo giãn, chấm người trong vòng
+    const r = NM.E(t, AT[0] + 0.3, AT[0] + 1.5);
+    $('#m1r').setAttribute('r', (20 + 52 * r).toFixed(1));
+    const a = t * 1.4; $('#m1h').setAttribute('cx', (85 + Math.cos(a) * 46 * r).toFixed(1)); $('#m1h').setAttribute('cy', (85 + Math.sin(a) * 46 * r).toFixed(1));
+    // module 2: các ngày bật sáng lần lượt, thứ Hai nghỉ
+    bars.forEach((b, i) => { const k = i === 0 ? 0 : NM.E(t, AT[1] + 0.3 + i * 0.12, AT[1] + 0.7 + i * 0.12); const hh = 110 * (0.35 + 0.5 * S.rnd(i + 3)) * k; b.setAttribute('y', 130 - hh); b.setAttribute('height', Math.max(0.01, hh)); });
+    // module 3: con trỏ nhấp nháy trong kính lúp
+    $('#m3c').style.opacity = Math.floor(t * 3) % 2 ? 0.2 : 1;
+    // module 4: sóng chạm
+    const tp = ((t - AT[3] - 0.5) % 1.2) / 1.2;
+    $('#m4w').setAttribute('r', t > AT[3] + 0.5 ? (8 + 34 * tp).toFixed(1) : 0); $('#m4w').setAttribute('opacity', t > AT[3] + 0.5 ? (1 - tp).toFixed(2) : 0);
+    motes(t);
+  });
+  S.arrive(tl, '#bar', 0.5, {dist: 14, blur: 4});
+  tl.fromTo('#prog', {opacity: 0}, {opacity: 1, duration: 0.4}, 0.6);
+  S.arrive(tl, S.words($('#title')), 0.6, {stagger: 0.05});
+  ['#m1', '#m2', '#m3', '#m4'].forEach((id, i) => {
+    tl.fromTo(id, {opacity: 0, y: 50, scale: 0.96, filter: 'blur(10px)'}, {opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.7}, AT[i]);
+    tl.fromTo(id + ' .ok', {opacity: 0, scale: 0.6}, {opacity: 1, scale: 1, duration: 0.4}, AT[i] + 1.4);
+  });
+  tl.fromTo('#m3 .chip', {opacity: 0, y: 14}, {opacity: 1, y: 0, duration: 0.4, stagger: 0.35}, AT[2] + 0.5);
+  tl.fromTo('#m4 .btn', {opacity: 0, scale: 0.7}, {opacity: 1, scale: 1, duration: 0.4, stagger: 0.2}, AT[3] + 0.4);
+</script>
+</body>
+</html>

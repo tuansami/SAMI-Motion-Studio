@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/nr.css">
+<style>
+  /* S01 · Hook: ô tìm kiếm khổng lồ gõ „Pho in der Nähe" → Enter → camera kéo lùi ra bản đồ đêm, chấm người + 400 m */
+  #search { position: absolute; z-index: 9; left: 50%; top: 50%; width: 940px; height: 156px; margin-left: -470px; margin-top: -78px; border-radius: 80px; background: #16103A; border: 2px solid rgba(8, 221, 164, .7); box-shadow: 0 0 60px rgba(8, 221, 164, .25), 0 30px 80px rgba(0, 0, 0, .6); display: flex; align-items: center; gap: 28px; padding: 0 48px; box-sizing: border-box; transform-origin: 50% 50%; }
+  #search svg { width: 58px; height: 58px; flex: none; }
+  #q { font: 500 60px/1 "Be Vietnam Pro", sans-serif; color: #fff; white-space: nowrap; letter-spacing: -.01em; }
+  #caret { display: inline-block; width: 5px; height: 64px; background: #08DDA4; margin-left: 6px; vertical-align: -10px; }
+  #go { margin-left: auto; width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(135deg, #08DDA4, #7667FE); display: flex; align-items: center; justify-content: center; flex: none; }
+  #go svg { width: 44px; height: 44px; }
+  #hint { position: absolute; z-index: 9; left: 0; right: 0; top: calc(50% + 120px); text-align: center; font: 500 26px/1 "IBM Plex Mono", monospace; letter-spacing: .2em; color: rgba(227, 228, 247, .55); text-transform: uppercase; }
+  #flash { position: absolute; inset: 0; z-index: 10; background: radial-gradient(circle at 50% 50%, rgba(8, 221, 164, .55), rgba(8, 221, 164, 0) 60%); opacity: 0; pointer-events: none; }
+  #veil { position: absolute; inset: 0; z-index: 3; background: #070420; }
+  .scrim.top { top: 0; height: 900px; background: linear-gradient(#070420 0%, rgba(7, 4, 32, .92) 35%, rgba(7, 4, 32, 0) 100%); }
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 430px; font-size: 84px; }
+  #clock { left: var(--safe-side); top: 360px; }
+  #m400 { position: absolute; z-index: 6; font: 500 30px/1 "IBM Plex Mono", monospace; color: #fff; letter-spacing: .06em; padding: 10px 16px; background: rgba(7, 4, 32, .85); border: 1px solid rgba(8, 221, 164, .6); border-radius: 12px; transform: translate(-50%, -50%); white-space: nowrap; }
+  #coords { right: var(--safe-side); bottom: calc(var(--safe-bottom) + 10px); font-size: 20px; color: rgba(8, 221, 164, .6); text-align: right; }
+  [data-ratio="16x9"] .scrim.top { top: 0; bottom: 0; height: auto; right: auto; width: 1100px; background: linear-gradient(90deg, #070420 0%, rgba(7, 4, 32, .9) 55%, rgba(7, 4, 32, 0) 100%); }
+  [data-ratio="16x9"] #hd { left: 120px; right: auto; width: 820px; top: 420px; font-size: 84px; }
+  [data-ratio="16x9"] #clock { left: 120px; top: 340px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S01">
+  <div class="grid" id="grid"></div>
+  <div id="nm"></div>
+  <div id="veil"></div>
+  <div class="scrim top" id="scrim"></div>
+  <div class="hud" id="clock"><b>19:12</b> · Leipzig · Südvorstadt</div>
+  <div class="hd" id="hd" data-copy="S01_headline"></div>
+  <div id="m400">400 m</div>
+  <div class="hud" id="coords">51.3245° N · 12.3731° E<br>Suche · Umkreis</div>
+  <div id="search">
+    <svg viewBox="0 0 48 48" fill="none" stroke="#08DDA4" stroke-width="5" stroke-linecap="round"><circle cx="20" cy="20" r="13"/><path d="M30 30 L42 42"/></svg>
+    <div id="q"><span id="qt"></span><span id="caret"></span></div>
+    <div id="go"><svg viewBox="0 0 48 48" fill="none" stroke="#0C0628" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 24 H36 M26 13 L37 24 L26 35"/></svg></div>
+  </div>
+  <div id="hint">Google Maps · 19:12</div>
+  <div id="flash"></div>
+</div>
+<script src="hf/parts/nightmap.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), NM = window.NM, $ = (s) => document.querySelector(s);
+  const L16 = S.landscape;
+  NM.init($('#nm'));
+  const you = NM.pin(NM.YOU, {kind: 'you', label: 'Phở Mây<small>quán của bạn</small>'});
+  const rivals = NM.RIVALS.map((r) => NM.pin(r, {kind: 'rival'}));
+  const route = NM.route({color: '#E3E4F7', w: 3, dash: '10 12'});
+  const me = NM.dot({});
+  const motes = NM.motes($('#root'), 26, 11);
+  const QUERY = S.text('S01_query', 'Pho in der Nähe');
+  const mid = {x: (NM.PERSON.x + NM.YOU.x) / 2, y: (NM.PERSON.y + NM.YOU.y) / 2};
+  const line = (u) => ({x: NM.mix(NM.PERSON.x, NM.YOU.x, u), y: NM.mix(NM.PERSON.y, NM.YOU.y, u)});
+  const camW = L16 ? 1350 : 860, fx = L16 ? 0.72 : 0.5, fy = L16 ? 0.55 : 0.69;
+  // vị trí cuối của ô tìm kiếm (thành thanh tìm kiếm của Maps)
+  const SB = L16 ? {x: 120 + 380, y: 170, s: 0.8} : {x: S.w / 2, y: 268, s: 0.92};
+
+  const draw = (t) => {
+    // gõ chữ
+    const n = Math.round(QUERY.length * NM.L(t, 0.35, 1.55));
+    $('#qt').textContent = QUERY.slice(0, n);
+    $('#caret').style.opacity = (t < 1.75 ? (Math.floor(t * 3.2) % 2 === 0 || (t > 0.35 && t < 1.55)) : false) ? 1 : 0;
+    // Enter
+    const press = NM.L(t, 1.62, 1.82);
+    $('#go').style.transform = 'scale(' + (1 - 0.18 * Math.sin(press * Math.PI)) + ')';
+    $('#flash').style.opacity = (0.9 * Math.sin(NM.L(t, 1.72, 2.25) * Math.PI)).toFixed(3);
+    // ô tìm kiếm thu về đầu màn hình
+    const u = NM.E(t, 1.85, 2.9);
+    const sx = NM.mix(S.w / 2, SB.x, u), sy = NM.mix(S.h / 2, SB.y, u), sc = NM.mix(1, SB.s, u);
+    $('#search').style.transform = 'translate(' + (sx - S.w / 2).toFixed(1) + 'px,' + (sy - S.h / 2).toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')';
+    $('#hint').style.opacity = (1 - NM.L(t, 1.7, 2.0)) * NM.L(t, 0.1, 0.4);
+    // camera kéo lùi từ chấm người
+    const z = NM.E(t, 1.9, 4.2);
+    const w = NM.mix(70, camW, z);
+    const c = {x: NM.mix(NM.PERSON.x, mid.x, z), y: NM.mix(NM.PERSON.y, mid.y, z)};
+    NM.cam(c.x, c.y, w * (1 + 0.04 * NM.L(t, 4.2, S.dur)), NM.mix(0.5, fx, z), NM.mix(0.5, fy, z));
+    $('#veil').style.opacity = 1 - NM.E(t, 1.85, 2.6);
+    $('#grid').style.transform = 'translate(' + (-t * 6).toFixed(1) + 'px,' + (-t * 4).toFixed(1) + 'px)';
+    // người
+    me.place(NM.PERSON, NM.L(t, 1.9, 2.3), t * 0.8, 1.45);
+    // ghim
+    you.o = NM.E(t, 2.7, 3.2); you.s = 0.6 + 0.4 * NM.E(t, 2.7, 3.3);
+    rivals.forEach((p, i) => { p.o = 0.45 * NM.E(t, 2.4 + i * 0.06, 2.9 + i * 0.06); p.s = 0.8; });
+    NM.placePins();
+    // thước 400 m
+    const m = NM.E(t, 3.1, 4.0);
+    route.draw(line, m, 0.8);
+    const q = NM.p(mid);
+    $('#m400').style.left = q.x + 'px'; $('#m400').style.top = (q.y - 36) + 'px';
+    $('#m400').style.opacity = NM.E(t, 3.7, 4.1);
+    $('#scrim').style.opacity = NM.E(t, 2.0, 2.8);
+    motes(t);
+  };
+  NM.clock(tl, draw);
+  S.arrive(tl, '#clock', 2.35, {dist: 20});
+  S.arrive(tl, S.words($('#hd')), 2.5, {stagger: 0.07});
+  S.arrive(tl, '#coords', 2.9, {dist: 10, blur: 4});
+</script>
+</body>
+</html>

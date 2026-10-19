@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/nr.css">
+<style>
+  /* S04 · camera lùi cao: hàng chục người, ai cũng đi sang quán khác, lướt qua quán bạn */
+  .scrim.top { top: 0; height: 860px; background: linear-gradient(#070420 0%, rgba(7, 4, 32, .9) 45%, rgba(7, 4, 32, 0) 100%); }
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 300px; font-size: 74px; }
+  #demo { right: var(--safe-side); bottom: calc(var(--safe-bottom) + 20px); }
+  #cnt { left: var(--safe-side); bottom: calc(var(--safe-bottom) + 24px); }
+  [data-ratio="16x9"] .scrim.top { width: 1100px; right: auto; height: auto; bottom: 0; background: linear-gradient(90deg, #070420 0%, rgba(7, 4, 32, .88) 60%, rgba(7, 4, 32, 0) 100%); }
+  [data-ratio="16x9"] #hd { left: 120px; right: auto; width: 820px; top: 340px; font-size: 76px; }
+  [data-ratio="16x9"] #demo { right: 96px; bottom: 70px; }
+  [data-ratio="16x9"] #cnt { left: 120px; bottom: 70px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S04">
+  <div class="grid" id="grid"></div>
+  <div id="nm"></div>
+  <div class="scrim top"></div>
+  <div class="hd" id="hd" data-copy="S04_headline"></div>
+  <div class="hud" id="cnt">19:12 → 21:30 · Suchen in der Nähe</div>
+  <div class="tag-demo" id="demo">Minh họa</div>
+</div>
+<script src="hf/parts/nightmap.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), NM = window.NM, $ = (s) => document.querySelector(s);
+  const L16 = S.landscape;
+  NM.init($('#nm'));
+  const you = NM.pin(NM.YOU, {kind: 'you', label: 'Phở Mây<small>quán của bạn</small>'});
+  const rivals = NM.RIVALS.map((r) => NM.pin(r, {kind: 'rival'}));
+  const crowd = NM.crowd(38, NM.YOU, 260, 950, 101).map((p, i) => {
+    // mỗi người đi tới quán khác gần nhất (không phải quán bạn), đường cong đi ngang qua quán bạn
+    let best = NM.RIVALS[0], bd = 1e9;
+    NM.RIVALS.forEach((r) => { const d = NM.dist(p, r); if (d < bd) { bd = d; best = r; } });
+    const fn = NM.curve(p, best, (p.k - 0.5) * 0.5);
+    return {p, fn, at: 0.4 + p.k * 2.2, route: NM.route({color: '#E3E4F7', w: 2.5}), dot: NM.dot({color: '#E3E4F7', r: 7, halo: 18})};
+  });
+  const motes = NM.motes($('#root'), 22, 53);
+
+  const draw = (t) => {
+    const z = NM.E(t, 0, 3.8);
+    const w = L16 ? NM.mix(1200, 2900, z) : NM.mix(900, 2100, z);
+    const R1 = NM.RIVALS[0];
+    const cx = NM.mix((R1.x + NM.YOU.x) / 2, NM.YOU.x, z), cy = NM.mix((R1.y + NM.YOU.y) / 2 + 40, NM.YOU.y, z);
+    NM.cam(cx, cy, w, L16 ? 0.7 : 0.5, L16 ? 0.55 : NM.mix(0.66, 0.66, z));
+    $('#grid').style.transform = 'translate(' + (-t * 6 - 130).toFixed(1) + 'px,' + (-t * 4 - 88).toFixed(1) + 'px) scale(' + (1 - 0.15 * z) + ')';
+    crowd.forEach((c) => {
+      const u = NM.E(t, c.at, c.at + 3.2);
+      const a = NM.E(t, c.at - 0.3, c.at);
+      c.route.draw(c.fn, u, 0.28 * a);
+      c.dot.place(c.fn(u), a * (1 - 0.6 * NM.L(u, 0.92, 1)), t * 0.7 + c.p.k, 1);
+    });
+    rivals.forEach((p) => { p.o = 0.75; p.s = 0.75; });
+    you.o = 1; you.s = 1 + 0.06 * Math.sin(t * 3);
+    NM.placePins();
+    motes(t);
+  };
+  NM.clock(tl, draw);
+  S.arrive(tl, S.words($('#hd')), 0.5, {stagger: 0.06});
+  S.arrive(tl, '#cnt', 1.2, {dist: 10, blur: 4});
+  S.arrive(tl, '#demo', 1.4, {dist: 0, blur: 0});
+</script>
+</body>
+</html>

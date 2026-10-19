@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/nr.css">
+<style>
+  /* S02 · radar quét từ chấm người, ghim sáng lần lượt; danh sách kết quả: quán bạn ở dưới cùng */
+  .scrim.top { top: 0; height: 820px; background: linear-gradient(#070420 0%, rgba(7, 4, 32, .9) 45%, rgba(7, 4, 32, 0) 100%); }
+  .scrim.bot { bottom: 0; height: 900px; background: linear-gradient(rgba(7, 4, 32, 0), rgba(7, 4, 32, .85) 40%, #070420); }
+  #l1 { left: var(--safe-side); right: var(--safe-side); top: 300px; font-size: 54px; font-weight: 600; color: #D9D7F2; }
+  #l2 { left: var(--safe-side); right: var(--safe-side); top: 384px; font-size: 76px; }
+  #panel { position: absolute; z-index: 6; left: var(--safe-side); right: var(--safe-side); bottom: calc(var(--safe-bottom) + 10px); padding: 26px 30px 18px; }
+  .row { display: flex; align-items: center; gap: 22px; padding: 16px 6px; border-bottom: 1px solid rgba(227, 228, 247, .1); }
+  .row .n { font: 500 24px/1 "IBM Plex Mono", monospace; color: #8D87B8; width: 34px; }
+  .row .ic { width: 56px; height: 56px; border-radius: 16px; background: #2a2558; flex: none; display: flex; align-items: center; justify-content: center; }
+  .row .ic i { width: 20px; height: 20px; border-radius: 50%; background: #E3E4F7; }
+  .row .nm { font: 600 34px/1.2 "Be Vietnam Pro", sans-serif; color: #fff; }
+  .row .meta { font: 500 22px/1.3 "IBM Plex Mono", monospace; color: #A8A3C9; letter-spacing: .04em; }
+  .row .st { margin-left: auto; color: #F59E0B; font-size: 26px; letter-spacing: 2px; }
+  .row.gap { justify-content: center; border-bottom: 0; padding: 6px; color: #6E6893; font: 500 22px/1 "IBM Plex Mono", monospace; letter-spacing: .2em; }
+  .row.you { border: 2px dashed rgba(8, 221, 164, .55); border-radius: 18px; margin-top: 6px; }
+  .row.you .ic { background: linear-gradient(135deg, #08DDA4, #7667FE); }
+  .row.you .ic i { background: #0C0628; }
+  .row.you .meta { color: #08DDA4; }
+  #ph { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  #ph .q { font: 600 28px/1 "Be Vietnam Pro", sans-serif; color: #E3E4F7; }
+  #demo { right: var(--safe-side); top: 230px; }
+  #scan { left: var(--safe-side); top: 236px; }
+  [data-ratio="16x9"] .scrim.top { width: 1100px; right: auto; height: auto; bottom: 0; background: linear-gradient(90deg, #070420 0%, rgba(7, 4, 32, .88) 60%, rgba(7, 4, 32, 0) 100%); }
+  [data-ratio="16x9"] .scrim.bot { display: none; }
+  [data-ratio="16x9"] #l1 { left: 120px; right: auto; width: 820px; top: 150px; font-size: 44px; }
+  [data-ratio="16x9"] #l2 { left: 120px; right: auto; width: 820px; top: 222px; font-size: 64px; }
+  [data-ratio="16x9"] #panel { left: 120px; right: auto; width: 780px; bottom: 70px; padding: 18px 26px 10px; }
+  [data-ratio="16x9"] .row { padding: 10px 6px; }
+  [data-ratio="16x9"] .row .nm { font-size: 28px; }
+  [data-ratio="16x9"] .row .ic { width: 46px; height: 46px; }
+  [data-ratio="16x9"] #demo { top: 70px; right: 96px; }
+  [data-ratio="16x9"] #scan { left: auto; right: 96px; top: auto; bottom: 70px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02">
+  <div class="grid" id="grid"></div>
+  <div id="nm"></div>
+  <div class="scrim top"></div>
+  <div class="scrim bot"></div>
+  <div class="hd" id="l1" data-copy="S02_l1"></div>
+  <div class="hd" id="l2" data-copy="S02_l2"></div>
+  <div class="tag-demo" id="demo">Minh họa</div>
+  <div class="hud" id="scan">Scan · r 500 m · <b id="cnt">0</b> Treffer</div>
+  <div class="glass" id="panel">
+    <div id="ph"><span class="q">„Pho in der Nähe"</span><span class="eyebrow" style="font-size:20px">Ergebnisse</span></div>
+    <div class="row r"><span class="n">01</span><span class="ic"><i></i></span><div><div class="nm">Quán Gió</div><div class="meta">Vietnamesisch · 160 m</div></div><span class="st">★★★★★</span></div>
+    <div class="row r"><span class="n">02</span><span class="ic"><i></i></span><div><div class="nm">Nhà Tre</div><div class="meta">Asiatisch · 260 m</div></div><span class="st">★★★★☆</span></div>
+    <div class="row r"><span class="n">03</span><span class="ic"><i></i></span><div><div class="nm">Bếp Sen</div><div class="meta">Vietnamesisch · 330 m</div></div><span class="st">★★★★☆</span></div>
+    <div class="row gap r">· · · cuộn tiếp · · ·</div>
+    <div class="row you r"><span class="n">··</span><span class="ic"><i></i></span><div><div class="nm">Phở Mây</div><div class="meta">quán của bạn · 400 m</div></div><span class="st" style="color:#8D87B8">mãi dưới cùng</span></div>
+  </div>
+</div>
+<script src="hf/parts/nightmap.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), NM = window.NM, $ = (s) => document.querySelector(s);
+  const L16 = S.landscape;
+  NM.init($('#nm'));
+  const radar = NM.radar();
+  const you = NM.pin(NM.YOU, {kind: 'you', label: 'Phở Mây<small>quán của bạn</small>'});
+  const named = {r1: 'Quán Gió', r2: 'Bếp Sen', r3: 'Nhà Tre'};
+  const rivals = NM.RIVALS.map((r) => ({r, p: NM.pin(r, {kind: 'rival', label: named[r.id] || ''})}));
+  const me = NM.dot({});
+  const motes = NM.motes($('#root'), 24, 23);
+  const mid = {x: (NM.PERSON.x + NM.YOU.x) / 2, y: (NM.PERSON.y + NM.YOU.y) / 2};
+  const R = 520, REV = 2.0; // một vòng quét / 2 s (ping mỗi vòng)
+  const angAt = (t) => -90 + 360 * (t - 0.3) / REV;
+
+  const draw = (t) => {
+    const z = NM.E(t, 0, 2.6);
+    const w = L16 ? NM.mix(1404, 1700, z) : NM.mix(894, 1350, z);
+    const c = {x: NM.mix(mid.x, NM.PERSON.x + 40, z), y: NM.mix(mid.y, NM.PERSON.y - 40, z)};
+    NM.cam(c.x, c.y, w * (1 + 0.03 * t / S.dur), L16 ? 0.72 : 0.5, L16 ? 0.55 : NM.mix(0.69, 0.53, z));
+    $('#grid').style.transform = 'translate(' + (-t * 6 - 40).toFixed(1) + 'px,' + (-t * 4 - 27).toFixed(1) + 'px)';
+    const ang = angAt(t), on = NM.E(t, 0.1, 0.6);
+    const ping = t > 0.3 ? ((t - 0.3) % REV) / REV : 0;
+    radar.draw(NM.PERSON, R, ang, on * (1 - 0.6 * NM.L(t, 6.6, 7.6)), ping);
+    me.place(NM.PERSON, 1, t * 0.8, 1.45);
+    let hits = 0;
+    rivals.forEach(({r, p}) => {
+      const inR = NM.dist(r, NM.PERSON) < R;
+      // đã bị quét qua chưa (tính góc cộng dồn)
+      const b = Math.atan2(r.y - NM.PERSON.y, r.x - NM.PERSON.x) * 180 / Math.PI;
+      let rel = ((b + 90) % 360 + 360) % 360;
+      const tHit = 0.3 + rel / 360 * REV;
+      const lit = inR ? NM.E(t, tHit, tHit + 0.35) : 0;
+      if (inR && t > tHit) hits++;
+      p.o = 0.45 + 0.55 * lit; p.s = 0.8 + 0.25 * lit + 0.25 * Math.sin(NM.L(t, tHit, tHit + 0.4) * Math.PI) * (inR ? 1 : 0);
+      p.el.querySelector('.pin-lab') && (p.el.querySelector('.pin-lab').style.opacity = lit);
+    });
+    $('#cnt').textContent = hits;
+    you.o = 0.9 - 0.45 * NM.E(t, 3.4, 4.4); you.s = 1;
+    NM.placePins();
+    motes(t);
+  };
+  NM.clock(tl, draw);
+  S.arrive(tl, S.words($('#l1')), 0.45, {stagger: 0.05});
+  S.arrive(tl, S.words($('#l2')), 3.3, {stagger: 0.07});
+  S.arrive(tl, '#scan', 0.6, {dist: 10, blur: 4});
+  // danh sách kết quả
+  S.arrive(tl, '#panel', 2.5, {dist: 120});
+  tl.fromTo('.row.r', {opacity: 0, x: -30}, {opacity: 1, x: 0, duration: 0.5, stagger: 0.18}, 2.75);
+  tl.fromTo('.row.you', {opacity: 0}, {opacity: 0.55, duration: 0.6}, 3.6);
+  S.arrive(tl, '#demo', 2.6, {dist: 0, blur: 0});
+</script>
+</body>
+</html>

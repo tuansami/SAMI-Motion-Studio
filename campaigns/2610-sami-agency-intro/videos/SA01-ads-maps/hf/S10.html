@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/nr.css">
+<style>
+  /* S10 · nhịp thở: ghim quán bạn sáng một mình 1,5 s, sóng mint nở chậm, rồi câu CTA cảm xúc */
+  #nm { opacity: .35; }
+  #veil { position: absolute; inset: 0; z-index: 2; background: radial-gradient(circle at 50% 66%, rgba(7, 4, 32, .2), #070420 62%); }
+  [data-ratio="16x9"] #veil { background: radial-gradient(circle at 72% 60%, rgba(7, 4, 32, .2), #070420 50%); }
+  .wave { position: absolute; z-index: 3; width: 400px; height: 400px; margin: -200px 0 0 -200px; border-radius: 50%; border: 3px solid #08DDA4; }
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 360px; font-size: 84px; text-align: center; }
+  [data-ratio="16x9"] #hd { left: 120px; right: auto; width: 860px; top: 340px; text-align: left; font-size: 80px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S10">
+  <div id="nm"></div>
+  <div id="veil"></div>
+  <div class="wave" id="w1"></div><div class="wave" id="w2"></div><div class="wave" id="w3"></div>
+  <div class="hd" id="hd" data-copy="S10_headline"></div>
+</div>
+<script src="hf/parts/nightmap.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), NM = window.NM, $ = (s) => document.querySelector(s);
+  NM.init($('#nm'));
+  const you = NM.pin(NM.YOU, {kind: 'you'});
+  $('#root').appendChild($('#nm-pins')); $('#nm-pins').style.zIndex = 4;
+  const motes = NM.motes($('#root'), 16, 151);
+  NM.clock(tl, (t) => {
+    NM.cam(NM.YOU.x, NM.YOU.y, (S.landscape ? 1900 : 1300) * (1 - 0.06 * t / S.dur), S.landscape ? 0.72 : 0.5, S.landscape ? 0.62 : 0.68);
+    you.s = 1.7 + 0.08 * Math.sin(t * 2.4); you.o = NM.E(t, 0, 0.5);
+    NM.placePins();
+    const q = NM.p(NM.YOU);
+    ['#w1', '#w2', '#w3'].forEach((id, i) => {
+      const k = ((t * 0.45 + i / 3) % 1);
+      const e = $(id); e.style.left = q.x + 'px'; e.style.top = (q.y - 60) + 'px';
+      e.style.transform = 'scale(' + (0.1 + 2.4 * k).toFixed(3) + ')'; e.style.opacity = ((1 - k) * 0.6 * NM.E(t, 0.2, 1.0)).toFixed(3);
+    });
+    motes(t);
+  });
+  S.arrive(tl, S.words($('#hd')), 1.75, {stagger: 0.07, dur: 0.8});
+</script>
+</body>
+</html>

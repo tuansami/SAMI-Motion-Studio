@@ -1,0 +1,35 @@
+/* SA01 · "Night Radar" — kiểu chung cho mọi cảnh */
+:root { --nr-bg: #070420; --nr-ink: #F4F2FF; --nr-dim: #8D87B8; --nr-line: rgba(227, 228, 247, 0.14); --nr-amber: #F59E0B; }
+[data-composition-id] { background: var(--nr-bg); }
+#nm, #nm-map, #nm-ov, #nm-pins { position: absolute; inset: 0; }
+#nm { overflow: hidden; }
+#nm-ov, #nm-pins { pointer-events: none; }
+
+/* ghim */
+.pin { position: absolute; left: 0; top: 0; width: 0; height: 0; will-change: transform; }
+.pin .pin-svg { position: absolute; width: 46px; height: 60px; left: -23px; top: -60px; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .55)); }
+.pin.you .pin-svg { width: 70px; height: 92px; left: -35px; top: -92px; filter: drop-shadow(0 0 22px rgba(8, 221, 164, .65)) drop-shadow(0 10px 18px rgba(0, 0, 0, .6)); }
+.pin-lab { position: absolute; left: 30px; top: -50px; white-space: nowrap; font: 600 26px/1.2 "Be Vietnam Pro", sans-serif; color: #E3E4F7; padding: 6px 14px; border-radius: 12px; background: rgba(12, 6, 40, .82); border: 1px solid var(--nr-line); }
+.pin.you .pin-lab { left: 44px; top: -78px; font-size: 30px; color: #fff; border-color: rgba(8, 221, 164, .55); }
+.pin.you .pin-lab small { display: block; font: 500 20px/1.2 "IBM Plex Mono", monospace; color: #08DDA4; letter-spacing: .08em; text-transform: uppercase; }
+
+/* HUD */
+.hud { position: absolute; font: 500 24px/1.3 "IBM Plex Mono", monospace; letter-spacing: .14em; color: #08DDA4; text-transform: uppercase; z-index: 6; }
+.hud b { color: #fff; font-weight: 500; }
+.corner { position: absolute; width: 46px; height: 46px; border: 2px solid rgba(8, 221, 164, .55); z-index: 6; }
+.corner.tl { border-right: 0; border-bottom: 0; } .corner.tr { border-left: 0; border-bottom: 0; }
+.corner.bl { border-right: 0; border-top: 0; } .corner.br { border-left: 0; border-top: 0; }
+.tag-demo { position: absolute; z-index: 7; font: 500 20px/1 "IBM Plex Mono", monospace; letter-spacing: .12em; color: rgba(227, 228, 247, .6); text-transform: uppercase; padding: 8px 12px; border: 1px solid rgba(227, 228, 247, .25); border-radius: 8px; background: rgba(7, 4, 32, .6); }
+
+/* chữ */
+.scrim { position: absolute; left: 0; right: 0; z-index: 4; pointer-events: none; }
+.hd { text-wrap: balance; position: absolute; z-index: 5; font-weight: 800; letter-spacing: -.025em; line-height: 1.17; color: #fff; text-shadow: 0 6px 34px rgba(7, 4, 32, .85); }
+.sub { position: absolute; z-index: 5; font-weight: 500; line-height: 1.35; color: #D9D7F2; text-shadow: 0 4px 22px rgba(7, 4, 32, .9); }
+.eyebrow { font: 500 24px/1.2 "IBM Plex Mono", monospace; letter-spacing: .2em; text-transform: uppercase; color: #08DDA4; }
+.glass { background: linear-gradient(160deg, rgba(30, 24, 74, .86), rgba(14, 9, 44, .9)); border: 1px solid rgba(227, 228, 247, .14); border-radius: 30px; box-shadow: 0 30px 80px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .08); }
+
+/* lưới HUD nền (lớp xa) */
+.grid { position: absolute; inset: -10%; z-index: 1; background-image: linear-gradient(rgba(118, 103, 254, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(118, 103, 254, .07) 1px, transparent 1px); background-size: 90px 90px; pointer-events: none; }
+/* hạt sáng (lớp gần) */
+.motes { position: absolute; inset: 0; z-index: 8; pointer-events: none; }
+.motes i { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #08DDA4; box-shadow: 0 0 10px #08DDA4; opacity: .5; }

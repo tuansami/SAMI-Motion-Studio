@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/nr.css">
+<style>
+  /* S08 · 3 lợi ích: thẻ kính tối, icon vẽ nét (bát phở bốc hơi · ngón tay chạm · bộ đếm cuộc gọi) */
+  #nm { opacity: .2; filter: blur(3px); }
+  #eb { position: absolute; z-index: 5; left: var(--safe-side); right: var(--safe-side); top: 300px; }
+  #cards { position: absolute; z-index: 5; left: var(--safe-side); right: var(--safe-side); top: 400px; display: flex; flex-direction: column; gap: 44px; }
+  .bc { position: relative; display: grid; grid-template-columns: 190px 1fr; gap: 34px; align-items: center; padding: 52px 44px; }
+  .bc .ic { width: 190px; height: 190px; border-radius: 34px; background: radial-gradient(circle at 50% 40%, rgba(8, 221, 164, .18), rgba(118, 103, 254, .08)); border: 1px solid rgba(8, 221, 164, .3); }
+  .bc .ic svg { width: 100%; height: 100%; }
+  .bc .ic .s { fill: none; stroke: #08DDA4; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  .bc .ic .w { fill: none; stroke: #fff; stroke-width: 4; stroke-linecap: round; }
+  .bc .n { font: 500 24px/1 "IBM Plex Mono", monospace; letter-spacing: .16em; color: #08DDA4; }
+  .bc h3 { margin: 12px 0 10px; font-weight: 800; font-size: 56px; line-height: 1.14; letter-spacing: -.02em; color: #fff; text-wrap: balance; }
+  .bc p { margin: 0; font-weight: 500; font-size: 38px; line-height: 1.32; color: #C9C6EA; }
+  .plus { font: 600 30px "IBM Plex Mono", monospace; fill: #fff; }
+  [data-ratio="16x9"] #eb { left: 110px; top: 120px; }
+  [data-ratio="16x9"] #cards { left: 110px; right: 110px; top: 210px; flex-direction: row; gap: 30px; }
+  [data-ratio="16x9"] .bc { flex: 1; grid-template-columns: 1fr; gap: 26px; padding: 44px 40px; align-content: start; min-height: 640px; }
+  [data-ratio="16x9"] .bc h3 { font-size: 50px; }
+  [data-ratio="16x9"] .bc p { font-size: 34px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S08">
+  <div class="grid" id="grid"></div>
+  <div id="nm"></div>
+  <div id="eb" class="eyebrow" data-copy="S08_eyebrow"></div>
+  <div id="cards">
+    <div class="bc glass" id="c1">
+      <div class="ic"><svg viewBox="0 0 190 190">
+        <path class="s" d="M38 96 H152 C150 128 126 150 95 150 C64 150 40 128 38 96 Z"/><path class="s" d="M70 158 H120"/><path class="s" d="M120 80 L156 46"/><path class="s" d="M106 82 L150 56"/>
+        <path class="w" id="st1" d=""/><path class="w" id="st2" d=""/><path class="w" id="st3" d=""/></svg></div>
+      <div><div class="n">01</div><h3 data-copy="S08_b1t"></h3><p data-copy="S08_b1"></p></div>
+    </div>
+    <div class="bc glass" id="c2">
+      <div class="ic"><svg viewBox="0 0 190 190">
+        <circle id="rp1" cx="95" cy="62" r="10" fill="none" stroke="#08DDA4" stroke-width="3"/><circle id="rp2" cx="95" cy="62" r="10" fill="none" stroke="#08DDA4" stroke-width="3"/>
+        <path class="w" d="M86 168 L72 120 C69 110 82 106 86 115 L92 130 L92 70 C92 61 106 61 106 70 L106 110 C106 103 120 103 120 111 L120 114 C120 107 134 107 134 116 L134 120 C134 113 146 113 146 122 L142 150 C140 162 133 168 128 168 Z"/></svg></div>
+      <div><div class="n">02</div><h3 data-copy="S08_b2t"></h3><p data-copy="S08_b2"></p></div>
+    </div>
+    <div class="bc glass" id="c3">
+      <div class="ic"><svg viewBox="0 0 190 190">
+        <path class="s" d="M62 46 C56 46 48 54 50 64 C56 98 92 134 126 140 C136 142 144 134 144 128 L144 116 C144 112 140 110 136 109 L118 104 C114 103 110 105 108 108 L102 116 C88 110 80 102 74 88 L82 82 C85 80 87 76 86 72 L81 54 C80 50 77 46 73 46 Z"/>
+        <text class="plus" id="p1" x="128" y="70">+1</text></svg></div>
+      <div><div class="n">03</div><h3 data-copy="S08_b3t"></h3><p data-copy="S08_b3"></p></div>
+    </div>
+  </div>
+</div>
+<script src="hf/parts/nightmap.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), NM = window.NM, $ = (s) => document.querySelector(s);
+  NM.init($('#nm'));
+  NM.pin(NM.YOU, {kind: 'you'});
+  const motes = NM.motes($('#root'), 20, 113);
+  const AT = [0.5, 3.9, 7.3];
+  const steam = (t, ph, x) => { let d = ''; for (let i = 0; i <= 10; i++) { const y = 84 - i * 6; d += (i ? 'L' : 'M') + (x + Math.sin(i * 0.7 + t * 3 + ph) * 5 * i / 10).toFixed(1) + ' ' + y; } return d; };
+  NM.clock(tl, (t) => {
+    NM.cam(NM.YOU.x, NM.YOU.y, (S.landscape ? 2500 : 1700) * (1 + 0.05 * t / S.dur), 0.5, 0.5);
+    NM.placePins();
+    $('#grid').style.transform = 'translate(' + (-t * 5).toFixed(1) + 'px,' + (-t * 3).toFixed(1) + 'px)';
+    $('#st1').setAttribute('d', steam(t, 0, 76)); $('#st2').setAttribute('d', steam(t, 2, 95)); $('#st3').setAttribute('d', steam(t, 4, 114));
+    [['#rp1', 0], ['#rp2', 0.5]].forEach(([id, o]) => { const k = ((t + o) % 1); $(id).setAttribute('r', (8 + 40 * k).toFixed(1)); $(id).setAttribute('opacity', (1 - k).toFixed(2)); });
+    const k = (t - AT[2]) > 0 ? ((t - AT[2]) % 1.1) / 1.1 : 0;
+    $('#p1').setAttribute('y', (78 - 26 * k).toFixed(1)); $('#p1').setAttribute('opacity', t > AT[2] + 0.4 ? (1 - k).toFixed(2) : 0);
+    motes(t);
+  });
+  S.arrive(tl, '#eb', 0.3, {dist: 14, blur: 4});
+  ['#c1', '#c2', '#c3'].forEach((id, i) => {
+    tl.fromTo(id, {opacity: 0, y: 60, scale: 0.95, filter: 'blur(12px)'}, {opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.75}, AT[i]);
+    tl.fromTo(id + ' .ic', {scale: 0.6, rotate: -10}, {scale: 1, rotate: 0, duration: 0.7}, AT[i] + 0.1);
+    if (i < 2) tl.to(id, {opacity: 0.55, duration: 0.6}, AT[i + 1] + 0.2);
+  });
+</script>
+</body>
+</html>
