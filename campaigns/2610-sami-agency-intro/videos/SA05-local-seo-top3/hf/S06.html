@@ -58,7 +58,7 @@
     });
     // tờ lịch lật liên tục, bục số 1 đứng yên
     pages.forEach((p, k) => {
-      const a = T_CAL + 0.5 + k * FL, u = R.E(t, a, a + 0.32);
+      const a = T_CAL + 0.5 + k * FL, u = k < NP - 1 ? R.E(t, a, a + 0.32) : 0;
       p.style.transform = 'perspective(800px) rotateX(' + (u * 100).toFixed(1) + 'deg)';
       p.style.opacity = u > 0.95 && k < NP - 1 ? 0 : 1;
     });
