@@ -153,13 +153,13 @@ Thời lượng mục tiêu 60–90 s. Thứ tự = thứ tự sản xuất (ch�
 | SA05 | — | ▢ | ▢ | |
 | SA06 | — | ▢ | ▢ | |
 | SA07 | — | ▢ | ▢ | |
-| SA08 | session_01JR29rVe3J9LQTVve5qQNpn (đang làm) | ▢ | ▢ | |
+| SA08 | session_01JR29rVe3J9LQTVve5qQNpn | ✓ | ✓ | 87,5 s, đã gửi |
 | SA09 | — | ▢ | ▢ | |
 | SA10 | session_01KpzfcsQEKggGHtcU7Wr8ja (đang làm) | ▢ | ▢ | |
 | SA11 | — | ▢ | ▢ | |
 | SA12 | — | ▢ | ▢ | |
 | SA13 | — | ▢ | ▢ | |
-| SA14 | — | ▢ | ▢ | |
+| SA14 | session_01VAnbc7r8nwdmwFf8omFNir (đang làm) | ▢ | ▢ | |
 | SA15 | — | ▢ | ▢ | |
 | SA16 | — | ▢ | ▢ | |
 | SA17 | — | ▢ | ▢ | |
