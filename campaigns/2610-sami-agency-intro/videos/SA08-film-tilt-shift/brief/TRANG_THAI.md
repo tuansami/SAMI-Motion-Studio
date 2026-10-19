@@ -8,7 +8,7 @@ Cập nhật: 19.10.2026
 - Nhạc: audio_src/score.py → out/mix.wav.
 
 ## Còn lại
-- [ ] Render 9:16 → mux → xem khung MP4 → SendUserFile (mp4 + contact sheet)
+- [x] 9:16 đã render, kiểm khung MP4, đã gửi (out/SAMI_SA08_pho-tilt-shift_v1_9x16.mp4 + contact sheet)
 - [ ] 16:9: stills `--size 1920x1080`, readcheck, render, gửi
 - [ ] Báo phiên điều phối session_01ENDrWfgWowxtPX9WgXNUEt
 

@@ -116,7 +116,7 @@ function shot(t) {
   if (t < 29.2) { const a = fol(19.99), b = fol(t); return lerpCam(a, b, seg(t, 20, 20.001)); }
   if (t < 30.4) return lerpCam(fol(29.2), close(30.4), eio(seg(t, 29.2, 30.4)));
   if (t < RT1) return close(t);
-  if (t < S6) { const u = seg(t, RT1, S6); return { t3: p ? [15, 5.6, 1.5] : [11.5, 5.4, 1.5], dist: lerp(p ? 54 : 44, p ? 45 : 38, u), pitch: 30, yaw: 14, fov: 32, bt: [15, 5, 0.5], bw: 0.15 }; }
+  if (t < S6) { const u = seg(t, RT1, S6); return { t3: p ? [15, 6.4, 1.5] : [11.5, 5.4, 1.5], dist: lerp(p ? 64 : 44, p ? 56 : 38, u), pitch: 30, yaw: 14, fov: 32, bt: [15, 5, 0.5], bw: 0.15 }; }
   if (t < S7) { const u = eio(seg(t, S6, S7)); return { t3: [lerp(0, 12, u), 1, 4], dist: p ? 118 : 96, pitch: 48, yaw: p ? lerp(50, 40, u) : lerp(22, 14, u), fov: 30, bt: [15, 1, 3], bw: 0.11 }; }
   const u = seg(t, S7, S8); return { t3: [15, 2, 4], dist: lerp(p ? 96 : 84, p ? 74 : 66, u), pitch: 50, yaw: p ? 28 : 12, fov: 30, bt: [15, 1, 3], bw: 0.12 };
 }
@@ -214,7 +214,7 @@ function drawTerrace(items, s, t) {
   for (let k = 0; k < n; k++) {
     const x = s.x0 + (k + 0.5) * s.w / n, z = 2.9;
     const cz = proj([x, 0, z]); if (!cz) continue;
-    items.push({ d: cz[2], f: g => {
+    items.push({ d: cz[2], pz: z, f: g => {
       for (const [dx, dz, seat] of [[-0.75, -0.2, 0], [0.75, 0.2, 1]]) {
         const busy = hash(s.i * 17.1 + k * 3.3 + seat) < o;
         box(g, x + dx - 0.22, x + dx + 0.22, 0, 0.45, z + dz - 0.22, z + dz + 0.22, '#7a5a3c');
@@ -425,8 +425,7 @@ function hud(g, t) {
 function mapsCard(g, out, t, ax, ay) {
   if (t < 44.9 || t >= S6) return;
   const fs = 34 * U, w = 560 * U, h = 330 * U;
-  let x = P ? clamp(ax - w * 0.5, 40 * U, W - w - 40 * U) : clamp(ax + 70 * U, 40 * U, W - w - 40 * U), y = P ? H * 0.115 + 230 * U : ay - h * 0.6;
-  y = Math.max(y, P ? H * 0.115 + 200 * U : 60 * U);
+  let x = P ? clamp(ax - w * 0.5, 40 * U, W - w - 40 * U) : clamp(ax + 70 * U, 40 * U, W - w - 40 * U), y = P ? H * 0.2 : Math.max(60 * U, ay - h * 0.6);
   if (out) out.push({ id: 'maps', text: 'Bếp Sen Vietnamesisch · Geöffnet', x0: x, y0: y, x1: x + w, y1: y + h });
   if (!g) return;
   const a = eo(seg(t, 44.9, 45.3)) * (1 - seg(t, S6 - 0.4, S6));
@@ -522,7 +521,7 @@ function drawScene(t, ts, wt) {
     if (path(g, pts)) { g.strokeStyle = `rgba(66,133,244,${0.85 * (1 - u)})`; g.lineWidth = Math.max(2, 5 * U); g.stroke(); g.fillStyle = `rgba(66,133,244,${0.08 * (1 - u)})`; g.fill(); }
   }
   const items = [];
-  const push = (pt, f) => { const c = proj(pt); if (c) items.push({ d: c[2], f }); };
+  const push = (pt, f) => { const c = proj(pt); if (c) items.push({ d: c[2], f, pz: pt[2] }); };
   for (const b of FILL) push([(b.x0 + b.x1) / 2, b.h / 2, b.z1], g => drawBuilding(g, b, t, false));
   for (const s of SHOPS) { push([s.cx, s.h / 2, 0], g => drawBuilding(g, s, t, true)); drawTerrace(items, s, t); }
   for (const tr of TREES) push([tr.x, 3, tr.z], g => drawTree(g, tr));
@@ -543,7 +542,7 @@ function drawScene(t, ts, wt) {
   if (t > 29.6 && t < RT1) items.push({ d: 1e-3, keep: true, f: g => { box(g, 17.6, 18.6, 0, 0.7, 6.0, 7.0, '#b5654a'); for (let k = 0; k < 9; k++) { const c = proj([18.1 + (hash(k) - .5) * 0.9, 0.9 + hash(k * 3) * 0.5, 6.5 + (hash(k * 5) - .5) * 0.8]); if (!c) continue; g.fillStyle = k % 3 ? '#4f8f3a' : '#e85d75'; g.beginPath(); g.arc(c[0], c[1], ppm(c[2]) * 0.22, 0, 7); g.fill(); } } });
   items.sort((a, b) => b.d - a.d);
   const closeUp = t > 29.85 && t < RT1;
-  for (const it of items) if (!closeUp || it.keep || it.d > 9) it.f(g);
+  for (const it of items) if (!closeUp || it.keep || (it.d > 9 && !(it.pz > 1.8))) it.f(g);
   if (t >= L1 - 0.1 && t < S8) drawWebsite(g, t);
   // ánh sáng cửa sổ ban đêm (cộng sáng, nằm trong cảnh nên sẽ mờ theo dải)
   if (L.night > 0.35) { g.globalCompositeOperation = 'lighter'; for (const s of SHOPS) { const on = shopOn(s.i, t); if (on < 0.05) continue; const c = proj([s.cx, 1.4, 0.5]); if (!c) continue; const r = ppm(c[2]) * s.w * 0.6; const gr = g.createRadialGradient(c[0], c[1], 0, c[0], c[1], r); gr.addColorStop(0, `rgba(255,180,100,${0.35 * on * L.night})`); gr.addColorStop(1, 'rgba(255,180,100,0)'); g.fillStyle = gr; g.fillRect(c[0] - r, c[1] - r, 2 * r, 2 * r); } g.globalCompositeOperation = 'source-over'; }
@@ -563,7 +562,7 @@ function overlays(g, out, t) {
     if (offA <= 0) continue;
     if (g) { g.save(); g.globalAlpha = offA * (s.i === YOURS ? 1 : (t > S6 ? 0.85 : 1)); pin(g, c[0], c[1], sc, s.i === YOURS ? '#ea4335' : '#e8584b'); g.restore(); }
     if (s.i === YOURS) myPin = [c[0], c[1] - 60 * sc];
-    if (s.i === YOURS && t > L3 + 0.6 && t < S6 && g) { const a = seg(t, L3 + 0.6, L3 + 1); g.save(); g.globalAlpha = a; const fs = 26 * U; g.font = `700 ${fs}px "Be Vietnam Pro"`; const tw = g.measureText('Gesponsert').width; roundPanel(g, c[0] + 26 * sc, c[1] - 92 * sc, tw + 22 * U, fs * 1.5, 8 * U, '#fbbc04'); g.fillStyle = '#202124'; g.textBaseline = 'middle'; g.fillText('Gesponsert', c[0] + 26 * sc + 11 * U, c[1] - 92 * sc + fs * 0.76); g.restore(); }
+    if (s.i === YOURS && t > L3 + 0.6 && t < S6 && g) { const a = seg(t, L3 + 0.6, L3 + 1); g.save(); g.globalAlpha = a; const fs = 26 * U; g.font = `700 ${fs}px "Be Vietnam Pro"`; const tw = g.measureText('Gesponsert').width; roundPanel(g, c[0] + 26 * sc, c[1] - 50 * sc, tw + 22 * U, fs * 1.5, 8 * U, '#fbbc04'); g.fillStyle = '#202124'; g.textBaseline = 'middle'; g.fillText('Gesponsert', c[0] + 26 * sc + 11 * U, c[1] - 50 * sc + fs * 0.76); g.restore(); }
   }
   // bong bóng tìm kiếm (S2) + cặp đôi (S3)
   for (const a of ASK) { if (t < a.t0 || t >= a.t1) continue; const q = [a.x, 1.9, a.z], c = proj(q); if (!c) continue; searchBubble(g, out, 'b' + a.text, a.text, c[0], c[1], t - a.t0); }
@@ -580,7 +579,7 @@ function overlays(g, out, t) {
   // lớp 4: sao khi khách ra về
   if (t > L4 && t < S6) for (let k = 0; k < 4; k++) {
     const t0 = 56.9 + k * 1.25, t1 = t0 + 2.2; if (t < t0 || t >= t1) continue;
-    const x = ME.x0 + 1.5 + ((k * 3.3) % (ME.w - 2)), c = proj([x, 1.9, 4.4 + (k % 2) * 0.8]); if (!c) continue;
+    const x = ME.x0 + 1.5 + ((k * 3.3) % (ME.w - 2)), c = proj([x, 3.4, 4.4 + (k % 2) * 0.8]); if (!c) continue;
     if (g) { const a = Math.min(eo(seg(t, t0, t0 + 0.3)), 1 - seg(t, t1 - 0.3, t1)); const fs = 34 * U; g.save(); g.globalAlpha = a; const y = c[1] - 40 * U - seg(t, t0, t1) * 50 * U; g.font = `700 ${fs}px "Be Vietnam Pro"`; const tw = g.measureText('★★★★★').width; roundPanel(g, c[0] - tw / 2 - 18 * U, y - fs * 0.85, tw + 36 * U, fs * 1.7, fs * 0.85, '#ffffff'); g.fillStyle = '#fbbc04'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('★★★★★', c[0], y + 2 * U); g.restore(); }
   }
   if (myPin) mapsCard(g, out, t, myPin[0], myPin[1]);
