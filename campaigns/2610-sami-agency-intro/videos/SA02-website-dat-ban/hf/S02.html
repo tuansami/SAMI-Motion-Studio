@@ -1,0 +1,90 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S02 · Website cũ: tải chậm, vỡ khung trên điện thoại, không có nút đặt bàn → tem đỏ. */
+  #stage { background: radial-gradient(120% 70% at 50% 65%, #121A38 0%, #05060F 70%); }
+  #head { top: 250px; text-align: center; }
+  #ph { left: 50%; top: 560px; margin-left: -300px; transform: scale(.94); transform-origin: 50% 0; }
+  .scr { background: #fff !important; }
+  .browser { background: #F2F2F4; }
+  .browser .url { background: #E3E3E8; color: #555; }
+  .browser .warn { font-size: 22px; color: #C0392B; font-weight: 600; }
+  .load { background: #3478F6; }
+  #spin { position: absolute; left: 50%; top: 560px; width: 90px; height: 90px; margin-left: -45px; border-radius: 50%; border: 9px solid #E4E4EA; border-top-color: #8C8C99; box-sizing: border-box; }
+  #lt { position: absolute; left: 0; right: 0; top: 680px; text-align: center; font-family: Inter; font-size: 28px; color: #999; }
+  #old { position: absolute; left: 0; top: 192px; width: 1280px; height: 2300px; transform-origin: 0 0; transform: scale(.434); background: #EFE2C0; font-family: "Times New Roman", serif; color: #3A2A10; opacity: 0; }
+  #old .o { position: absolute; }
+  #old h1 { margin: 0; font-size: 64px; color: #A01818; font-style: italic; }
+  #old .navb { display: flex; gap: 6px; }
+  #old .navb span { background: linear-gradient(#EEE, #BBB); border: 2px outset #DDD; padding: 8px 18px; font-family: Arial; font-size: 20px; color: #222; }
+  #old .mq { background: #A01818; color: #FFE680; font-family: Arial; font-weight: bold; font-size: 22px; padding: 6px 0; white-space: nowrap; overflow: hidden; }
+  #old .imgx { background: #D4D0C8; border: 2px solid #999; display: flex; align-items: center; justify-content: center; font-family: Arial; color: #777; font-size: 24px; }
+  #old p { font-size: 22px; line-height: 1.35; margin: 0; }
+  #old .red { color: #D00; font-weight: bold; font-family: Arial; font-size: 26px; }
+  #old table { border-collapse: collapse; font-family: Arial; font-size: 20px; }
+  #old td { border: 2px solid #9A7B4F; padding: 8px 14px; background: #F8EED5; }
+  #toast { position: absolute; left: 36px; right: 36px; bottom: 120px; padding: 26px 30px; border-radius: 28px; background: #2B2B33; color: #fff; font-family: Inter; font-size: 27px; font-weight: 600; text-align: center; opacity: 0; z-index: 16; }
+  #toast b { color: #FF7B7B; }
+  #stamp { position: absolute; left: 50%; top: 1080px; width: 820px; margin-left: -410px; padding: 30px 30px 34px; box-sizing: border-box; border: 10px solid var(--red); border-radius: 28px; color: var(--red); font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 60px; line-height: 1.22; text-align: center; text-transform: uppercase; letter-spacing: .01em; z-index: 40; opacity: 0; background: rgba(24,4,10,.82); backdrop-filter: blur(2px); filter: url(#grit) drop-shadow(0 20px 40px rgba(0,0,0,.5)); }
+  [data-ratio="16x9"] #head { left: 150px; right: auto; width: 820px; top: 330px; text-align: left; font-size: 74px; }
+  [data-ratio="16x9"] #ph { left: auto; right: 230px; top: 60px; margin-left: 0; transform: scale(.775); }
+  [data-ratio="16x9"] #stamp { left: auto; right: 120px; margin-left: 0; top: 470px; width: 700px; font-size: 54px; }
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute"><filter id="grit"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.9 1.25"/><feComposite in="SourceGraphic" operator="in"/></filter></svg>
+<div id="root" data-composition-id="S02">
+<div id="stage" class="clip">
+  <div id="fx" class="clip"></div>
+  <div id="head" class="hd txtshadow" data-copy="S02_head"></div>
+  <div id="ph" class="phone"><div class="island"></div><div class="scr">
+    <div class="sbar dark"><span>23:40</span><span class="ic"><b></b><i></i></span></div>
+    <div class="browser"><div class="url"><span class="warn">Nicht sicher</span><span>restaurant-bepsen.de</span></div></div>
+    <div class="load" id="load"></div>
+    <div id="spin"></div><div id="lt">Lädt …</div>
+    <div id="old">
+      <div class="o" style="left:30px;top:24px"><h1>Restaurant Bếp Sen</h1><p style="font-size:24px">Herzlich Willkommen auf unserer Homepage!!</p></div>
+      <div class="o navb" style="left:640px;top:50px"><span>Home</span><span>Speisen</span><span>Anfahrt</span><span>Gästebuch</span><span>Impressum</span></div>
+      <div class="o mq" style="left:0;top:150px;width:1280px">+++ NEU: Mittagsmenü +++ Willkommen auf unserer Homepage +++ Reservierung nur telefonisch +++ NEU: Mittagsmenü +++</div>
+      <div class="o imgx" id="oimg" style="left:330px;top:220px;width:1180px;height:620px">Bild wird geladen …</div>
+      <div class="o" style="left:30px;top:220px;width:280px"><p><b>Öffnungszeiten:</b><br>Di–So 11:30–14:30<br>und 17:30–22:00<br>Montag Ruhetag</p><br><p class="red">Reservierung nur telefonisch!</p><br><p>Besucher: 004821</p></div>
+      <div class="o" id="otab" style="left:-40px;top:880px"><table><tr><td>Nr.</td><td>Gericht</td><td>Preis</td><td>Info</td><td>Zusatzstoffe siehe Aushang im Restaurant</td></tr><tr><td>12</td><td>Pho Bo (Rindfleisch-Nudelsuppe)</td><td>14,90</td><td>scharf</td><td>1, 3, 7, a, c, f</td></tr><tr><td>27</td><td>Sommerrollen mit Garnelen</td><td>7,50</td><td></td><td>2, 5, b</td></tr><tr><td>41</td><td>Bánh Xèo (Pfannkuchen)</td><td>13,50</td><td></td><td>1, c, f, g</td></tr></table></div>
+      <div class="o" style="left:30px;top:1180px;width:900px"><p>Letzte Aktualisierung: 12.03.2014 · Diese Seite ist optimiert für 1280×1024 · <u style="color:#00E">Speisekarte als PDF (8,4 MB)</u></p></div>
+    </div>
+    <div id="toast"><b>Online-Reservierung</b> ist nicht verfügbar.<br>Bitte rufen Sie uns an.</div>
+    <i class="touch" id="tap" style="left:70px;top:420px"></i>
+  </div></div>
+  <div id="stamp" data-copy="S02_stamp"></div>
+</div>
+</div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), K = window.K;
+  K.dust(tl, document.getElementById('fx'), 26, 11, {color: '#8FA7FF', op: 0.25, rise: 90});
+  tl.fromTo('#ph', {opacity: 0, y: 140, scale: S.landscape ? 0.7 : 0.78}, {opacity: 1, y: 0, scale: S.landscape ? 0.775 : 0.94, duration: 0.9}, 0);
+  K.say(tl, '#head', S.beat(0.4), {stagger: 0.06});
+  // tải chậm: bò, khựng, bò tiếp
+  tl.set('#load', {scaleX: 0}, 0);
+  tl.to('#load', {scaleX: 0.32, duration: 0.6, ease: 'power1.out'}, S.beat(0.5));
+  tl.to('#load', {scaleX: 0.41, duration: 1.2, ease: 'none'}, S.beat(1.8));
+  tl.to('#load', {scaleX: 0.9, duration: 0.5, ease: 'power1.in'}, S.beat(3.6));
+  tl.to('#spin', {rotation: 360 * 5, duration: 3, ease: 'none'}, 0);
+  tl.to(['#spin', '#lt'], {opacity: 0, duration: 0.15}, S.beat(4.4));
+  // trang cũ nhảy ra, khối lệch chỗ
+  tl.to('#old', {opacity: 1, duration: 0.1}, S.beat(4.4));
+  tl.fromTo('#oimg', {x: 0}, {x: 60, y: 40, duration: 0.25, ease: 'steps(3)'}, S.beat(4.8));
+  tl.fromTo('#otab', {x: 0}, {x: 120, duration: 0.25, ease: 'steps(3)'}, S.beat(5.1));
+  tl.to('#load', {opacity: 0, duration: 0.2}, S.beat(4.6));
+  // chạm "Reservierung" bé tí → lỗi
+  tl.fromTo('#tap', {opacity: 0, scale: 0.6}, {opacity: 1, scale: 1, duration: 0.18}, S.beat(5.6));
+  tl.to('#tap', {opacity: 0, duration: 0.3}, S.beat(6.1));
+  tl.fromTo('#toast', {opacity: 0, y: 40}, {opacity: 1, y: 0, duration: 0.4}, S.beat(6));
+  // tem đỏ đóng xuống
+  const st = S.beat(7.4);
+  tl.fromTo('#stamp', {opacity: 0, scale: 1.9, rotation: -2}, {opacity: 1, scale: 1, rotation: -7, duration: 0.28, ease: 'power3.in'}, st);
+  tl.fromTo('#ph', {x: 0}, {x: 6, duration: 0.05, yoyo: true, repeat: 5, ease: 'none'}, st + 0.28);
+  tl.to('#old', {filter: 'grayscale(.7) brightness(.8)', duration: 0.4}, st + 0.28);
+</script>
+</body></html>

@@ -1,0 +1,114 @@
+/* SA02 · bộ phận chung "Living Screencast": chữ kể chuyện, nền 3 lớp, điện thoại, con trỏ, website Bếp Sen, cửa sổ công cụ. */
+:root {
+  --night: #070A18; --night2: #0E1430; --cold: #5C6FA8;
+  --sen-green: #1F3B2D; --sen-green2: #2E5240; --sen-pink: #E8A5A0; --sen-cream: #F5EFE4; --sen-brass: #C49A5A; --sen-ink: #17261D;
+  --ui-bg: #14112B; --ui-panel: #1B1838; --ui-line: rgba(255,255,255,.09); --ui-text: #D9D6F2; --ui-dim: #8C88B0;
+  --red: #FF5A5F; --wa: #25D366;
+}
+#stage { position: absolute; inset: 0; overflow: hidden; }
+
+/* ── chữ kể chuyện ── */
+.hd { position: absolute; left: 72px; right: 72px; top: 250px; font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 76px; line-height: 1.2; letter-spacing: -.025em; color: #fff; text-wrap: balance; z-index: 30; text-align: center; }
+.hd .w { padding-bottom: .08em; }
+.sub { position: absolute; left: 72px; right: 72px; font-family: "Be Vietnam Pro"; font-weight: 500; font-size: 44px; line-height: 1.32; color: rgba(255,255,255,.78); text-wrap: balance; z-index: 30; text-align: center; }
+.kicker { font-family: "JetBrains Mono"; font-weight: 600; font-size: 30px; letter-spacing: .14em; text-transform: uppercase; color: var(--c-mint); }
+em.hl { font-style: normal; }
+.note { position: absolute; font-family: "Be Vietnam Pro"; font-weight: 500; font-size: 24px; color: rgba(255,255,255,.45); letter-spacing: .04em; z-index: 40; }
+.txtshadow { text-shadow: 0 4px 30px rgba(0,0,0,.55); }
+
+/* ── nền ── */
+.bg { position: absolute; inset: -60px; }
+.glow { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .55; }
+.dot { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+
+/* ── điện thoại ── */
+.phone { position: absolute; width: 600px; height: 1240px; border-radius: 92px; background: #0B0B12; padding: 22px; box-sizing: border-box;
+  box-shadow: 0 0 0 3px #2A2A3A, 0 0 0 9px #101018, 0 60px 120px rgba(0,0,0,.6), inset 0 0 0 2px #333; }
+.phone .scr { position: absolute; inset: 22px; border-radius: 72px; overflow: hidden; background: #000; }
+.phone .island { position: absolute; top: 40px; left: 50%; width: 170px; height: 50px; margin-left: -85px; border-radius: 30px; background: #000; z-index: 20; }
+.sbar { position: absolute; left: 0; right: 0; top: 0; height: 110px; display: flex; align-items: center; justify-content: space-between; padding: 26px 64px 0; box-sizing: border-box; font-family: Inter; font-weight: 600; font-size: 30px; color: #fff; z-index: 15; }
+.sbar.dark { color: #111; }
+.sbar .ic { display: flex; gap: 10px; align-items: center; }
+.sbar .ic i { display: block; width: 34px; height: 18px; border-radius: 5px; border: 2.5px solid currentColor; position: relative; }
+.sbar .ic i:after { content: ""; position: absolute; left: 2px; top: 2px; bottom: 2px; width: 70%; background: currentColor; border-radius: 2px; }
+.sbar .ic b { display: block; width: 28px; height: 18px; background: linear-gradient(90deg, currentColor 0 18%, transparent 18% 27%, currentColor 27% 45%, transparent 45% 54%, currentColor 54% 72%, transparent 72% 81%, currentColor 81%); clip-path: polygon(0 100%, 100% 0, 100% 100%); }
+.browser { position: absolute; left: 0; right: 0; top: 110px; height: 76px; display: flex; align-items: center; padding: 0 28px; box-sizing: border-box; z-index: 14; }
+.browser .url { flex: 1; height: 58px; border-radius: 18px; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: Inter; font-size: 26px; font-weight: 500; }
+.browser .lock { width: 16px; height: 13px; border-radius: 3px; background: currentColor; position: relative; top: 3px; }
+.browser .lock:before { content: ""; position: absolute; left: 3px; top: -9px; width: 6px; height: 9px; border: 2.5px solid currentColor; border-bottom: 0; border-radius: 6px 6px 0 0; }
+.load { position: absolute; left: 0; top: 186px; height: 6px; width: 100%; transform-origin: 0 50%; z-index: 14; }
+
+/* ── con trỏ + chạm ── */
+.cursor { position: absolute; left: 0; top: 0; width: 46px; height: 46px; z-index: 60; filter: drop-shadow(0 6px 10px rgba(0,0,0,.45)); pointer-events: none; }
+.cursor svg { width: 100%; height: 100%; overflow: visible; }
+.ghost { opacity: .18; filter: blur(2px); }
+.touch { position: absolute; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.55) 0 30%, rgba(255,255,255,.18) 31% 60%, transparent 61%); z-index: 60; opacity: 0; }
+.ripple { position: absolute; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; border: 4px solid #fff; z-index: 59; opacity: 0; }
+
+/* ── website Bếp Sen (dựng bằng kit.js) ── */
+.site { position: absolute; overflow: hidden; background: var(--sen-cream); color: var(--sen-ink); font-family: Inter; }
+.site .nav { position: absolute; left: 0; right: 0; top: 0; height: 9%; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; box-sizing: border-box; }
+.site .logo { font-family: Fraunces; font-weight: 700; font-size: 1em; color: var(--sen-green); display: flex; align-items: center; gap: .3em; white-space: nowrap; }
+.site .links { display: flex; gap: 1.6em; font-size: .4em; font-weight: 500; white-space: nowrap; }
+.site .btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 99px; background: var(--sen-green); color: var(--sen-cream); font-weight: 600; white-space: nowrap; }
+.site .hero { position: absolute; left: 0; right: 0; top: 9%; height: 52%; background: var(--sen-green); overflow: hidden; }
+.site .htxt { position: absolute; left: 6%; top: 11%; width: 50%; color: var(--sen-cream); }
+.site .htxt h1 { margin: 0; font-family: Fraunces; font-weight: 600; font-size: 1.22em; line-height: 1.08; letter-spacing: -.01em; }
+.site .htxt h1 i { font-style: italic; color: var(--sen-pink); font-weight: 500; }
+.site .htxt p { margin: .6em 0 1em; font-size: .5em; line-height: 1.4; opacity: .8; }
+.site .htxt .btn { background: var(--sen-pink); color: var(--sen-ink); font-size: .52em; padding: .7em 1.4em; }
+.site .himg { position: absolute; right: 6%; top: 5%; width: 33%; aspect-ratio: 1; }
+.site .cards { position: absolute; left: 5%; right: 5%; top: 66%; height: 27%; display: flex; gap: 3%; }
+.site .card2 { flex: 1; background: #fff; border-radius: .4em; overflow: hidden; position: relative; box-shadow: 0 .2em .6em rgba(31,59,45,.08); }
+.site .card2 .ph { position: absolute; left: 0; right: 0; top: 0; height: 62%; background: #EDE3D2; }
+.site .card2 .t { position: absolute; left: 8%; right: 8%; top: 68%; font-family: Fraunces; font-weight: 600; font-size: .52em; display: flex; justify-content: space-between; }
+.site .card2 .a { position: absolute; left: 8%; top: 84%; font-size: .36em; color: #7A6B55; }
+.site .foot { position: absolute; left: 0; right: 0; bottom: 0; height: 4%; background: var(--sen-ink); color: var(--sen-cream); font-size: .32em; display: flex; align-items: center; justify-content: center; letter-spacing: .05em; }
+/* bản di động */
+.site.m .nav { height: 7%; }
+.site.m .links { display: none; }
+.site.m .burger { width: 1em; height: .7em; background: linear-gradient(var(--sen-green) 0 18%, transparent 18% 41%, var(--sen-green) 41% 59%, transparent 59% 82%, var(--sen-green) 82%); }
+.site.m .hero { top: 7%; height: 52%; }
+.site.m .htxt { left: 8%; right: 8%; width: auto; top: 6%; text-align: left; }
+.site.m .htxt h1 { font-size: 1.42em; }
+.site.m .htxt p { margin: .4em 0 .7em; }
+.site.m .himg { left: 25%; right: auto; top: 49%; width: 50%; }
+.site.m .cards { top: 61%; height: auto; bottom: 14%; flex-direction: column; gap: 3%; left: 6%; right: 6%; }
+.site.m .card2 { display: flex; align-items: center; }
+.site.m .card2 .ph { position: relative; width: 34%; height: 100%; flex: none; }
+.site.m .card2 .t { left: 40%; top: 24%; right: 6%; font-size: .62em; }
+.site.m .card2 .a { left: 40%; top: 62%; font-size: .44em; }
+.site .sticky { position: absolute; left: 5%; right: 5%; bottom: 3%; height: 8%; border-radius: 99px; background: var(--sen-green); color: var(--sen-cream); font-weight: 700; font-size: .66em; display: flex; align-items: center; justify-content: center; gap: .5em; box-shadow: 0 .3em 1em rgba(31,59,45,.35); }
+.site .sticky .cal { width: .9em; height: .85em; border: .1em solid var(--sen-pink); border-radius: .14em; box-sizing: border-box; border-top-width: .22em; }
+
+/* ── cửa sổ công cụ thiết kế (không nhãn hiệu) ── */
+.tool { position: absolute; border-radius: 26px; background: var(--ui-bg); border: 1px solid rgba(255,255,255,.12); overflow: hidden; box-shadow: 0 50px 120px rgba(0,0,0,.55), 0 0 0 1px rgba(118,103,254,.15); font-family: Inter; color: var(--ui-text); }
+.tool .bar { position: absolute; left: 0; right: 0; top: 0; height: 64px; background: #100D24; border-bottom: 1px solid var(--ui-line); display: flex; align-items: center; padding: 0 22px; gap: 18px; box-sizing: border-box; }
+.tool .dots { display: flex; gap: 10px; }
+.tool .dots i { width: 16px; height: 16px; border-radius: 50%; background: #3A3660; }
+.tool .tbtn { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.tool .tbtn.on { background: var(--c-purple); }
+.tool .tbtn svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; }
+.tool .fname { margin-left: auto; margin-right: auto; font-size: 22px; color: var(--ui-dim); font-weight: 500; }
+.tool .canvas { position: absolute; background: #0F0C22; background-image: radial-gradient(rgba(255,255,255,.07) 1.5px, transparent 1.6px); background-size: 28px 28px; }
+.tool .panel { position: absolute; background: var(--ui-panel); border-color: var(--ui-line); border-style: solid; border-width: 0; box-sizing: border-box; padding: 20px; font-size: 20px; }
+.tool .ptitle { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: var(--ui-dim); font-weight: 600; margin-bottom: 14px; }
+.layer { display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 10px; border-radius: 8px; font-size: 19px; color: var(--ui-text); }
+.layer i { width: 16px; height: 12px; border: 2px solid var(--ui-dim); border-radius: 3px; flex: none; }
+.layer.on { background: rgba(118,103,254,.28); }
+.sw { display: inline-block; width: 52px; height: 52px; border-radius: 12px; margin-right: 10px; box-shadow: inset 0 0 0 2px rgba(255,255,255,.12); position: relative; }
+.sw.on:after { content: ""; position: absolute; inset: -7px; border: 3px solid var(--c-mint); border-radius: 16px; }
+.fontrow { display: flex; justify-content: space-between; align-items: center; height: 46px; padding: 0 12px; border-radius: 8px; font-size: 24px; }
+.fontrow.on { background: rgba(8,221,164,.16); box-shadow: inset 0 0 0 1.5px rgba(8,221,164,.6); }
+.fontrow small { font-family: "JetBrains Mono"; font-size: 15px; color: var(--ui-dim); }
+.badge16 { position: absolute; display: flex; align-items: center; gap: 14px; padding: 12px 22px 12px 16px; border-radius: 99px; background: rgba(8,221,164,.14); box-shadow: inset 0 0 0 2px rgba(8,221,164,.75); color: var(--c-mint); font-family: "JetBrains Mono"; font-weight: 700; font-size: 34px; z-index: 50; }
+.badge16 svg { width: 44px; height: 44px; }
+.steps { position: absolute; display: flex; flex-wrap: wrap; gap: 12px; z-index: 40; }
+.step { display: flex; align-items: center; gap: 10px; height: 54px; padding: 0 20px; border-radius: 99px; background: rgba(255,255,255,.06); color: rgba(255,255,255,.45); font-family: "Be Vietnam Pro"; font-weight: 600; font-size: 26px; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.1); }
+.step b { font-family: "JetBrains Mono"; font-size: 20px; color: inherit; opacity: .8; }
+.sel { position: absolute; border: 2.5px solid #4FA3FF; box-sizing: border-box; pointer-events: none; z-index: 30; }
+.sel i { position: absolute; width: 12px; height: 12px; background: #fff; border: 2.5px solid #4FA3FF; box-sizing: border-box; }
+.sel i:nth-child(1) { left: -7px; top: -7px; } .sel i:nth-child(2) { right: -7px; top: -7px; } .sel i:nth-child(3) { left: -7px; bottom: -7px; } .sel i:nth-child(4) { right: -7px; bottom: -7px; }
+.sel b { position: absolute; left: 50%; bottom: -40px; transform: translateX(-50%); padding: 3px 10px; border-radius: 6px; background: #4FA3FF; color: #fff; font-family: "JetBrains Mono"; font-size: 17px; font-weight: 600; white-space: nowrap; }
+
+[data-ratio="16x9"] .hd, [data-ratio="16x9"] .sub { text-align: left; }

@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S12 · End card SAMI: logo, câu chốt, tagline, WhatsApp + URL. */
+  #stage { background: radial-gradient(70% 45% at 50% 40%, rgba(118,103,254,.38), transparent 70%), radial-gradient(60% 40% at 50% 80%, rgba(8,221,164,.18), transparent 70%), #0C0628; }
+  #logo { position: absolute; left: 50%; top: 520px; width: 780px; margin-left: -390px; }
+  #claim { top: 830px; font-size: 68px; line-height: 1.16; }
+  #tag { position: absolute; left: 0; right: 0; top: 1115px; text-align: center; font-family: "JetBrains Mono"; font-weight: 600; font-size: 27px; letter-spacing: .06em; color: rgba(255,255,255,.62); }
+  #ct { position: absolute; left: 0; right: 0; top: 1210px; display: flex; flex-direction: column; align-items: center; gap: 14px; font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 50px; color: #fff; white-space: nowrap; }
+  #ct .r { display: flex; align-items: center; gap: 18px; } #ct .u { font-weight: 700; font-size: 40px; color: var(--c-mint); }
+  #ct i { width: 22px; height: 22px; border-radius: 50%; background: var(--wa); box-shadow: 0 0 16px var(--wa); }
+  #ring { position: absolute; left: 50%; top: 726px; width: 900px; height: 900px; margin: -450px; border-radius: 50%; border: 2px solid rgba(8,221,164,.35); opacity: 0; }
+  [data-ratio="16x9"] #logo { top: 230px; width: 600px; margin-left: -300px; }
+  [data-ratio="16x9"] #claim { top: 470px; left: 200px; right: 200px; text-align: center; font-size: 60px; }
+  [data-ratio="16x9"] #tag { top: 720px; } [data-ratio="16x9"] #ct { top: 790px; } [data-ratio="16x9"] #ring { top: 386px; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S12">
+<div id="stage" class="clip">
+  <div id="fx" class="clip"></div>
+  <div id="ring"></div>
+  <img id="logo" src="public/img/logo-white.svg">
+  <div id="claim" class="hd" data-copy="S12_claim"></div>
+  <div id="tag" data-copy="S12_tag"></div>
+  <div id="ct"><span class="r"><i></i><span data-copy="S12_contact"></span></span><span class="u" data-copy="S12_url"></span></div>
+</div>
+</div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), K = window.K;
+  K.dust(tl, document.getElementById('fx'), 36, 131, {color: '#08DDA4', op: 0.35, rise: 160});
+  tl.fromTo('#logo', {opacity: 0, scale: 0.86, filter: 'blur(16px)', clipPath: 'inset(0 100% 0 0)'}, {opacity: 1, scale: 1, filter: 'blur(0px)', clipPath: 'inset(0 0% 0 0)', duration: 0.9}, S.beat(0.2));
+  tl.fromTo('#ring', {opacity: 0.9, scale: 0.4}, {opacity: 0, scale: 1.2, duration: 1.6, ease: 'power1.out'}, S.beat(0.3));
+  K.say(tl, '#claim', S.beat(1.2), {stagger: 0.06});
+  S.arrive(tl, '#tag', S.beat(2.4), {dist: 20});
+  S.arrive(tl, '#ct', S.beat(2.8), {dist: 20});
+  tl.fromTo('#logo', {y: 0}, {y: -10, duration: S.dur, ease: 'none'}, 0);
+</script>
+</body></html>

@@ -1,6 +1,6 @@
 # SA02 · TRẠNG THÁI
 
-**Giai đoạn:** 1/5 storyboard xong → đang dựng 9:16.
+**Giai đoạn:** 2/5 dựng 12 cảnh 9:16 xong (QA ảnh tĩnh sạch) → làm nhạc `audio_src/score.py`.
 
 ## Đã chốt
 - Brief, storyboard (12 cảnh, 89,5 s), VO: `brief/`. Quán tưởng tượng "Bếp Sen · Dresden", đối thủ "Lokal Nebenan".

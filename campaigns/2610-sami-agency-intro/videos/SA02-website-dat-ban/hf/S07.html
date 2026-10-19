@@ -1,0 +1,86 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/fraunces/600.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S07 · Email xác nhận tới ngay; đêm chuyển sáng; bàn mới nằm sẵn trong lịch đặt bàn của quán. */
+  #stage { background: #0C0628; }
+  #night { position: absolute; inset: 0; background: radial-gradient(70% 50% at 15% 15%, rgba(118,103,254,.35), transparent 70%), #0C0628; }
+  #morning { position: absolute; inset: 0; background: radial-gradient(80% 45% at 85% 100%, rgba(245,158,11,.45), transparent 70%), radial-gradient(70% 50% at 10% 10%, rgba(8,221,164,.25), transparent 70%), linear-gradient(180deg, #1C1650 0%, #3A2C6E 60%, #6A4A72 100%); opacity: 0; }
+  #head { top: 236px; font-size: 70px; }
+  #sub { top: 425px; }
+  #clock { position: absolute; left: 50%; top: 585px; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; padding: 12px 26px 12px 16px; border-radius: 99px; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 2px rgba(255,255,255,.2); font-family: "JetBrains Mono"; font-weight: 600; font-size: 38px; color: #fff; z-index: 20; }
+  #clock .ic { position: relative; width: 46px; height: 46px; }
+  #clock .ic i { position: absolute; inset: 0; border-radius: 50%; }
+  #moon { background: radial-gradient(circle at 70% 35%, transparent 0 38%, #E3E4F7 39%); }
+  #sun { background: #F59E0B; box-shadow: 0 0 22px #F59E0B; opacity: 0; transform: scale(.4); }
+  #clock .roll { display: block; height: 1.2em; overflow: hidden; } #cr > div { height: 1.2em; line-height: 1.2em; }
+  #mail { position: absolute; left: 90px; right: 90px; top: 690px; border-radius: 36px; background: rgba(250,248,255,.96); padding: 30px 34px; font-family: Inter; color: #1A1730; box-shadow: 0 40px 90px rgba(0,0,0,.45); z-index: 15; transform-origin: 50% 0; }
+  #mail .top { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+  #mail .av { width: 74px; height: 74px; border-radius: 20px; background: #1F3B2D; display: flex; align-items: center; justify-content: center; flex: none; }
+  #mail .from { font-weight: 700; font-size: 30px; } #mail .from small { display: block; font-weight: 500; font-size: 23px; color: #7A7598; }
+  #mail .now { margin-left: auto; font-size: 22px; color: #7A7598; align-self: flex-start; }
+  #mail h5 { margin: 0 0 10px; font-size: 32px; font-weight: 700; }
+  #mail p { margin: 0; font-size: 27px; line-height: 1.45; color: #4A4566; }
+  #mail .det { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+  #mail .det span { padding: 10px 18px; border-radius: 14px; background: #EFEAF8; font-weight: 600; font-size: 24px; }
+  #tab { position: absolute; left: 60px; right: 60px; top: 960px; height: 600px; border-radius: 40px; background: #0E0E16; padding: 20px; box-sizing: border-box; box-shadow: 0 0 0 3px #2A2A3A, 0 50px 110px rgba(0,0,0,.5); z-index: 10; }
+  #tab .in { position: absolute; inset: 20px; border-radius: 24px; background: #F7F4EE; overflow: hidden; font-family: Inter; color: #17261D; }
+  #tab .hd2 { height: 96px; background: #1F3B2D; color: #F5EFE4; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+  #tab .hd2 b { font-family: Fraunces; font-weight: 600; font-size: 34px; } #tab .hd2 span { font-size: 22px; opacity: .8; }
+  .rw { position: absolute; left: 22px; right: 22px; height: 76px; border-radius: 16px; background: #fff; display: flex; align-items: center; gap: 22px; padding: 0 22px; box-sizing: border-box; font-size: 25px; box-shadow: 0 2px 0 rgba(0,0,0,.04); }
+  .rw .tm { font-family: "JetBrains Mono"; font-weight: 600; font-size: 25px; width: 84px; }
+  .rw .nm { flex: 1; font-weight: 600; } .rw .pp { color: #7A6B55; } .rw .src { font-size: 19px; padding: 6px 12px; border-radius: 8px; background: #EFE9DE; color: #7A6B55; font-weight: 600; }
+  .rw.new { box-shadow: inset 0 0 0 3px #08DDA4, 0 10px 30px rgba(8,221,164,.25); }
+  .rw.new .src { background: #08DDA4; color: #0C0628; }
+  .rw .neu { position: absolute; right: -10px; top: -14px; padding: 4px 12px; border-radius: 8px; background: #E8A5A0; color: #17261D; font-weight: 700; font-size: 18px; }
+  [data-ratio="16x9"] #head { left: 150px; right: auto; width: 800px; top: 280px; }
+  [data-ratio="16x9"] #sub { left: 150px; right: auto; width: 760px; top: 480px; }
+  [data-ratio="16x9"] #clock { left: 150px; top: 690px; transform: none; }
+  [data-ratio="16x9"] #mail { left: 1040px; right: 120px; top: 70px; }
+  [data-ratio="16x9"] #tab { left: 1010px; right: 90px; top: 360px; height: 640px; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S07">
+<div id="stage" class="clip">
+  <div id="night"></div><div id="morning"></div>
+  <div id="fx" class="clip"></div>
+  <div id="head" class="hd txtshadow" data-copy="S07_head"></div>
+  <div id="sub" class="sub" data-copy="S07_sub"></div>
+  <div id="clock"><span class="ic"><i id="moon"></i><i id="sun"></i></span><span class="roll"><div id="cr"><div>23:41</div><div>08:12</div></div></span></div>
+  <div id="mail"><div class="top"><span class="av"><svg viewBox="0 0 40 30" style="width:44px;height:34px"><path d="M20 28 C12 22 10 12 20 2 C30 12 28 22 20 28Z" fill="#E8A5A0"/><path d="M20 28 C10 27 3 20 2 12 C10 12 17 18 20 28Z" fill="#C98580"/><path d="M20 28 C30 27 37 20 38 12 C30 12 23 18 20 28Z" fill="#C98580"/></svg></span><span class="from">Bếp Sen<small>reservierung@bepsen.de</small></span><span class="now">jetzt</span></div>
+    <h5>Ihre Reservierung ist bestätigt</h5><p>Hallo Frau Weber, wir freuen uns auf Ihren Besuch!</p>
+    <div class="det"><span>Sa, 24.10.</span><span>19:30 Uhr</span><span>4 Personen</span></div></div>
+  <div id="tab"><div class="in"><div class="hd2"><b>Reservierungen</b><span>Samstag, 24.10.</span></div><div id="rows"></div></div></div>
+</div>
+</div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), K = window.K;
+  K.dust(tl, document.getElementById('fx'), 34, 81, {color: '#fff', op: 0.35, rise: 60});
+  const data = [['12:00', 'Nguyen', '2 P.', 'Telefon'], ['18:30', 'Schmidt', '6 P.', 'Telefon'], ['19:00', 'Meier', '2 P.', 'Online'], ['19:30', 'Weber', '4 P.', 'Online', 1], ['20:00', 'Becker', '3 P.', 'Online']];
+  const rows = document.getElementById('rows'), RH = S.landscape ? 86 : 82;
+  const els = data.map((d, i) => { const r = K.el('div', 'rw' + (d[4] ? ' new' : ''), '<span class="tm">' + d[0] + '</span><span class="nm">' + d[1] + '</span><span class="pp">' + d[2] + '</span><span class="src">' + d[3] + '</span>' + (d[4] ? '<span class="neu">NEU</span>' : ''), rows); r.style.top = (96 + 20 + i * RH) + 'px'; return r; });
+  // email tới
+  K.say(tl, '#head', S.beat(0.3), {stagger: 0.06});
+  tl.fromTo('#clock', {opacity: 0, y: 20}, {opacity: 1, y: 0, duration: 0.5}, S.beat(0.3));
+  tl.fromTo('#mail', {opacity: 0, y: -120, scale: 0.92}, {opacity: 1, y: 0, scale: 1, duration: 0.7}, S.beat(0.8));
+  // đêm → sáng
+  const dawn = S.beat(4.4);
+  tl.to('#morning', {opacity: 1, duration: 1.4, ease: 'none'}, dawn);
+  tl.to('#cr', {yPercent: -50, duration: 0.5}, dawn + 0.2);
+  tl.to('#moon', {opacity: 0, scale: 0.4, duration: 0.4}, dawn + 0.1); tl.to('#sun', {opacity: 1, scale: 1, duration: 0.5}, dawn + 0.3);
+  K.say(tl, '#sub', S.beat(5.2), {stagger: 0.05});
+  // lịch của quán: các bàn cũ có sẵn, bàn mới bay vào từ email
+  tl.fromTo('#tab', {opacity: 0, y: 120}, {opacity: 1, y: 0, duration: 0.8}, S.beat(4.6));
+  els.forEach((r, i) => { if (!data[i][4]) tl.fromTo(r, {opacity: 0, x: -30}, {opacity: 1, x: 0, duration: 0.35}, S.beat(5.2) + i * 0.06); });
+  tl.to('#mail', {opacity: 0, scale: 0.55, y: S.landscape ? 420 : 380, duration: 0.6}, S.beat(6.6));
+  const nw = els[3]; tl.set(els.slice(4), {y: 0}, 0);
+  tl.fromTo(els.slice(4), {y: 0}, {y: 0, duration: 0.01}, 0);
+  tl.set(nw, {opacity: 0}, 0);
+  tl.fromTo(nw, {opacity: 0, scale: 1.25, y: -60}, {opacity: 1, scale: 1, y: 0, duration: 0.55, immediateRender: false}, S.beat(7.2));
+  tl.fromTo(nw.querySelector('.neu'), {scale: 0}, {scale: 1, duration: 0.35}, S.beat(7.8));
+</script>
+</body></html>

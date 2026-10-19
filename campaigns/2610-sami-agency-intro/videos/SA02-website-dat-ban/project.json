@@ -1,0 +1,328 @@
+{
+ "name": "SA02-website-dat-ban-v.1",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "status": "draft",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "navy": "#0C0628",
+   "mint": "#08DDA4",
+   "purple": "#7667FE"
+  }
+ },
+ "look": {
+  "grain": 0.04,
+  "vignette": 0.35,
+  "background": "#06031A"
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook 23:40 điện thoại đổ chuông",
+   "start": 0,
+   "end": 151,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Website cũ vỡ khung",
+   "start": 151,
+   "end": 331,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Cái giá: khách sang quán khác",
+   "start": 331,
+   "end": 556,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Bước ngoặt: SAMI vào việc",
+   "start": 556,
+   "end": 721,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Chữ ký: dựng website ×16",
+   "start": 721,
+   "end": 1141,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "Luồng đặt bàn 30 giây",
+   "start": 1141,
+   "end": 1411,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "Email xác nhận + lịch của bếp",
+   "start": 1411,
+   "end": 1636,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "3 lợi ích",
+   "start": 1636,
+   "end": 1951,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "Case thật tại Đức",
+   "start": 1951,
+   "end": 2191,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "Nhịp thở + câu chốt",
+   "start": 2191,
+   "end": 2371,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "CTA WhatsApp",
+   "start": 2371,
+   "end": 2566,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  },
+  {
+   "id": "S12",
+   "label": "End card SAMI",
+   "start": 2566,
+   "end": 2686,
+   "engine": "hyperframes",
+   "src": "hf/S12.html"
+  }
+ ],
+ "copy": {
+  "S01_clock": {
+   "label": "Đồng hồ lớn (giờ khi điện thoại đổ chuông)",
+   "scene": "S01",
+   "value": "23:40",
+   "multiline": false
+  },
+  "S01_head": {
+   "label": "Câu hook dưới đồng hồ (*…* tô màu, / xuống dòng)",
+   "scene": "S01",
+   "value": "Bếp đã tắt. / Điện thoại *vẫn đổ chuông.*",
+   "multiline": false
+  },
+  "S02_head": {
+   "label": "Câu trên điện thoại (website cũ)",
+   "scene": "S02",
+   "value": "Không ai nghe máy. / Vị khách thử mở *website của quán…*",
+   "multiline": false
+  },
+  "S02_stamp": {
+   "label": "Tem đỏ đóng lên website cũ",
+   "scene": "S02",
+   "value": "Chậm · Vỡ khung · Không đặt được bàn",
+   "multiline": false
+  },
+  "S03_head": {
+   "label": "Câu chính cảnh mất khách",
+   "scene": "S03",
+   "value": "Mười giây sau, / họ đặt bàn *ở quán khác.*",
+   "multiline": false
+  },
+  "S03_sub": {
+   "label": "Câu phụ cảnh mất khách",
+   "scene": "S03",
+   "value": "Bạn không hề biết mình vừa mất một bàn bốn người.",
+   "multiline": false
+  },
+  "S04_head": {
+   "label": "Câu bước ngoặt",
+   "scene": "S04",
+   "value": "Vì vậy, *SAMI* dựng cho quán một website / *biết tự nhận khách.*",
+   "multiline": false
+  },
+  "S05_head": {
+   "label": "Tiêu đề cảnh dựng website ×16",
+   "scene": "S05",
+   "value": "Không dùng mẫu có sẵn. / Từng khối được *dựng riêng cho quán của bạn.*",
+   "multiline": false
+  },
+  "S05_steps": {
+   "label": "Tên 6 bước (ngăn bằng |)",
+   "scene": "S05",
+   "value": "Wireframe|Lưới 12 cột|Font & màu|Ảnh món|Bản di động|Nút đặt bàn",
+   "multiline": false
+  },
+  "S05_slow": {
+   "label": "Nhãn khi phanh về tốc độ thường",
+   "scene": "S05",
+   "value": "×1 · Khách chạm „Jetzt reservieren“",
+   "multiline": false
+  },
+  "S06_head": {
+   "label": "Câu chính luồng đặt bàn",
+   "scene": "S06",
+   "value": "Chọn ngày, chọn giờ, / *chọn số khách.*",
+   "multiline": false
+  },
+  "S06_sub": {
+   "label": "Câu phụ luồng đặt bàn",
+   "scene": "S06",
+   "value": "Khoảng 30 giây là xong, / không cần ai nghe máy.",
+   "multiline": false
+  },
+  "S07_head": {
+   "label": "Câu chính cảnh xác nhận",
+   "scene": "S07",
+   "value": "Khách nhận email xác nhận / *ngay lập tức.*",
+   "multiline": false
+  },
+  "S07_sub": {
+   "label": "Câu phụ cảnh xác nhận",
+   "scene": "S07",
+   "value": "Sáng mai mở máy, bạn đã thấy / bàn bốn người nằm sẵn trong lịch.",
+   "multiline": false
+  },
+  "S08_title": {
+   "label": "Tiêu đề 3 lợi ích",
+   "scene": "S08",
+   "value": "Một website / *làm việc thay bạn*",
+   "multiline": false
+  },
+  "S08_b1": {
+   "label": "Lợi ích 1",
+   "scene": "S08",
+   "value": "Nhận đặt bàn 24/7, kể cả ngày Ruhetag",
+   "multiline": false
+  },
+  "S08_b2": {
+   "label": "Lợi ích 2",
+   "scene": "S08",
+   "value": "Bớt cuộc gọi lỡ giữa giờ bếp đông khách",
+   "multiline": false
+  },
+  "S08_b3": {
+   "label": "Lợi ích 3",
+   "scene": "S08",
+   "value": "Speisekarte có Allergene, Gutschein, song ngữ Đức Anh",
+   "multiline": false
+  },
+  "S09_head": {
+   "label": "Tiêu đề case thật",
+   "scene": "S09",
+   "value": "Đã chạy thật *tại Đức.*",
+   "multiline": false
+  },
+  "S09_sub": {
+   "label": "Câu phụ case thật",
+   "scene": "S09",
+   "value": "Bốn nhà hàng, bốn bản sắc, cùng một nút đặt bàn luôn sẵn sàng.",
+   "multiline": false
+  },
+  "S10_head": {
+   "label": "Câu chốt dòng 1",
+   "scene": "S10",
+   "value": "Quán của bạn đóng cửa / lúc 22 giờ.",
+   "multiline": false
+  },
+  "S10_sub": {
+   "label": "Câu chốt dòng 2 (*…* tô màu)",
+   "scene": "S10",
+   "value": "*Website của bạn thì không.*",
+   "multiline": false
+  },
+  "S11_head": {
+   "label": "Câu hỏi CTA",
+   "scene": "S11",
+   "value": "Muốn quán bạn cũng nhận khách / *cả lúc đã đóng cửa?*",
+   "multiline": false
+  },
+  "S11_btn": {
+   "label": "Chữ trên nút WhatsApp",
+   "scene": "S11",
+   "value": "Nhắn WhatsApp cho SAMI",
+   "multiline": false
+  },
+  "S11_phone": {
+   "label": "Số WhatsApp",
+   "scene": "S11",
+   "value": "+49 155 60456888",
+   "multiline": false
+  },
+  "S11_offer": {
+   "label": "Ưu đãi dưới nút",
+   "scene": "S11",
+   "value": "Phân tích marketing miễn phí, không ràng buộc. / Phản hồi trong 24 giờ.",
+   "multiline": false
+  },
+  "S12_claim": {
+   "label": "Câu chốt end card",
+   "scene": "S12",
+   "value": "Thêm khách. / Thêm doanh thu. / *Thêm thời gian.*",
+   "multiline": false
+  },
+  "S12_tag": {
+   "label": "Tagline SAMI",
+   "scene": "S12",
+   "value": "Strategy • Automation • Marketing • Intelligence",
+   "multiline": false
+  },
+  "S12_contact": {
+   "label": "Liên hệ end card",
+   "scene": "S12",
+   "value": "WhatsApp +49 155 60456888",
+   "multiline": false
+  },
+  "note_demo": {
+   "label": "Ghi chú nhỏ website mẫu",
+   "scene": "S05",
+   "value": "Minh họa · nhà hàng tưởng tượng",
+   "multiline": false
+  },
+  "S12_url": {
+   "label": "Website end card",
+   "scene": "S12",
+   "value": "sami-agency.de",
+   "multiline": false
+  }
+ },
+ "titles": [],
+ "overlays": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke"
+ },
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "",
+   "gain": -4,
+   "edit": [],
+   "fadeOut": 1.5
+  },
+  "cues": []
+ }
+}

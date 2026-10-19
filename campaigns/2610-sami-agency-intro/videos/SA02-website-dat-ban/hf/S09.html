@@ -1,0 +1,61 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S09 · Bằng chứng: 4 case thật tại Đức (ảnh bìa portfolio SAMI), mỗi thẻ một dữ kiện SAMI đã công bố. */
+  #stage { background: radial-gradient(80% 50% at 50% 100%, rgba(118,103,254,.35), transparent 70%), radial-gradient(60% 40% at 0% 0%, rgba(8,221,164,.18), transparent 70%), #0C0628; }
+  #head { top: 236px; font-size: 80px; }
+  #sub { top: 352px; }
+  #grid4 { position: absolute; left: 60px; right: 60px; top: 560px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; z-index: 20; }
+  .cs { position: relative; height: 440px; border-radius: 32px; overflow: hidden; background: #1A1730; box-shadow: 0 30px 70px rgba(0,0,0,.4), inset 0 0 0 1.5px rgba(255,255,255,.1); }
+  .cs .im { position: absolute; left: 0; right: 0; top: 0; height: 270px; overflow: hidden; }
+  .cs .im img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .cs .im:after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(26,23,48,.9)); }
+  .cs .rv { position: absolute; right: 16px; top: 16px; padding: 10px 18px; border-radius: 99px; background: rgba(255,255,255,.92); color: #17261D; font-family: Inter; font-weight: 600; font-size: 20px; z-index: 3; }
+  .cs .tx { position: absolute; left: 26px; right: 20px; top: 262px; }
+  .cs b { display: block; font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 40px; color: #fff; line-height: 1.15; }
+  .cs small { display: block; font-family: "Be Vietnam Pro"; font-weight: 500; font-size: 26px; color: rgba(255,255,255,.62); margin-top: 4px; }
+  .cs .ft { display: inline-flex; align-items: center; gap: 10px; margin-top: 16px; padding: 9px 16px; border-radius: 12px; background: rgba(8,221,164,.14); box-shadow: inset 0 0 0 1.5px rgba(8,221,164,.55); color: var(--c-mint); font-family: "Be Vietnam Pro"; font-weight: 700; font-size: 25px; }
+  #src { left: 0; right: 0; top: 1520px; text-align: center; }
+  [data-ratio="16x9"] #head { left: 150px; right: auto; width: 900px; top: 140px; }
+  [data-ratio="16x9"] #sub { left: 150px; right: auto; width: 1300px; top: 262px; }
+  [data-ratio="16x9"] #grid4 { left: 150px; right: 150px; top: 400px; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+  [data-ratio="16x9"] .cs { height: 520px; } [data-ratio="16x9"] .cs .im { height: 320px; } [data-ratio="16x9"] .cs .tx { top: 312px; }
+  [data-ratio="16x9"] #src { left: 150px; text-align: left; top: 960px; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S09">
+<div id="stage" class="clip">
+  <div id="fx" class="clip"></div>
+  <div id="head" class="hd txtshadow" data-copy="S09_head"></div>
+  <div id="sub" class="sub" data-copy="S09_sub"></div>
+  <div id="grid4">
+    <div class="cs"><div class="im"><img src="public/img/case-mizuki.webp"></div><span class="rv">Reservieren</span><div class="tx"><b>Mizuki</b><small>Baden-Baden</small><span class="ft">Tải trang 1,6 s</span></div></div>
+    <div class="cs"><div class="im"><img src="public/img/case-an.webp"></div><span class="rv">Reservieren</span><div class="tx"><b>An Vegan</b><small>Karlsruhe</small><span class="ft">Đặt bàn ~30 giây</span></div></div>
+    <div class="cs"><div class="im"><img src="public/img/case-84.webp"></div><span class="rv">Reservieren</span><div class="tx"><b>+84 Kitchen</b><small>Kempten</small><span class="ft">Tải trang 1,5 s</span></div></div>
+    <div class="cs"><div class="im"><img src="public/img/case-vi.webp"></div><span class="rv">Jetzt reservieren</span><div class="tx"><b>Vị</b><small>Schliersee</small><span class="ft">1 chạm tới form</span></div></div>
+  </div>
+  <div id="src" class="note">Số liệu theo case study công bố trên sami-agency.de</div>
+</div>
+</div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), K = window.K;
+  K.dust(tl, document.getElementById('fx'), 24, 101, {color: '#08DDA4', op: 0.25, rise: 100});
+  K.say(tl, '#head', S.beat(0.3), {stagger: 0.08});
+  K.say(tl, '#sub', S.beat(1.6), {stagger: 0.05});
+  K.$$('.cs').forEach((c, i) => {
+    const at = S.beat(2.2 + i * 0.7);
+    tl.fromTo(c, {opacity: 0, y: 80, scale: 0.94, filter: 'blur(10px)'}, {opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.7}, at);
+    tl.fromTo(c.querySelector('img'), {scale: 1.18, xPercent: i % 2 ? 3 : -3}, {scale: 1.02, xPercent: 0, duration: S.dur - at, ease: 'none'}, at);
+    S.arrive(tl, c.querySelector('.ft'), at + 0.5, {dist: 16});
+    const rv = c.querySelector('.rv');
+    tl.fromTo(rv, {opacity: 0, y: -10}, {opacity: 1, y: 0, duration: 0.4}, at + 0.3);
+    tl.to(rv, {background: '#08DDA4', color: '#0C0628', scale: 1.08, duration: 0.25}, S.beat(8 + i * 1.2));
+    tl.to(rv, {background: 'rgba(255,255,255,.92)', color: '#17261D', scale: 1, duration: 0.4}, S.beat(8 + i * 1.2) + 0.35);
+  });
+  tl.fromTo('#src', {opacity: 0}, {opacity: 1, duration: 0.6}, S.beat(6));
+</script>
+</body></html>

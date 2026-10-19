@@ -1,0 +1,63 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S11 · CTA: tin nhắn của chủ quán gửi đi, SAMI đang gõ; nút WhatsApp vẽ bằng code (bong bóng chat xanh, không logo). */
+  #stage { background: radial-gradient(80% 50% at 50% 60%, rgba(37,211,102,.16), transparent 70%), radial-gradient(90% 60% at 90% 0%, rgba(118,103,254,.35), transparent 70%), #0C0628; }
+  #head { top: 236px; font-size: 72px; }
+  #chat { position: absolute; left: 90px; right: 90px; top: 520px; height: 330px; z-index: 20; font-family: Inter; }
+  .bub { position: absolute; max-width: 640px; padding: 24px 30px; border-radius: 34px; font-size: 32px; line-height: 1.35; }
+  #m1 { right: 0; top: 0; background: #DCF8C6; color: #10301C; border-bottom-right-radius: 10px; }
+  #m1 small { display: block; text-align: right; font-size: 20px; color: #5E8A6C; margin-top: 6px; }
+  #m2 { left: 0; top: 190px; background: #fff; color: #1A1730; border-bottom-left-radius: 10px; display: flex; align-items: center; gap: 16px; }
+  #m2 .av { width: 54px; height: 54px; border-radius: 50%; background: #0C0628; display: flex; align-items: center; justify-content: center; flex: none; }
+  #m2 .av img { width: 40px; }
+  #dots { display: flex; gap: 10px; } #dots i { width: 16px; height: 16px; border-radius: 50%; background: #9C97B8; }
+  #rep { font-size: 30px; }
+  #btn { position: absolute; left: 50%; top: 935px; transform: translateX(-50%); display: flex; align-items: center; gap: 26px; padding: 34px 56px 34px 40px; border-radius: 99px; background: var(--wa); color: #fff; font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 52px; white-space: nowrap; box-shadow: 0 30px 80px rgba(37,211,102,.4), inset 0 -6px 0 rgba(0,0,0,.12); z-index: 25; }
+  #btn svg { width: 80px; height: 80px; flex: none; }
+  #num { position: absolute; left: 0; right: 0; top: 1120px; text-align: center; font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 82px; letter-spacing: .01em; color: #fff; z-index: 25; }
+  #offer { top: 1250px; font-size: 40px; }
+  #halo { position: absolute; left: 50%; top: 1010px; width: 900px; height: 260px; margin: -130px 0 0 -450px; border-radius: 200px; border: 3px solid rgba(37,211,102,.6); opacity: 0; z-index: 24; }
+  [data-ratio="16x9"] #head { left: 150px; right: auto; width: 820px; top: 210px; font-size: 70px; }
+  [data-ratio="16x9"] #chat { left: 1080px; right: 120px; top: 170px; }
+  [data-ratio="16x9"] #btn { left: 150px; top: 520px; transform: none; }
+  [data-ratio="16x9"] #halo { left: 590px; top: 595px; }
+  [data-ratio="16x9"] #num { left: 160px; right: auto; top: 700px; text-align: left; }
+  [data-ratio="16x9"] #offer { left: 160px; right: 120px; top: 830px; }
+  [data-ratio="16x9"] #m1 { max-width: 700px; } [data-ratio="16x9"] #m2 { top: 220px; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S11">
+<div id="stage" class="clip">
+  <div id="fx" class="clip"></div>
+  <div id="head" class="hd txtshadow" data-copy="S11_head"></div>
+  <div id="chat">
+    <div class="bub" id="m1">Chào SAMI, quán mình cũng muốn có website nhận đặt bàn online.<small>23:58 ✓✓</small></div>
+    <div class="bub" id="m2"><span class="av"><img src="public/img/logo-white.svg" style="width:46px;object-fit:cover;object-position:0 0;height:46px"></span><span id="dots"><i></i><i></i><i></i></span><span id="rep" style="display:none">Chào bạn! SAMI gửi bạn bản phân tích miễn phí nhé.</span></div>
+  </div>
+  <div id="halo"></div>
+  <div id="btn"><svg viewBox="0 0 48 48"><path d="M8 6 H40 A6 6 0 0 1 46 12 V30 A6 6 0 0 1 40 36 H20 L10 44 V36 H8 A6 6 0 0 1 2 30 V12 A6 6 0 0 1 8 6 Z" fill="#fff"/><circle cx="15" cy="21" r="3.2" fill="#25D366"/><circle cx="24" cy="21" r="3.2" fill="#25D366"/><circle cx="33" cy="21" r="3.2" fill="#25D366"/></svg><span data-copy="S11_btn"></span></div>
+  <div id="num" data-copy="S11_phone"></div>
+  <div id="offer" class="sub" data-copy="S11_offer"></div>
+</div>
+</div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), K = window.K;
+  K.dust(tl, document.getElementById('fx'), 26, 121, {color: '#25D366', op: 0.25, rise: 120});
+  K.say(tl, '#head', S.beat(0.2), {stagger: 0.06});
+  tl.fromTo('#m1', {opacity: 0, y: 40, scale: 0.9, transformOrigin: '100% 100%'}, {opacity: 1, y: 0, scale: 1, duration: 0.5}, S.beat(1));
+  tl.fromTo('#m2', {opacity: 0, y: 30, scale: 0.9, transformOrigin: '0% 100%'}, {opacity: 1, y: 0, scale: 1, duration: 0.45}, S.beat(2.2));
+  K.$$('#dots i').forEach((d, i) => tl.fromTo(d, {y: 0, opacity: 0.4}, {y: -8, opacity: 1, duration: 0.25, yoyo: true, repeat: 5, ease: 'sine.inOut'}, S.beat(2.4) + i * 0.12));
+  tl.set('#dots', {display: 'none'}, S.beat(5.4)); tl.set('#rep', {display: 'inline'}, S.beat(5.4));
+  tl.fromTo('#rep', {opacity: 0}, {opacity: 1, duration: 0.3}, S.beat(5.4));
+  // nút + số + ưu đãi
+  tl.fromTo('#btn', {opacity: 0, scale: 0.6}, {opacity: 1, scale: 1, duration: 0.6}, S.beat(3));
+  tl.fromTo('#halo', {opacity: 0.8, scale: 0.9}, {opacity: 0, scale: 1.25, duration: 1.1, ease: 'power1.out', repeat: 3, repeatDelay: 0.4}, S.beat(4.2));
+  S.arrive(tl, '#num', S.beat(3.6), {dist: 30});
+  K.say(tl, '#offer', S.beat(4.4), {stagger: 0.04});
+</script>
+</body></html>
