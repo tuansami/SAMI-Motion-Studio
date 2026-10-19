@@ -318,11 +318,12 @@
  "audio": {
   "mode": "layers",
   "music": {
-   "src": "",
-   "gain": -4,
+   "src": "audio/music.mp3",
+   "gain": 0,
    "edit": [],
-   "fadeOut": 1.5
+   "fadeOut": 0.5
   },
-  "cues": []
+  "cues": [],
+  "voice": []
  }
 }
