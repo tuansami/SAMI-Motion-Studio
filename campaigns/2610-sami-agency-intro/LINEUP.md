@@ -155,12 +155,12 @@ Thời lượng mục tiêu 60–90 s. Thứ tự = thứ tự sản xuất (ch�
 | SA07 | — | ▢ | ▢ | |
 | SA08 | session_01JR29rVe3J9LQTVve5qQNpn | ✓ | ✓ | 87,5 s, đã gửi |
 | SA09 | — | ▢ | ▢ | |
-| SA10 | session_01KpzfcsQEKggGHtcU7Wr8ja (đang làm) | ▢ | ▢ | |
+| SA10 | session_01KpzfcsQEKggGHtcU7Wr8ja | ✓ | ✓ | 89,7 s, Google Trends + Eurostat, đã gửi |
 | SA11 | — | ▢ | ▢ | |
 | SA12 | — | ▢ | ▢ | |
 | SA13 | — | ▢ | ▢ | |
 | SA14 | session_01VAnbc7r8nwdmwFf8omFNir (đang làm) | ▢ | ▢ | |
 | SA15 | — | ▢ | ▢ | |
-| SA16 | — | ▢ | ▢ | |
+| SA16 | session_0196K5hENCT3q4ztsyzTevbk (đang làm) | ▢ | ▢ | |
 | SA17 | — | ▢ | ▢ | |
 | SA18 | — | ▢ | ▢ | |

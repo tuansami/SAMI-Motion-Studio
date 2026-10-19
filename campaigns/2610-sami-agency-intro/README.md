@@ -21,6 +21,9 @@ Gọi `add_repo` cho `tuansami/mcp-sami-media` và `tuansami/lemo-opuscar`, rồ
 
 - SA04 (dataviz): font Caveat của style thiếu dấu tiếng Việt → dùng Patrick Hand; GENESIS (Destatis) không cho tải bằng tài khoản khách → dùng Eurostat (cùng số liệu Destatis, CC BY 4.0). Video lemo không cần bước `cli-render --enable`.
 
+- SA10: Google Trends API cần cookie từ trang chủ trước, gặp 429 thì chờ ~25 s. `assets/logo-white.svg` có dòng phụ "LEADING DIGITAL TECHNOLOGY" — chấp nhận được, nhưng nếu muốn sạch thì cắt bỏ dòng đó trong bản sao ở dự án.
+- SA08: `setup.sh deps` / `npm install` của lemo có thể bị bộ lọc quyền chặn → tự viết trang render theo page contract, playwright-core có ở /opt/node-tools (symlink), nhạc numpy.
+
 ## Nơi lưu
 - Dự án mỗi video: `campaigns/2610-sami-agency-intro/videos/<ID>-<ten-ngan>/` (Studio project hoặc lemo film folder). Commit nguồn, KHÔNG commit `out/`, `public/_hf|_engine|_lib`, `node_modules`, `.venv`, mp4.
 - MP4 giao Tuấn bằng **SendUserFile** trong phiên của video đó (+ contact sheet JPG).
