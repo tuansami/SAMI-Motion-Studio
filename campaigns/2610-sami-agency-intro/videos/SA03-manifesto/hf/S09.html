@@ -1,1 +1,68 @@
-<!doctype html><html><body><div id="root" data-composition-id="S09"></div><script>const tl=window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/inter/900.css">
+<link rel="stylesheet" href="hf/parts/sk.css">
+<style>
+  /* S09 · KHOẢNH KHẮC CHỮ KÝ: camera kéo ra thấy cả cỗ máy 4 bánh răng chữ quay khớp; trục bánh răng cuối kéo sợi mint (ngoại lệ: tuyến tính, lệch lưới) vẽ mũi tên doanh thu bậc thang vượt khỏi khung */
+  #head { left: var(--m); top: 262px; font-size: 100px; z-index: 6; }
+  #tag { left: 690px; top: 1010px; color: var(--ink); border-color: var(--ex); background: rgba(236, 235, 243, .9); }
+  [data-ratio="16x9"] #head { top: 150px; font-size: 100px; }
+  [data-ratio="16x9"] #tag { left: 1440px; top: 420px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S09">
+  <div class="hd" id="head" data-copy="S09_head"></div>
+  <div class="demo" id="tag" data-copy="S09_tag"></div>
+</div>
+<script src="hf/parts/sk.js"></script>
+<script src="hf/parts/machine.js"></script>
+<script>
+  const S = window.SAMI, K = SK.init(1387), tl = S.timeline(), $ = K.$, B = K.b, M = MACH;
+  K.grid(); K.chrome();
+  M.build($('#root'));
+  K.bind('#head'); $('#tag').innerHTML = S.html('S09_tag'); $('#tag').removeAttribute('data-copy');
+  // chữ chặng 4 (đứng từ S08) rời đi
+  const prev = document.createElement('div'); prev.className = 'stg';
+  const chips = S.text('S08_chips').split(' · ').map((c) => '<span class="chip">' + c + '</span>').join('');
+  prev.innerHTML = '<div class="cap slab">Chặng 04 / 04</div><div class="hd sword" data-copy="S08_word"></div><div class="sub sline" data-copy="S08_line"></div><div class="schips">' + chips + '</div>';
+  $('#root').appendChild(prev); prev.querySelectorAll('[data-copy], .slab').forEach(K.bind);
+  K.hide(tl, prev.querySelector('.sword'), B(0.1)); K.hide(tl, prev.querySelector('.sline'), B(0.2)); K.hide(tl, prev.querySelector('.slab'), B(0.1));
+  tl.to(prev.querySelectorAll('.chip, .slab'), {clipPath: 'inset(0 0 100% 0)', duration: 0.35, stagger: 0.04}, B(0.1));
+  // mũi tên doanh thu: bậc thang từ trục bánh răng 4
+  const G4 = M.G[3], NS = 'http://www.w3.org/2000/svg';
+  const cam = M.preset(4);
+  const xr = cam.x + ((K.P ? 900 : 1560) - cam.sx) / cam.s;           // cột thẳng đứng của mũi tên (px màn hình → thế giới)
+  const pts = [[G4.x, G4.y], [xr, G4.y]];
+  const rise = K.P ? 110 : 70, run = K.P ? 26 : 70;
+  for (let i = 0; i < 18; i++) { const p = pts[pts.length - 1]; pts.push([p[0], p[1] - rise]); pts.push([p[0] + run, p[1] - rise]); }
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('');
+  const line = document.createElementNS(NS, 'path'); line.setAttribute('d', d); line.setAttribute('fill', 'none'); line.setAttribute('stroke', '#08DDA4'); line.setAttribute('stroke-width', 16); line.setAttribute('stroke-linejoin', 'miter');
+  const head = document.createElementNS(NS, 'path'); head.setAttribute('d', 'M -34 22 L 0 -30 L 34 22 Z'); head.setAttribute('fill', '#08DDA4');
+  M.arrow.appendChild(line); M.arrow.appendChild(head);
+  const hub = document.createElementNS(NS, 'circle'); hub.setAttribute('cx', G4.x); hub.setAttribute('cy', G4.y); hub.setAttribute('r', 26); hub.setAttribute('fill', '#08DDA4'); M.arrow.appendChild(hub);
+  const segs = []; let L = 0; for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); segs.push(l); L += l; }
+  line.setAttribute('stroke-dasharray', L.toFixed(1) + ' ' + L.toFixed(1));
+  const at = (len) => { let s = 0; for (let i = 0; i < segs.length; i++) { if (s + segs[i] >= len) { const u = (len - s) / segs[i]; const a = pts[i], b = pts[i + 1]; return [a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, Math.atan2(b[1] - a[1], b[0] - a[0])]; } s += segs[i]; } const p = pts[pts.length - 1]; return [p[0], p[1], -Math.PI / 2]; };
+  K.draw((t) => {
+    const gs = K.g(t);
+    M.applyCam(M.lerpCam(M.preset(3), cam, K.E(t, B(0.2), B(3.2))));
+    M.update(gs);
+    // ngoại lệ: tuyến tính, không ease
+    const u = K.L(t, B(3), S.dur), len = L * 0.92 * u;
+    line.setAttribute('stroke-dashoffset', (L - len).toFixed(1));
+    const p = at(Math.max(1, len));
+    head.setAttribute('transform', 'translate(' + p[0].toFixed(1) + ' ' + p[1].toFixed(1) + ') rotate(' + (p[2] * 180 / Math.PI + 90).toFixed(1) + ')');
+    head.style.opacity = u > 0 ? 1 : 0; hub.style.opacity = K.L(t, B(2.6), B(3));
+  });
+  K.reveal(tl, '#head', B(1.6), {stagger: 0.13});
+  tl.fromTo('#tag', {clipPath: 'inset(0 100% 0 0)'}, {clipPath: 'inset(0 0% 0 0)', duration: 0.4}, B(4));
+  K.run(tl);
+</script>
+</body>
+</html>

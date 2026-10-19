@@ -1,1 +1,67 @@
-<!doctype html><html><body><div id="root" data-composition-id="S10"></div><script>const tl=window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/inter/900.css">
+<link rel="stylesheet" href="hf/parts/sk.css">
+<style>
+  /* S10 · bảng giờ tàu Thụy Sĩ: sợi mint gập thành đường kẻ, 3 hàng Analyse → Strategie → Umsetzung, số khổng lồ trèo lên từng module */
+  #head { left: var(--m); top: 262px; font-size: 100px; }
+  #rows { position: absolute; z-index: 5; left: var(--m); right: var(--m); top: 800px; }
+  .row { position: relative; height: 240px; }
+  .row .rl { position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--ink); transform-origin: 0 50%; }
+  .row .num { position: absolute; left: -8px; top: 22px; font-weight: 900; font-size: 190px; line-height: .9; letter-spacing: -.06em; }
+  .row .num .ln { padding: .02em .03em .04em 0; margin: -.02em -.03em -.04em 0; }
+  .row .tx { position: absolute; left: 320px; top: 30px; right: 0; }
+  .row .vi { font-weight: 800; font-size: 62px; letter-spacing: -.03em; line-height: 1.1; }
+  .row .de { font-weight: 600; font-size: 28px; color: var(--sig); letter-spacing: .02em; margin-top: 6px; }
+  .row .ds { font-weight: 500; font-size: 36px; color: var(--ink2); margin-top: 14px; line-height: 1.25; }
+  .row.r3 .num { color: var(--sig); }
+  #mint { position: absolute; z-index: 6; left: 0; width: 100%; height: 8px; background: var(--ex); transform-origin: 0 50%; }
+  [data-ratio="16x9"] #head { top: 150px; font-size: 96px; width: 760px; }
+  [data-ratio="16x9"] #rows { left: 972px; top: 150px; }
+  [data-ratio="16x9"] .row { height: 280px; }
+  [data-ratio="16x9"] .row .tx { left: 290px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S10">
+  <div id="mint"></div>
+  <div class="hd" id="head" data-copy="S10_head"></div>
+  <div id="rows"></div>
+</div>
+<script src="hf/parts/sk.js"></script>
+<script>
+  const S = window.SAMI, K = SK.init(1564), tl = S.timeline(), $ = K.$, B = K.b;
+  K.grid(); K.chrome();
+  K.bind('#head');
+  const rows = $('#rows');
+  [1, 2, 3].forEach((i) => {
+    const [vi, de, ds] = String(S.copy['S10_s' + i]).split(' / ');
+    const r = document.createElement('div'); r.className = 'row r' + i;
+    r.innerHTML = '<i class="rl"></i><div class="num">0' + i + '</div><div class="tx"><div class="vi">' + vi + '</div><div class="de">' + de + '</div><div class="ds">' + ds + '</div></div>';
+    rows.appendChild(r); r.querySelectorAll('.num, .vi, .de, .ds').forEach(K.bind);
+  });
+  // sợi mint từ S09 gập thành đường kẻ đầu bảng (tuyến tính), rồi tan vào đường mực
+  const y0 = K.P ? 800 : 150; $('#mint').style.top = (y0 - 2) + 'px';
+  if (!K.P) { $('#mint').style.left = '972px'; $('#mint').style.width = (K.W - 972 - K.M) + 'px'; }
+  tl.fromTo('#mint', {scaleX: 0}, {scaleX: 1, duration: 0.5, ease: 'none'}, B(0));
+  tl.to('#mint', {scaleY: 0, duration: 0.4}, B(2));
+  K.reveal(tl, '#head', B(0.6), {stagger: 0.13});
+  [...rows.children].forEach((r, i) => {
+    const at = B(2 + i * 2.5);
+    tl.fromTo(r.querySelector('.rl'), {scaleX: 0}, {scaleX: 1, duration: 0.5, ease: 'none'}, at - 0.2);
+    // số trèo lên từng module (2 bậc)
+    tl.fromTo(K.lines(r.querySelector('.num')), {yPercent: 120}, {yPercent: 50, duration: 0.25}, at);
+    tl.to(K.lines(r.querySelector('.num')), {yPercent: 0, duration: 0.3}, at + K.BEAT * 0.5);
+    K.reveal(tl, r.querySelector('.vi'), at + 0.1);
+    K.reveal(tl, r.querySelector('.de'), at + 0.25);
+    K.reveal(tl, r.querySelector('.ds'), at + 0.4);
+  });
+  K.run(tl);
+</script>
+</body>
+</html>

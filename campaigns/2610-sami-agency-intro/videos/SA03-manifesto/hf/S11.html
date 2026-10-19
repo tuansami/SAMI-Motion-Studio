@@ -1,1 +1,74 @@
-<!doctype html><html><body><div id="root" data-composition-id="S11"></div><script>const tl=window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/inter/900.css">
+<link rel="stylesheet" href="hf/parts/sk.css">
+<style>
+  /* S11 · minh bạch: tờ báo cáo giấy trắng trượt lên, dòng kẻ + cột mọc, tem tím đóng dấu "Không chi phí ẩn"; cuối cảnh pan cứng sang trang sau */
+  #page { position: absolute; inset: 0; z-index: 4; }
+  #head { left: var(--m); top: 262px; font-size: 100px; }
+  #sub { left: var(--m); top: 690px; font-size: 36px; font-weight: 600; color: var(--ink); }
+  #rep { position: absolute; z-index: 4; left: var(--m); top: 800px; width: calc(var(--w) - 2 * var(--m)); height: 760px; background: var(--paper); border: 3px solid var(--ink); box-shadow: 16px 16px 0 rgba(12, 6, 40, .1); padding: 40px 44px; }
+  #rep .rh { display: flex; justify-content: space-between; align-items: baseline; font: 800 40px/1.2 var(--f); letter-spacing: -.02em; padding-bottom: 20px; border-bottom: 3px solid var(--ink); }
+  #rep .rh small { font: 600 24px/1 var(--f); color: var(--grey); letter-spacing: .1em; text-transform: uppercase; }
+  #rep .li2 { display: flex; align-items: center; gap: 22px; font: 600 32px/1.2 var(--f); padding: 20px 0; border-bottom: 2px solid var(--rule); }
+  #rep .li2 span { width: 380px; flex: none; }
+  #rep .li2 i { height: 18px; background: var(--sig); transform-origin: 0 50%; }
+  #rep .li2 b { margin-left: auto; width: 34px; height: 34px; border-radius: 50%; background: var(--ink); flex: none; position: relative; }
+  #rep .li2 b:after { content: ""; position: absolute; left: 10px; top: 7px; width: 9px; height: 15px; border: solid #fff; border-width: 0 4px 4px 0; transform: rotate(45deg); }
+  #bars { position: absolute; left: 44px; right: 44px; bottom: 40px; height: 170px; display: flex; align-items: flex-end; gap: 16px; border-bottom: 3px solid var(--ink); }
+  #bars div { flex: 1; position: relative; }
+  #bars div i { display: block; background: var(--ink); transform-origin: 50% 100%; }
+  #bars div:last-child i { background: var(--ex); }
+  #bars div em { position: absolute; left: 0; right: 0; bottom: -34px; text-align: center; font: 600 20px/1 var(--f); color: var(--grey); font-style: normal; }
+  #stamp { position: absolute; z-index: 7; right: 120px; top: 1236px; font: 900 50px/1.05 var(--f); letter-spacing: -.02em; color: var(--sig); border: 7px solid var(--sig); padding: 18px 26px; transform: rotate(-9deg); background: rgba(255, 255, 255, .85); text-transform: uppercase; }
+  #demo { left: 44px; top: 470px; right: auto; }
+  [data-ratio="16x9"] #head { top: 150px; font-size: 96px; width: 800px; }
+  [data-ratio="16x9"] #sub { top: 520px; }
+  [data-ratio="16x9"] #rep { left: 972px; top: 150px; width: 852px; height: 820px; }
+  [data-ratio="16x9"] #stamp { right: auto; left: 400px; top: 680px; }
+  [data-ratio="16x9"] #demo { top: 470px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S11">
+  <div id="page">
+    <div class="hd" id="head" data-copy="S11_head"></div>
+    <div class="sub" id="sub" data-copy="S11_sub"></div>
+    <div id="rep">
+      <div class="rh">Báo cáo tuần <small>SAMI · cho quán bạn</small></div>
+      <div class="li2"><span>Quảng cáo Google Maps</span><i style="width:300px"></i><b></b></div>
+      <div class="li2"><span>Website &amp; SEO</span><i style="width:180px"></i><b></b></div>
+      <div class="li2"><span>Mạng xã hội</span><i style="width:220px"></i><b></b></div>
+      <div class="li2"><span>Ảnh món</span><i style="width:120px"></i><b></b></div>
+      <div id="bars"></div>
+      <div class="demo" id="demo">Minh họa</div>
+    </div>
+    <div id="stamp" data-copy="S11_stamp"></div>
+  </div>
+</div>
+<script src="hf/parts/sk.js"></script>
+<script>
+  const S = window.SAMI, K = SK.init(1770), tl = S.timeline(), $ = K.$, B = K.b;
+  K.grid(); K.chrome();
+  ['#head', '#sub'].forEach(K.bind);
+  $('#stamp').innerHTML = S.html('S11_stamp'); $('#stamp').removeAttribute('data-copy');
+  const days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'], hs = [52, 64, 58, 80, 118, 150, 132];
+  days.forEach((d, i) => { const c = document.createElement('div'); c.innerHTML = '<i style="height:' + hs[i] + 'px"></i><em>' + d + '</em>'; $('#bars').appendChild(c); });
+  K.reveal(tl, '#head', B(0.4), {stagger: 0.13});
+  tl.fromTo('#rep', {y: 900}, {y: 0, duration: 0.8, ease: S.EASE}, B(1.5));
+  tl.fromTo('#rep .li2', {clipPath: 'inset(0 100% 0 0)'}, {clipPath: 'inset(0 0% 0 0)', duration: 0.4, stagger: K.BEAT * 0.5}, B(3));
+  tl.fromTo('#rep .li2 i', {scaleX: 0}, {scaleX: 1, duration: 0.5, ease: 'none', stagger: K.BEAT * 0.5}, B(3.2));
+  tl.fromTo('#bars i', {scaleY: 0}, {scaleY: 1, duration: 0.4, stagger: K.BEAT * 0.25}, B(4.2));
+  K.reveal(tl, '#sub', B(3.4));
+  tl.fromTo('#stamp', {scale: 1.6, opacity: 0}, {scale: 1, opacity: 1, duration: 0.22, ease: S.EASE}, B(6));
+  // pan cứng một trang sang trái (sang S12)
+  tl.to('#page', {x: -K.W, duration: 0.55, ease: S.EASE}, B(11.1));
+  K.run(tl);
+</script>
+</body>
+</html>

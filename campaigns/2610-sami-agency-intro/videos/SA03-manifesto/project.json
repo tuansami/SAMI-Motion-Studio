@@ -301,7 +301,7 @@
   "S09_head": {
    "label": "Tiêu đề chữ ký",
    "scene": "S09",
-   "value": "Bốn chặng khớp nhau, / *doanh thu mới / bền vững.*"
+   "value": "Bốn chặng / khớp nhau, / *doanh thu mới / bền vững.*"
   },
   "S09_tag": {
    "label": "Nhãn mũi tên",
@@ -417,6 +417,11 @@
    "label": "Website",
    "scene": "S15",
    "value": "sami-agency.de"
+  },
+  "S04_m6": {
+   "label": "Ô thứ 6 trong lưới",
+   "scene": "S04",
+   "value": "Báo cáo"
   }
  },
  "status": "draft",

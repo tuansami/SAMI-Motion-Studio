@@ -88,7 +88,7 @@
   /** vị trí camera chuẩn cho chặng k (0..3) và toàn cảnh (k = 4) */
   M.preset = function (k) {
     if (k < 4) return P ? {x: G[k].x, y: G[k].y, s: 1.12, sx: 560, sy: 1300} : {x: G[k].x, y: G[k].y, s: 0.95, sx: 1420, sy: 600};
-    return P ? {x: 140, y: -475, s: 0.62, sx: 470, sy: 1240} : {x: 140, y: -475, s: 0.62, sx: 1260, sy: 590};
+    return P ? {x: 140, y: -475, s: 0.7, sx: 440, sy: 1310} : {x: 140, y: -475, s: 0.62, sx: 1260, sy: 590};
   };
   M.lerpCam = function (a, b, u) { var o = {}; for (var k in a) o[k] = a[k] + (b[k] - a[k]) * u; return o; };
   M.applyCam = function (c) { M.cam(c.x, c.y, c.s, c.sx, c.sy); };
