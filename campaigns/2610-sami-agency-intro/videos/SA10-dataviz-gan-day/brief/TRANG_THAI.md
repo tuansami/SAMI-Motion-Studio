@@ -9,8 +9,8 @@ Cập nhật: 19.10.2026
 
 ## Đang làm / còn lại
 - [x] 9:16 xuất + đã SendUserFile (89,7 s, −13,9 LUFS, readcheck 33/33, không khung đen)
-- [ ] 16:9 stills + readcheck + xuất (`sh build.sh 1920x1080`) + SendUserFile
-- [ ] Báo phiên điều phối session_01ENDrWfgWowxtPX9WgXNUEt
+- [x] 16:9 xuất + đã SendUserFile (89,7 s, −13,9 LUFS, readcheck đạt, không khung đen)
+- [x] Báo phiên điều phối session_01ENDrWfgWowxtPX9WgXNUEt
 
 ## Cách chạy lại (máy cloud)
 LIB=/home/user/lemo-opuscar. `cd $LIB && node core/render/still.mjs <dự án> 10 40 --size 1080x1920`. Data in lại: `python3 data/make_series.py`.
@@ -18,3 +18,4 @@ LIB=/home/user/lemo-opuscar. `cd $LIB && node core/render/still.mjs <dự án> 1
 ## Ghi chú
 - Patrick Hand thay Caveat (dấu tiếng Việt). Google Trends API cần cookie từ trang chủ trends.google.com và hay trả 429 → chờ 25 s rồi thử lại.
 - Cùng 90 BPM với demo style, nhưng cấu trúc/mở/kết/cú máy/nhạc khác (xem TREATMENT).
+- Còn mở (tuỳ Tuấn): logo-white.svg có dòng "LEADING DIGITAL TECHNOLOGY" (file logo của series, giống SA04). MP4 ở `out/` (không commit), tái tạo bằng `sh build.sh 1080x1920` / `sh build.sh 1920x1080`.
