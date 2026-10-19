@@ -1,0 +1,5 @@
+Dữ liệu: Eurostat sts_setu_m (số liệu Destatis), CC BY 4.0 — https://ec.europa.eu/eurostat/databrowser/view/sts_setu_m/
+Fonts (SIL OFL 1.1, Google Fonts): Newsreader, Patrick Hand, IBM Plex Mono, Be Vietnam Pro — fonts/*_OFL.txt
+Engine: phỏng theo lemo-opuscar styles/dataviz/demo/engine.js (thư viện style, dùng cho phim của người dùng)
+Nhạc + SFX: tổng hợp bằng code (numpy/scipy, audio_src/score.py, lemo-opuscar core/audio/sfx.py), không sample bên ngoài
+Logo SAMI: tài sản của SAMI Marketing Agency

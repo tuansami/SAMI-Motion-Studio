@@ -1,0 +1,11 @@
+# BRIEF · SA04 · Data Storytelling #1 — "Ngành nhà hàng Đức: mỗi vị khách đều phải giành lấy"
+- Bộ máy: lemo-opuscar style `dataviz` (giấy kem, bút chì đỏ–xanh, ghi chú tay, sonification). Không sửa `styles/`/`core/`; engine copy vào dự án.
+- Khán giả: chủ nhà hàng người Việt tại Đức. Nỗi đau: "ngành đã hồi lại rồi" nhưng bàn vẫn vơi; tiền vào két nhiều hơn mà lãi không thấy.
+- Data thật: Eurostat sts_setu_m (Destatis), Gastronomie WZ 56, lượng bán thực + doanh thu danh nghĩa, 1/2019–7/2026, 2019 = 100. Xem `../FACTS.md`.
+- Thông điệp: thị trường không lớn thêm → mỗi vị khách phải giành lấy → quán thắng là quán được tìm thấy trước (Google Maps/Ads) và được tin trước (website, đặt bàn) → SAMI.
+- Hook 0–3 s: khung biểu đồ trống + câu hỏi viết tay "Nếu năm 2019 là 100, hôm nay còn bao nhiêu?", bút chì lơ lửng.
+- Khoảnh khắc chữ ký: tiêu đề "đã hồi phục chưa?" bị chính cây bút gạch đi và viết lại "Chưa. Và mỗi vị khách đều phải giành lấy." sau 1 nhịp im lặng hoàn toàn.
+- Chuyển cảnh: ô "tháng tới" nét đứt nở thành tấm thiệp giấy; mực navy dâng lên trong thiệp thành end card SAMI.
+- Nhạc: sonification (cao độ = giá trị), plonk gỗ→kim loại, celesta, pad ấm, 75 BPM, Fa trưởng → Rê thứ → Fa. Im lặng thật 2 lần.
+- Độ dài 89,6 s. 9:16 1080×1920 trước, 16:9 sau. 30 fps. Không voice (VO soạn sẵn).
+- CTA: WhatsApp +49 155 60456888 · sami-agency.de · phân tích marketing miễn phí, không ràng buộc · phản hồi trong 24 giờ.
