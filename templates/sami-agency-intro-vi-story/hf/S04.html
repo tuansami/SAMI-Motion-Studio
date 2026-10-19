@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/400.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/fraunces/700.css">
+<link rel="stylesheet" href="_fonts/dm-serif-display/400.css">
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/700.css">
+<link rel="stylesheet" href="_fonts/montserrat/700.css">
+<link rel="stylesheet" href="_fonts/oswald/600.css">
+<link rel="stylesheet" href="_fonts/cormorant/600.css">
+<link rel="stylesheet" href="hf/parts/intro.css">
+<style>
+  /* S04 · 01 Branding: app thiết kế tự vẽ, tua nhanh 4 pha cho nhà hàng HƯ CẤU (KONZEPTBEISPIEL):
+   * Pen vẽ nét logo đèn lồng → tô màu + gõ tên quán → phối 8 bảng màu trên logo thật → đổi 7 font ngay trên tên quán →
+   * ráp brandkit (logo, bảng màu, ảnh món thật, menu, ly + túi giấy). Cuối: dấu "Brandkit fertig" + 3 brandkit thật của dự án khác. */
+  #chap { left: var(--safe-side); top: calc(var(--safe-top) + 4px); font-size: 34px; }
+  #head { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 80px); font-size: 78px; }
+  #app { left: 40px; right: 40px; top: 540px; height: 960px; }
+  #hud { right: 64px; top: 500px; }
+  .app .panel { width: 210px; }
+  .app .canvas { left: 78px; right: 214px; }
+  .lay { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; font-size: 20px; color: #bdb9d0; white-space: nowrap; }
+  .lay i { width: 16px; height: 16px; border-radius: 4px; border: 2px solid #6e6a86; flex: none; }
+  .lay.on { background: rgba(118,103,254,.28); color: #fff; } .lay.on i { border-color: var(--c-mint); background: var(--c-mint); }
+  .pblock { margin-top: 22px; }
+  #fillrow { display: flex; align-items: center; gap: 12px; font: 500 20px var(--f-mono); color: #fff; }
+  #fillchip { width: 34px; height: 34px; border-radius: 8px; box-shadow: inset 0 0 0 2px rgba(255,255,255,.2); }
+  #fontname { font: 600 20px var(--f-ui); color: #fff; }
+  #anchors { font: 500 26px var(--f-mono); color: var(--c-mint); }
+  #stage { position: absolute; inset: 0; }
+  #art { left: 50%; top: 74px; width: 500px; height: 500px; margin-left: -250px; background: #fff; }
+  #artlbl { left: 50%; top: 40px; margin-left: -250px; }
+  #ctag { position: absolute; right: 14px; top: 12px; z-index: 8; font: 600 15px var(--f-mono); letter-spacing: .12em; padding: 5px 10px; border-radius: 6px; background: rgba(255,90,95,.9); color: #fff; }
+  #grid { position: absolute; inset: 30px; }
+  #grid svg { width: 100%; height: 100%; display: block; }
+  #logo { position: absolute; left: 50%; top: 46px; width: 290px; height: 290px; margin-left: -145px; }
+  #wm { position: absolute; left: 0; right: 0; top: 352px; text-align: center; }
+  #wmn { font: 700 46px/1.1 "Playfair Display", serif; color: #C9A227; white-space: nowrap; }
+  #wms { margin-top: 10px; font: 600 15px var(--f-ui); letter-spacing: .32em; text-transform: uppercase; color: #C9A227; opacity: .8; }
+  .anc { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; background: #fff; border: 2px solid var(--c-purple); opacity: 0; z-index: 6; }
+  .hnd { position: absolute; height: 2px; background: var(--c-purple); transform-origin: 50% 50%; opacity: 0; z-index: 5; }
+  .hnd::before, .hnd::after { content: ''; position: absolute; top: -6px; width: 12px; height: 12px; border-radius: 50%; background: var(--c-purple); }
+  .hnd::before { left: -6px; } .hnd::after { right: -6px; }
+  #sws { position: absolute; left: 50%; top: 610px; width: 590px; margin-left: -295px; display: flex; gap: 22px; opacity: 0; }
+  .swc { flex: 1; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .swc .sw { width: 100%; height: 100px; }
+  .swc span { font: 500 20px var(--f-mono); color: #d9d7e3; }
+  #lock1 { position: absolute; left: 50%; top: 770px; margin-left: -150px; width: 300px; text-align: center; opacity: 0; }
+  #spec { position: absolute; left: 50%; top: 600px; width: 600px; margin-left: -300px; display: flex; align-items: center; gap: 28px; opacity: 0; }
+  #aa { font-size: 150px; line-height: 1; color: #fff; width: 230px; text-align: center; }
+  #spec .r { display: flex; flex-direction: column; gap: 10px; }
+  #sample { font-size: 40px; line-height: 1.15; color: #fff; }
+  #fam { font: 500 22px var(--f-mono); color: var(--c-mint); }
+  #board { position: absolute; inset: 0; }
+  .kc { position: absolute; border-radius: 14px; overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,.5); opacity: 0; }
+  .kc .lb { position: absolute; left: 14px; bottom: 12px; font: 600 15px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; padding: 5px 10px; border-radius: 6px; background: rgba(0,0,0,.45); color: #fff; z-index: 3; }
+  .k1 { display: flex; align-items: center; justify-content: center; gap: 26px; }
+  .k1 .t b { display: block; font: 700 44px/1.05 "Playfair Display", serif; }
+  .k1 .t span { display: block; margin-top: 8px; font: 600 14px var(--f-ui); letter-spacing: .3em; text-transform: uppercase; opacity: .8; }
+  .k1 .dots { display: flex; gap: 8px; margin-top: 16px; } .k1 .dots i { width: 26px; height: 26px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255,255,255,.2); }
+  .k1 .tg { position: absolute; right: 12px; top: 10px; font: 600 13px var(--f-mono); letter-spacing: .12em; padding: 4px 8px; border-radius: 5px; background: rgba(255,90,95,.9); color: #fff; }
+  .badge { position: absolute; right: 14px; top: 14px; width: 84px; height: 84px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,.35); }
+  .menu { position: absolute; width: 42%; height: 78%; left: 14%; top: 10%; border-radius: 6px 12px 12px 6px; box-shadow: 8px 10px 22px rgba(0,0,0,.4); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; transform: rotate(-6deg); }
+  .menu b { font: 700 20px "Playfair Display", serif; letter-spacing: .04em; }
+  .menu .ph2 { position: absolute; }
+  .mphoto { position: absolute; right: 8%; top: 16%; width: 38%; height: 66%; border-radius: 8px; box-shadow: 6px 8px 18px rgba(0,0,0,.4); transform: rotate(5deg); }
+  .cup { position: absolute; left: 14%; bottom: 14%; width: 30%; height: 64%; }
+  .cup .lid { position: absolute; left: -6%; right: -6%; top: 0; height: 12%; border-radius: 8px; }
+  .cup .bd { position: absolute; left: 0; right: 0; top: 10%; bottom: 0; clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%); display: flex; align-items: center; justify-content: center; }
+  .cup .band { position: absolute; left: 0; right: 0; top: 38%; height: 30%; }
+  .bag { position: absolute; right: 12%; bottom: 10%; width: 40%; height: 76%; border-radius: 4px; background: #C9A27A; box-shadow: 6px 8px 18px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; }
+  .bag::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 12%; background: rgba(0,0,0,.08); }
+  .bag::after { content: ''; position: absolute; left: 30%; right: 30%; top: -14%; height: 22%; border: 5px solid #8c6e4a; border-bottom: none; border-radius: 30px 30px 0 0; }
+  #stamp { position: absolute; left: 50%; top: 46%; z-index: 50; transform: translate(-50%, -50%) rotate(-8deg); padding: 18px 34px; border-radius: 22px; border: 6px solid var(--c-mint);
+    background: rgba(6,3,26,.88); color: var(--c-mint); font: 800 52px var(--f-head); white-space: nowrap; display: flex; align-items: center; gap: 16px; opacity: 0; }
+  #stamp .ic { width: 56px; height: 56px; }
+  #fan { position: absolute; left: 40px; right: 40px; top: 1300px; height: 220px; }
+  #fan .fc { position: absolute; top: 0; width: 310px; height: 210px; border-radius: 18px; box-shadow: var(--shadow); opacity: 0; }
+  #preload { position: absolute; left: -9999px; top: 0; opacity: 0.01; }
+  [data-ratio="16x9"] #chap { left: 110px; top: 120px; }
+  [data-ratio="16x9"] #head { left: 110px; right: auto; width: 600px; top: 200px; font-size: 70px; }
+  [data-ratio="16x9"] #app { left: 760px; right: auto; width: 1060px; top: 100px; height: 880px; }
+  [data-ratio="16x9"] #hud { right: 120px; top: 64px; }
+  [data-ratio="16x9"] #fan { left: 110px; right: auto; width: 600px; top: 620px; height: 300px; }
+  [data-ratio="16x9"] #fan .fc { width: 270px; height: 182px; }
+</style>
+<style data-lang="vi-story">
+[data-ratio="9x16"] #head { font-size: 74px; }
+[data-ratio="9x16"] #app { --end-scale: .72; }
+[data-ratio="9x16"] #fan { top: 1236px; height: 180px; }
+[data-ratio="9x16"] #fan .fc { width: 260px; height: 170px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S04">
+  <div class="story" data-copy="S04_story"></div>
+  <div class="bg"></div><div class="dots"></div>
+  <div id="chap" class="chapter"></div>
+  <div id="head" class="head" data-copy="S04_head"></div>
+  <div id="app" class="app">
+    <div class="top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="file" data-copy="S04_file"></span><span class="tag">100 %</span></div>
+    <div class="tools" id="tools"></div>
+    <div class="canvas" id="canvas">
+      <div id="ctag" data-copy="S04_concept"></div>
+      <div id="stage">
+        <div id="artlbl" class="art-label">Logo · 1080 × 1080 px</div>
+        <div id="art" class="art"><div id="grid"></div><div id="logo"></div><div id="wm"><div id="wmn"></div><div id="wms" data-copy="S04_brandsub"></div></div></div>
+        <div id="sws"></div>
+        <div id="lock1" class="chip"><i></i><span id="lock1t"></span></div>
+        <div id="spec"><div id="aa">Aa</div><div class="r"><div id="sample" data-copy="S04_sample"></div><div id="fam"></div></div></div>
+      </div>
+      <div id="board"></div>
+    </div>
+    <div class="panel" id="panel">
+      <h6 id="h-lay"></h6><div id="layers"></div>
+      <div class="pblock"><h6 id="h-fill"></h6><div id="fillrow"><div id="fillchip"></div><span id="fillhex"></span></div></div>
+      <div class="pblock"><h6 id="h-font"></h6><div id="fontname">Inter</div></div>
+      <div class="pblock"><h6 id="h-anc"></h6><div id="anchors">0</div></div>
+    </div>
+  </div>
+  <div id="stamp"><div class="ic"></div><span data-copy="S04_done"></span></div>
+  <div id="fan"></div>
+  <div id="preload"></div>
+</div>
+<script src="hf/parts/sami-logo.js"></script>
+<script src="hf/parts/intro.js"></script>
+<script src="hf/parts/concept-brand.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), B = S.beat, $ = I.$, CB = window.CONCEPT;
+  const UI = S.text('S04_ui').split('|').map((x) => x.trim());
+  const [tEbenen, tFill, tFont, tRaster, tLogo, tPal, tTypo, tKit, tAnc, tImg, tPack] = UI;
+  const [num, name] = S.text('S04_chapter').split('|').map((x) => x.trim());
+  $('#chap').innerHTML = '<b>' + num + '</b><span>' + name + '</span>';
+  const toolNames = ['move', 'pen', 'rect', 'type', 'drop', 'img'];
+  toolNames.forEach((n) => I.el('div', 't', $('#tools'), I.icon(n)).dataset.t = n);
+  $('#h-lay').textContent = tEbenen.toUpperCase(); $('#h-fill').textContent = tFill.toUpperCase(); $('#h-font').textContent = tFont.toUpperCase(); $('#h-anc').textContent = tAnc.toUpperCase();
+  const layers = [tRaster, tLogo, tPal, tTypo, tKit].map((n) => { const r = I.el('div', 'lay', $('#layers'), '<i></i><span></span>'); r.querySelector('span').textContent = n; return r; });
+  const hud = I.hud($('#root'), S.text('S04_ff'), 16); hud.id = 'hud';
+  $('#stamp .ic').innerHTML = I.icon('check', {sw: 3});
+  const BRAND = S.text('S04_brand');
+  const FONTS = ['Fraunces', 'DM Serif Display', 'Bricolage Grotesque', 'Montserrat', 'Oswald', 'Cormorant', 'Inter'];
+  const FINAL_FONT = S.text('S04_font') || 'Playfair Display';
+  FONTS.concat([FINAL_FONT]).forEach((f) => { const s = I.el('span', '', $('#preload'), 'Aa ' + BRAND); s.style.fontFamily = '"' + f + '"'; s.style.fontWeight = 700; });
+  const PAL = (S.text('S04_palette') || '').split(/\s+/).filter(Boolean);
+  const finalPal = PAL.length >= 5 ? PAL.slice(0, 5) : CB.PAL;
+
+  // ── logo đèn lồng (nhà hàng hư cấu) → bút Pen vẽ nét ──
+  const art = $('#art'), logoBox = $('#logo');
+  const M = CB.mark(logoBox, logoBox.offsetWidth, {filled: false, color: '#7667FE', sw: 3});
+  const paths = M.lines;
+  // lưới dựng hình
+  const g = I.svg('svg', {viewBox: '0 0 440 440'}, $('#grid'));
+  const gl = [];
+  [[220, 175, 160], [220, 175, 95], [220, 175, 48]].forEach((c) => gl.push(I.svg('circle', {cx: c[0], cy: c[1], r: c[2], fill: 'none', stroke: '#b9b0ff', 'stroke-width': 1.2, 'stroke-dasharray': '6 6'}, g)));
+  [[0, 175, 440, 175], [220, 0, 220, 440], [40, 0, 40, 440], [400, 0, 400, 440], [0, 340, 440, 340]].forEach((l) => gl.push(I.svg('line', {x1: l[0], y1: l[1], x2: l[2], y2: l[3], stroke: '#d6d0ff', 'stroke-width': 1}, g)));
+
+  // ── timeline con (tua nhanh, 7 s) ───────────────────────────────
+  const ct = gsap.timeline({paused: true, defaults: {ease: S.EASE}}); ct.set({}, {}, 7);
+  const tool = (n, at) => toolNames.forEach((t) => ct.set($('[data-t="' + t + '"]'), {attr: {class: 't' + (t === n ? ' on' : '')}}, at));
+  const layer = (i, at) => layers.forEach((r, k) => ct.set(r, {attr: {class: 'lay' + (k === i ? ' on' : '')}}, at));
+  tool('pen', 0); layer(0, 0);
+  ct.from(gl, {opacity: 0, scale: 0.6, transformOrigin: '50% 50%', duration: 0.3, stagger: 0.04}, 0);
+  layer(1, 0.4);
+  // vẽ nét từng đường theo độ dài, điểm neo + tay nắm + con trỏ Pen đi theo
+  const L = paths.reduce((s, p) => s + p.getTotalLength(), 0);
+  paths.forEach((p) => { const l = p.getTotalLength(); p.style.strokeDasharray = l; p.style.strokeDashoffset = l; });
+  let acc = 0;
+  paths.forEach((p) => { const l = p.getTotalLength(); ct.to(p, {strokeDashoffset: 0, duration: 2.2 * l / L, ease: 'none'}, 0.4 + 2.2 * acc / L); acc += l; });
+  const N = 34, pts = [], ox = logoBox.offsetLeft, oy = logoBox.offsetTop;
+  for (let i = 0; i <= N; i++) {
+    let rem = L * i / N, pp = paths[0];
+    for (const p of paths) { const pl = p.getTotalLength(); if (rem <= pl) { pp = p; break; } rem -= pl; }
+    const q = pp.getPointAtLength(Math.max(0, Math.min(rem, pp.getTotalLength()))), m = pp.getCTM();
+    pts.push([ox + m.a * q.x + m.c * q.y + m.e, oy + m.b * q.x + m.d * q.y + m.f, pp, rem]);
+  }
+  pts.forEach((p, i) => {
+    const at = 0.4 + 2.2 * i / N;
+    const a = I.el('div', 'anc', art); a.style.left = p[0] + 'px'; a.style.top = p[1] + 'px';
+    ct.set(a, {opacity: 1}, at);
+    if (i % 6 === 2) {
+      const q1 = p[2].getPointAtLength(Math.max(0, p[3] - 8)), q2 = p[2].getPointAtLength(p[3] + 8);
+      const ang = Math.atan2(q2.y - q1.y, q2.x - q1.x) * 180 / Math.PI;
+      const h = I.el('div', 'hnd', art); h.style.width = '110px'; h.style.left = (p[0] - 55) + 'px'; h.style.top = (p[1] - 1) + 'px'; h.style.transform = 'rotate(' + ang + 'deg)';
+      ct.set(h, {opacity: 1}, at); ct.set(h, {opacity: 0}, at + 0.35);
+    }
+  });
+  const pen = I.cursor(ct, art, pts.map((p, i) => [p[0], p[1], 0.4 + 2.2 * i / N, i % 6 === 0]), {pen: true, size: 40});
+  pen.style.opacity = 0; ct.set(pen, {opacity: 1}, 0.4); ct.to(pen, {opacity: 0, duration: 0.1}, 2.7);
+  const an = $('#anchors'); for (let i = 0; i <= N; i++) ct.set(an, {textContent: String(Math.round(i * 96 / N))}, 0.4 + 2.2 * i / N);
+  // tô màu + gõ tên quán
+  ct.set(M.lines, {attr: {stroke: finalPal[1]}, strokeWidth: 4}, 2.62);
+  ct.to(M.fills, {attr: {'fill-opacity': 1}, duration: 0.2}, 2.62);
+  ct.to(I.$$('.anc', art), {opacity: 0, duration: 0.15}, 2.7);
+  ct.to(gl, {opacity: 0, duration: 0.2}, 2.7);
+  tool('type', 2.62);
+  I.type(ct, $('#wmn'), BRAND, 2.62, 60, false);
+  ct.from('#wms', {opacity: 0, duration: 0.1}, 2.85);
+  // pha 2: phối bảng màu trên logo thật (nền artboard, nét + nắp, thân đèn, tên quán)
+  const CAND = [
+    ['#E87F61', '#D3AE76', '#6A391C', '#F3E9D8', '#265358'], ['#8C3B3D', '#C9A27A', '#2A1D1A', '#F3E4D0', '#4B1F24'],
+    ['#B5482E', '#D9B26F', '#1F3D36', '#F2EBDD', '#22201F'], ['#C2413B', '#E4B363', '#2C2F6B', '#F5F0E6', '#1C1C1C'],
+    ['#BC4B51', '#F4A259', '#0F5257', '#F2E8CF', '#2B2D42'], ['#7D5A50', '#E0C097', '#3D2C2E', '#EFE6DD', '#151515'],
+    ['#E76F51', '#E9C46A', '#264653', '#F1FAEE', '#1D1E2C'], ['#D62828', '#F1C27D', '#14213D', '#F7F3EA', '#0B0B0B']];
+  const sws = $('#sws'), swc = finalPal.map(() => I.el('div', 'swc', sws, '<div class="sw"></div><span></span>'));
+  const applyPal = (pal, at) => {
+    swc.forEach((c, i) => { ct.set(c.firstChild, {backgroundColor: pal[i]}, at); ct.set(c.lastChild, {textContent: pal[i].toUpperCase()}, at); });
+    ct.set(art, {backgroundColor: pal[2]}, at);
+    ct.set(M.lines, {attr: {stroke: pal[1]}}, at); ct.set(M.caps, {attr: {fill: pal[1]}}, at); ct.set(M.body, {attr: {fill: pal[0]}}, at);
+    ct.set(['#wmn', '#wms'], {color: pal[1]}, at);
+    ct.set('#fillchip', {backgroundColor: pal[1]}, at); ct.set('#fillhex', {textContent: pal[1].toUpperCase()}, at);
+  };
+  applyPal(['#C8402F', finalPal[1], '#FFFFFF', '#F3E9D8', '#1B1B1B'], 2.62);
+  tool('drop', 2.95); layer(2, 2.95);
+  ct.to(sws, {opacity: 1, duration: 0.15}, 2.95);
+  CAND.forEach((pal, i) => applyPal(pal, 3.0 + i * 0.18));
+  const lockAt = 3.0 + CAND.length * 0.18;
+  applyPal(finalPal, lockAt);
+  $('#lock1t').textContent = tPal + ' ✓';
+  ct.fromTo('#lock1', {opacity: 0, scale: 1.4}, {opacity: 1, scale: 1, duration: 0.15}, lockAt);
+  // pha 3: chọn font, đổi luôn trên tên quán
+  tool('type', 4.7); layer(3, 4.7);
+  ct.to([sws, '#lock1'], {opacity: 0, duration: 0.1}, 4.65);
+  ct.to('#spec', {opacity: 1, duration: 0.1}, 4.7);
+  const aa = $('#aa'), sample = $('#sample'), fam = $('#fam'), fname = $('#fontname'), wmn = $('#wmn');
+  FONTS.forEach((f, i) => { const at = 4.75 + i * 0.16; [aa, sample, wmn].forEach((e) => ct.set(e, {fontFamily: '"' + f + '"', fontWeight: 700}, at)); ct.set([fam, fname], {textContent: f}, at); });
+  const fAt = 4.75 + FONTS.length * 0.16;
+  [aa, sample, wmn].forEach((e) => ct.set(e, {fontFamily: '"' + FINAL_FONT + '"'}, fAt));
+  ct.set([aa, sample], {color: finalPal[1]}, fAt);
+  ct.set([fam, fname], {textContent: FINAL_FONT + ' · Inter'}, fAt);
+  ct.fromTo(['#spec', '#wmn'], {scale: 1.12}, {scale: 1, duration: 0.15}, fAt);
+  // pha 4: ráp brandkit (dựng bằng code + ảnh món thật)
+  tool('move', 6.0); layer(4, 6.0);
+  ct.to('#stage', {opacity: 0, scale: 0.9, duration: 0.15}, 6.0);
+  const cv = $('#canvas'), board = $('#board'), cw = cv.offsetWidth, ch = cv.offsetHeight, pad = 26;
+  const R = (x, y, w, h) => [pad + x * (cw - 2 * pad), pad + y * (ch - 2 * pad), w * (cw - 2 * pad), h * (ch - 2 * pad)];
+  const lay = S.landscape
+    ? [R(0, 0, 1, 0.44), R(0, 0.47, 0.32, 0.53), R(0.34, 0.47, 0.32, 0.53), R(0.68, 0.47, 0.32, 0.53)]
+    : [R(0, 0, 1, 0.4), R(0, 0.43, 0.48, 0.57), R(0.52, 0.43, 0.48, 0.27), R(0.52, 0.73, 0.48, 0.27)];
+  const [red, gold, jade, cream, ink] = finalPal;
+  const tile = (i, cls, bg) => { const d = I.el('div', 'kc ' + (cls || ''), board); const [x, y, w, h] = lay[i]; Object.assign(d.style, {left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px', background: bg || jade}); return d; };
+  // 1 · logo chính
+  const k1 = tile(0, 'k1', jade);
+  CB.mark(k1, Math.min(lay[0][3] * 0.72, 220), {color: gold, body: red});
+  const t1 = I.el('div', 't', k1); I.el('b', '', t1).textContent = BRAND; I.el('span', '', t1).textContent = S.text('S04_brandsub');
+  t1.style.color = cream; t1.querySelector('b').style.fontFamily = '"' + FINAL_FONT + '"';
+  const dots = I.el('div', 'dots', t1); finalPal.forEach((c) => { const d = I.el('i', '', dots); d.style.background = c; });
+  I.el('div', 'tg', k1).textContent = S.text('S04_concept');
+  // 2 · hình ảnh (ảnh món thật + huy hiệu logo)
+  const k2 = tile(1, '', ink); k2.setAttribute('data-img', 'S04_food_photo');
+  const bd = I.el('div', 'badge', k2); bd.style.background = jade; CB.mark(bd, 64, {color: gold, body: red, sw: 6});
+  I.el('div', 'lb', k2).textContent = tImg;
+  // 3 · menu (bìa + ảnh món)
+  const k3 = tile(2, '', cream);
+  const mn = I.el('div', 'menu', k3); mn.style.background = jade; mn.style.color = gold; CB.mark(mn, 56, {color: gold, body: red, sw: 6}); I.el('b', '', mn).textContent = S.text('S05_title') || 'Speisekarte';
+  const mp = I.el('div', 'mphoto', k3); mp.setAttribute('data-img', 'S04_food2_photo');
+  // 4 · bao bì: ly + túi giấy
+  const k4 = tile(3, '', '#E9E1D3');
+  const cup = I.el('div', 'cup', k4, '<div class="bd"><div class="band"></div></div><div class="lid"></div>');
+  cup.querySelector('.bd').style.background = cream; cup.querySelector('.band').style.background = jade; cup.querySelector('.lid').style.background = ink;
+  CB.mark(cup.querySelector('.band'), 40, {color: gold, body: red, sw: 7}).svg.style.cssText = 'display:block;margin:6px auto;overflow:visible';
+  const bag = I.el('div', 'bag', k4); CB.mark(bag, 60, {color: jade, body: red, sw: 6});
+  I.el('div', 'lb', k4).textContent = tPack;
+  I.bindImgs(board);
+  const kits = [k1, k2, k3, k4];
+  kits.forEach((d, i) => ct.fromTo(d, {opacity: 0, scale: 0.7, x: (i % 2 ? 140 : -140)}, {opacity: 1, scale: 1, x: 0, duration: 0.18}, 6.08 + i * 0.17));
+  const selb = I.el('div', 'sel', board); selb.style.opacity = 0;
+  kits.forEach((d, i) => { const [x, y, w, h] = lay[i]; ct.set(selb, {left: x - 4, top: y - 4, width: w + 8, height: h + 8, opacity: 1}, 6.1 + i * 0.17); });
+  ct.set(selb, {opacity: 0}, 6.9);
+  ct.set('#ctag', {opacity: 0}, 6.0);
+
+  // ── timeline chính ──────────────────────────────────────────────
+  S.arrive(tl, '#chap', B(0), {dist: 20, blur: 6, dur: 0.4});
+  tl.fromTo('#app', {y: 160, scale: 0.94, opacity: 0}, {y: 0, scale: 1, opacity: 1, duration: 0.55}, B(0));
+  S.arrive(tl, S.words($('#head')), B(0.5), {stagger: 0.07, dist: 40, dur: 0.45});
+  tl.fromTo(hud, {scale: 0.6, opacity: 0}, {scale: 1, opacity: 1, duration: 0.3}, B(1));
+  I.clock(tl, hud, B(1), B(15) - B(1), 7.5);
+  I.lapse(tl, ct, B(1), B(15) - B(1), 12);
+  tl.to(hud, {opacity: 0, y: -20, duration: 0.3}, B(15.2));
+  tl.fromTo('#stamp', {scale: 2.2, opacity: 0}, {scale: 1, opacity: 1, duration: 0.3}, B(15.2));
+  I.shake(tl, '#app', B(15.3), {amp: 10, n: 6});
+  const fan = $('#fan'), fw = fan.offsetWidth;
+  [6, 7, 8].forEach((k, i) => {
+    const c = I.el('div', 'fc', fan); c.setAttribute('data-img', 'S04_kit' + k + '_photo');
+    const cwid = c.offsetWidth; c.style.left = (i * (fw - cwid) / 2) + 'px';
+    tl.fromTo(c, {y: 320, rotation: (i - 1) * 10, opacity: 0}, {y: 0, rotation: (i - 1) * 4, opacity: 1, duration: 0.5}, B(16 + i * 0.5));
+  });
+  I.bindImgs(fan);
+  // app lùi về phía trên nhường chỗ cho 3 brandkit thật (--end-scale trong CSS của bản ngôn ngữ ghi đè được)
+  const endScale = parseFloat(getComputedStyle($('#app')).getPropertyValue('--end-scale')) || S.pick({'16:9': 0.96, default: 0.8});
+  tl.to('#app', {scale: endScale, transformOrigin: '50% 0%', duration: 0.6}, B(15.8));
+  // dòng dẫn chuyện (chỉ bản kể chuyện có chữ; trống = ẩn)
+  I.story(tl, B(16.6));
+</script>
+</body>
+</html>

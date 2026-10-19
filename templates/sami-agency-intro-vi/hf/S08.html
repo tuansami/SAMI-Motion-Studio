@@ -49,6 +49,7 @@
 </head>
 <body>
 <div id="root" data-composition-id="S08">
+  <div class="story" data-copy="S08_story"></div>
   <div class="bg"></div><div class="dots"></div>
   <div id="chap" class="chapter"></div>
   <div id="head" class="head" data-copy="S08_head"></div>
@@ -131,6 +132,8 @@
   // đường đi
   tl.fromTo(yc.querySelector('.rt'), {scale: 1}, {scale: 0.9, duration: 0.08, yoyo: true, repeat: 1}, B(7.4));
   tl.to(route, {strokeDashoffset: 0, duration: 1.4, ease: 'none'}, B(7.6));
+  // dòng dẫn chuyện (chỉ bản kể chuyện có chữ; trống = ẩn)
+  I.story(tl, B(6.4));
 </script>
 </body>
 </html>

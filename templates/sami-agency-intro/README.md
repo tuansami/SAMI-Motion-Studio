@@ -2,7 +2,10 @@
 
 60 giây · 12 cảnh · **9:16** và 16:9 · lưới 120 BPM (1 nhịp = 15 khung, cắt tại 15n+1) · chữ trên màn hình tiếng Đức (xưng `Sie`) · engine Hyperframes (xuất thuần được) · nhạc tự tổng hợp (`tools/make_music.py`, không bản quyền) · **toàn ảnh thật**.
 
-**Bản ngôn ngữ:** `lang/vi.json` → `node tools/build-lang.mjs vi` sinh `templates/sami-agency-intro-vi/` (chữ tiếng Việt cho chủ quán người Việt tại Đức, giao diện khách giữ tiếng Đức). Sửa cảnh ở mẫu này rồi chạy lại lệnh, đừng sửa tay bản -vi.
+**Bản ngôn ngữ:** `lang/<tên>.json` → `node tools/build-lang.mjs <tên>` sinh mẫu anh em (giao diện khách giữ tiếng Đức). Sửa cảnh ở mẫu này rồi chạy lại lệnh, đừng sửa tay bản sinh ra.
+- `vi` → `templates/sami-agency-intro-vi/`: 60 s, chữ tiếng Việt cho chủ quán người Việt tại Đức.
+- `vi-story` → `templates/sami-agency-intro-vi-story/`: **bản kể chuyện** 74,5 s, chỉ 9:16. Tiêu đề dài, truyền cảm; thêm dòng dẫn chuyện `Sxx_story` (`.story`, `I.story()`); `holds` giữ hình thêm nhịp ở chỗ cần đọc; CSS riêng theo cảnh; nhạc riêng `lang/audio/sami-intro-story.mp3` (đổi `holds` thì dựng lại nhạc bằng lệnh build-lang in ra).
+- Mẫu gốc không có ô `Sxx_story` nên dòng dẫn chuyện ẩn; `HOLDS` trong `intro.js` để trống.
 
 **Bán gì:** giới thiệu SAMI như agency trọn gói cho nhà hàng: Branding, Speisekarte, Website, Online-Reservierung, Online-Bestellung, Local SEO, Google Ads Maps, Social Media. Trọng tâm: cho chủ quán **thấy tay nghề** (dựng brandkit, menu, website trong app thiết kế, tua nhanh, phối mẫu) rồi chốt bằng **lợi ích + số đo thật + offer miễn phí + WhatsApp**.
 

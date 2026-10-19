@@ -59,6 +59,7 @@
 </head>
 <body>
 <div id="root" data-composition-id="S07">
+  <div class="story" data-copy="S07_story"></div>
   <div class="bg"></div><div class="dots"></div>
   <div id="chap" class="chapter"></div>
   <div id="pL" class="phone ph2"><div class="notch"></div><div class="scr">
@@ -81,8 +82,9 @@
   const ch = S.text('S07_chapter').split('|').map((x) => x.trim());
   $('#chap').innerHTML = '<b>' + ch[0] + '</b><span>' + ch[1] + '</span><b>' + ch[2] + '</b><span>' + ch[3] + '</span>';
   // lời 2 vế: "Reservieren … / Bestellen …"
-  const parts = S.html('S07_head').split(/<br>/);
-  $('#cL').innerHTML = parts[0] || ''; $('#cR').innerHTML = parts[1] || '';
+  // " / " chia đôi: nửa đầu dưới điện thoại trái, nửa sau dưới điện thoại phải (4 dòng → mỗi bên 2 dòng)
+  const parts = S.html('S07_head').split(/<br>/), half = Math.ceil(parts.length / 2);
+  $('#cL').innerHTML = parts.slice(0, half).join('<br>'); $('#cR').innerHTML = parts.slice(half).join('<br>');
   // đặt bàn
   const days = S.text('S07_days').split('|'), dayEls = days.map((d, i) => I.el('div', 'day', $('.days'), '<span>' + d + '</span><b>' + (20 + i) + '</b>'));
   const slots = S.text('S07_slots').split('|').map((t) => t.trim()), want = S.text('S07_time');
@@ -126,6 +128,8 @@
   tl.fromTo([L, R], {y: 500, opacity: 0, rotation: (i) => (i ? 6 : -6)}, {y: 0, opacity: 1, rotation: 0, duration: 0.5, stagger: 0.12}, B(0));
   S.arrive(tl, S.words($('#cL')), B(0.6), {stagger: 0.06, dist: 30, dur: 0.4});
   S.arrive(tl, S.words($('#cR')), B(1.2), {stagger: 0.06, dist: 30, dur: 0.4});
+  // dòng dẫn chuyện (chỉ bản kể chuyện có chữ; trống = ẩn)
+  I.story(tl, B(6.8));
 </script>
 </body>
 </html>

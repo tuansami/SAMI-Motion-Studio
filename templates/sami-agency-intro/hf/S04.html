@@ -92,6 +92,7 @@
 </head>
 <body>
 <div id="root" data-composition-id="S04">
+  <div class="story" data-copy="S04_story"></div>
   <div class="bg"></div><div class="dots"></div>
   <div id="chap" class="chapter"></div>
   <div id="head" class="head" data-copy="S04_head"></div>
@@ -283,7 +284,11 @@
     tl.fromTo(c, {y: 320, rotation: (i - 1) * 10, opacity: 0}, {y: 0, rotation: (i - 1) * 4, opacity: 1, duration: 0.5}, B(16 + i * 0.5));
   });
   I.bindImgs(fan);
-  tl.to('#app', {scale: S.pick({'16:9': 0.96, default: 0.8}), transformOrigin: '50% 0%', duration: 0.6}, B(15.8));
+  // app lùi về phía trên nhường chỗ cho 3 brandkit thật (--end-scale trong CSS của bản ngôn ngữ ghi đè được)
+  const endScale = parseFloat(getComputedStyle($('#app')).getPropertyValue('--end-scale')) || S.pick({'16:9': 0.96, default: 0.8});
+  tl.to('#app', {scale: endScale, transformOrigin: '50% 0%', duration: 0.6}, B(15.8));
+  // dòng dẫn chuyện (chỉ bản kể chuyện có chữ; trống = ẩn)
+  I.story(tl, B(16.6));
 </script>
 </body>
 </html>

@@ -17,6 +17,12 @@
 .head em.hl, .head em.hl .w { padding-bottom: 0.08em; }
 /* tiếng Việt: dấu chồng (ể, ộ, ữ…) cần giãn dòng, chữ hơi thưa hơn */
 html[lang="vi"] .head { line-height: 1.18; letter-spacing: -0.025em; }
+/* dòng dẫn chuyện (bản kể chuyện; trống = ẩn): dải ngay trên vùng an toàn dưới, gạch màu bên trái */
+.story { position: absolute; left: var(--safe-side); right: var(--safe-side); bottom: calc(var(--safe-bottom) + 6px); z-index: 30;
+  padding-left: 26px; border-left: 6px solid var(--c-mint); font: 600 38px/1.36 var(--f-ui); color: rgba(255, 255, 255, 0.94);
+  text-shadow: 0 2px 14px rgba(6, 3, 26, 0.85); text-wrap: pretty; }
+.story em.hl, .story em.hl .w { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--c-mint); }
+[data-ratio="16x9"] .story { left: 110px; right: auto; width: 820px; bottom: 70px; }
 .ui { font-family: var(--f-ui); }
 .mono { font-family: var(--f-mono); }
 .chip { display: inline-flex; align-items: center; gap: 0.5em; padding: 0.42em 0.95em; border-radius: 999px; border: 2px solid var(--glass2); background: var(--glass);

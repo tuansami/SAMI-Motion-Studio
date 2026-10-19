@@ -40,6 +40,7 @@
 </head>
 <body>
 <div id="root" data-composition-id="S06">
+  <div class="story" data-copy="S06_story"></div>
   <div class="bg"></div><div class="dots"></div>
   <div id="chap" class="chapter"></div>
   <div id="head" class="head" data-copy="S06_head"></div>
@@ -119,6 +120,8 @@
   });
   tl.fromTo('#badge', {scale: 0.3, opacity: 0}, {scale: 1, opacity: 1, duration: 0.35}, B(11.2));
   tl.to('#dev', {opacity: 0, duration: 0.2}, B(11.1));
+  // dòng dẫn chuyện (chỉ bản kể chuyện có chữ; trống = ẩn)
+  I.story(tl, B(8.2));
 </script>
 </body>
 </html>

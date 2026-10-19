@@ -10,6 +10,8 @@ Bố cục bám điểm cắt cảnh (tính bằng nhịp, 1 nhịp = 0,5 s):
   111    S12 FINAL HIT: impact + hợp âm ngân, tắt dần tới 120 (60,03 s)
 
 Chạy:  python make_music.py [out.wav] [--mp3 out.mp3]   (cần numpy; mp3 cần ffmpeg trên PATH)
+Bản chữ dài (cảnh được giữ thêm nhịp): --beats <tổng nhịp> --marks DROP1,S03,LAPSE,S06,PEAK,BREAK,DROP2,FINAL
+  (nhịp bắt đầu của S02,S03,S04,S06,S08,S10,S11,S12; tools/build-lang.mjs in sẵn lệnh này).
 """
 import math
 import subprocess
@@ -22,13 +24,16 @@ SR = 44100
 BEAT = 0.5
 T0 = 0.03            # nhịp đầu tiên
 BEATS = 120
+# ── mốc (nhịp) ──
+DROP1, S03, LAPSE, S06, PEAK, BREAK, DROP2, FINAL = 9, 15, 22, 52, 74, 93, 101, 111
+if '--beats' in sys.argv:
+    BEATS = int(sys.argv[sys.argv.index('--beats') + 1])
+if '--marks' in sys.argv:
+    DROP1, S03, LAPSE, S06, PEAK, BREAK, DROP2, FINAL = (int(x) for x in sys.argv[sys.argv.index('--marks') + 1].split(','))
 DUR = T0 + BEATS * BEAT
 N = int(round(DUR * SR))
 TAU = 2 * math.pi
 rng = np.random.default_rng(20261019)
-
-# ── mốc (nhịp) ──
-DROP1, S03, LAPSE, S06, PEAK, BREAK, DROP2, FINAL = 9, 15, 22, 52, 74, 93, 101, 111
 
 
 def tb(beat):

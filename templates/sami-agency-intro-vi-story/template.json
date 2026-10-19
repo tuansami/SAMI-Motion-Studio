@@ -1,0 +1,39 @@
+{
+ "id": "sami-agency-intro-vi-story",
+ "name": "SAMI Agency Intro – bản tiếng Việt kể chuyện (75 giây)",
+ "version": "1.0.0",
+ "studio": ">=1.2.0",
+ "engine": "hyperframes",
+ "style": "night",
+ "category": "agency",
+ "goal": [
+  "gioi-thieu"
+ ],
+ "description": "Bản tiếng Việt kể chuyện của SAMI Agency Intro (~75 giây, 12 cảnh, 9:16) cho chủ nhà hàng người Việt tại Đức: tiêu đề dài, truyền cảm, có dòng dẫn chuyện; cảnh giữ lâu hơn cho người xem đọc hết. Mạch: khách đói tìm trên Google Maps mà không thấy quán → SAMI → logo, menu, web tua nhanh (nhà hàng mẫu hư cấu) → đặt bàn, đặt món không mất hoa hồng → Maps/Ads → social → số đo thật → kiểm tra miễn phí qua WhatsApp → \"Để món ngon của anh chị được cả phố tìm thấy\". Nhạc riêng khớp mốc cảnh. Sinh tự động từ sami-agency-intro + lang/vi-story.json.",
+ "formats": [
+  "9:16"
+ ],
+ "duration": 75,
+ "bpm": 120,
+ "languages": [
+  "vi"
+ ],
+ "thumbFrame": 302,
+ "author": "SAMI Marketing Agency",
+ "license": "internal",
+ "audioLicense": "Nhạc tự tổng hợp bằng code (tools/make_music.py, numpy), SAMI sở hữu, không bản quyền bên thứ ba.",
+ "tags": [
+  "agency",
+  "full-service",
+  "tieng-viet",
+  "chu-quan-viet",
+  "ke-chuyen",
+  "storytelling",
+  "branding",
+  "menu",
+  "website",
+  "maps",
+  "time-lapse",
+  "whatsapp"
+ ]
+}

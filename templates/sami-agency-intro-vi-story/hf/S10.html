@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="hf/parts/intro.css">
+<style>
+  /* S10 · Dự án thật: tường ảnh các nhà hàng SAMI đã làm (trôi chậm, tối), 4 thẻ số đo thật (không tên quán), chú thích nguồn đo */
+  #wall { position: absolute; left: -10%; right: -10%; top: -6%; bottom: -6%; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 33.4%; gap: 12px; opacity: .55; }
+  #wall .w { border-radius: 18px; }
+  #veil { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,3,26,.94) 0%, rgba(6,3,26,.7) 30%, rgba(6,3,26,.82) 70%, rgba(6,3,26,.96) 100%); }
+  #head { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 10px); font-size: 104px; }
+  #cards { position: absolute; left: var(--safe-side); right: var(--safe-side); top: 560px; height: 900px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 24px; }
+  .sc { position: relative; border-radius: 30px; overflow: hidden; background: rgba(22,16,58,.92); border: 2px solid rgba(255,255,255,.14); box-shadow: var(--shadow); }
+  .sc .im { position: absolute; left: 0; right: 0; top: 0; height: 46%; }
+  .sc .im::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(22,16,58,.95)); }
+  .sc .city { position: absolute; left: 26px; top: 30%; display: flex; align-items: center; gap: 10px; font: 600 30px var(--f-ui); color: #fff; }
+  .sc .city .ic { width: 30px; height: 30px; color: var(--c-mint); }
+  .sc .val { position: absolute; left: 24px; bottom: 74px; font: 800 120px/1 var(--f-head); letter-spacing: -0.04em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sc .val small { font-size: .45em; letter-spacing: 0; }
+  .sc .lbl { position: absolute; left: 26px; bottom: 30px; font: 500 28px var(--f-ui); color: var(--c-muted); }
+  #note { position: absolute; left: var(--safe-side); right: var(--safe-side); top: 1490px; font: 500 26px var(--f-mono); color: var(--c-muted); }
+  [data-ratio="16x9"] #wall { grid-template-columns: repeat(5, 1fr); grid-auto-rows: 50%; }
+  [data-ratio="16x9"] #head { left: 110px; top: 110px; font-size: 96px; }
+  [data-ratio="16x9"] #cards { left: 110px; right: 110px; top: 300px; height: 600px; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr; }
+  [data-ratio="16x9"] .sc .val { font-size: 110px; }
+  [data-ratio="16x9"] #note { left: 110px; top: 950px; }
+</style>
+<style data-lang="vi-story">
+[data-ratio="9x16"] #cards { height: 800px; }
+[data-ratio="9x16"] #note { top: 1380px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S10">
+  <div class="story" data-copy="S10_story"></div>
+  <div class="bg"></div>
+  <div id="wall"></div><div id="veil"></div>
+  <div id="head" class="head" data-copy="S10_head"></div>
+  <div id="cards"></div>
+  <div id="note" data-copy="S10_note"></div>
+</div>
+<script src="hf/parts/sami-logo.js"></script>
+<script src="hf/parts/intro.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), B = S.beat, $ = I.$;
+  const wall = $('#wall');
+  for (let i = 0; i < 9; i++) I.el('div', 'w', wall).setAttribute('data-img', 'S10_w' + (i + 1) + '_photo');
+  const cards = [1, 2, 3, 4].map((i) => {
+    const c = I.el('div', 'sc', $('#cards'), '<div class="im" data-img="S10_c' + i + '_photo"></div><div class="city"><span class="ic"></span><span class="cn"></span></div><div class="val"><span class="n">0</span><small></small></div><div class="lbl"></div>');
+    c.querySelector('.ic').innerHTML = I.icon('pin', {sw: 2.4});
+    c.querySelector('.cn').textContent = S.text('S10_c' + i + '_city');
+    c.querySelector('small').textContent = S.text('S10_c' + i + '_unit');
+    c.querySelector('.lbl').textContent = S.text('S10_c' + i + '_lbl');
+    return c;
+  });
+  I.bindImgs();
+  // tường ảnh trôi chậm
+  tl.fromTo(wall, {y: 0, scale: 1.04}, {y: S.pick({'16:9': -40, default: -120}), scale: 1, duration: S.dur, ease: 'none'}, 0);
+  tl.from(I.$$('.w', wall), {opacity: 0, duration: 0.4, stagger: 0.03}, 0);
+  if (S.landscape) $('#head').innerHTML = $('#head').innerHTML.replace(/<br>/g, ' ');
+  S.arrive(tl, S.words($('#head')), B(0), {stagger: 0.09, dist: 50, dur: 0.45});
+  cards.forEach((c, i) => {
+    const at = B(1 + i * 0.75);
+    tl.fromTo(c, {y: 120, opacity: 0, scale: 0.9, rotation: (i % 2 ? 4 : -4)}, {y: 0, opacity: 1, scale: 1, rotation: 0, duration: 0.45}, at);
+    const raw = S.text('S10_c' + (i + 1) + '_val'), v = parseFloat(raw.replace(',', '.')) || 0, dec = (raw.split(',')[1] || '').length;
+    I.count(tl, c.querySelector('.n'), v, at + 0.1, 0.9, {dec: dec});
+  });
+  S.arrive(tl, '#note', B(4.6), {dist: 14, blur: 4, dur: 0.4});
+  // dòng dẫn chuyện (chỉ bản kể chuyện có chữ; trống = ẩn)
+  I.story(tl, B(5));
+</script>
+</body>
+</html>

@@ -28,6 +28,7 @@
 </head>
 <body>
 <div id="root" data-composition-id="S12">
+  <div class="story" data-copy="S12_story"></div>
   <div class="bg"></div><div class="dots"></div><div id="rays"></div><div id="glow"></div>
   <div id="lock"><div id="mark"></div><div id="word"></div></div>
   <div id="tag" data-copy="S12_tagline"></div>
@@ -53,6 +54,8 @@
   tl.fromTo('#wa', {scale: 0.6, opacity: 0}, {scale: 1, opacity: 1, duration: 0.4}, B(3));
   S.arrive(tl, '#url', B(3.6), {dist: 20, blur: 6, dur: 0.4});
   [5, 7].forEach((b) => tl.fromTo('#wa', {scale: 1.06}, {scale: 1, duration: 0.4, immediateRender: false}, B(b)));
+  // dòng dẫn chuyện (chỉ bản kể chuyện có chữ; trống = ẩn)
+  I.story(tl, B(4.2));
 </script>
 </body>
 </html>

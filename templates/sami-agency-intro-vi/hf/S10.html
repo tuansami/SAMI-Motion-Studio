@@ -31,6 +31,7 @@
 </head>
 <body>
 <div id="root" data-composition-id="S10">
+  <div class="story" data-copy="S10_story"></div>
   <div class="bg"></div>
   <div id="wall"></div><div id="veil"></div>
   <div id="head" class="head" data-copy="S10_head"></div>
@@ -64,6 +65,8 @@
     I.count(tl, c.querySelector('.n'), v, at + 0.1, 0.9, {dec: dec});
   });
   S.arrive(tl, '#note', B(4.6), {dist: 14, blur: 4, dur: 0.4});
+  // dòng dẫn chuyện (chỉ bản kể chuyện có chữ; trống = ẩn)
+  I.story(tl, B(5));
 </script>
 </body>
 </html>

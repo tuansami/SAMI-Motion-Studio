@@ -63,6 +63,7 @@
 </head>
 <body>
 <div id="root" data-composition-id="S01">
+  <div class="story" data-copy="S01_story"></div>
   <div id="photo" data-img="S01_photo"></div>
   <div id="shade"></div>
   <div id="top"><div id="app" class="chip"><span class="ic"></span><span data-copy="S01_app"></span></div><div id="time" class="chip"><i></i><span data-copy="S01_time"></span></div></div>
@@ -151,6 +152,8 @@
   tl.fromTo(last, {scale: 1.6, opacity: 0, filter: 'blur(18px)'}, {scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.3, transformOrigin: '0% 80%'}, B(6.6));
   I.shake(tl, '#root', B(6.7), {amp: 14, n: 7});
   tl.fromTo(ul, {scaleX: 0}, {scaleX: 1, duration: 0.4}, B(6.9));
+  // dòng dẫn chuyện (chỉ bản kể chuyện có chữ; trống = ẩn)
+  I.story(tl, B(0.4), B(5.3));
 </script>
 </body>
 </html>

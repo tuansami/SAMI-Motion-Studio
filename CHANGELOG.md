@@ -19,6 +19,29 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.5.0] — 2026-10-19 — SAMI Agency Intro: bản tiếng Việt kể chuyện (74,5 s), giữ nhịp cho kịp đọc
+Tuấn yêu cầu (2026-10-19): thêm 1 bản tiếng Việt khác, tiêu đề và câu chữ dài hơn, truyền cảm, có mạch chuyện; video được dài 70 đến 75 s để chuyển cảnh chậm hơn, người xem kịp đọc hết.
+
+### Thêm
+- **Mẫu `templates/sami-agency-intro-vi-story/`** (sinh tự động, đừng sửa tay): 74,53 s, chỉ 9:16, nhạc riêng khớp mốc cảnh. Mạch chuyện: "Một vị khách người Đức đang đói, mở điện thoại tìm món Việt quanh đây." → "Món anh chị nấu rất ngon. Vậy mà khách đói không tìm ra quán." → "Chuyện này, SAMI giúp được." → "Từ cái logo tới lúc khách đặt bàn: 8 việc, một đầu mối." → "Quán ngon cần một gương mặt riêng." → "Một tấm menu đẹp mời khách gọi thêm món." → "Web của quán là mặt tiền thứ hai." → "Quán đóng cửa, khách vẫn đặt bàn. Đặt món online, không mất hoa hồng." → "Khách đói tìm quanh đây, quán anh chị hiện ra." → "Anh chị lo nấu. SAMI lo đăng bài đều đặn, để khách nhớ tới quán." → "Không hứa suông. Đo bằng số thật." → "Bắt đầu nhẹ nhàng: kiểm tra miễn phí Google Maps + website" → "Nhắn SAMI qua WhatsApp. Nói chuyện bằng tiếng Việt." → câu kết "Để món ngon của anh chị được cả phố tìm thấy." Giao diện khách người Đức thấy vẫn giữ tiếng Đức. Không thêm số liệu mới (S10 vẫn chỉ số đo thật từ proof-points).
+- **Dòng dẫn chuyện** `.story` (`I.story(tl, at, out)` trong `hf/parts/intro.js`, kiểu ở `intro.css`): dải chữ ngay trên vùng an toàn dưới, gạch màu mint bên trái, chữ vào từng từ. Có ở S01, S04, S06, S07, S08, S10, S12 (S12 là câu kết trên logo). Ô `Sxx_story` không có hoặc để trống → ẩn, nên bản Đức và bản Việt 60 s không đổi.
+- **Giữ nhịp** (`holds`): `{S01: [[7.4, 3]]}` = từ nhịp 7.4 của cảnh, mọi mốc `SAMI.beat()` lùi 3 nhịp (giữ hình cho kịp đọc). Vẫn cắt đúng lưới 15n+1 nên "Khớp nhịp" và kiểm tra dự án không cần đổi.
+- `tools/build-lang.mjs` nhận thêm `addCopy` (ô chữ mới, chèn sau các ô cùng cảnh), `holds` (cộng nhịp vào cảnh, dời cảnh sau, cue âm thanh, khung bìa), `css` (CSS riêng của bản, theo cảnh hoặc `*`), `formats`, `music` (file ở `lang/audio/`); in sẵn lệnh dựng nhạc theo mốc mới; giữ ảnh bìa `preview/` qua các lần dựng lại.
+- `tools/make_music.py --beats <n> --marks DROP1,S03,LAPSE,S06,PEAK,BREAK,DROP2,FINAL`: cùng bài nhạc, kéo dài theo mốc cảnh. `lang/audio/sami-intro-story.mp3` (149 nhịp; cli-grid: drop 62,04 s = S11, final hit ở S12).
+
+### Thay đổi
+- S04: tỉ lệ thu nhỏ app cuối cảnh đọc từ biến CSS `--end-scale` (mặc định như cũ 0,8 / 0,96).
+- S07: tiêu đề chia đôi theo số dòng (4 dòng → mỗi điện thoại 2 dòng); bản 2 dòng như cũ.
+
+### Đã kiểm
+- `cli-template check` đạt cả 3 mẫu (gốc, -vi, -vi-story); ảnh tĩnh bản kể chuyện ở mọi cảnh 9:16 (không chồng chữ, trong vùng an toàn), ảnh tĩnh bản Đức S04 / S07 ở 9:16 và 16:9 không đổi; render thật bản kể chuyện 9:16 FHD (Hyperframes thuần).
+
+### File chính
+`templates/sami-agency-intro/` (hf/parts/intro.js, intro.css, S01/S04/S06/S07/S08/S10/S12.html, lang/vi-story.json, lang/audio/sami-intro-story.mp3, tools/build-lang.mjs, tools/make_music.py, README.md) · `templates/sami-agency-intro-vi/` (dựng lại) · `templates/sami-agency-intro-vi-story/` · `package.json` (1.5.0).
+
+### Roll back
+`git checkout 0a1e415 -- templates/sami-agency-intro templates/sami-agency-intro-vi` (bản 1.4.0) và xoá `templates/sami-agency-intro-vi-story/`.
+
 ## [1.4.0] — 2026-10-19 — SAMI Agency Intro: bản tiếng Việt, cảnh 1 Google Maps rõ ràng, brand hư cấu thay +84
 Tuấn góp ý bản nháp (2026-10-19): làm 1 bản tiếng Việt cho chủ quán người Việt ở Đức xem; cảnh 1 chưa rõ, không thấy Google Maps; bỏ cảnh dựng brand +84 Kitchen, thay bằng brand giả tưởng.
 

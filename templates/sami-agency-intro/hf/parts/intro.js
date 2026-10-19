@@ -38,6 +38,26 @@
   };
 
   // ── thời gian ──────────────────────────────────────────────────────
+  // Nhịp giữ (bản chữ dài): {S01: [[7.4, 3]]} = từ nhịp 7.4 của S01 trở đi, mọi mốc SAMI.beat() lùi 3 nhịp (giữ hình cho kịp đọc).
+  // Mẫu gốc để trống; tools/build-lang.mjs ghi lại dòng này theo "holds" của lang/<lang>.json (và cộng nhịp vào độ dài cảnh).
+  var HOLDS = {};
+  var sid = (I.$('[data-composition-id]') || {getAttribute: function () { return ''; }}).getAttribute('data-composition-id');
+  var holds = HOLDS[sid] || [];
+  if (holds.length) {
+    var beat0 = S.beat;
+    S.beat = function (n) { var x = n; holds.forEach(function (h) { if (n >= h[0]) x += h[1]; }); return beat0(x); };
+  }
+
+  /** dòng dẫn chuyện <div class="story" data-copy="Sxx_story">: chữ vào từng từ ở `at`, rời ở `out` (nếu có). Ô chữ trống/không có → ẩn. */
+  I.story = function (tl, at, out) {
+    var el = I.$('.story'); if (!el) return null;
+    if (!el.textContent.trim()) { el.style.display = 'none'; return null; }
+    tl.fromTo(el, {opacity: 0}, {opacity: 1, duration: 0.25}, at);
+    S.arrive(tl, S.words(el), at, {stagger: 0.035, dist: 18, blur: 6, dur: 0.4});
+    if (out != null) S.leave(tl, el, out, {dist: -16, blur: 8, dur: 0.35});
+    return el;
+  };
+
   /** time-lapse: timeline con chạy hết trong `dur` giây của cảnh, giữ hình theo bước 1/fps → nhìn như tua nhanh */
   I.lapse = function (tl, child, at, dur, fps) {
     var L = child.duration(), step = 1 / (fps || 12), p = {t: 0};

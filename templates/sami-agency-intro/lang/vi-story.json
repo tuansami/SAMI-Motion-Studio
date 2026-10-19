@@ -1,0 +1,209 @@
+{
+ "_doc": "Bản tiếng Việt KỂ CHUYỆN cho chủ quán người Việt tại Đức: chữ dài hơn, có mạch chuyện (khách đói không tìm thấy quán → SAMI giúp → từng dịch vụ → số đo thật → kiểm tra miễn phí → câu kết), thêm dòng dẫn chuyện (Sxx_story) và giữ hình thêm nhịp (holds) cho kịp đọc: ~74,5 s, chỉ 9:16. Giao diện khách người Đức thấy giữ tiếng Đức. Dựng: node templates/sami-agency-intro/tools/build-lang.mjs vi-story → templates/sami-agency-intro-vi-story/",
+ "lang": "vi",
+ "template": {
+  "id": "sami-agency-intro-vi-story",
+  "name": "SAMI Agency Intro – bản tiếng Việt kể chuyện (75 giây)",
+  "description": "Bản tiếng Việt kể chuyện của SAMI Agency Intro (~75 giây, 12 cảnh, 9:16) cho chủ nhà hàng người Việt tại Đức: tiêu đề dài, truyền cảm, có dòng dẫn chuyện; cảnh giữ lâu hơn cho người xem đọc hết. Mạch: khách đói tìm trên Google Maps mà không thấy quán → SAMI → logo, menu, web tua nhanh (nhà hàng mẫu hư cấu) → đặt bàn, đặt món không mất hoa hồng → Maps/Ads → social → số đo thật → kiểm tra miễn phí qua WhatsApp → \"Để món ngon của anh chị được cả phố tìm thấy\". Nhạc riêng khớp mốc cảnh. Sinh tự động từ sami-agency-intro + lang/vi-story.json.",
+  "languages": [
+   "vi"
+  ],
+  "tags": [
+   "agency",
+   "full-service",
+   "tieng-viet",
+   "chu-quan-viet",
+   "ke-chuyen",
+   "storytelling",
+   "branding",
+   "menu",
+   "website",
+   "maps",
+   "time-lapse",
+   "whatsapp"
+  ]
+ },
+ "projectName": "SAMI Agency Intro – tiếng Việt kể chuyện",
+ "formats": [
+  "9:16"
+ ],
+ "music": "sami-intro-story.mp3",
+ "holds": {
+  "S01": [
+   [
+    2.8,
+    1
+   ],
+   [
+    7.4,
+    3
+   ]
+  ],
+  "S02": [
+   [
+    1.4,
+    1
+   ],
+   [
+    4.6,
+    1
+   ]
+  ],
+  "S03": [
+   [
+    5.5,
+    2
+   ]
+  ],
+  "S04": [
+   [
+    17.6,
+    3
+   ]
+  ],
+  "S05": [
+   [
+    9.5,
+    2
+   ]
+  ],
+  "S06": [
+   [
+    11.6,
+    2
+   ]
+  ],
+  "S07": [
+   [
+    7,
+    3
+   ]
+  ],
+  "S08": [
+   [
+    9.2,
+    1
+   ]
+  ],
+  "S09": [
+   [
+    5.2,
+    2
+   ]
+  ],
+  "S10": [
+   [
+    5.6,
+    2
+   ]
+  ],
+  "S11": [
+   [
+    3.4,
+    1
+   ],
+   [
+    10,
+    4
+   ]
+  ],
+  "S12": [
+   [
+    9,
+    1
+   ]
+  ]
+ },
+ "css": {
+  "S01": "[data-ratio=\"9x16\"] #ph { transform: scale(.9); transform-origin: 50% 0%; }\n[data-ratio=\"9x16\"] #head { top: 1060px; font-size: 68px; }\n[data-ratio=\"9x16\"] #head em.hl { font-size: 1.3em; }",
+  "S02": "[data-ratio=\"9x16\"] #line { font-size: 104px; }\n[data-ratio=\"9x16\"] #sub { font-size: 44px; }",
+  "S03": "[data-ratio=\"9x16\"] #head { font-size: 70px; }\n[data-ratio=\"9x16\"] #grid { top: calc(var(--safe-top) + 290px); }",
+  "S04": "[data-ratio=\"9x16\"] #head { font-size: 74px; }\n[data-ratio=\"9x16\"] #app { --end-scale: .72; }\n[data-ratio=\"9x16\"] #fan { top: 1236px; height: 180px; }\n[data-ratio=\"9x16\"] #fan .fc { width: 260px; height: 170px; }",
+  "S05": "[data-ratio=\"9x16\"] #head { font-size: 72px; }\n[data-ratio=\"9x16\"] #sub { top: 1420px; font-size: 36px; line-height: 1.35; }",
+  "S06": "[data-ratio=\"9x16\"] #badge { top: 1345px; }",
+  "S07": "[data-ratio=\"9x16\"] .cap { top: 1280px; font-size: 40px; line-height: 1.14; }",
+  "S08": "[data-ratio=\"9x16\"] #head { font-size: 72px; }\n[data-ratio=\"9x16\"] #mapc { transform: scale(.9); transform-origin: 50% 0%; }",
+  "S09": "[data-ratio=\"9x16\"] #head { font-size: 70px; }\n[data-ratio=\"9x16\"] #grid { top: 600px; height: 800px; }\n[data-ratio=\"9x16\"] #notif { top: 1420px; }",
+  "S10": "[data-ratio=\"9x16\"] #cards { height: 800px; }\n[data-ratio=\"9x16\"] #note { top: 1380px; }",
+  "S11": "[data-ratio=\"9x16\"] #head { font-size: 70px; }\n[data-ratio=\"9x16\"] #cta { top: 1350px; font-size: 64px; }",
+  "S12": "[data-ratio=\"9x16\"] .story { top: 236px; bottom: auto; border-left: 0; padding-left: 0; text-align: center; font: 800 60px/1.25 var(--f-head); letter-spacing: -0.02em; color: #fff; text-wrap: balance; }"
+ },
+ "addCopy": {
+  "S01_story": {
+   "label": "Dòng dẫn chuyện (dưới điện thoại, lúc khách tìm; để trống = ẩn)",
+   "value": "Một vị khách người Đức đang đói, / mở điện thoại tìm món Việt quanh đây."
+  },
+  "S04_story": {
+   "label": "Dòng dẫn chuyện (dưới cùng, sau dấu Brandkit xong; để trống = ẩn)",
+   "value": "Logo, màu, chữ, menu, bao bì đều chung một gương mặt. Khách nhìn là nhớ quán."
+  },
+  "S06_story": {
+   "label": "Dòng dẫn chuyện (dưới cùng, lúc đổi máy tính → điện thoại; để trống = ẩn)",
+   "value": "Khách thường xem web trước khi ghé quán. Web SAMI làm tải nhanh trên điện thoại."
+  },
+  "S07_story": {
+   "label": "Dòng dẫn chuyện (dưới cùng, sau khi đặt xong; để trống = ẩn)",
+   "value": "Đơn đặt món đi thẳng về quán, không qua app giao đồ ăn."
+  },
+  "S08_story": {
+   "label": "Dòng dẫn chuyện (dưới cùng, sau khi quán lên đầu; để trống = ẩn)",
+   "value": "Local SEO và Google Ads Maps đưa quán tới đúng người đang tìm, ngay gần quán."
+  },
+  "S10_story": {
+   "label": "Dòng dẫn chuyện (dưới cùng, sau 4 thẻ số; để trống = ẩn)",
+   "value": "Số đo từ web của 4 quán thật SAMI đã làm. Không tô vẽ."
+  },
+  "S12_story": {
+   "label": "Dòng dẫn chuyện (câu kết, trên logo; để trống = ẩn)",
+   "value": "Để món ngon của anh chị / *được cả phố tìm thấy.*"
+  }
+ },
+ "copy": {
+  "S01_time": "19:12 tối thứ Sáu",
+  "S01_you": "Quán anh chị?",
+  "S01_miss": "Không có trong kết quả",
+  "S01_head": "Món anh chị nấu rất ngon. / Vậy mà khách đói / *không tìm ra quán.*",
+  "S02_line": "Chuyện này, / *SAMI giúp được.*",
+  "S02_sub": "Marketing cho nhà hàng tại Đức / Tư vấn bằng tiếng Việt, làm chuẩn Đức",
+  "S03_head": "Từ cái logo / tới lúc khách đặt bàn: / *8 việc, một đầu mối.*",
+  "S03_s1": "Branding",
+  "S03_s2": "Thiết kế menu",
+  "S03_s3": "Thiết kế website",
+  "S03_s4": "Đặt bàn online",
+  "S03_s5": "Đặt món online",
+  "S03_s6": "Local SEO",
+  "S03_s7": "Google Ads Maps",
+  "S03_s8": "Social Media",
+  "S04_head": "Quán ngon cần / *một gương mặt riêng.*",
+  "S04_ff": "TUA NHANH",
+  "S04_concept": "VÍ DỤ MINH HOẠ",
+  "S04_ui": "Lớp|Màu tô|Font|Lưới|Logo|Bảng màu|Kiểu chữ|Brandkit|Điểm neo|Hình ảnh|Bao bì",
+  "S04_done": "Brandkit xong",
+  "S05_chapter": "02 | Thiết kế menu",
+  "S05_head": "Một tấm menu đẹp / *mời khách gọi thêm món.*",
+  "S05_sub": "Bản in và online cùng một phong cách. / Ghi đúng chất gây dị ứng.",
+  "S05_print": "Bản in",
+  "S05_online": "Online",
+  "S06_chapter": "03 | Thiết kế website",
+  "S06_head": "Web của quán là / *mặt tiền thứ hai.*",
+  "S06_badge": "Tối ưu điện thoại",
+  "S06_devices": "Máy tính|Máy tính bảng|Điện thoại",
+  "S07_chapter": "04 | Đặt bàn | 05 | Đặt món",
+  "S07_head": "Quán đóng cửa, / khách *vẫn đặt bàn.* / Đặt món online, / *không mất hoa hồng.*",
+  "S08_head": "Khách đói tìm quanh đây, / *quán anh chị hiện ra.*",
+  "S08_query": "Pho in der Nähe",
+  "S08_you": "Quán anh chị",
+  "S09_head": "Anh chị lo nấu. / SAMI lo *đăng bài* đều đặn, / để khách nhớ tới quán.",
+  "S09_notif": "Bài mới đã lên",
+  "S10_head": "Không hứa suông. / *Đo bằng số thật.*",
+  "S10_c1_lbl": "Tốc độ tải",
+  "S10_c2_lbl": "Tốc độ tải",
+  "S10_c3_lbl": "Tốc độ tải",
+  "S10_c4_lbl": "tối ưu điện thoại",
+  "S10_note": "Tốc độ tải trang chủ (LCP), đo thật",
+  "S11_head": "Bắt đầu nhẹ nhàng: / *kiểm tra miễn phí* / Google Maps + website",
+  "S11_msg": "Chào SAMI, quán tôi muốn được kiểm tra miễn phí.",
+  "S11_reply": "Dạ, anh chị gửi tên quán giúp SAMI nhé. SAMI xem rồi báo lại bằng tiếng Việt!",
+  "S11_cta": "Nhắn SAMI qua *WhatsApp.* / Nói chuyện bằng tiếng Việt."
+ }
+}
