@@ -366,7 +366,7 @@
   "S13_head": {
    "label": "Tiêu đề trong ô tím",
    "scene": "S13",
-   "value": "*14 khách hàng / tại Đức* đã / chọn SAMI, từ / Berlin tới / Baden-Baden."
+   "value": "14 khách hàng tại Đức / đã chọn SAMI, / *từ Berlin tới / Baden-Baden.*"
   },
   "S13_note": {
    "label": "Chú thích nguồn",
@@ -422,6 +422,16 @@
    "label": "Ô thứ 6 trong lưới",
    "scene": "S04",
    "value": "Báo cáo"
+  },
+  "S12_mA": {
+   "label": "Tin nhắn với chủ quán (tiếng Việt)",
+   "scene": "S12",
+   "value": "Tuần này mình đẩy món phở trưa cho quán nhé."
+  },
+  "S12_mB": {
+   "label": "Tin nhắn với khách (tiếng Đức)",
+   "scene": "S12",
+   "value": "Heute frische Pho. Jetzt Tisch reservieren."
   }
  },
  "status": "draft",

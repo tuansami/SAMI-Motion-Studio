@@ -1,1 +1,74 @@
-<!doctype html><html><body><div id="root" data-composition-id="S15"></div><script>const tl=window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/inter/900.css">
+<link rel="stylesheet" href="hf/parts/sk.css">
+<style>
+  /* S15 · CTA + end card: chấm tím nở thành nền navy SAMI (phim mở và đóng bằng một chấm); câu chốt; bong bóng WhatsApp vẽ bằng code; logo + tagline + web */
+  [data-composition-id] { background: var(--pg); }
+  #navy { position: absolute; z-index: 1; left: 50%; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: var(--sig); }
+  .dk .note { color: #A8A3C9; } .dk .note b { color: #fff; } .dk .reg { filter: invert(1); }
+  #ngrid { position: absolute; inset: 0; z-index: 2; }
+  #ngrid i { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(227, 228, 247, .07); }
+  .w { position: absolute; z-index: 5; left: var(--m); }
+  #head { top: 262px; font-size: 104px; color: #fff; }
+  #head em.hl { color: var(--ex); -webkit-text-fill-color: var(--ex); }
+  #bub { top: 700px; display: flex; align-items: center; gap: 26px; padding: 30px 40px 32px 30px; background: var(--ex); color: var(--ink); border-radius: 44px 44px 44px 10px; }
+  #bub .ic { width: 92px; height: 92px; flex: none; border-radius: 50%; background: var(--ink); display: flex; align-items: center; justify-content: center; }
+  #bub .ic svg { width: 50px; height: 50px; }
+  #cta { font: 700 40px/1.15 var(--f); }
+  #phone { font: 900 64px/1.1 var(--f); letter-spacing: -.02em; white-space: nowrap; margin-top: 4px; }
+  #offer { top: 970px; width: 900px; font: 500 36px/1.38 var(--f); color: #E3E4F7; padding-top: 18px; border-top: 2px solid rgba(227, 228, 247, .35); }
+  #logo { top: 1180px; width: 420px; }
+  #tag { top: 1330px; font: 500 25px/1.3 var(--f); letter-spacing: .02em; color: #A8A3C9; }
+  #web { top: 1380px; font: 800 44px/1.2 var(--f); color: #fff; letter-spacing: -.01em; }
+  [data-ratio="16x9"] #head { top: 150px; font-size: 100px; }
+  [data-ratio="16x9"] #bub { top: 560px; }
+  [data-ratio="16x9"] #offer { top: 800px; width: 820px; }
+  [data-ratio="16x9"] #logo { left: 1180px; top: 560px; width: 520px; }
+  [data-ratio="16x9"] #tag { left: 1180px; top: 760px; font-size: 22px; }
+  [data-ratio="16x9"] #web { left: 1180px; top: 810px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S15">
+  <div id="navy"></div>
+  <div id="ngrid"></div>
+  <div class="hd w" id="head" data-copy="S15_head"></div>
+  <div class="w" id="bub">
+    <div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#08DDA4" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 32 L10.5 24.5 A12.5 12.5 0 1 1 16 30 Z"/></svg></div>
+    <div><div id="cta" data-copy="S15_cta"></div><div id="phone" data-copy="S15_phone"></div></div>
+  </div>
+  <div class="w" id="offer" data-copy="S15_offer"></div>
+  <img class="w" id="logo" src="public/img/logo-white.svg">
+  <div class="w" id="tag" data-copy="S15_tagline"></div>
+  <div class="w" id="web" data-copy="S15_web"></div>
+</div>
+<script src="hf/parts/sk.js"></script>
+<script>
+  const S = window.SAMI, K = SK.init(2449), tl = S.timeline(), $ = K.$, B = K.b;
+  K.chrome();
+  const ng = $('#ngrid');
+  for (let i = 0; i < K.NC; i++) [K.cx(i), K.cx(i) + K.COL].forEach((x) => { const d = document.createElement('i'); d.style.left = (x - 1) + 'px'; ng.appendChild(d); });
+  ['#head', '#offer'].forEach(K.bind);
+  ['#cta', '#phone', '#tag', '#web'].forEach((s) => { const e = $(s); e.innerHTML = S.html(e.getAttribute('data-copy')); e.removeAttribute('data-copy'); });
+  // chấm nở thành nền navy
+  const R = Math.hypot(K.W, K.H) / 13 + 4;
+  tl.fromTo('#navy', {scale: 1, backgroundColor: '#7667FE'}, {scale: R, backgroundColor: '#0C0628', duration: 0.75, ease: S.EASE}, B(0.6));
+  tl.fromTo('#ngrid', {opacity: 0}, {opacity: 1, duration: 0.5}, B(1.6));
+  K.draw((t) => $('#root').classList.toggle('dk', t > B(1)));
+  K.reveal(tl, '#head', B(1.6), {stagger: 0.13});
+  tl.fromTo('#bub', {clipPath: 'inset(0 100% 0 0 round 44px 44px 44px 10px)'}, {clipPath: 'inset(0 0% 0 0 round 44px 44px 44px 10px)', duration: 0.6, ease: S.EASE}, B(4));
+  tl.fromTo('#bub .ic', {scale: 0}, {scale: 1, duration: 0.4}, B(4.4));
+  K.reveal(tl, '#offer', B(5.2));
+  tl.fromTo('#offer', {borderTopColor: 'rgba(227,228,247,0)'}, {borderTopColor: 'rgba(227,228,247,.35)', duration: 0.4}, B(5.2));
+  tl.fromTo('#logo', {clipPath: 'inset(0 100% 0 0)'}, {clipPath: 'inset(0 0% 0 0)', duration: 0.7, ease: S.EASE}, B(7));
+  tl.fromTo(['#tag', '#web'], {opacity: 0, y: 20}, {opacity: 1, y: 0, duration: 0.5, stagger: 0.15}, B(7.8));
+  K.run(tl);
+</script>
+</body>
+</html>

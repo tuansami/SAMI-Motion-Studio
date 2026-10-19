@@ -1,1 +1,45 @@
-<!doctype html><html><body><div id="root" data-composition-id="S14"></div><script>const tl=window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/inter/900.css">
+<link rel="stylesheet" href="hf/parts/sk.css">
+<style>
+  /* S14 · lời hứa: "Thêm" nhỏ + danh từ khổng lồ, 3 lần đúng phách; giữ; nhát dao xoá hết → trang trống, một chấm tím (nhịp thở) */
+  .pr { position: absolute; z-index: 5; left: var(--m); }
+  .pr .a { font-weight: 700; font-size: 64px; letter-spacing: -.02em; color: var(--ink2); }
+  .pr .b { font-weight: 900; font-size: 190px; letter-spacing: -.06em; line-height: 1; margin-top: -6px; }
+  #p1 { top: 290px; } #p2 { top: 680px; } #p3 { top: 1070px; }
+  #p3 .b { color: var(--sig); }
+  #dot { position: absolute; z-index: 7; left: 50%; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: var(--sig); }
+  [data-ratio="16x9"] .pr .b { font-size: 170px; }
+  [data-ratio="16x9"] #p1 { top: 130px; } [data-ratio="16x9"] #p2 { top: 430px; left: 600px; } [data-ratio="16x9"] #p3 { top: 730px; left: 1100px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S14">
+  <div class="pr" id="p1"><div class="a"></div><div class="b"></div></div>
+  <div class="pr" id="p2"><div class="a"></div><div class="b"></div></div>
+  <div class="pr" id="p3"><div class="a"></div><div class="b"></div></div>
+  <div id="dot"></div>
+</div>
+<script src="hf/parts/sk.js"></script>
+<script>
+  const S = window.SAMI, K = SK.init(2302), tl = S.timeline(), $ = K.$, B = K.b;
+  K.grid(); K.chrome();
+  [1, 2, 3].forEach((i) => {
+    const v = S.text('S14_l' + i), sp = v.indexOf(' ');
+    const p = $('#p' + i); p.querySelector('.a').textContent = v.slice(0, sp); p.querySelector('.b').textContent = v.slice(sp + 1);
+    K.bind(p.querySelector('.a')); K.bind(p.querySelector('.b'));
+    K.reveal(tl, p.querySelector('.a'), B(i - 0.6), {dur: 0.45});
+    K.reveal(tl, p.querySelector('.b'), B(i - 0.5), {dur: 0.6});
+  });
+  // nhát dao qua cả ba, trang trống
+  K.knife(tl, '#p1', B(7.4), {cut: 0.22}); K.knife(tl, '#p2', B(7.7), {cut: 0.22}); K.knife(tl, '#p3', B(8.0), {cut: 0.22});
+  tl.fromTo('#dot', {scale: 0, opacity: 0}, {scale: 1, opacity: 1, duration: 0.4}, B(8.9));
+  K.run(tl);
+</script>
+</body>
+</html>

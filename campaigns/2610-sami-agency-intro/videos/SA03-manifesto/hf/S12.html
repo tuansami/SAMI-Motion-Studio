@@ -1,1 +1,61 @@
-<!doctype html><html><body><div id="root" data-composition-id="S12"></div><script>const tl=window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/inter/900.css">
+<link rel="stylesheet" href="hf/parts/sk.css">
+<style>
+  /* S12 · ba ngôn ngữ: trang mới pan vào từ phải; 3 chữ khổng lồ xếp chồng đúng phách ("Deutsch." là tín hiệu tím); hai khối tin nhắn: với bạn (tiếng Việt) · với khách (tiếng Đức) */
+  #page { position: absolute; inset: 0; z-index: 4; }
+  .lw { position: absolute; left: var(--m); font-size: 150px; font-weight: 900; letter-spacing: -.055em; line-height: 1.04; z-index: 5; }
+  #w1 { top: 262px; } #w2 { top: 432px; color: var(--sig); } #w3 { top: 602px; }
+  .code { position: absolute; right: var(--m); font: 700 26px/1 var(--f); letter-spacing: .12em; padding: 10px 12px; border: 2px solid var(--ink); z-index: 5; }
+  #k1 { top: 330px; } #k2 { top: 500px; background: var(--sig); color: #fff; border-color: var(--sig); } #k3 { top: 670px; }
+  #sub { left: var(--m); top: 850px; font-size: 50px; font-weight: 700; color: var(--ink); letter-spacing: -.02em; }
+  .msg { position: absolute; z-index: 5; width: 760px; padding: 28px 34px 32px; font: 600 36px/1.3 var(--f); }
+  .msg small { display: block; font: 700 22px/1 var(--f); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
+  #mA { left: var(--m); top: 1080px; background: var(--paper); border: 3px solid var(--ink); }
+  #mA small { color: var(--grey); }
+  #mB { right: var(--m); top: 1300px; background: var(--ink); color: #fff; }
+  #mB small { color: var(--ex); }
+  [data-ratio="16x9"] .lw { font-size: 150px; }
+  [data-ratio="16x9"] #w1 { top: 140px; } [data-ratio="16x9"] #w2 { top: 310px; } [data-ratio="16x9"] #w3 { top: 480px; }
+  [data-ratio="16x9"] .code { right: auto; left: 860px; }
+  [data-ratio="16x9"] #k1 { top: 208px; } [data-ratio="16x9"] #k2 { top: 378px; } [data-ratio="16x9"] #k3 { top: 548px; }
+  [data-ratio="16x9"] #sub { top: 740px; width: 900px; }
+  [data-ratio="16x9"] .msg { width: 760px; }
+  [data-ratio="16x9"] #mA { left: 1068px; top: 300px; }
+  [data-ratio="16x9"] #mB { right: var(--m); top: 560px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S12">
+  <div id="page">
+    <div class="lw" id="w1" data-copy="S12_w1"></div><div class="code" id="k1">VI</div>
+    <div class="lw" id="w2" data-copy="S12_w2"></div><div class="code" id="k2">DE</div>
+    <div class="lw" id="w3" data-copy="S12_w3"></div><div class="code" id="k3">EN</div>
+    <div class="sub" id="sub" data-copy="S12_sub"></div>
+    <div class="msg" id="mA"><small>SAMI · với bạn</small><span data-copy="S12_mA"></span></div>
+    <div class="msg" id="mB"><small>SAMI · với khách của bạn</small><span data-copy="S12_mB"></span></div>
+  </div>
+</div>
+<script src="hf/parts/sk.js"></script>
+<script>
+  const S = window.SAMI, K = SK.init(1948), tl = S.timeline(), $ = K.$, B = K.b;
+  K.grid(); K.chrome();
+  ['#w1', '#w2', '#w3', '#sub'].forEach(K.bind);
+  document.querySelectorAll('.msg [data-copy]').forEach((e) => { e.innerHTML = S.html(e.getAttribute('data-copy')); e.removeAttribute('data-copy'); });
+  // trang pan vào từ phải (nối pan của S11)
+  tl.fromTo('#page', {x: K.W}, {x: 0, duration: 0.55, ease: S.EASE}, 0);
+  K.reveal(tl, '#w1', B(0.6), {dur: 0.5}); K.reveal(tl, '#w2', B(1.6), {dur: 0.5}); K.reveal(tl, '#w3', B(2.6), {dur: 0.5});
+  tl.fromTo('.code', {clipPath: 'inset(0 100% 0 0)'}, {clipPath: 'inset(0 0% 0 0)', duration: 0.3, stagger: K.BEAT}, B(0.8));
+  K.reveal(tl, '#sub', B(3.4));
+  tl.fromTo('#mA', {clipPath: 'inset(0 100% 0 0)'}, {clipPath: 'inset(0 0% 0 0)', duration: 0.5}, B(5));
+  tl.fromTo('#mB', {clipPath: 'inset(0 0 0 100%)'}, {clipPath: 'inset(0 0 0 0%)', duration: 0.5}, B(6.5));
+  K.run(tl);
+</script>
+</body>
+</html>
