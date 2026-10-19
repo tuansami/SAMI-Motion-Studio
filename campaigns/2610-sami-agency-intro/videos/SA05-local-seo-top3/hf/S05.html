@@ -1,1 +1,150 @@
-<!doctype html><html><head><link rel="stylesheet" href="hf/parts/lr.css"></head><body><div id="root" data-composition-id="S05"></div><script>const tl=window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="hf/parts/lr.css">
+<style>
+  /* S05 · KHOẢNH KHẮC CHỮ KÝ: 6 lần "TĂNG TỐC!" — thẻ yếu tố, thanh năng lượng, Lúa Non vượt từng quán lên hạng 1 + chuông */
+  #cam { position: absolute; inset: 0; z-index: 2; transform-origin: 50% 55%; }
+  #intro { left: var(--safe-side); right: var(--safe-side); top: 250px; font-size: 96px; }
+  .card { position: absolute; z-index: 14; left: 72px; width: 936px; top: 232px; height: 292px; box-sizing: border-box; padding: 26px 34px; background: var(--cream); transform-origin: 50% 50%; }
+  .card .no { display: inline-block; font: 400 34px/1 "Anton", sans-serif; letter-spacing: .04em; color: #fff; background: var(--purple); border: 4px solid var(--ink); border-radius: 10px; padding: 7px 14px 6px; box-shadow: 4px 4px 0 var(--ink); }
+  .card .tt { margin-top: 18px; font: 900 64px/1.15 "Be Vietnam Pro", sans-serif; letter-spacing: -.02em; color: var(--ink); }
+  .card .ds { margin-top: 10px; font: 700 38px/1.32 "Be Vietnam Pro", sans-serif; color: #3B3560; }
+  #meter { position: absolute; z-index: 13; left: 72px; width: 936px; top: 560px; height: 104px; }
+  #meter .lab { position: absolute; left: 0; top: 0; font: 600 21px/1 "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--yellow); }
+  #meter .segs { position: absolute; left: 0; right: 0; top: 34px; height: 64px; display: flex; gap: 10px; }
+  .seg { position: relative; flex: 1; background: #231C52; border: 4px solid var(--ink); border-radius: 12px; box-shadow: 5px 5px 0 #000; overflow: hidden; }
+  .seg i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--mint); }
+  .seg b { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font: 900 24px/1 "Be Vietnam Pro", sans-serif; color: rgba(227, 228, 247, .45); white-space: nowrap; }
+  .seg.on b { color: var(--ink); }
+  #go { position: absolute; z-index: 25; left: 0; right: 0; top: 548px; text-align: center; font: 400 128px/1 "Anton", sans-serif; letter-spacing: .02em; color: var(--yellow); -webkit-text-stroke: 20px var(--ink); paint-order: stroke fill; text-shadow: 12px 12px 0 var(--ink); }
+  #win { position: absolute; z-index: 26; left: 0; right: 0; top: 0; text-align: center; font: 400 210px/1 "Anton", sans-serif; color: var(--yellow); -webkit-text-stroke: 24px var(--ink); paint-order: stroke fill; text-shadow: 14px 14px 0 var(--ink); }
+  #wburst { position: absolute; z-index: 1; left: 50%; top: 50%; width: 3600px; height: 3600px; margin: -1800px 0 0 -1800px; border-radius: 50%; background: repeating-conic-gradient(rgba(255, 210, 63, .22) 0 7deg, rgba(255, 210, 63, 0) 7deg 14deg); opacity: 0; }
+  #conf { position: absolute; inset: 0; z-index: 24; pointer-events: none; }
+  #conf i { position: absolute; left: 0; top: 0; width: 18px; height: 30px; border: 3px solid var(--ink); border-radius: 4px; }
+  #bell { position: absolute; z-index: 27; width: 120px; height: 120px; }
+  #demo { right: 72px; top: 1534px; }
+  .top3 { opacity: .35; }
+  [data-ratio="16x9"] #intro { left: 110px; right: auto; width: 820px; top: 230px; font-size: 100px; }
+  [data-ratio="16x9"] .card { left: 110px; width: 820px; top: 200px; height: 330px; }
+  [data-ratio="16x9"] #meter { left: 110px; width: 820px; top: 620px; }
+  [data-ratio="16x9"] #go { left: 110px; right: auto; width: 820px; top: 760px; font-size: 128px; }
+  [data-ratio="16x9"] #win { left: 0; right: auto; width: 1040px; font-size: 200px; }
+  [data-ratio="16x9"] #demo { right: 90px; top: 990px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S05">
+  <div class="set st-navy" id="set"></div>
+  <div id="wburst"></div>
+  <div id="cam">
+    <div class="tp" id="intro" data-copy="S05_intro"></div>
+    <div id="cards"></div>
+    <div id="meter"><span class="lab">Năng lượng hồ sơ · Lúa Non</span><div class="segs" id="segs"></div></div>
+    <div id="bd"></div>
+    <div class="top3" id="top3"><span class="lab">TOP 3</span></div>
+    <div id="go" data-copy="S05_go"></div>
+    <svg id="bell" viewBox="0 0 100 100"><path d="M50 12 C30 12 24 30 24 46 V62 L14 74 H86 L76 62 V46 C76 30 70 12 50 12 Z" fill="#FFD23F" stroke="#0C0628" stroke-width="6" stroke-linejoin="round"/><circle cx="50" cy="82" r="9" fill="#FFD23F" stroke="#0C0628" stroke-width="6"/><path d="M50 4 V12" stroke="#0C0628" stroke-width="6" stroke-linecap="round"/></svg>
+    <div class="demo" id="demo">Minh họa</div>
+  </div>
+  <div id="conf"></div>
+  <div id="win" data-copy="S05_win"></div>
+</div>
+<script src="hf/parts/race.js"></script>
+<script>
+  const S = window.SAMI, R = window.LR, tl = S.timeline(), $ = (s) => document.querySelector(s);
+  const L16 = S.landscape;
+  const B = R.board($('#bd')), g = B.g;
+  const T0 = 3.2, DT = 4.8, NB = 6;
+  const T = [...Array(NB)].map((_, k) => T0 + DT * k);
+  const SHORT = ['Hồ sơ', 'Ảnh', 'Review', 'Khớp', 'Website', 'Posts'];
+  // thẻ yếu tố
+  const cards = T.map((_, k) => {
+    const c = document.createElement('div'); c.className = 'card blk';
+    c.innerHTML = '<span class="no">0' + (k + 1) + ' / 06</span><div class="tt"></div><div class="ds"></div>';
+    c.querySelector('.tt').innerHTML = S.html('S05_f' + (k + 1) + 't'); c.querySelector('.ds').innerHTML = S.html('S05_f' + (k + 1));
+    $('#cards').appendChild(c); return c;
+  });
+  const segs = T.map((_, k) => {
+    const s = document.createElement('div'); s.className = 'seg'; s.innerHTML = '<i></i><b>' + SHORT[k] + '</b>';
+    $('#segs').appendChild(s); return s;
+  });
+  // khung TOP 3
+  const box = $('#top3'), pad = 14;
+  box.style.left = (g.x - pad) + 'px'; box.style.top = (g.y - pad) + 'px'; box.style.width = (g.w + pad * 2) + 'px'; box.style.height = (g.step * 3 - g.gap + pad * 2) + 'px';
+  // hoa giấy phẳng (tất định)
+  const COLS = ['#FFD23F', '#08DDA4', '#7667FE', '#FF6B5A', '#5EC8FF', '#FFF4DF'];
+  const conf = [...Array(46)].map((_, i) => {
+    const el = document.createElement('i'); el.style.background = COLS[i % COLS.length]; $('#conf').appendChild(el);
+    return {el, x: S.rnd(i + 3) * S.w, d: S.rnd(i + 51) * 0.6, v: 520 + 520 * S.rnd(i + 97), r: 200 + 500 * S.rnd(i + 7), sw: 30 + 60 * S.rnd(i + 11)};
+  });
+  const youV = (t) => 52 + R.BOOST.reduce((a, d, k) => a + d * R.E(t, T[k] + 1.4, T[k] + 2.7), 0);
+  const TW = T[5] + 1.75; // vượt quán số 1
+  const winY = L16 ? 760 : 1120;
+  R.clock(tl, (t) => {
+    // nền cuộn nhanh dần theo số lần tăng tốc
+    const n = T.filter((x) => t > x + 1.4).length;
+    R.scroll($('#set'), t, 30 + 26 * n, 0);
+    // đấm nhịp khung hình ở mỗi lần tăng tốc
+    let pz = 0; T.forEach((x) => { pz += t > x + 1.4 ? 0.025 * Math.exp(-(t - x - 1.4) * 7) : 0; });
+    pz += t > TW ? 0.04 * Math.exp(-(t - TW) * 6) : 0;
+    $('#cam').style.transform = 'scale(' + (1 + pz).toFixed(4) + ')';
+    const vals = B.vals(t, youV(t));
+    let spd = 0; T.forEach((x) => { spd = Math.max(spd, Math.sin(Math.PI * R.L(t, x + 1.35, x + 2.9))); });
+    B.set(vals, {spd});
+    // thẻ: bật vào T, thu nhỏ bay vào ô năng lượng T+4.5
+    cards.forEach((c, k) => {
+      const a = R.pop(t, T[k]), out = R.E(t, T[k] + 4.45, T[k] + 4.8);
+      const seg = segs[k].getBoundingClientRect(), cr = {x: c.offsetLeft + c.offsetWidth / 2, y: c.offsetTop + c.offsetHeight / 2};
+      const tx = (seg.left + seg.width / 2 - cr.x) * out, ty = (seg.top + seg.height / 2 - cr.y) * out;
+      c.style.transform = 'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px) scale(' + (a * (1 - 0.86 * out)).toFixed(3) + ') rotate(' + (-2 + 2 * a) + 'deg)';
+      c.style.opacity = t < T[k] || out >= 0.999 ? 0 : 1;
+    });
+    // ô năng lượng nạp
+    segs.forEach((s, k) => {
+      const f = R.E(t, T[k] + 0.3, T[k] + 1.3);
+      s.querySelector('i').style.width = (f * 100).toFixed(1) + '%';
+      s.classList.toggle('on', f > 0.6);
+      s.style.transform = 'scale(' + (1 + R.wob(t, T[k] + 1.3, 0.12)).toFixed(3) + ')';
+    });
+    // "TĂNG TỐC!"
+    let gk = -1; T.forEach((x, k) => { if (t >= x + 1.3 && t < x + 2.5) gk = k; });
+    if (gk >= 0) { const x = T[gk] + 1.3, p = R.pop(t, x), o = 1 - R.E(t, x + 0.9, x + 1.2);
+      $('#go').style.opacity = o.toFixed(3); $('#go').style.transform = 'rotate(-5deg) scale(' + (p * (1 + 0.1 * R.L(t, x, x + 1.2))).toFixed(3) + ')';
+    } else $('#go').style.opacity = 0;
+    // TOP 3 sáng lên khi Lúa Non vào top 3
+    const inTop = R.E(t, T[3] + 1.9, T[3] + 2.2);
+    box.style.opacity = (0.35 + 0.65 * inTop).toFixed(3);
+    box.style.transform = 'scale(' + (1 + R.wob(t, T[3] + 2.0, 0.03)).toFixed(4) + ')';
+    // hạng 1: chuông, sunburst, hoa giấy, chữ HẠNG 1
+    const w = R.pop(t, TW + 0.15);
+    $('#win').style.top = winY + 'px';
+    $('#win').style.opacity = t > TW + 0.15 ? 1 : 0;
+    $('#win').style.transform = 'rotate(-4deg) scale(' + w.toFixed(3) + ')';
+    $('#wburst').style.opacity = (0.9 * R.E(t, TW, TW + 0.6)).toFixed(3);
+    $('#wburst').style.transform = 'rotate(' + (t * 9).toFixed(2) + 'deg)';
+    const bell = $('#bell'), yr = g.y + 0 * g.step;
+    bell.style.left = (g.x + g.barX + 104 / R.VMAX * g.barW - 140) + 'px'; bell.style.top = (yr - 26) + 'px';
+    bell.style.opacity = t > TW ? 1 : 0;
+    bell.style.transform = 'rotate(' + (t > TW ? 28 * Math.exp(-(t - TW) * 2.2) * Math.sin((t - TW) * 18) : 0).toFixed(2) + 'deg) scale(' + R.pop(t, TW).toFixed(3) + ')';
+    bell.style.transformOrigin = '50% 8%';
+    conf.forEach((c) => {
+      const u = t - TW - c.d;
+      if (u <= 0) { c.el.style.opacity = 0; return; }
+      const y = -60 + c.v * u, x = c.x + c.sw * Math.sin(u * 3 + c.x);
+      c.el.style.opacity = y > S.h + 40 ? 0 : 1;
+      c.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + (c.r * u).toFixed(1) + 'deg)';
+    });
+  });
+  R.popIn(tl, S.words($('#intro')), 0.35, {stagger: 0.08});
+  R.popOut(tl, '#intro', T0 - 0.3);
+  R.popIn(tl, '#meter', 1.4, {dy: 0});
+  R.popIn(tl, '#demo', 0.4, {dy: 0});
+</script>
+</body>
+</html>

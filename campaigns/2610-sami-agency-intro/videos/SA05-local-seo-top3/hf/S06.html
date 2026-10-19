@@ -1,1 +1,72 @@
-<!doctype html><html><head><link rel="stylesheet" href="hf/parts/lr.css"></head><body><div id="root" data-composition-id="S06"></div><script>const tl=window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="hf/parts/lr.css">
+<style>
+  /* S06 · Ở LẠI ĐÓ: bục vinh quang hạng 1 đứng yên trong khi tờ lịch lật tháng này qua tháng khác */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 228px; font-size: 84px; }
+  #hd em.hl, #hd em.hl .w { color: var(--yellow); }
+  #cal { position: absolute; z-index: 12; left: 50%; top: 640px; width: 330px; height: 300px; margin-left: -165px; background: var(--cream); overflow: hidden; }
+  #cal .top { height: 70px; background: var(--coral); border-bottom: 5px solid var(--ink); position: relative; }
+  #cal .top:before, #cal .top:after { content: ""; position: absolute; top: 18px; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); }
+  #cal .top:before { left: 70px; } #cal .top:after { right: 70px; }
+  #cal .pg { position: absolute; left: 0; right: 0; top: 75px; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--cream); transform-origin: 50% 0; backface-visibility: hidden; }
+  #cal .pg span { font: 900 34px/1 "Be Vietnam Pro", sans-serif; color: #5C5680; letter-spacing: .06em; text-transform: uppercase; }
+  #cal .pg b { font: 400 120px/1 "Anton", sans-serif; color: var(--ink); margin-top: 8px; }
+  #pod { position: absolute; z-index: 11; left: 90px; right: 90px; top: 1010px; height: 520px; }
+  .pd { position: absolute; bottom: 0; width: 290px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 22px; box-sizing: border-box; font: 400 120px/1 "Anton", sans-serif; color: var(--ink); border-radius: 18px 18px 0 0 !important; }
+  .pd small { display: block; font: 900 34px/1.15 "Be Vietnam Pro", sans-serif; margin-top: 14px; }
+  #p1 { left: 50%; margin-left: -145px; height: 400px; background: var(--yellow); z-index: 2; }
+  #p2 { left: 0; height: 270px; background: var(--lav); }
+  #p3 { right: 0; height: 200px; background: var(--lav); }
+  #plate { position: absolute; z-index: 13; left: 50%; top: 820px; transform: translateX(-50%); }
+  #demo { right: 72px; top: 1534px; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 780px; top: 250px; font-size: 84px; }
+  [data-ratio="16x9"] #cal { left: auto; right: 150px; top: 120px; margin-left: 0; }
+  [data-ratio="16x9"] #pod { left: 960px; right: 90px; top: 470px; height: 520px; }
+  [data-ratio="16x9"] #demo { right: 90px; top: 990px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S06">
+  <div class="set dots-mint" id="set"></div>
+  <div class="tp" id="hd" data-copy="S06_headline"></div>
+  <div class="blk" id="cal"><div class="top"></div><div id="pages"></div></div>
+  <div id="pod">
+    <div class="pd blk" id="p2">2</div>
+    <div class="pd blk" id="p1">1<small>Lúa Non</small></div>
+    <div class="pd blk" id="p3">3</div>
+  </div>
+  <div class="demo" id="demo">Minh họa</div>
+</div>
+<script src="hf/parts/race.js"></script>
+<script>
+  const S = window.SAMI, R = window.LR, tl = S.timeline(), $ = (s) => document.querySelector(s);
+  const NP = 7, T_CAL = 1.2, FL = 0.62;
+  const pages = [...Array(NP)].map((_, k) => {
+    const p = document.createElement('div'); p.className = 'pg'; p.innerHTML = '<span>Tháng</span><b>' + (k + 1) + '</b>';
+    p.style.zIndex = NP - k; $('#pages').appendChild(p); return p;
+  });
+  R.clock(tl, (t) => {
+    R.scroll($('#set'), t, 14, 10, 66);
+    [['#p2', 0.35], ['#p1', 0.55], ['#p3', 0.75]].forEach(([id, t1]) => {
+      $(id).style.transform = 'translateY(' + R.drop(t, t1 - 0.3, t1, 900).toFixed(1) + 'px)'; $(id).style.opacity = t > t1 - 0.3 ? 1 : 0;
+    });
+    // tờ lịch lật liên tục, bục số 1 đứng yên
+    pages.forEach((p, k) => {
+      const a = T_CAL + 0.5 + k * FL, u = R.E(t, a, a + 0.32);
+      p.style.transform = 'perspective(800px) rotateX(' + (u * 100).toFixed(1) + 'deg)';
+      p.style.opacity = u > 0.95 && k < NP - 1 ? 0 : 1;
+    });
+    const c = R.pop(t, T_CAL);
+    $('#cal').style.transform = 'scale(' + c.toFixed(3) + ') rotate(' + (3 * c) + 'deg)'; $('#cal').style.opacity = c > 0 ? 1 : 0;
+  });
+  R.popIn(tl, S.words($('#hd')), 0.35, {stagger: 0.06});
+  R.popIn(tl, '#demo', 1.2, {dy: 0});
+</script>
+</body>
+</html>

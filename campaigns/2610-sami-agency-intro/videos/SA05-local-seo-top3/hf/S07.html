@@ -1,1 +1,67 @@
-<!doctype html><html><head><link rel="stylesheet" href="hf/parts/lr.css"></head><body><div id="root" data-composition-id="S07"></div><script>const tl=window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="hf/parts/lr.css">
+<style>
+  /* S07 · SẠCH & MINH BẠCH: con dấu „Wir kaufen niemals Links." đập xuống tờ cam kết; báo cáo tháng + họp video */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 228px; font-size: 74px; }
+  #doc { position: absolute; z-index: 11; left: 110px; right: 110px; top: 610px; height: 400px; background: var(--cream); padding: 40px 46px; box-sizing: border-box; }
+  #doc .ln { height: 18px; border-radius: 9px; background: #D9D4EE; margin-bottom: 22px; }
+  #doc .hdl { font: 600 22px/1 "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: #5C5680; margin-bottom: 28px; }
+  #stamp { position: absolute; z-index: 13; left: 50%; top: 800px; white-space: nowrap; font: 400 70px/1 "Anton", sans-serif; letter-spacing: .01em; color: var(--coral); padding: 22px 34px; border: 9px solid var(--coral); border-radius: 18px; background: rgba(255, 244, 223, .9); box-shadow: 0 0 0 5px var(--ink), 9px 9px 0 5px var(--ink); }
+  #tiles { position: absolute; z-index: 12; left: 72px; right: 72px; top: 1080px; height: 290px; display: flex; gap: 34px; }
+  .tile { flex: 1; position: relative; background: var(--cream); padding: 22px 24px; box-sizing: border-box; }
+  .tile .k { font: 600 21px/1 "IBM Plex Mono", monospace; letter-spacing: .12em; text-transform: uppercase; color: #5C5680; }
+  .bars { position: absolute; left: 24px; right: 24px; bottom: 24px; height: 170px; display: flex; align-items: flex-end; gap: 14px; }
+  .bars i { flex: 1; background: var(--mint); border: 4px solid var(--ink); border-radius: 8px 8px 0 0; transform-origin: 50% 100%; }
+  .vid { position: absolute; left: 24px; right: 24px; top: 62px; bottom: 24px; background: var(--ink); border-radius: 12px; display: flex; gap: 12px; padding: 12px; box-sizing: border-box; }
+  .vid div { flex: 1; border-radius: 8px; position: relative; overflow: hidden; }
+  .vid div:before { content: ""; position: absolute; left: 50%; top: 22%; width: 54px; height: 54px; margin-left: -27px; border-radius: 50%; background: var(--cream); border: 4px solid var(--ink); }
+  .vid div:after { content: ""; position: absolute; left: 50%; bottom: -30px; width: 110px; height: 90px; margin-left: -55px; border-radius: 50%; background: var(--cream); border: 4px solid var(--ink); }
+  .rec { position: absolute; right: 22px; top: 18px; width: 18px; height: 18px; border-radius: 50%; background: var(--coral); border: 3px solid var(--ink); }
+  #sub { left: var(--safe-side); right: var(--safe-side); top: 1400px; font-size: 46px; text-align: center; }
+  #demo { right: 14px; top: 12px; font-size: 16px; padding: 5px 8px; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 800px; top: 130px; font-size: 72px; }
+  [data-ratio="16x9"] #doc { left: 110px; right: auto; width: 760px; top: 480px; height: 360px; }
+  [data-ratio="16x9"] #stamp { top: 610px; left: 490px; font-size: 64px; }
+  [data-ratio="16x9"] #tiles { left: 1010px; right: 90px; top: 150px; height: 560px; flex-direction: column; gap: 30px; }
+  [data-ratio="16x9"] #sub { left: 1010px; right: 90px; top: 770px; font-size: 44px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S07">
+  <div class="set st-purple" id="set"></div>
+  <div class="tp" id="hd" data-copy="S07_headline"></div>
+  <div class="blk" id="doc"><div class="hdl">SAMI · Local SEO</div><div class="ln" style="width:90%"></div><div class="ln" style="width:76%"></div><div class="ln" style="width:84%"></div><div class="ln" style="width:58%"></div><div class="ln" style="width:70%"></div></div>
+  <div id="stamp" data-copy="S07_stamp"></div>
+  <div id="tiles">
+    <div class="tile blk" id="t1"><span class="k">Báo cáo tháng</span><div class="demo" id="demo">Minh họa</div><div class="bars"><i style="height:38%"></i><i style="height:52%"></i><i style="height:47%"></i><i style="height:66%"></i><i style="height:74%"></i><i style="height:88%"></i></div></div>
+    <div class="tile blk" id="t2"><span class="k">Họp video</span><span class="rec"></span><div class="vid"><div style="background:#7667FE"></div><div style="background:#08DDA4"></div></div></div>
+  </div>
+  <div class="sub" id="sub" data-copy="S07_report"></div>
+</div>
+<script src="hf/parts/race.js"></script>
+<script>
+  const S = window.SAMI, R = window.LR, tl = S.timeline(), $ = (s) => document.querySelector(s);
+  const T_DOC = 1.4, T_ST = 2.3, T_T1 = 4.3, T_T2 = 4.6, T_SUB = 4.8;
+  R.clock(tl, (t) => {
+    R.scroll($('#set'), t, 18, 0);
+    $('#doc').style.transform = 'translateY(' + R.drop(t, T_DOC - 0.35, T_DOC, 1200).toFixed(1) + 'px) scale(' + (1 + R.wob(t, T_ST, 0.03)).toFixed(4) + ') rotate(-1.5deg)';
+    $('#doc').style.opacity = t > T_DOC - 0.35 ? 1 : 0;
+    const k = t < T_ST ? 0 : 2.4 - 1.4 * R.E(t, T_ST, T_ST + 0.18) + R.wob(t, T_ST + 0.18, 0.06);
+    $('#stamp').style.transform = 'translateX(-50%) rotate(-7deg) scale(' + k.toFixed(3) + ')'; $('#stamp').style.opacity = t < T_ST ? 0 : 1;
+    [['#t1', T_T1], ['#t2', T_T2]].forEach(([id, a]) => { const p = R.pop(t, a); $(id).style.transform = 'scale(' + p.toFixed(3) + ')'; $(id).style.opacity = p > 0 ? 1 : 0; });
+    document.querySelectorAll('.bars i').forEach((b, i) => { b.style.transform = 'scaleY(' + R.E(t, T_T1 + 0.2 + i * 0.1, T_T1 + 0.6 + i * 0.1).toFixed(3) + ')'; });
+    $('.rec').style.opacity = Math.floor(t * 2) % 2 ? 1 : 0.3;
+  });
+  R.popIn(tl, S.words($('#hd')), 0.35, {stagger: 0.06});
+  R.popIn(tl, S.words($('#sub')), T_SUB, {stagger: 0.05});
+  R.popIn(tl, '#demo', T_T1 + 0.4, {dy: 0});
+</script>
+</body>
+</html>

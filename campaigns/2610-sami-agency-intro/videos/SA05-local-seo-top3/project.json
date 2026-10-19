@@ -233,7 +233,7 @@
   "S07_headline": {
    "label": "Telop cam kết",
    "scene": "S07",
-   "value": "SAMI không bao giờ mua link. / Không đánh cược *hồ sơ của bạn.*"
+   "value": "SAMI không bao giờ / mua link. / Không đánh cược / *hồ sơ của bạn.*"
   },
   "S07_stamp": {
    "label": "Con dấu (nguyên văn tiếng Đức)",
@@ -248,7 +248,7 @@
   "S08_headline": {
    "label": "Câu chốt",
    "scene": "S08",
-   "value": "Top 3 trên bản đồ / không phải may mắn. / Đó là *một hồ sơ / được chăm đúng cách.*"
+   "value": "Top 3 trên bản đồ / không phải may mắn. / Đó là *một hồ sơ* / *được chăm đúng cách.*"
   },
   "S09_cta": {
    "label": "Bong bóng chat – lời mời",

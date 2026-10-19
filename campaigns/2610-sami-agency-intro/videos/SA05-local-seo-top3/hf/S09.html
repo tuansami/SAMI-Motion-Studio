@@ -1,1 +1,67 @@
-<!doctype html><html><head><link rel="stylesheet" href="hf/parts/lr.css"></head><body><div id="root" data-composition-id="S09"></div><script>const tl=window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/lr.css">
+<style>
+  /* S09 · END CARD SAMI: bong bóng chat phẳng (vẽ code) rơi xuống nảy, số WhatsApp, ưu đãi, logo + tagline */
+  [data-composition-id] { background: #0C0628; }
+  #wrap { position: absolute; z-index: 5; left: var(--safe-side); right: var(--safe-side); top: 330px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #colA, #colB { display: flex; flex-direction: column; align-items: center; }
+  #bubble { position: relative; padding: 40px 54px 44px; border-radius: 48px 48px 48px 12px; background: var(--mint); color: var(--ink); border: 6px solid var(--ink); box-shadow: 14px 14px 0 var(--purple); }
+  #bubble:after { content: ""; position: absolute; left: -6px; bottom: -40px; width: 56px; height: 42px; background: var(--ink); clip-path: polygon(0 0, 100% 0, 0 100%); }
+  #bubble .ic { position: absolute; left: -36px; top: -36px; width: 80px; height: 80px; border-radius: 50%; background: var(--yellow); border: 5px solid var(--ink); display: flex; align-items: center; justify-content: center; }
+  #bubble .ic svg { width: 42px; height: 42px; }
+  #cta { font: 800 50px/1.2 "Be Vietnam Pro", sans-serif; }
+  #phone { font: 900 80px/1.15 "Be Vietnam Pro", sans-serif; letter-spacing: -.01em; margin-top: 8px; white-space: nowrap; }
+  #offer { margin-top: 74px; font: 500 38px/1.4 "Be Vietnam Pro", sans-serif; color: #E3E4F7; }
+  #lw { margin-top: 84px; width: 560px; overflow: hidden; }
+  #logo { width: 100%; display: block; clip-path: polygon(0 0, 100% 0, 100% 58%, 39% 58%, 39% 100%, 0 100%); }
+  #tag { margin-top: 24px; font: 500 24px/1.4 "IBM Plex Mono", monospace; letter-spacing: .06em; color: #A8A3C9; }
+  #web { margin-top: 14px; font: 800 42px/1.2 "Be Vietnam Pro", sans-serif; color: var(--mint); }
+  #rays { position: absolute; inset: 0; z-index: 1; }
+  [data-ratio="16x9"] #wrap { left: 0; right: 0; top: 0; bottom: 0; display: grid; grid-template-columns: 1.15fr .85fr; align-items: center; justify-items: center; padding: 0 120px; gap: 70px; }
+  [data-ratio="16x9"] #colA { align-items: flex-start; text-align: left; }
+  [data-ratio="16x9"] #offer { margin-top: 74px; font-size: 34px; }
+  [data-ratio="16x9"] #lw { margin-top: 0; width: 600px; }
+  [data-ratio="16x9"] #tag { white-space: nowrap; font-size: 21px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S09">
+  <div class="burst b-navy" id="rays"></div>
+  <div id="wrap">
+    <div id="colA">
+      <div id="bubble">
+        <div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0C0628" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30 L10 23 A12 12 0 1 1 16 30 Z"/></svg></div>
+        <div id="cta" data-copy="S09_cta"></div>
+        <div id="phone" data-copy="S09_phone"></div>
+      </div>
+      <div id="offer" data-copy="S09_offer"></div>
+    </div>
+    <div id="colB">
+      <div id="lw"><img id="logo" src="public/img/logo-white.svg"></div>
+      <div id="tag" data-copy="S09_tagline"></div>
+      <div id="web" data-copy="S09_web"></div>
+    </div>
+  </div>
+</div>
+<script src="hf/parts/race.js"></script>
+<script>
+  const S = window.SAMI, R = window.LR, tl = S.timeline(), $ = (s) => document.querySelector(s);
+  R.clock(tl, (t) => {
+    $('#rays').style.transform = 'rotate(' + (t * 2.5).toFixed(2) + 'deg)';
+    $('#bubble').style.transform = 'translateY(' + R.drop(t, 0.1, 0.45, 1200).toFixed(1) + 'px)';
+    $('#bubble').style.opacity = t > 0.1 ? 1 : 0;
+  });
+  R.popIn(tl, '#offer', 1.0, {from: 0.8});
+  R.popIn(tl, '#lw', 1.7, {from: 0.7});
+  R.popIn(tl, '#tag', 2.1, {from: 0.9, dy: 10});
+  R.popIn(tl, '#web', 2.3, {from: 0.9, dy: 10});
+</script>
+</body>
+</html>
