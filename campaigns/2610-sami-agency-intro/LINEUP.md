@@ -150,7 +150,7 @@ Thời lượng mục tiêu 60–90 s. Thứ tự = thứ tự sản xuất (ch�
 | SA02 | session_019jB8QgD4kPFYqUgR1Z2mrw | ▢ | ▢ | dựng xong, chờ Tuấn duyệt quyền chạy cli-render |
 | SA03 | session_01FhzuzsYd4vvebqUAaWWNCt | ▢ | ▢ | dựng xong, chờ Tuấn duyệt quyền chạy cli-render |
 | SA04 | session_01RbeftYNso94htdZ74HhiMz | ✓ | ✓ | 89,6 s, Eurostat sts_setu_m (CC BY 4.0), đã gửi |
-| SA05 | — | ▢ | ▢ | |
+| SA05 | session_019xTerQVmjKbHDBXh8baQ4H (đang làm) | ▢ | ▢ | |
 | SA06 | — | ▢ | ▢ | |
 | SA07 | — | ▢ | ▢ | |
 | SA08 | session_01JR29rVe3J9LQTVve5qQNpn | ✓ | ✓ | 87,5 s, đã gửi |
@@ -161,6 +161,6 @@ Thời lượng mục tiêu 60–90 s. Thứ tự = thứ tự sản xuất (ch�
 | SA13 | — | ▢ | ▢ | |
 | SA14 | session_01VAnbc7r8nwdmwFf8omFNir (đang làm) | ▢ | ▢ | |
 | SA15 | — | ▢ | ▢ | |
-| SA16 | session_0196K5hENCT3q4ztsyzTevbk (đang làm) | ▢ | ▢ | |
+| SA16 | session_0196K5hENCT3q4ztsyzTevbk | ✓ | ✓ | 87 s, Eurostat sts_rb_q, đã gửi |
 | SA17 | — | ▢ | ▢ | |
 | SA18 | — | ▢ | ▢ | |
