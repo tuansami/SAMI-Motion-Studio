@@ -1,0 +1,6 @@
+out/
+public/_hf/
+public/_engine/
+public/_lib/
+audio_src/mix.wav
+*.mp4
