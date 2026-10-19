@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="slides/_shared.css">
+<style>
+  /* C08 · Kêu gọi: kiểm tra miễn phí Google Maps + website (offer cố định của SAMI: 250 € → 0 €) + nút WhatsApp + website. Slide cuối: không có nút Vuốt.
+   * Ghim vào từ trái, đáp lên "0 €" ở 1,0 s (impact + hạt), vạch gạch giá loé ở 2,0 s, nhảy lên nút WhatsApp ở 3,0 s, nút nảy 3,0 · 4,0 s, rời ở 4,9 s. */
+  #offer { position: absolute; left: 0; right: 0; top: 0; height: 56%; border-radius: 34px; background: var(--k-bg2); border: 2px solid var(--k-line); box-shadow: 0 30px 70px rgba(0, 0, 0, .45);
+    display: flex; flex-direction: column; justify-content: center; padding: 0 44px; box-sizing: border-box; gap: 6px; }
+  #ol { font: 700 34px/1.2 var(--f-head); color: var(--k-ink); }
+  #prices { display: flex; align-items: flex-end; gap: 36px; }
+  #old { position: relative; font: 800 64px/1 var(--f-head); color: var(--k-dim); padding-bottom: 22px; }
+  #old i { position: absolute; left: -8px; right: -8px; top: 40%; height: 9px; border-radius: 5px; background: #FF5A5F; transform: rotate(-8deg); display: block; }
+  #new { font: 900 160px/0.9 var(--f-head); letter-spacing: -0.05em; background: linear-gradient(90deg, var(--k-accent), var(--k-accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 .04em .06em 0; transform-origin: 20% 90%; }
+  #wa { position: absolute; left: 0; right: 0; top: calc(56% + 26px); height: 120px; border-radius: 999px; background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 22px;
+    box-shadow: 0 20px 44px rgba(37, 211, 102, .35); transform-origin: 50% 50%; }
+  #wa .ic { width: 64px; height: 64px; }
+  #wa small { display: block; font: 700 22px/1 var(--f-ui); opacity: .9; }
+  #wa b { display: block; font: 800 48px/1.05 var(--f-head); letter-spacing: .01em; }
+  #url { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; font: 700 40px/1 var(--f-head); color: var(--k-ink); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="C08">
+  <div id="frame">
+    <canvas id="grid" class="cx-grid" width="1080" height="1350"></canvas>
+    <div id="glow"></div>
+    <div id="kick" class="cx-kicker" data-copy="C08_kicker"></div>
+    <div id="big" class="cx-big" data-copy="C08_big"></div>
+    <div id="small" class="cx-small" data-copy="C08_small"></div>
+    <div id="demo">
+      <div id="offer"><div id="ol" data-copy="C08_offer"></div><div id="prices"><div id="old"><span data-copy="C08_old"></span><i></i></div><div id="new" data-copy="C08_new"></div></div></div>
+      <div id="wa"><span class="ic"></span><span><small data-copy="C08_wa"></small><b data-copy="C08_phone"></b></span></div>
+      <div id="url" data-copy="C08_url"></div>
+    </div>
+    <div class="cx-triplet" data-copy="C08_triplet"></div>
+    <div id="fx"></div>
+  </div>
+</div>
+<script src="slides/_pin.js"></script>
+<script src="slides/_vi.js"></script>
+<script>
+  const S = window.SAMI, X = window.CX;
+  S.bindCopy();
+  V.$('#wa .ic').innerHTML = V.icon('wa');
+  const frame = V.$('#frame'), chrome = X.chrome(frame);
+  const grid = X.grid(V.$('#grid'), {color: '#ffffff', alpha: 0.16});
+  const burst = X.burst(V.$('#fx'), 24, 37);
+  const pin = makePin(frame);
+  let chars = [], p0 = {x: 700, y: 900}, pw = {x: 900, y: 1100}, path = pinPath({land: {t: 1.0, x: 700, y: 900}, entryY: 600, exit: 4.9, exitY: 600});
+  const layout = X.ready(() => {
+    chars = bigWord(V.$('#big'), 936);
+    V.flow({bottom: 1176});
+    const n = V.rel(V.$('#new')), w = V.rel(V.$('#wa'));
+    p0 = {x: n.r - 40, y: n.t + 24}; pw = {x: w.r - 90, y: w.t + 4};
+    path = pinPath({land: {t: 1.0, x: p0.x, y: p0.y}, entryY: 600, hops: [{t: 3.0, x: pw.x, y: pw.y, h: 200}], exit: 4.9, exitY: 600});
+  });
+  X.loop((t) => {
+    layout(); chrome(t);
+    const k = X.kick(t - 1.0, 2.2, 5);
+    V.$('#new').style.transform = `scale(${1 + k * 0.1}) rotate(${-k * 2}deg)`;
+    V.$('#old i').style.boxShadow = `0 0 ${24 * X.pulse(t, 2.0, 0.2)}px #FF5A5F`;
+    V.$('#old').style.transform = `translateX(${X.kick(t - 2.0, 5, 7) * 8}px)`;
+    const wk = Math.max(X.kick(t - 3.0, 2.4, 5), X.kick(t - 4.0, 2.4, 5));
+    V.$('#wa').style.transform = `scale(${1 + Math.max(0, wk) * 0.05})`;
+    drawPin(pin, path, t, null);
+    grid(t, [{t: 1.0, x: p0.x, y: p0.y, a: 1.4}, {t: 3.0, x: pw.x, y: pw.y, a: 0.9}], 1);
+    burst(t, 1.0, p0.x, p0.y, 1.2);
+    chars.forEach((c, i) => { const q = X.kick(t - 1.0 - i * 0.04, 3, 6) * 0.16; c.style.transform = `translateY(${-q * 60}px) scale(${1 + q * 0.3}, ${1 - q * 0.2})`; });
+    V.$('#glow').style.transform = `scale(${1 + 0.06 * X.wave(t, 3)})`;
+  });
+</script>
+</body>
+</html>

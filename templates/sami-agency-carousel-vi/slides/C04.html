@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="slides/_shared.css">
+<style>
+  /* C04 · Website + đặt bàn + đặt món. Trái: điện thoại với ảnh chụp web thật (Vị). Phải: thẻ đặt bàn + thẻ đặt món (giao diện khách: tiếng Đức).
+   * Ghim vào từ trái, bấm nút "Reservieren" ở 1,5 s → "Reserviert"; nhảy sang "Bestellen" ở 3,0 s → "Bestellt"; rời ở 4,9 s, thẻ về form trước điểm lặp. */
+  #phone { position: absolute; left: 0; top: 0; bottom: 0; aspect-ratio: 0.6; border-radius: 46px; background: #0d0c14; padding: 14px; box-sizing: border-box; box-shadow: 0 30px 70px rgba(0, 0, 0, .5); }
+  #phone .scr { position: relative; width: 100%; height: 100%; border-radius: 34px; overflow: hidden; background: #f4efe9; }
+  #phone .scr .ph { position: absolute; inset: 0; background-position: top center; transform-origin: 50% 0; }
+  #phone .notch { position: absolute; left: 50%; top: 22px; width: 96px; height: 26px; margin-left: -48px; border-radius: 13px; background: #0d0c14; z-index: 3; }
+  #badge { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 4; display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--k-accent), var(--k-accent2)); color: var(--k-bg); font: 800 24px/1 var(--f-head); white-space: nowrap; box-shadow: 0 10px 24px rgba(0, 0, 0, .35); }
+  #badge .ic { width: 24px; height: 24px; }
+  #cards { position: absolute; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column; gap: 20px; }
+  .fc { position: relative; flex: 1; border-radius: 28px; background: #fff; color: #1c1b23; padding: 24px 26px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); overflow: hidden; }
+  .fc .hd { display: flex; align-items: center; gap: 14px; font: 700 32px/1.1 var(--f-ui); }
+  .fc .hd .ic { width: 38px; height: 38px; color: #232220; flex: none; }
+  .fc .mt { font: 500 25px/1.2 var(--f-ui); color: #5f5a66; }
+  .fc .bt { height: 70px; border-radius: 18px; background: #232220; color: #fff; display: flex; align-items: center; justify-content: center; font: 700 27px/1 var(--f-ui); }
+  .fc .done { position: absolute; inset: 0; background: rgba(28, 27, 35, .96); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; font: 800 36px/1 var(--f-head); opacity: 0; }
+  .fc .done .ok { width: 84px; height: 84px; padding: 20px; }
+  #free { position: absolute; right: 18px; top: 18px; padding: 8px 14px; border-radius: 999px; background: rgba(8, 221, 164, .16); color: #058a66; font: 700 20px/1 var(--f-ui); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="C04">
+  <div id="frame">
+    <canvas id="grid" class="cx-grid" width="1080" height="1350"></canvas>
+    <div id="glow"></div>
+    <div id="kick" class="cx-kicker" data-copy="C04_kicker"></div>
+    <div id="big" class="cx-big" data-copy="C04_big"></div>
+    <div id="small" class="cx-small" data-copy="C04_small"></div>
+    <div id="demo">
+      <div id="phone"><div class="scr"><div class="ph" data-img="C04_web_photo"></div><div class="notch"></div></div>
+        <div id="badge"><span class="ic"></span><span data-copy="C04_badge"></span></div></div>
+      <div id="cards">
+        <div class="fc" id="res"><div class="hd"><span class="ic"></span><span data-copy="C04_res"></span></div><div class="mt" data-copy="C04_res_meta"></div><div class="bt" data-copy="C04_res_btn"></div>
+          <div class="done"><div class="ok"></div><span data-copy="C04_res_done"></span></div></div>
+        <div class="fc" id="ord"><div class="hd"><span class="ic"></span><span data-copy="C04_ord"></span></div><div class="mt" data-copy="C04_ord_meta"></div><div class="bt" data-copy="C04_ord_btn"></div>
+          <div id="free" data-copy="C04_free"></div>
+          <div class="done"><div class="ok"></div><span data-copy="C04_ord_done"></span></div></div>
+      </div>
+    </div>
+    <div class="cx-triplet" data-copy="C04_triplet"></div>
+    <div id="fx"></div>
+  </div>
+</div>
+<script src="slides/_pin.js"></script>
+<script src="slides/_vi.js"></script>
+<script>
+  const S = window.SAMI, X = window.CX;
+  S.bindCopy(); V.bindImgs();
+  V.$('#badge .ic').innerHTML = V.icon('check', {sw: 3});
+  V.$('#res .hd .ic').innerHTML = V.icon('cal'); V.$('#ord .hd .ic').innerHTML = V.icon('bag');
+  V.$$('.done .ok').forEach((e) => { e.innerHTML = V.icon('check', {sw: 3}); });
+  const frame = V.$('#frame'), chrome = X.chrome(frame);
+  const grid = X.grid(V.$('#grid'), {color: '#ffffff', alpha: 0.15});
+  const burst = X.burst(V.$('#fx'), 14, 13);
+  const res = V.$('#res'), ord = V.$('#ord'), web = V.$('#phone .ph');
+  const pin = makePin(frame);
+  let chars = [], b1 = {x: 700, y: 900}, b2 = {x: 700, y: 1100}, path = pinPath({land: {t: 1.5, x: 700, y: 900}, entryY: 600, exit: 4.9, exitY: 600});
+  const layout = X.ready(() => {
+    chars = bigWord(V.$('#big'), 936);
+    V.flow();
+    const ph = V.$('#phone'), cards = V.$('#cards');
+    cards.style.left = (ph.offsetWidth + 24) + 'px';
+    const r1 = V.rel(res.querySelector('.bt')), r2 = V.rel(ord.querySelector('.bt'));
+    b1 = {x: r1.x, y: r1.t + 8}; b2 = {x: r2.x, y: r2.t + 8};
+    path = pinPath({land: {t: 1.5, x: b1.x, y: b1.y}, entryY: 600, hops: [{t: 3.0, x: b2.x, y: b2.y, h: 160}], exit: 4.9, exitY: 600});
+  });
+  X.loop((t) => {
+    layout(); chrome(t);
+    // web trong điện thoại "thở" chậm (lặp liền)
+    web.style.transform = `scale(${1.03 + 0.03 * X.wave(t, 6, 0.75)})`;
+    // bấm nút → đã đặt; về form trước điểm lặp
+    [[res, 1.5, 5.0], [ord, 3.0, 5.2]].forEach(([c, at, off]) => {
+      const bt = c.querySelector('.bt'), d = c.querySelector('.done');
+      bt.style.transform = `scale(${1 - 0.06 * X.pulse(t, at, 0.08)})`;
+      d.style.opacity = X.tw(t, at + 0.05, at + 0.3) * (1 - X.tw(t, off, off + 0.45));
+      d.querySelector('.ok').style.transform = `scale(${X.settle(t - at - 0.05, 2.2, 6) * (t > at ? 1 : 0)})`;
+      const k = X.kick(t - at, 2.6, 6); c.style.transform = `translateY(${-k * 8}px)`;
+    });
+    drawPin(pin, path, t, null);
+    grid(t, [{t: 1.5, x: b1.x, y: b1.y, a: 1.0}, {t: 3.0, x: b2.x, y: b2.y, a: 1.0}], 1);
+    burst(t, 3.0, b2.x, b2.y, 0.9);
+    chars.forEach((c, i) => { const q = X.kick(t - 1.5 - i * 0.04, 3, 6) * 0.12; c.style.transform = `translateY(${-q * 50}px) scale(${1 + q * 0.3}, ${1 - q * 0.2})`; });
+    V.$('#glow').style.transform = `scale(${1 + 0.06 * X.wave(t, 3)})`;
+  });
+</script>
+</body>
+</html>

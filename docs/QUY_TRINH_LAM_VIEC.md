@@ -12,6 +12,7 @@
 3. **Chữ, thời lượng, tiêu đề, phụ đề, ảnh chèn, âm thanh, màu, xuất video → người làm trong Studio (0 token).** Claude chỉ viết/sửa **code cảnh**.
 4. **Duyệt kịch bản trước khi code.** Sửa trên giấy rẻ gấp 10 lần sửa trên code.
 5. **Agent chỉ đọc đúng file được nêu tên.** Kiểm tra bằng ảnh tĩnh, không xem video.
+6. **Nhiều máy, nhiều người:** việc cần Studio / ảnh khách / render làm trên PC văn phòng (hoặc điều khiển PC từ điện thoại bằng Remote Control); cloud chỉ để sửa code app, mẫu, tài liệu. Mọi thứ đi qua GitHub theo nhánh. Chi tiết mục 12.
 
 ---
 
@@ -248,3 +249,58 @@ Quy tắc: tối đa khoảng 1 trang. Xoá việc đã xong khỏi "Việc ti�
 | Agent quên quyết định cũ | Quyết định chưa được ghi vào `TRANG_THAI.md` → ghi vào, mở phiên mới |
 
 Chi tiết: `HUONG_DAN_SU_DUNG` mục 13.
+
+---
+
+## 12. Làm việc nhiều thiết bị, nhiều người (PC, điện thoại, cloud)
+
+### 12a. Ba nơi chạy Claude Code: chọn đúng nơi cho từng việc
+
+| | **PC văn phòng** (Claude Code tại thư mục dự án / app) | **Điện thoại điều khiển PC** (Remote Control) | **Cloud** (claude.ai/code, app Claude trên điện thoại) |
+|---|---|---|---|
+| Máy chạy | PC có Studio | Vẫn là PC đó; điện thoại chỉ gõ lệnh và xem kết quả | Máy ảo mới mỗi phiên, clone repo từ GitHub |
+| Có Studio, GPU, `Z:\SAMI_Video`, SAMI_Library, khoá API, Chrome SAMI | Có | Có | **Không**. Không có ảnh khách, không có khoá, render bằng CPU (video 60 s mất khoảng 11 đến 14 phút) |
+| Giữ lại kết quả | Ổ đĩa PC | Ổ đĩa PC | **Chỉ những gì đã commit + push.** Máy ảo bị xoá khi hết phiên |
+| Dùng cho | Mọi việc video | Đang ở ngoài mà cần làm tiếp dự án video, sửa cảnh, xuất bản nháp | Sửa code Studio, làm / sửa **mẫu**, tài liệu, review PR, viết kịch bản khi không có PC |
+
+**Bật Remote Control** (một lần mỗi phiên làm việc): trên PC mở **Claude Desktop**, hoặc mở terminal tại thư mục cần làm (thư mục dự án video hoặc thư mục app) rồi chạy `claude remote-control`. Phiên đó hiện trong mục Claude Code của app Claude trên điện thoại; gõ lệnh trên điện thoại, máy văn phòng làm. PC phải bật và không ngủ.
+
+**Quy tắc chọn:** việc nào đụng tới ảnh khách, thư viện, Studio, render cho khách → PC hoặc Remote Control. Cloud không bao giờ đụng ảnh khách (repo app là public).
+
+### 12b. GitHub là nơi gặp nhau của mọi máy
+
+- Repo `tuansami/SAMI-Motion-Studio` (public) chỉ chứa **code app + mẫu + tài liệu**. Không commit `projects/`, ảnh / logo khách, khoá API, `.history/`, video xuất.
+- **Mỗi phiên cloud làm trên một nhánh riêng** (`claude/…`). Xong việc: tạo PR → Tuấn / motion lead duyệt → merge vào `main` → gắn tag + Release theo `CHANGELOG.md`.
+- **Studio trên PC chỉ thấy những gì đã có trên máy.** Mẫu làm trên cloud chưa merge thì Studio chưa thấy. Muốn xem trước khi merge:
+  ```
+  cd Z:\SAMI_Video\SAMI_Motion_Studio
+  git fetch origin
+  git switch <tên nhánh>      (xem xong: git switch main)
+  ```
+  rồi khởi động lại Studio. Sau khi merge: `git switch main` + `git pull`.
+- **Không để hai nơi cùng sửa một nhánh cùng lúc** (PC và cloud, hoặc hai người). Ai cầm nhánh nào ghi vào PR hoặc nhóm chat. Trước khi làm tiếp trên máy khác: `git pull` nhánh đó.
+- **Ảnh thật của mẫu** nằm ở SAMI_Library, mẫu chỉ trỏ `lib:img/…`. Máy mới lần đầu chạy lệnh nhập ảnh ghi trong README của mẫu (vd `templates/sami-agency-intro/tools/import-images.mjs`).
+- **Dự án video** (thư mục có `project.json`) không đi qua GitHub: nằm trên `Z:\SAMI_Video`, lịch sử phiên bản ở `<dự án>/.history/` (Studio tự lưu).
+
+### 12c. Nhiều nhân viên trên cùng một dự án
+
+- **Mỗi dự án một người cầm tại một thời điểm.** Ghi ở đầu `brief/TRANG_THAI.md`: `Đang làm: <tên> · <máy> · <ngày>`. Người sau đọc file đó là đủ ngữ cảnh, không cần đọc chat của người trước.
+- Hai người không mở Claude Code cùng lúc trên cùng một thư mục dự án (ghi đè `scenes/`, `project.json`).
+- Bàn giao = cập nhật `TRANG_THAI.md` (mục 7) + báo trong nhóm. Không bàn giao bằng cách gửi link chat.
+- Sửa chữ, thời lượng, ảnh, âm thanh: người làm trong Studio (0 token), theo bảng mục 4. Claude chỉ nhận phần code cảnh.
+- Bản ngôn ngữ / bản chữ khác của cùng một video (vd `sami-agency-intro` → `-vi`, `-vi-story`): sửa file `lang/<tên>.json` rồi chạy `tools/build-lang.mjs`, không nhờ Claude viết lại cảnh.
+
+### 12d. Tiết kiệm usage mà vẫn hiệu quả
+
+- **Một việc, một phiên.** Mỗi video, mỗi vòng sửa, mỗi mẫu là một phiên mới. Chat dài càng về sau mỗi câu càng đắt. Cloud và Remote Control cũng vậy.
+- **Câu lệnh đủ ý ngay từ đầu:** tên dự án hoặc mẫu, tên cảnh, đầu ra mong muốn (ảnh tĩnh / MP4 / PR), có được render không. Gom mọi ý của một vòng vào một tin nhắn thay vì nhắn từng ý.
+- **Việc làm được trong Studio thì làm trong Studio** (chữ, thời gian, ảnh, nhạc, xuất video).
+- **Kiểm bằng ảnh tĩnh**, chỉ render MP4 khi cần xem trên điện thoại hoặc giao khách. Render để chạy nền, không bắt Claude ngồi chờ.
+- **Chọn model theo việc:** Opus cho kịch bản, cảnh mới, bố cục khó; Sonnet cho sửa nhỏ, đổi chữ trong code, chuyển mẫu.
+- **Đang ở ngoài:** ưu tiên Remote Control vào PC (có sẵn thư viện, Studio, GPU) hơn là mở phiên cloud mới phải clone lại, thiếu ảnh và render chậm.
+- **Xem kết quả trên điện thoại:** phiên cloud gửi MP4 bản 720p (khoảng 10 MB) ngay trong app Claude; GitHub Mobile không xem được video và repo không chứa video.
+
+### 12e. Thiết lập một lần cho phiên cloud (tuỳ chọn)
+
+Phiên cloud bắt đầu từ máy trống. Trong cài đặt môi trường cloud (menu môi trường trên thanh tiêu đề phiên → **Edit** → **Setup script**) có thể thêm lệnh cài sẵn: `npm ci` và `pip install numpy` (để chạy `npm run check`, ảnh tĩnh, nhạc tổng hợp). Phiên mới sẽ chạy script này. Ảnh khách vẫn không có trên cloud: mẫu cần ảnh thật thì kiểm bằng ảnh tĩnh trên PC, hoặc nhập ảnh vào thư viện của phiên cloud (không commit).
+

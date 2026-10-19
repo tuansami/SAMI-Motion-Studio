@@ -1,0 +1,840 @@
+{
+ "name": "SAMI Agency – carousel tiếng Việt 8 slide (kể chuyện)",
+ "client": "",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "carousel",
+ "engine": "hyperframes",
+ "formats": [
+  "4:5"
+ ],
+ "brand": {},
+ "look": {
+  "grain": 0.04,
+  "vignette": 0.25
+ },
+ "carousel": {
+  "series": "SAMI · Nhà hàng tại Đức",
+  "handle": "sami.agency",
+  "theme": "sami",
+  "swipe": "Vuốt",
+  "caption": "Món anh chị nấu rất ngon, vậy mà khách đói tìm trên Google Maps lại không thấy quán? SAMI lo 8 việc để khách thấy quán, thích quán và đến quán: logo, menu, website, đặt bàn, đặt món, Local SEO, Google Ads Maps, Social Media. Kiểm tra miễn phí Google Maps + website: nhắn SAMI qua WhatsApp +49 155 60456888, nói chuyện bằng tiếng Việt. (Saigon Atelier trong bài là nhà hàng ví dụ minh hoạ.)",
+  "audio": {
+   "mode": "groove",
+   "groove": {
+    "intensity": 0.7,
+    "style": "house"
+   }
+  }
+ },
+ "scenes": [
+  {
+   "id": "C01",
+   "label": "Slide 1 – Hook: tìm không ra",
+   "start": 0,
+   "end": 180,
+   "engine": "hyperframes",
+   "src": "slides/C01.html",
+   "cues": [
+    {
+     "t": 0.5,
+     "fx": "boop",
+     "gain": -12,
+     "pitch": 0.8
+    },
+    {
+     "t": 2,
+     "fx": "glitch",
+     "gain": -14
+    },
+    {
+     "t": 2.5,
+     "fx": "whoosh",
+     "gain": -12,
+     "dur": 0.5
+    },
+    {
+     "t": 3,
+     "fx": "thump",
+     "gain": -4
+    },
+    {
+     "t": 3,
+     "fx": "sparkle",
+     "gain": -12
+    },
+    {
+     "t": 5,
+     "fx": "whoosh_out",
+     "gain": -14,
+     "dur": 0.6
+    }
+   ]
+  },
+  {
+   "id": "C02",
+   "label": "Slide 2 – 8 việc, một đầu mối",
+   "start": 180,
+   "end": 360,
+   "engine": "hyperframes",
+   "src": "slides/C02.html",
+   "cues": [
+    {
+     "t": 0,
+     "fx": "whoosh_out",
+     "gain": -16,
+     "dur": 0.5
+    },
+    {
+     "t": 1,
+     "fx": "thump",
+     "gain": -5
+    },
+    {
+     "t": 1.5,
+     "fx": "tick",
+     "gain": -12
+    },
+    {
+     "t": 2,
+     "fx": "tick",
+     "gain": -12
+    },
+    {
+     "t": 2.5,
+     "fx": "tick",
+     "gain": -12
+    },
+    {
+     "t": 3,
+     "fx": "chime",
+     "gain": -9
+    },
+    {
+     "t": 5,
+     "fx": "whoosh_out",
+     "gain": -14,
+     "dur": 0.6
+    }
+   ]
+  },
+  {
+   "id": "C03",
+   "label": "Slide 3 – Branding + menu",
+   "start": 360,
+   "end": 540,
+   "engine": "hyperframes",
+   "src": "slides/C03.html",
+   "cues": [
+    {
+     "t": 0,
+     "fx": "whoosh_out",
+     "gain": -16,
+     "dur": 0.5
+    },
+    {
+     "t": 1,
+     "fx": "click",
+     "gain": -10
+    },
+    {
+     "t": 1.5,
+     "fx": "click",
+     "gain": -12
+    },
+    {
+     "t": 2,
+     "fx": "click",
+     "gain": -12
+    },
+    {
+     "t": 2.5,
+     "fx": "pop",
+     "gain": -8
+    },
+    {
+     "t": 3,
+     "fx": "thump",
+     "gain": -5
+    },
+    {
+     "t": 5,
+     "fx": "whoosh_out",
+     "gain": -14,
+     "dur": 0.6
+    }
+   ]
+  },
+  {
+   "id": "C04",
+   "label": "Slide 4 – Web, đặt bàn, đặt món",
+   "start": 540,
+   "end": 720,
+   "engine": "hyperframes",
+   "src": "slides/C04.html",
+   "cues": [
+    {
+     "t": 0,
+     "fx": "whoosh_out",
+     "gain": -16,
+     "dur": 0.5
+    },
+    {
+     "t": 1.5,
+     "fx": "thump",
+     "gain": -5
+    },
+    {
+     "t": 1.6,
+     "fx": "chime",
+     "gain": -10
+    },
+    {
+     "t": 3,
+     "fx": "thump",
+     "gain": -6
+    },
+    {
+     "t": 3.1,
+     "fx": "cash",
+     "gain": -10
+    },
+    {
+     "t": 5,
+     "fx": "whoosh_out",
+     "gain": -14,
+     "dur": 0.6
+    }
+   ]
+  },
+  {
+   "id": "C05",
+   "label": "Slide 5 – Google Maps",
+   "start": 720,
+   "end": 900,
+   "engine": "hyperframes",
+   "src": "slides/C05.html",
+   "cues": [
+    {
+     "t": 0,
+     "fx": "whoosh_out",
+     "gain": -16,
+     "dur": 0.5
+    },
+    {
+     "t": 0.5,
+     "fx": "swoosh_reverse",
+     "gain": -14
+    },
+    {
+     "t": 1.5,
+     "fx": "whoosh_in",
+     "gain": -12
+    },
+    {
+     "t": 2,
+     "fx": "thump",
+     "gain": -5
+    },
+    {
+     "t": 2,
+     "fx": "ping",
+     "gain": -10
+    },
+    {
+     "t": 3,
+     "fx": "pop",
+     "gain": -10
+    },
+    {
+     "t": 5,
+     "fx": "whoosh_out",
+     "gain": -14,
+     "dur": 0.6
+    }
+   ]
+  },
+  {
+   "id": "C06",
+   "label": "Slide 6 – Social media",
+   "start": 900,
+   "end": 1080,
+   "engine": "hyperframes",
+   "src": "slides/C06.html",
+   "cues": [
+    {
+     "t": 0,
+     "fx": "whoosh_out",
+     "gain": -16,
+     "dur": 0.5
+    },
+    {
+     "t": 1,
+     "fx": "pop",
+     "gain": -10
+    },
+    {
+     "t": 1.5,
+     "fx": "pop",
+     "gain": -11,
+     "pitch": 1.2
+    },
+    {
+     "t": 2,
+     "fx": "pop",
+     "gain": -11,
+     "pitch": 1.4
+    },
+    {
+     "t": 2.5,
+     "fx": "pop",
+     "gain": -12,
+     "pitch": 1.6
+    },
+    {
+     "t": 3,
+     "fx": "notification",
+     "gain": -8
+    },
+    {
+     "t": 5,
+     "fx": "whoosh_out",
+     "gain": -14,
+     "dur": 0.6
+    }
+   ]
+  },
+  {
+   "id": "C07",
+   "label": "Slide 7 – Số đo thật",
+   "start": 1080,
+   "end": 1260,
+   "engine": "hyperframes",
+   "src": "slides/C07.html",
+   "cues": [
+    {
+     "t": 0,
+     "fx": "whoosh_out",
+     "gain": -16,
+     "dur": 0.5
+    },
+    {
+     "t": 1,
+     "fx": "thump",
+     "gain": -6
+    },
+    {
+     "t": 1.5,
+     "fx": "thump",
+     "gain": -7
+    },
+    {
+     "t": 2,
+     "fx": "thump",
+     "gain": -7
+    },
+    {
+     "t": 2.5,
+     "fx": "thump",
+     "gain": -6
+    },
+    {
+     "t": 3,
+     "fx": "chime",
+     "gain": -9
+    },
+    {
+     "t": 5,
+     "fx": "whoosh_out",
+     "gain": -14,
+     "dur": 0.6
+    }
+   ]
+  },
+  {
+   "id": "C08",
+   "label": "Slide 8 – Kêu gọi: kiểm tra miễn phí",
+   "start": 1260,
+   "end": 1440,
+   "engine": "hyperframes",
+   "src": "slides/C08.html",
+   "cues": [
+    {
+     "t": 0,
+     "fx": "whoosh_out",
+     "gain": -16,
+     "dur": 0.5
+    },
+    {
+     "t": 1,
+     "fx": "impact",
+     "gain": -6
+    },
+    {
+     "t": 1,
+     "fx": "sparkle",
+     "gain": -12
+    },
+    {
+     "t": 2,
+     "fx": "cash",
+     "gain": -10
+    },
+    {
+     "t": 3,
+     "fx": "pop",
+     "gain": -8
+    },
+    {
+     "t": 4,
+     "fx": "pop",
+     "gain": -10
+    }
+   ]
+  }
+ ],
+ "copy": {
+  "C01_kicker": {
+   "label": "Slide 1 · nhãn nhỏ phía trên",
+   "value": "19:12 · tối thứ Sáu"
+  },
+  "C01_big": {
+   "label": "Slide 1 · CHỮ LỚN",
+   "value": "Tìm không ra?"
+  },
+  "C01_small": {
+   "label": "Slide 1 · câu dưới chữ lớn (*…* tô màu)",
+   "value": "Món anh chị nấu rất ngon. Vậy mà khách đói *không thấy quán* trên Google Maps."
+  },
+  "C01_query": {
+   "label": "Slide 1 · ô tìm kiếm Google Maps (tiếng Đức, khách gõ)",
+   "value": "vietnamesisch essen"
+  },
+  "C01_you": {
+   "label": "Slide 1 · nhãn ghim mờ của quán mình",
+   "value": "Quán anh chị?"
+  },
+  "C01_miss": {
+   "label": "Slide 1 · nhãn đỏ dưới ghim mờ",
+   "value": "Không có trong kết quả"
+  },
+  "C01_triplet": {
+   "label": "Slide 1 · dòng nhỏ dưới cùng",
+   "value": "Vuốt xem SAMI làm gì"
+  },
+  "C02_kicker": {
+   "label": "Slide 2 · nhãn nhỏ",
+   "value": "SAMI · marketing cho nhà hàng tại Đức"
+  },
+  "C02_big": {
+   "label": "Slide 2 · CHỮ LỚN",
+   "value": "8 việc."
+  },
+  "C02_small": {
+   "label": "Slide 2 · câu giải thích",
+   "value": "Từ cái logo tới lúc khách đặt bàn: *một đầu mối*, nói tiếng Việt."
+  },
+  "C02_s1": {
+   "label": "Slide 2 · dịch vụ 1",
+   "value": "Branding"
+  },
+  "C02_s2": {
+   "label": "Slide 2 · dịch vụ 2",
+   "value": "Thiết kế menu"
+  },
+  "C02_s3": {
+   "label": "Slide 2 · dịch vụ 3",
+   "value": "Thiết kế website"
+  },
+  "C02_s4": {
+   "label": "Slide 2 · dịch vụ 4",
+   "value": "Đặt bàn online"
+  },
+  "C02_s5": {
+   "label": "Slide 2 · dịch vụ 5",
+   "value": "Đặt món online"
+  },
+  "C02_s6": {
+   "label": "Slide 2 · dịch vụ 6",
+   "value": "Local SEO"
+  },
+  "C02_s7": {
+   "label": "Slide 2 · dịch vụ 7",
+   "value": "Google Ads Maps"
+  },
+  "C02_s8": {
+   "label": "Slide 2 · dịch vụ 8",
+   "value": "Social Media"
+  },
+  "C02_triplet": {
+   "label": "Slide 2 · dòng nhỏ dưới cùng",
+   "value": "Tư vấn bằng tiếng Việt"
+  },
+  "C03_kicker": {
+   "label": "Slide 3 · nhãn nhỏ",
+   "value": "01 Branding · 02 Thiết kế menu"
+  },
+  "C03_big": {
+   "label": "Slide 3 · CHỮ LỚN",
+   "value": "Gương mặt."
+  },
+  "C03_small": {
+   "label": "Slide 3 · câu giải thích",
+   "value": "Quán ngon cần *một gương mặt riêng*: logo, màu, chữ, menu. Khách nhìn là nhớ."
+  },
+  "C03_brand": {
+   "label": "Slide 3 · tên nhà hàng hư cấu trên bảng brand",
+   "value": "Saigon Atelier"
+  },
+  "C03_brandsub": {
+   "label": "Slide 3 · dòng dưới tên quán",
+   "value": "Vietnamesische Küche"
+  },
+  "C03_concept": {
+   "label": "Slide 3 · nhãn nhà hàng hư cấu (bắt buộc)",
+   "value": "VÍ DỤ MINH HOẠ"
+  },
+  "C03_menu": {
+   "label": "Slide 3 · tiêu đề menu (tiếng Đức, khách đọc)",
+   "value": "Speisekarte"
+  },
+  "C03_d1": {
+   "label": "Slide 3 · món 1",
+   "value": "Bánh Xèo"
+  },
+  "C03_d1_desc": {
+   "label": "Slide 3 · mô tả món 1 (tiếng Đức)",
+   "value": "Knuspriger Reispfannkuchen"
+  },
+  "C03_d1_photo": {
+   "label": "Slide 3 · ảnh món 1",
+   "value": "lib:img/sami-cases/vi/banhxeo.webp"
+  },
+  "C03_d2": {
+   "label": "Slide 3 · món 2",
+   "value": "Gỏi Bưởi"
+  },
+  "C03_d2_desc": {
+   "label": "Slide 3 · mô tả món 2 (tiếng Đức)",
+   "value": "Pomelo-Salat, Garnelen"
+  },
+  "C03_d2_photo": {
+   "label": "Slide 3 · ảnh món 2",
+   "value": "lib:img/sami-cases/vi/pomelo.webp"
+  },
+  "C03_d3": {
+   "label": "Slide 3 · món 3",
+   "value": "Cà Ri"
+  },
+  "C03_d3_desc": {
+   "label": "Slide 3 · mô tả món 3 (tiếng Đức)",
+   "value": "Rotes Curry, Jasminreis"
+  },
+  "C03_d3_photo": {
+   "label": "Slide 3 · ảnh món 3",
+   "value": "lib:img/sami-cases/vi/curry.webp"
+  },
+  "C03_triplet": {
+   "label": "Slide 3 · dòng nhỏ dưới cùng",
+   "value": "Logo · Màu · Menu"
+  },
+  "C04_kicker": {
+   "label": "Slide 4 · nhãn nhỏ",
+   "value": "03 Website · 04 Đặt bàn · 05 Đặt món"
+  },
+  "C04_big": {
+   "label": "Slide 4 · CHỮ LỚN",
+   "value": "Mở 24/7."
+  },
+  "C04_small": {
+   "label": "Slide 4 · câu giải thích",
+   "value": "Quán đóng cửa, web *vẫn nhận khách*. Đặt món online *không mất hoa hồng*."
+  },
+  "C04_web_photo": {
+   "label": "Slide 4 · ảnh chụp website bản điện thoại",
+   "value": "lib:img/sami-cases/vi/resp-02.webp"
+  },
+  "C04_badge": {
+   "label": "Slide 4 · nhãn dưới điện thoại",
+   "value": "Tối ưu điện thoại"
+  },
+  "C04_res": {
+   "label": "Slide 4 · thẻ đặt bàn: tiêu đề (tiếng Đức)",
+   "value": "Tisch reservieren"
+  },
+  "C04_res_meta": {
+   "label": "Slide 4 · thẻ đặt bàn: ngày, giờ, số người",
+   "value": "Fr · 19:30 · 4 Personen"
+  },
+  "C04_res_btn": {
+   "label": "Slide 4 · thẻ đặt bàn: nút",
+   "value": "Reservieren"
+  },
+  "C04_res_done": {
+   "label": "Slide 4 · thẻ đặt bàn: đã đặt",
+   "value": "Reserviert"
+  },
+  "C04_ord": {
+   "label": "Slide 4 · thẻ đặt món: tiêu đề (tiếng Đức)",
+   "value": "Online bestellen"
+  },
+  "C04_ord_meta": {
+   "label": "Slide 4 · thẻ đặt món: món, giờ lấy",
+   "value": "3 Gerichte · Abholung 18:45"
+  },
+  "C04_ord_btn": {
+   "label": "Slide 4 · thẻ đặt món: nút",
+   "value": "Bestellen"
+  },
+  "C04_ord_done": {
+   "label": "Slide 4 · thẻ đặt món: đã đặt",
+   "value": "Bestellt"
+  },
+  "C04_free": {
+   "label": "Slide 4 · nhãn lợi ích đặt món",
+   "value": "Không mất hoa hồng"
+  },
+  "C04_triplet": {
+   "label": "Slide 4 · dòng nhỏ dưới cùng",
+   "value": "Web · Đặt bàn · Đặt món"
+  },
+  "C05_kicker": {
+   "label": "Slide 5 · nhãn nhỏ",
+   "value": "06 Local SEO · 07 Google Ads Maps"
+  },
+  "C05_big": {
+   "label": "Slide 5 · CHỮ LỚN",
+   "value": "Hiện ra."
+  },
+  "C05_small": {
+   "label": "Slide 5 · câu giải thích",
+   "value": "Khách đói tìm quanh đây, *quán anh chị hiện ra*."
+  },
+  "C05_query": {
+   "label": "Slide 5 · ô tìm kiếm (tiếng Đức)",
+   "value": "Pho in der Nähe"
+  },
+  "C05_you": {
+   "label": "Slide 5 · tên quán mình trong danh sách",
+   "value": "Quán anh chị"
+  },
+  "C05_meta": {
+   "label": "Slide 5 · dòng dưới tên quán",
+   "value": "Vietnamesisch · 350 m"
+  },
+  "C05_ad": {
+   "label": "Slide 5 · nhãn quảng cáo (tiếng Đức)",
+   "value": "Anzeige"
+  },
+  "C05_seo": {
+   "label": "Slide 5 · nhãn Local SEO",
+   "value": "Local SEO"
+  },
+  "C05_route": {
+   "label": "Slide 5 · nút chỉ đường (tiếng Đức)",
+   "value": "Route"
+  },
+  "C05_you_photo": {
+   "label": "Slide 5 · ảnh quán mình",
+   "value": "lib:img/sami-cases/84kitchen/interior.webp"
+  },
+  "C05_triplet": {
+   "label": "Slide 5 · dòng nhỏ dưới cùng",
+   "value": "Local SEO · Google Ads Maps"
+  },
+  "C06_kicker": {
+   "label": "Slide 6 · nhãn nhỏ",
+   "value": "08 Social Media"
+  },
+  "C06_big": {
+   "label": "Slide 6 · CHỮ LỚN",
+   "value": "Đăng đều."
+  },
+  "C06_small": {
+   "label": "Slide 6 · câu giải thích",
+   "value": "Anh chị lo nấu, SAMI lo *đăng bài đều*. Khách nhớ tới quán."
+  },
+  "C06_notif": {
+   "label": "Slide 6 · thông báo bài mới",
+   "value": "Bài mới đã lên"
+  },
+  "C06_p1_photo": {
+   "label": "Slide 6 · ảnh bài đăng 1",
+   "value": "lib:img/sami-cases/vi/curry.webp"
+  },
+  "C06_p2_photo": {
+   "label": "Slide 6 · ảnh bài đăng 2",
+   "value": "lib:img/sami-cases/84kitchen/sushi-hand.webp"
+  },
+  "C06_p3_photo": {
+   "label": "Slide 6 · ảnh bài đăng 3",
+   "value": "lib:img/sami-cases/vi/drink-1.webp"
+  },
+  "C06_p4_photo": {
+   "label": "Slide 6 · ảnh bài đăng 4",
+   "value": "lib:img/sami-cases/mizuki/food-lotus.webp"
+  },
+  "C06_p5_photo": {
+   "label": "Slide 6 · ảnh bài đăng 5",
+   "value": "lib:img/sami-cases/vi/duck.webp"
+  },
+  "C06_p6_photo": {
+   "label": "Slide 6 · ảnh bài đăng 6",
+   "value": "lib:img/sami-cases/vi/spread.webp"
+  },
+  "C06_triplet": {
+   "label": "Slide 6 · dòng nhỏ dưới cùng",
+   "value": "Ảnh món · Reels · Bài đăng"
+  },
+  "C07_kicker": {
+   "label": "Slide 7 · nhãn nhỏ",
+   "value": "Dự án thật · đo thật"
+  },
+  "C07_big": {
+   "label": "Slide 7 · CHỮ LỚN",
+   "value": "Số thật."
+  },
+  "C07_small": {
+   "label": "Slide 7 · câu giải thích",
+   "value": "Không hứa suông. Web SAMI làm cho *4 quán thật*, số đo không tô vẽ."
+  },
+  "C07_c1_city": {
+   "label": "Slide 7 · thẻ 1: thành phố",
+   "value": "Kempten"
+  },
+  "C07_c1_val": {
+   "label": "Slide 7 · thẻ 1: số đo",
+   "value": "1,5"
+  },
+  "C07_c1_unit": {
+   "label": "Slide 7 · thẻ 1: đơn vị",
+   "value": " s"
+  },
+  "C07_c1_lbl": {
+   "label": "Slide 7 · thẻ 1: nhãn",
+   "value": "Tốc độ tải"
+  },
+  "C07_c1_photo": {
+   "label": "Slide 7 · thẻ 1: ảnh quán",
+   "value": "lib:img/sami-cases/84kitchen/hero.webp"
+  },
+  "C07_c2_city": {
+   "label": "Slide 7 · thẻ 2: thành phố",
+   "value": "Baden-Baden"
+  },
+  "C07_c2_val": {
+   "label": "Slide 7 · thẻ 2: số đo",
+   "value": "1,55"
+  },
+  "C07_c2_unit": {
+   "label": "Slide 7 · thẻ 2: đơn vị",
+   "value": " s"
+  },
+  "C07_c2_lbl": {
+   "label": "Slide 7 · thẻ 2: nhãn",
+   "value": "Tốc độ tải"
+  },
+  "C07_c2_photo": {
+   "label": "Slide 7 · thẻ 2: ảnh quán",
+   "value": "lib:img/sami-cases/mizuki/hero.webp"
+  },
+  "C07_c3_city": {
+   "label": "Slide 7 · thẻ 3: thành phố",
+   "value": "Karlsruhe"
+  },
+  "C07_c3_val": {
+   "label": "Slide 7 · thẻ 3: số đo",
+   "value": "1,8"
+  },
+  "C07_c3_unit": {
+   "label": "Slide 7 · thẻ 3: đơn vị",
+   "value": " s"
+  },
+  "C07_c3_lbl": {
+   "label": "Slide 7 · thẻ 3: nhãn",
+   "value": "Tốc độ tải"
+  },
+  "C07_c3_photo": {
+   "label": "Slide 7 · thẻ 3: ảnh quán",
+   "value": "lib:img/sami-cases/mizuki/related-1.webp"
+  },
+  "C07_c4_city": {
+   "label": "Slide 7 · thẻ 4: thành phố",
+   "value": "Schliersee"
+  },
+  "C07_c4_val": {
+   "label": "Slide 7 · thẻ 4: số đo",
+   "value": "100"
+  },
+  "C07_c4_unit": {
+   "label": "Slide 7 · thẻ 4: đơn vị",
+   "value": " %"
+  },
+  "C07_c4_lbl": {
+   "label": "Slide 7 · thẻ 4: nhãn",
+   "value": "tối ưu điện thoại"
+  },
+  "C07_c4_photo": {
+   "label": "Slide 7 · thẻ 4: ảnh quán",
+   "value": "lib:img/sami-cases/vi/hero.webp"
+  },
+  "C07_note": {
+   "label": "Slide 7 · ghi chú nguồn số đo",
+   "value": "Tốc độ tải trang chủ (LCP), đo thật"
+  },
+  "C07_triplet": {
+   "label": "Slide 7 · dòng nhỏ dưới cùng",
+   "value": "Không ghi tên quán"
+  },
+  "C08_kicker": {
+   "label": "Slide 8 · nhãn nhỏ",
+   "value": "Bắt đầu nhẹ nhàng"
+  },
+  "C08_big": {
+   "label": "Slide 8 · CHỮ LỚN",
+   "value": "Miễn phí."
+  },
+  "C08_small": {
+   "label": "Slide 8 · câu kêu gọi (*…* tô màu)",
+   "value": "*Kiểm tra miễn phí* Google Maps + website. Nhắn SAMI qua WhatsApp, nói chuyện bằng tiếng Việt."
+  },
+  "C08_offer": {
+   "label": "Slide 8 · tên gói kiểm tra",
+   "value": "Kiểm tra Google Maps + website"
+  },
+  "C08_old": {
+   "label": "Slide 8 · giá gạch",
+   "value": "250 €"
+  },
+  "C08_new": {
+   "label": "Slide 8 · giá mới",
+   "value": "0 €"
+  },
+  "C08_wa": {
+   "label": "Slide 8 · chữ nhỏ trên nút WhatsApp",
+   "value": "WhatsApp"
+  },
+  "C08_phone": {
+   "label": "Slide 8 · số WhatsApp",
+   "value": "+49 155 60456888"
+  },
+  "C08_url": {
+   "label": "Slide 8 · website",
+   "value": "sami-agency.de"
+  },
+  "C08_triplet": {
+   "label": "Slide 8 · dòng nhỏ dưới cùng",
+   "value": "SAMI Agency"
+  }
+ },
+ "titles": [],
+ "overlays": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke"
+ },
+ "audio": {
+  "mode": "none"
+ }
+}

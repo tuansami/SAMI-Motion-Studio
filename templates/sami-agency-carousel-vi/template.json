@@ -1,0 +1,18 @@
+{
+ "id": "sami-agency-carousel-vi",
+ "name": "Carousel SAMI Agency – tiếng Việt 8 slide (kể chuyện)",
+ "version": "1.0.0",
+ "studio": ">=1.2.1",
+ "engine": "hyperframes",
+ "category": "agency",
+ "goal": ["gioi-thieu"],
+ "description": "Carousel Instagram/Facebook 4:5 cho chủ nhà hàng người Việt tại Đức, cùng nội dung video \"SAMI Agency Intro – kể chuyện\": hook Google Maps (khách đói tìm không ra quán) → 8 việc, một đầu mối → branding + menu (nhà hàng mẫu hư cấu Saigon Atelier) → web, đặt bàn, đặt món không mất hoa hồng → Local SEO + Google Ads Maps → social → số đo thật → kiểm tra miễn phí 250 € → 0 € + WhatsApp. 8 slide × 6 s, mỗi slide lặp liền mạch, có tiếng riêng; chiếc ghim Google Maps đi xuyên các slide. Ảnh thật từ SAMI_Library.",
+ "formats": ["4:5"],
+ "duration": 48,
+ "bpm": 120,
+ "languages": ["vi"],
+ "thumbFrame": 0,
+ "author": "SAMI Marketing Agency",
+ "license": "internal",
+ "tags": ["carousel", "hyperframes", "instagram", "facebook", "loop", "maps", "tieng-viet", "chu-quan-viet", "agency"]
+}

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="slides/_shared.css">
+<style>
+  /* C03 · Branding + menu cho nhà hàng HƯ CẤU "Saigon Atelier" (nhãn VÍ DỤ MINH HOẠ). Bảng brand bên trái: logo đèn lồng + tên + bảng màu;
+   * tua nhanh phối màu (1,0 · 1,5 · 2,0 s, giữ hình kiểu stop-motion) rồi chốt bảng màu thật ở 2,5 s. Menu bên phải: 3 món ảnh thật.
+   * Ghim vào từ trái, đáp lên menu ở 3,0 s, rời sang phải ở 4,9 s. Khung 0: bảng màu chốt. */
+  #board { position: absolute; left: 0; top: 0; bottom: 0; width: calc(50% - 10px); border-radius: 30px; overflow: hidden; box-shadow: 0 30px 70px rgba(0, 0, 0, .45);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  #logo { flex: none; }
+  #bname { font: 700 46px/1.05 "Playfair Display", serif; text-align: center; padding: 0 18px; }
+  #bsub { font: 600 15px/1 var(--f-mono); letter-spacing: .22em; text-transform: uppercase; opacity: .85; }
+  #pal { display: flex; gap: 10px; margin-top: 10px; }
+  #pal i { width: 46px; height: 46px; border-radius: 12px; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .25); display: block; }
+  #menu { position: absolute; right: 0; top: 0; bottom: 0; width: calc(50% - 10px); border-radius: 30px; background: #F7F2EA; color: #232220; box-shadow: 0 30px 70px rgba(0, 0, 0, .45);
+    padding: 26px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; transform-origin: 50% 0; }
+  #mh { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 2px solid #0F3D3E; }
+  #mt { font: 700 38px/1 "Playfair Display", serif; color: #0F3D3E; }
+  .row { display: flex; align-items: center; gap: 16px; flex: 1; min-height: 0; }
+  .row .im { width: 92px; height: 92px; border-radius: 18px; flex: none; }
+  .row b { display: block; font: 800 28px/1.1 var(--f-head); color: #232220; }
+  .row span { display: block; font: 500 19px/1.25 var(--f-ui); color: #6b645c; margin-top: 4px; }
+  #lapse { position: absolute; left: 18px; top: 18px; z-index: 6; padding: 8px 12px; border-radius: 10px; background: rgba(0, 0, 0, .55); color: #fff; font: 600 18px/1 var(--f-mono); letter-spacing: .1em; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="C03">
+  <div id="frame">
+    <canvas id="grid" class="cx-grid" width="1080" height="1350"></canvas>
+    <div id="glow"></div>
+    <div id="kick" class="cx-kicker" data-copy="C03_kicker"></div>
+    <div id="big" class="cx-big" data-copy="C03_big"></div>
+    <div id="small" class="cx-small" data-copy="C03_small"></div>
+    <div id="demo">
+      <div id="board">
+        <div class="tag" style="right:16px;top:16px" data-copy="C03_concept"></div>
+        <div id="lapse">▶▶ ×16</div>
+        <div id="logo"></div>
+        <div id="bname" data-copy="C03_brand"></div>
+        <div id="bsub" data-copy="C03_brandsub"></div>
+        <div id="pal"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div id="menu">
+        <div id="mh"><span id="mlogo"></span><span id="mt" data-copy="C03_menu"></span></div>
+        <div class="row"><div class="im ph" data-img="C03_d1_photo"></div><div><b data-copy="C03_d1"></b><span data-copy="C03_d1_desc"></span></div></div>
+        <div class="row"><div class="im ph" data-img="C03_d2_photo"></div><div><b data-copy="C03_d2"></b><span data-copy="C03_d2_desc"></span></div></div>
+        <div class="row"><div class="im ph" data-img="C03_d3_photo"></div><div><b data-copy="C03_d3"></b><span data-copy="C03_d3_desc"></span></div></div>
+      </div>
+    </div>
+    <div class="cx-triplet" data-copy="C03_triplet"></div>
+    <div id="fx"></div>
+  </div>
+</div>
+<script src="slides/_pin.js"></script>
+<script src="slides/_vi.js"></script>
+<script src="slides/_concept.js"></script>
+<script>
+  const S = window.SAMI, X = window.CX, C = window.CONCEPT;
+  S.bindCopy(); V.bindImgs();
+  const frame = V.$('#frame'), chrome = X.chrome(frame);
+  const grid = X.grid(V.$('#grid'), {color: '#ffffff', alpha: 0.15});
+  const burst = X.burst(V.$('#fx'), 14, 9);
+  const logo = C.mark(V.$('#logo'), 170, {sw: 5});
+  C.mark(V.$('#mlogo'), 44, {sw: 6, color: '#C9A227'});
+  // [nền bảng, màu nét + chữ, thân đèn] — 3 bản thử rồi bản chốt (CONCEPT.PAL)
+  const FINAL = [C.PAL[2], C.PAL[1], C.PAL[0]];
+  const TRY = [['#1B1B1B', '#E8B04A', '#D9534F'], ['#F3E9D8', '#0F3D3E', '#C8402F'], ['#233A5E', '#F2C14E', '#E4572E']];
+  const board = V.$('#board'), sw = V.$$('#pal i'), lapse = V.$('#lapse');
+  const paint = (p) => {
+    board.style.background = p[0]; board.style.color = p[1];
+    C.paint(logo, p[1], p[2]);
+    [p[2], p[1], p[0], '#F3E9D8', '#1B1B1B'].forEach((c, i) => { sw[i].style.background = c; });
+  };
+  const pin = makePin(frame);
+  let chars = [], land = {t: 3.0, x: 800, y: 900}, path = pinPath({land, entryY: 600, exit: 4.9, exitY: 600});
+  const layout = X.ready(() => {
+    chars = bigWord(V.$('#big'), 936);
+    V.flow();
+    const m = V.rel(V.$('#menu'));
+    land = {t: 3.0, x: m.r - 60, y: m.t + 4};
+    path = pinPath({land, entryY: 600, exit: 4.9, exitY: 600});
+  });
+  X.loop((t) => {
+    layout(); chrome(t);
+    // phối màu tua nhanh: đổi bảng ở 1,0 · 1,5 · 2,0 s, chốt ở 2,5 s (khung 0 và cuối = bảng chốt)
+    const step = t >= 1.0 && t < 2.5 ? Math.floor((t - 1.0) / 0.5) : -1;
+    paint(step < 0 ? FINAL : TRY[step]);
+    lapse.style.opacity = step < 0 ? 0 : 1;
+    const k = X.kick(t - 2.5, 2.4, 6);
+    V.$('#logo').style.transform = `scale(${1 + k * 0.08}) rotate(${k * 3}deg)`;
+    sw.forEach((s, i) => { s.style.transform = `translateY(${-X.kick(t - 2.5 - i * 0.05, 3, 7) * 12}px)`; });
+    drawPin(pin, path, t, null);
+    grid(t, [{t: 2.5, x: V.rel(V.$('#logo')).x, y: V.rel(V.$('#logo')).y, a: 0.9}, {t: 3.0, x: land.x, y: land.y, a: 1.1}], 1);
+    burst(t, 2.5, V.rel(V.$('#logo')).x, V.rel(V.$('#logo')).y, 0.9);
+    const mk = X.kick(t - 3.0, 2.6, 6);
+    V.$('#menu').style.transform = `translateY(${-mk * 10}px) scale(${1 + Math.max(0, mk) * 0.015})`;
+    chars.forEach((c, i) => { const q = X.kick(t - 2.5 - i * 0.03, 3, 6) * 0.1; c.style.transform = `translateY(${-q * 50}px) scale(${1 + q * 0.3}, ${1 - q * 0.2})`; });
+    V.$('#glow').style.transform = `scale(${1 + 0.06 * X.wave(t, 3)})`;
+  });
+</script>
+</body>
+</html>

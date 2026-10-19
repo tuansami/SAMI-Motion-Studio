@@ -19,6 +19,23 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.6.0] — 2026-10-19 — Carousel SAMI Agency tiếng Việt 8 slide + hướng dẫn làm việc nhiều thiết bị
+Tuấn yêu cầu (2026-10-19): làm 1 bản carousel motion graphic 8 slide tiếng Việt cho nội dung video gần nhất (bản kể chuyện); hướng dẫn dùng Claude Code cloud cùng lúc trên điện thoại và PC; cách làm việc tiết kiệm usage giữa nhiều thiết bị, nhiều nhân viên.
+
+### Thêm
+- **Mẫu `templates/sami-agency-carousel-vi/`** (carousel 4:5, 8 slide × 6 s, mỗi slide lặp liền mạch, groove 120 BPM + SFX): TÌM KHÔNG RA? (Google Maps, quán không có trong kết quả) → 8 VIỆC. → GƯƠNG MẶT. (branding + menu, nhà hàng hư cấu Saigon Atelier, nhãn VÍ DỤ MINH HOẠ) → MỞ 24/7. (web thật, đặt bàn, đặt món không mất hoa hồng) → HIỆN RA. (Local SEO + Google Ads Maps, leo hạng 1) → ĐĂNG ĐỀU. (6 bài ảnh món thật) → SỐ THẬT. (4 số đo từ proof-points, không tên quán) → MIỄN PHÍ. (kiểm tra 250 € → 0 €, WhatsApp). Ghim Google Maps đi xuyên các slide; giao diện khách giữ tiếng Đức; caption tiếng Việt soạn sẵn.
+- `slides/_vi.js` (`window.V`): ô ảnh `lib:`, `V.flow()` đặt câu nhỏ + vùng minh hoạ theo chữ lớn và đẩy chữ lớn xuống khi có dấu chồng (Ễ, Ậ, Ắ) để không chạm nhãn; chữ NFC để tách từng chữ cái không vỡ dấu. Cụm chữ tô màu không bị ngắt giữa dòng.
+- `docs/QUY_TRINH_LAM_VIEC.md` mục 12: PC / Remote Control từ điện thoại / cloud làm được gì, GitHub theo nhánh (vì sao Studio chưa thấy mẫu làm trên cloud, cách xem trước khi merge), nhiều nhân viên trên một dự án, tiết kiệm usage, setup script cho phiên cloud.
+
+### Đã kiểm
+- `cli-validate` + `cli-template check` đạt (108 ô chữ có nhãn, 15 ô ảnh); ảnh bìa (khung 0) và khung giữa cả 8 slide, khung đúng nhịp chính của C01, C03, C04, C05, C07, C08; render thật cả 8 slide (MP4, tiếng, đường nối vòng, contact sheet).
+
+### File chính
+`templates/sami-agency-carousel-vi/` (project.json, template.json, README.md, slides/C01–C08.html, _shared.css, _vi.js, _pin.js, _concept.js, preview/) · `docs/QUY_TRINH_LAM_VIEC.md` · `package.json` (1.6.0).
+
+### Roll back
+Xoá `templates/sami-agency-carousel-vi/`; `git checkout 76762ea -- docs/QUY_TRINH_LAM_VIEC.md` (bản 1.5.0).
+
 ## [1.5.0] — 2026-10-19 — SAMI Agency Intro: bản tiếng Việt kể chuyện (74,5 s), giữ nhịp cho kịp đọc
 Tuấn yêu cầu (2026-10-19): thêm 1 bản tiếng Việt khác, tiêu đề và câu chữ dài hơn, truyền cảm, có mạch chuyện; video được dài 70 đến 75 s để chuyển cảnh chậm hơn, người xem kịp đọc hết.
 

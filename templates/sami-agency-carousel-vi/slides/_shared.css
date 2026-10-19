@@ -1,0 +1,24 @@
+/* Bố cục chung cho 8 slide (1080×1350). Chrome (topbar, tiến độ, Vuốt) do _sami/carousel.css vẽ.
+ * Tiếng Việt: chữ lớn viết hoa có dấu chồng (Ễ, Ầ) → hạ chữ lớn xuống một chút, câu nhỏ giãn dòng. Câu nhỏ + vùng minh hoạ do V.flow() đặt theo chữ lớn. */
+#kick { position: absolute; left: var(--pad); right: var(--pad); top: 182px; }
+#big { position: absolute; left: var(--pad); top: 268px; transform-origin: 0 100%; }
+#big .ch { display: inline-block; transform-origin: 50% 100%; }
+#small { position: absolute; left: var(--pad); right: var(--pad); top: 520px; line-height: 1.3; text-wrap: pretty; }
+.cx-small em.hl { white-space: nowrap; }
+.cx-small em.hl, .cx-small em.hl .w { color: transparent; background: linear-gradient(90deg, var(--k-accent), var(--k-accent2)); -webkit-background-clip: text; background-clip: text; font-weight: 800; }
+#demo { position: absolute; left: var(--pad); right: var(--pad); top: 690px; height: 470px; }
+#pin { position: absolute; left: 0; top: 0; width: 96px; height: 124px; transform-origin: 50% 100%; z-index: 15; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .35)); }
+#pin svg { width: 100%; height: 100%; display: block; }
+#shadow { position: absolute; left: 0; top: 0; width: 90px; height: 22px; margin: -11px 0 0 -45px; border-radius: 50%; background: rgba(0, 0, 0, .35); filter: blur(6px); z-index: 14; }
+#fx { position: absolute; inset: 0; z-index: 16; pointer-events: none; }
+#glow { position: absolute; left: 50%; top: 62%; width: 1000px; height: 1000px; margin: -500px; border-radius: 50%; background: radial-gradient(closest-side, rgba(118, 103, 254, .24), transparent); }
+
+/* thành phần dùng chung */
+.ph { background-size: cover; background-position: center; background-repeat: no-repeat; }
+.card { position: absolute; border-radius: 30px; background: var(--k-bg2); border: 2px solid var(--k-line); box-shadow: 0 30px 70px rgba(0, 0, 0, .45); overflow: hidden; }
+.light { background: #fff; color: #1c1b23; border: 0; }
+.ui { font-family: var(--f-ui); }
+.tag { position: absolute; z-index: 6; padding: 8px 14px; border-radius: 10px; background: rgba(255, 90, 95, .92); color: #fff; font: 600 20px/1 var(--f-mono); letter-spacing: .12em; }
+.chipv { display: inline-flex; align-items: center; gap: 12px; padding: 12px 22px; border-radius: 999px; background: var(--k-bg2); border: 2px solid var(--k-line); font: 700 28px/1 var(--f-head); color: var(--k-ink); white-space: nowrap; }
+.chipv .ic { width: 30px; height: 30px; color: var(--k-accent); flex: none; }
+.ok { width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(135deg, var(--k-accent), var(--k-accent2)); color: var(--k-bg); padding: 22px; box-sizing: border-box; }

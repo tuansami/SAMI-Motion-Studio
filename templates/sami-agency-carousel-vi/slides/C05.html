@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="slides/_shared.css">
+<style>
+  /* C05 · Local SEO + Google Ads Maps — danh sách kết quả "Pho in der Nähe". Khung 0: quán mình ở hạng 1 (Anzeige + Local SEO).
+   * 0,4–0,8 s tụt xuống hạng 4 (chưa có SAMI), 1,5–2,0 s leo lại hạng 1, ghim đáp lên thẻ ở 2,0 s, nút Route nảy ở 3,0 s, rời ở 4,9 s. */
+  #res { position: absolute; inset: 0; border-radius: 34px; background: #fff; color: #202124; overflow: hidden; box-shadow: 0 30px 70px rgba(0, 0, 0, .45); }
+  #sb { position: absolute; left: 20px; right: 20px; top: 16px; height: 70px; border-radius: 35px; background: #fff; box-shadow: 0 2px 6px rgba(60, 64, 67, .3), 0 6px 20px rgba(60, 64, 67, .12);
+    display: flex; align-items: center; gap: 16px; padding: 0 24px; font: 500 30px var(--f-ui); z-index: 5; }
+  #sb .ic { width: 30px; height: 30px; color: #5f6368; }
+  #list { position: absolute; left: 20px; right: 20px; top: 102px; bottom: 14px; }
+  .rw { position: absolute; left: 0; right: 0; display: flex; align-items: center; gap: 18px; padding: 0 18px; box-sizing: border-box; border-radius: 22px; background: #fff; }
+  .rw .rk { width: 38px; font: 700 26px/1 var(--f-mono); color: #9aa0a6; text-align: center; flex: none; }
+  .rw .th { width: 64px; height: 64px; border-radius: 16px; background: #e8eaed; flex: none; }
+  .rw .bars { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .rw .bars i { display: block; height: 16px; border-radius: 8px; background: #e8eaed; }
+  .rw .st { color: #dadce0; font-size: 22px; letter-spacing: 2px; }
+  #me { z-index: 3; box-shadow: inset 0 0 0 3px #7667FE, 0 14px 30px rgba(118, 103, 254, .25); }
+  #me .rk { color: #7667FE; }
+  #me .l1 { display: flex; align-items: center; gap: 12px; }
+  #me .nm { font: 700 29px/1.1 var(--f-ui); color: #202124; white-space: nowrap; }
+  #me .mt { font: 500 20px/1.2 var(--f-ui); color: #5f6368; margin-top: 6px; white-space: nowrap; }
+  #me .st { color: #FBBC04; }
+  #me .bd { display: flex; gap: 6px; }
+  #me .bd span { padding: 5px 10px; border-radius: 8px; font: 700 17px/1 var(--f-ui); }
+  #me .bd .ad { background: #202124; color: #fff; }
+  #me .bd .seo { background: rgba(8, 221, 164, .16); color: #058a66; }
+  #route { display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-radius: 999px; background: #1a73e8; color: #fff; font: 700 22px/1 var(--f-ui); flex: none; }
+  #route .ic { width: 22px; height: 22px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="C05">
+  <div id="frame">
+    <canvas id="grid" class="cx-grid" width="1080" height="1350"></canvas>
+    <div id="glow"></div>
+    <div id="kick" class="cx-kicker" data-copy="C05_kicker"></div>
+    <div id="big" class="cx-big" data-copy="C05_big"></div>
+    <div id="small" class="cx-small" data-copy="C05_small"></div>
+    <div id="demo">
+      <div id="res">
+        <div id="sb"><span class="ic"></span><span data-copy="C05_query"></span></div>
+        <div id="list">
+          <div class="rw" id="me"><span class="rk">1</span><div class="th ph" data-img="C05_you_photo"></div>
+            <div class="bars"><div><div class="l1"><span class="nm" data-copy="C05_you"></span><span class="bd"><span class="ad" data-copy="C05_ad"></span><span class="seo" data-copy="C05_seo"></span></span></div>
+              <div class="mt"><span class="st">★★★★★</span> <span data-copy="C05_meta"></span></div></div></div>
+            <div id="route"><span class="ic"></span><span data-copy="C05_route"></span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cx-triplet" data-copy="C05_triplet"></div>
+    <div id="fx"></div>
+  </div>
+</div>
+<script src="slides/_pin.js"></script>
+<script src="slides/_vi.js"></script>
+<script>
+  const S = window.SAMI, X = window.CX;
+  S.bindCopy(); V.bindImgs();
+  V.$('#sb .ic').innerHTML = V.icon('search', {sw: 2.4}); V.$('#route .ic').innerHTML = V.icon('route', {sw: 2.4});
+  const list = V.$('#list'), me = V.$('#me');
+  // 3 quán khác: ô xám (không dùng quán thật)
+  const others = [1, 2, 3].map((k) => V.el('div', 'rw', list, '<span class="rk"></span><div class="th"></div><div class="bars"><i style="width:' + (62 - k * 8) + '%"></i><span class="st">★★★★★</span><i style="width:' + (40 + k * 6) + '%"></i></div>'));
+  const frame = V.$('#frame'), chrome = X.chrome(frame);
+  const grid = X.grid(V.$('#grid'), {color: '#ffffff', alpha: 0.15});
+  const burst = X.burst(V.$('#fx'), 16, 17);
+  const pin = makePin(frame);
+  let chars = [], rowH = 100, gap = 10, land = {t: 2.0, x: 700, y: 900}, path = pinPath({land, entryY: 600, exit: 4.9, exitY: 600});
+  const layout = X.ready(() => {
+    chars = bigWord(V.$('#big'), 936);
+    V.flow();
+    rowH = (list.offsetHeight - 3 * gap) / 4;
+    [me, ...others].forEach((r) => { r.style.height = rowH + 'px'; });
+    const L = V.rel(list);
+    land = {t: 2.0, x: L.l + L.w * 0.62, y: L.t + 4};
+    path = pinPath({land, entryY: 600, exit: 4.9, exitY: 600});
+  });
+  const slotY = (s) => s * (rowH + gap);
+  X.loop((t) => {
+    layout(); chrome(t);
+    // vị trí quán mình: 0 (hạng 1) → 3 (hạng 4) → 0
+    const pos = 3 * X.tw(t, 0.4, 0.8) * (1 - X.tw(t, 1.5, 2.0));
+    me.style.transform = `translateY(${slotY(pos)}px) scale(${1 + 0.03 * X.pulse(t, 2.0, 0.15)})`;
+    me.querySelector('.rk').textContent = String(Math.round(pos) + 1);
+    others.forEach((r, i) => {
+      const k = i + 1, s = k - X.clamp(pos - (k - 1), 0, 1);
+      r.style.transform = `translateY(${slotY(s)}px)`; r.querySelector('.rk').textContent = String(Math.round(s) + 1);
+    });
+    const rk = X.kick(t - 3.0, 2.6, 6); V.$('#route').style.transform = `scale(${1 + Math.max(0, rk) * 0.12})`;
+    drawPin(pin, path, t, null);
+    grid(t, [{t: 2.0, x: land.x, y: land.y, a: 1.2}], 1);
+    burst(t, 2.0, land.x, land.y, 1.0);
+    chars.forEach((c, i) => { const q = X.kick(t - 2.0 - i * 0.04, 3, 6) * 0.14; c.style.transform = `translateY(${-q * 50}px) scale(${1 + q * 0.3}, ${1 - q * 0.2})`; });
+    V.$('#glow').style.transform = `scale(${1 + 0.06 * X.wave(t, 3)})`;
+  });
+</script>
+</body>
+</html>

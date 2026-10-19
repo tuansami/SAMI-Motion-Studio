@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="slides/_shared.css">
+<style>
+  /* C06 · Social media — lưới 6 bài đăng ảnh món thật, thông báo "Bài mới đã lên". Ghim vào từ trái, nhảy qua 4 bài (1,0 · 1,5 · 2,0 · 2,5 s),
+   * mỗi lần đáp tim bật + tim bay; thông báo nảy ở 3,0 s; rời ở 4,9 s. Khung 0: lưới + thông báo hiện đủ. */
+  #posts { position: absolute; left: 0; right: 0; bottom: 0; top: 96px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 14px; }
+  .po { position: relative; border-radius: 24px; overflow: hidden; background: var(--k-bg2); box-shadow: 0 18px 40px rgba(0, 0, 0, .4); }
+  .po .im { position: absolute; inset: 0; }
+  .po .ht { position: absolute; left: 50%; top: 50%; width: 110px; height: 110px; margin: -55px 0 0 -55px; color: #fff; opacity: 0; filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .45)); }
+  .po.reel::after { content: ''; position: absolute; inset: 0; border-radius: 24px; box-shadow: inset 0 0 0 5px var(--k-accent); }
+  .po .pl { position: absolute; right: 14px; top: 14px; width: 38px; height: 38px; color: #fff; }
+  .fh { position: absolute; width: 46px; height: 46px; margin: -23px 0 0 -23px; color: #FF5A5F; opacity: 0; z-index: 12; }
+  #notif { position: absolute; left: 0; right: 0; top: 0; height: 80px; border-radius: 24px; background: rgba(255, 255, 255, .97); color: #1c1b23; display: flex; align-items: center; gap: 18px; padding: 0 22px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, .4); font: 700 30px/1 var(--f-ui); z-index: 5; transform-origin: 50% 0; }
+  #notif .ic { width: 50px; height: 50px; border-radius: 14px; background: linear-gradient(135deg, var(--k-accent), var(--k-accent2)); color: #fff; padding: 11px; box-sizing: border-box; flex: none; }
+  #notif .tm { margin-left: auto; font: 600 22px/1 var(--f-mono); color: #8a8794; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="C06">
+  <div id="frame">
+    <canvas id="grid" class="cx-grid" width="1080" height="1350"></canvas>
+    <div id="glow"></div>
+    <div id="kick" class="cx-kicker" data-copy="C06_kicker"></div>
+    <div id="big" class="cx-big" data-copy="C06_big"></div>
+    <div id="small" class="cx-small" data-copy="C06_small"></div>
+    <div id="demo">
+      <div id="notif"><span class="ic"></span><span data-copy="C06_notif"></span><span class="tm">SAMI</span></div>
+      <div id="posts"></div>
+    </div>
+    <div class="cx-triplet" data-copy="C06_triplet"></div>
+    <div id="fx"></div>
+  </div>
+</div>
+<script src="slides/_pin.js"></script>
+<script src="slides/_vi.js"></script>
+<script>
+  const S = window.SAMI, X = window.CX;
+  S.bindCopy();
+  V.$('#notif .ic').innerHTML = V.icon('bell', {sw: 2.4});
+  const HEART = V.icon('heart', {fill: 'currentColor', stroke: 'none'});
+  const posts = [1, 2, 3, 4, 5, 6].map((i) => {
+    const p = V.el('div', 'po' + (i === 2 ? ' reel' : ''), V.$('#posts'), '<div class="im ph" data-img="C06_p' + i + '_photo"></div><div class="ht">' + HEART + '</div>');
+    if (i === 2) V.el('div', 'pl', p, V.icon('play', {fill: 'currentColor', stroke: 'none'}));
+    return p;
+  });
+  V.bindImgs();
+  const frame = V.$('#frame'), chrome = X.chrome(frame);
+  const grid = X.grid(V.$('#grid'), {color: '#ffffff', alpha: 0.15});
+  const HITS = [[0, 1.0], [4, 1.5], [2, 2.0], [3, 2.5]];
+  const flyers = HITS.map(() => [0, 1, 2].map(() => V.el('div', 'fh', frame, HEART)));
+  const pin = makePin(frame);
+  let chars = [], pts = HITS.map(() => ({x: 500, y: 900})), path = pinPath({land: {t: 1.0, x: 300, y: 900}, entryY: 600, exit: 4.9, exitY: 600});
+  const layout = X.ready(() => {
+    chars = bigWord(V.$('#big'), 936);
+    V.flow();
+    pts = HITS.map(([k]) => { const r = V.rel(posts[k]); return {x: r.x, y: r.t + r.h * 0.35}; });
+    path = pinPath({land: {t: 1.0, x: pts[0].x, y: pts[0].y}, entryY: 600, hops: HITS.slice(1).map(([, at], i) => ({t: at, x: pts[i + 1].x, y: pts[i + 1].y, h: 130})), exit: 4.9, exitY: 600});
+  });
+  X.loop((t) => {
+    layout(); chrome(t);
+    posts.forEach((p, i) => { p.querySelector('.im').style.transform = `scale(${1.06 + 0.04 * X.wave(t, 6, i / 6)})`; });
+    HITS.forEach(([k, at], h) => {
+      const ht = posts[k].querySelector('.ht'), on = X.tw(t, at, at + 0.15) * (1 - X.tw(t, at + 0.45, at + 0.8));
+      ht.style.opacity = on; ht.style.transform = `scale(${0.4 + 0.6 * X.settle(t - at, 2.4, 6)})`;
+      flyers[h].forEach((f, j) => {
+        const s = X.prog(t, at + 0.08 + j * 0.06, at + 0.9 + j * 0.06);
+        f.style.left = (pts[h].x + (j - 1) * 46) + 'px'; f.style.top = (pts[h].y + 40 - s * (150 + j * 30)) + 'px';
+        f.style.opacity = s > 0 && s < 1 ? Math.sin(s * Math.PI) : 0; f.style.transform = `scale(${0.6 + 0.5 * s})`;
+      });
+      const kk = X.kick(t - at, 2.6, 6); posts[k].style.transform = `scale(${1 - kk * 0.03})`;
+    });
+    const nk = X.kick(t - 3.0, 2.4, 5); V.$('#notif').style.transform = `translateY(${-Math.abs(nk) * 10}px) scale(${1 + Math.max(0, nk) * 0.04})`;
+    drawPin(pin, path, t, null);
+    grid(t, HITS.map(([, at], h) => ({t: at, x: pts[h].x, y: pts[h].y, a: 0.8})), 1);
+    chars.forEach((c, i) => { const q = X.kick(t - 3.0 - i * 0.04, 3, 6) * 0.12; c.style.transform = `translateY(${-q * 50}px) scale(${1 + q * 0.3}, ${1 - q * 0.2})`; });
+    V.$('#glow').style.transform = `scale(${1 + 0.06 * X.wave(t, 3)})`;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="slides/_shared.css">
+<style>
+  /* C01 · Hook — Google Maps: khách tìm món Việt, ghim đỏ của quán khác nảy lên, ghim quán mình nét đứt "?" + "Không có trong kết quả" rung.
+   * Nhịp 3,0 s: ghim SAMI rơi đúng chỗ trống (đáp + gợn sóng), rời sang phải ở 4,9 s. Khung 0 = bìa: bản đồ, ghim mờ, nhãn đỏ đều hiện đủ. */
+  #map { position: absolute; inset: 0; border-radius: 34px; overflow: hidden; background: #EEF0EC; box-shadow: 0 30px 70px rgba(0, 0, 0, .45); }
+  #map svg.m { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #sb { position: absolute; left: 22px; right: 22px; top: 22px; height: 84px; border-radius: 42px; background: #fff; box-shadow: 0 2px 6px rgba(60, 64, 67, .3), 0 6px 20px rgba(60, 64, 67, .15);
+    display: flex; align-items: center; gap: 18px; padding: 0 26px; z-index: 5; font: 500 32px var(--f-ui); color: #202124; }
+  #sb .gp { width: 30px; height: 40px; flex: none; }
+  #sb .q { flex: 1; white-space: nowrap; overflow: hidden; }
+  #sb .av { width: 46px; height: 46px; border-radius: 50%; background: #7667FE; color: #fff; font: 700 24px/46px var(--f-ui); text-align: center; flex: none; }
+  .rp { position: absolute; width: 44px; height: 60px; margin: -60px 0 0 -22px; z-index: 3; transform-origin: 50% 100%; }
+  #ghost { position: absolute; width: 70px; height: 92px; margin: -92px 0 0 -35px; z-index: 4; transform-origin: 50% 100%; }
+  #ghostL { position: absolute; z-index: 5; padding: 8px 16px; border-radius: 12px; background: rgba(255, 255, 255, .96); font: 700 26px var(--f-ui); color: #5f6368; white-space: nowrap; box-shadow: 0 2px 8px rgba(0, 0, 0, .2); }
+  #miss { position: absolute; z-index: 5; padding: 10px 18px; border-radius: 14px; background: #E5484D; color: #fff; font: 700 26px var(--f-ui); white-space: nowrap; box-shadow: 0 6px 16px rgba(229, 72, 77, .45); }
+  #ring { position: absolute; width: 170px; height: 170px; margin: -85px 0 0 -85px; border-radius: 50%; border: 6px solid #E5484D; z-index: 4; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="C01">
+  <div id="frame">
+    <canvas id="grid" class="cx-grid" width="1080" height="1350"></canvas>
+    <div id="glow"></div>
+    <div id="kick" class="cx-kicker" data-copy="C01_kicker"></div>
+    <div id="big" class="cx-big" data-copy="C01_big"></div>
+    <div id="small" class="cx-small" data-copy="C01_small"></div>
+    <div id="demo">
+      <div id="map">
+        <svg class="m" viewBox="0 0 936 480" preserveAspectRatio="xMidYMid slice">
+          <rect x="560" y="250" width="260" height="170" rx="16" fill="#CDE8C4"/>
+          <rect x="40" y="150" width="170" height="120" rx="14" fill="#CDE8C4"/>
+          <path d="M-20 360 C180 320 300 420 520 380 S820 300 960 330" stroke="#AAD3F2" stroke-width="34" fill="none"/>
+          <g stroke="#fff" stroke-width="16" fill="none" stroke-linecap="round">
+            <path d="M0 220 H936"/><path d="M0 450 H936"/><path d="M140 0 V480"/><path d="M380 0 V480"/><path d="M640 0 V480"/><path d="M840 0 V480"/>
+          </g>
+          <g stroke="#FFE08A" stroke-width="22" fill="none" stroke-linecap="round"><path d="M0 300 C240 280 420 300 936 250"/><path d="M500 0 C520 160 470 300 520 480"/></g>
+        </svg>
+        <div id="sb"><svg class="gp" viewBox="0 0 24 32"><path d="M12 31S2 18.5 2 11a10 10 0 0 1 20 0c0 7.5-10 20-10 20z" fill="#EA4335"/><circle cx="12" cy="11" r="4" fill="#fff"/></svg><span class="q" data-copy="C01_query"></span><span class="av">S</span></div>
+        <div id="ring"></div>
+        <div id="ghost"><svg viewBox="0 0 70 92" width="70" height="92"><path d="M35 89S5 52 5 32a30 30 0 0 1 60 0c0 20-30 57-30 57z" fill="rgba(255,255,255,.65)" stroke="#80868B" stroke-width="4" stroke-dasharray="9 7"/><text x="35" y="44" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="30" fill="#5f6368">?</text></svg></div>
+        <div id="ghostL" data-copy="C01_you"></div>
+        <div id="miss" data-copy="C01_miss"></div>
+      </div>
+    </div>
+    <div class="cx-triplet" data-copy="C01_triplet"></div>
+    <div id="fx"></div>
+  </div>
+</div>
+<script src="slides/_pin.js"></script>
+<script src="slides/_vi.js"></script>
+<script>
+  const S = window.SAMI, X = window.CX;
+  S.bindCopy(); V.bindImgs();
+  const frame = V.$('#frame'), chrome = X.chrome(frame);
+  const grid = X.grid(V.$('#grid'), {color: '#ffffff', alpha: 0.16});
+  const burst = X.burst(V.$('#fx'), 16, 21);
+  const map = V.$('#map');
+  // ghim đỏ của quán khác (vị trí theo % khung bản đồ) — vẽ kiểu Google Maps
+  const RED = [[0.16, 0.42], [0.33, 0.62], [0.47, 0.36], [0.72, 0.5], [0.86, 0.72], [0.62, 0.86]];
+  const reds = RED.map(() => V.el('div', 'rp', map, '<svg viewBox="0 0 44 60" width="44" height="60"><path d="M22 58S3 35 3 21a19 19 0 0 1 38 0c0 14-19 37-19 37z" fill="#EA4335" stroke="#B31412" stroke-width="2"/><circle cx="22" cy="21" r="7" fill="#7D0D0B"/></svg>'));
+  const GH = [0.3, 0.84]; // chỗ trống của quán mình
+  const ghost = V.$('#ghost'), ghostL = V.$('#ghostL'), miss = V.$('#miss'), ring = V.$('#ring');
+  const pin = makePin(frame);
+  let chars = [], land = {t: 3.0, x: 300, y: 1000}, path = pinPath({entry: 'drop', land, exit: 4.9, exitY: 600});
+  const layout = X.ready(() => {
+    chars = bigWord(V.$('#big'), 936);
+    V.flow();
+    const w = map.offsetWidth, h = map.offsetHeight;
+    RED.forEach(([x, y], i) => { reds[i].style.left = x * w + 'px'; reds[i].style.top = (0.22 + y * 0.74) * h + 'px'; });
+    const gx = GH[0] * w, gy = (0.22 + GH[1] * 0.74) * h;
+    ghost.style.left = gx + 'px'; ghost.style.top = gy + 'px';
+    ring.style.left = gx + 'px'; ring.style.top = (gy - 46) + 'px';
+    ghostL.style.left = (gx + 46) + 'px'; ghostL.style.top = (gy - 84) + 'px';
+    miss.style.left = (gx + 46) + 'px'; miss.style.top = (gy - 36) + 'px';
+    const r = V.rel(ghost);
+    land = {t: 3.0, x: r.x, y: r.b};
+    path = pinPath({entry: 'drop', land, hops: [{t: 3.6, x: r.x + 40, y: r.b, h: 70}], exit: 4.9, exitY: 600});
+  });
+  X.loop((t) => {
+    layout(); chrome(t);
+    // ghim đỏ nảy lần lượt (khách đang tìm), về yên trước 2 s
+    reds.forEach((p, i) => { const k = X.kick(t - 0.5 - i * 0.12, 2.6, 6); p.style.transform = `translateY(${-Math.abs(k) * 34}px) scale(${1 + k * 0.08}, ${1 - k * 0.08})`; });
+    // chỗ trống: vòng đỏ đập, ghim mờ rung, nhãn "không có" rung ở 2,0 s
+    const sh = X.kick(t - 2.0, 5, 6);
+    ghost.style.transform = `translateX(${sh * 12}px)`; miss.style.transform = `translateX(${sh * 10}px) scale(${1 + Math.max(0, sh) * 0.06})`;
+    ring.style.transform = `scale(${1 + 0.12 * X.pulse(t, 2.0, 0.25) + 0.04 * X.wave(t, 2)})`;
+    // ghim SAMI đáp vào chỗ trống ở 3,0 s → ghim mờ + nhãn đỏ tạm tắt, trở lại trước điểm lặp
+    const away = X.tw(t, 2.9, 3.1) * (1 - X.tw(t, 5.0, 5.5));
+    ghost.style.opacity = ring.style.opacity = 1 - away; miss.style.opacity = ghostL.style.opacity = 1 - away;
+    drawPin(pin, path, t, null);
+    grid(t, [{t: 3.0, x: land.x, y: land.y, a: 1.2}], 1);
+    burst(t, 3.0, land.x, land.y - 30, 1.0);
+    chars.forEach((c, i) => { const q = X.kick(t - 2.0 - i * 0.03, 3, 6) * 0.12; c.style.transform = `translateY(${-q * 50}px) scale(${1 + q * 0.3}, ${1 - q * 0.2})`; });
+    V.$('#glow').style.transform = `scale(${1 + 0.06 * X.wave(t, 3)})`;
+  });
+</script>
+</body>
+</html>
