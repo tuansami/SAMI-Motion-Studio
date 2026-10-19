@@ -19,6 +19,28 @@ Sau khi đổi bản, chạy `npm install` nếu `package-lock.json` khác. Dữ
 
 ---
 
+## [1.3.0] — 2026-10-19 — Mẫu "SAMI Agency Intro" 60 s: 8 dịch vụ, dựng brandkit / menu / website tua nhanh, toàn ảnh thật
+Tuấn yêu cầu (2026-10-19): video motion graphic giới thiệu SAMI cho nhà hàng tại Đức, 60 s, 9:16 trước rồi 16:9, nhạc tự tạo, CTA WhatsApp; 8 dịch vụ; phải show quy trình dựng brandkit, menu, website bằng công cụ chuyên nghiệp với hiệu ứng tua nhanh, phối mẫu; không ảnh placeholder, toàn ảnh thật; ẩn tên quán ở cảnh số liệu; giữ "ohne Provision"; chỉ nhạc + SFX, không thoại.
+
+### Thêm
+- **Mẫu `templates/sami-agency-intro/`** (Hyperframes, 12 cảnh, 60,03 s, 9:16 + 16:9, chữ tiếng Đức xưng `Sie`, cắt đúng lưới 15n+1):
+  hook tìm kiếm "Ihr Essen ist gut. Warum findet Sie niemand?" → logo SAMI tự dựng → 8 dịch vụ → **01 Branding** (app thiết kế tự vẽ, HUD `ZEITRAFFER ×16`, Pen vẽ nét logo vector thật, phối 8 bảng màu, đổi 7 font, ráp brandkit thật) → **02 Speisekarte** (dàn trang A4 tua nhanh, thử 4 bố cục, mã dị ứng, menu in + online) → **03 Website** (khung dây → khối web thật, code chạy, Desktop/Tablet/Smartphone) → **04/05** đặt bàn + đặt món trên 2 điện thoại → **06/07** bản đồ tự vẽ, quán leo hạng 1, Anzeige + Local SEO, đường đi → **08** social → số đo thật (LCP, không tên quán) → Kostenloser Check 250 € → 0 € + chat WhatsApp → thẻ kết SAMI.
+- `hf/parts/intro.js` (`window.I`): `I.lapse` (tua nhanh: timeline con được tua theo bước 1/12 s), HUD + đồng hồ, gõ chữ, đếm số kiểu Đức, chớp, rung, logo SAMI vector (`hf/parts/sami-logo.js` lấy từ `Brand.tsx`), con trỏ / Pen, khung app thiết kế, icon nét; `hf/parts/intro.css` (khung điện thoại, trình duyệt, app, HUD).
+- **Nhạc tự tổng hợp** `tools/make_music.py` (numpy, tất định) → `public/audio/sami-intro-120.mp3`: 120 BPM, Am–F–C–G, drop 3,5 s, arpeggio + tick ở chương tua nhanh, breakdown, drop 50,5 s, final hit 55,5 s (cli-grid khớp đúng S11 / S12). `audioLicense` ghi trong template.json.
+- **Ảnh thật qua thư viện**: 54 ảnh case study (+84 Kitchen, MIZUKI, Vị) trỏ `lib:img/sami-cases/<case>/…`; `tools/import-images.mjs` chép từ 3 file zip case study (Google Drive) vào SAMI_Library. Không commit ảnh khách vào repo public; ảnh bìa mẫu là khung logo SAMI.
+
+### Thay đổi
+- Không đổi engine / server. Mẫu chỉ dùng API có sẵn (`SAMI.*`, ô ảnh `lib:`).
+
+### Đã kiểm
+- `cli-validate` đạt; `cli-template check templates/sami-agency-intro` không ✗ (165 ô chữ có nhãn, 60 ô ảnh, bố cục riêng 9:16 · 16:9); ảnh tĩnh từng cảnh ở cả 2 tỉ lệ (chữ không tràn, vùng an toàn 9:16, ảnh đúng quán theo thành phố); `npm run check` chỉ còn lỗi có sẵn của dây chuyền "maps" khi thư viện thiếu `img/khuon-mau/placeholder_dish.jpg` (máy cloud), không liên quan mẫu này.
+
+### File chính
+`templates/sami-agency-intro/` (project.json, template.json, README.md, hf/S01–S12.html, hf/parts/*, tools/make_music.py, tools/import-images.mjs, public/audio/sami-intro-120.mp3, preview/) · `package.json` (1.3.0).
+
+### Roll back
+Xoá thư mục `templates/sami-agency-intro/` hoặc `git checkout v1.2.1`. Không ảnh hưởng dự án khác.
+
 ## [1.2.1] — 2026-10-09 — Slide trống cho carousel; phong cách là lớp phủ tắt được
 Tuấn báo: không thêm được slide trống (dự án carousel), "nhờ Claude Code" lại đòi slide trống; bấm phong cách cắt dán xong không tắt được, chưa hiểu mẫu + phong cách kết hợp thế nào.
 

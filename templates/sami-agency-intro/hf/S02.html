@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="hf/parts/intro.css">
+<style>
+  /* S02 · SAMI xuất hiện: câu chuyển → ghim rơi, nổ sáng → logo SAMI tự dựng → dòng định vị */
+  #line { position: absolute; left: var(--safe-side); right: var(--safe-side); top: 44%; text-align: center; font-size: 120px; }
+  #rays { position: absolute; left: 50%; top: 42%; width: 2200px; height: 2200px; margin: -1100px 0 0 -1100px; opacity: 0;
+    background: repeating-conic-gradient(from 0deg, rgba(118,103,254,.16) 0deg 6deg, transparent 6deg 18deg);
+    -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 62%); mask-image: radial-gradient(circle, #000 0%, transparent 62%); }
+  #glow { position: absolute; left: 50%; top: 42%; width: 1200px; height: 1200px; margin: -600px 0 0 -600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(8,221,164,.35), rgba(118,103,254,.22) 40%, transparent 68%); opacity: 0; }
+  #pin { position: absolute; left: 50%; top: 42%; width: 190px; height: 250px; margin: -235px 0 0 -95px; z-index: 6; }
+  #ring { position: absolute; left: 50%; top: 42%; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 50%; border: 10px solid var(--c-mint); opacity: 0; }
+  #lock { position: absolute; left: 0; right: 0; top: 42%; display: flex; flex-direction: column; align-items: center; gap: 46px; transform: translateY(-190px); z-index: 7; }
+  #mark { position: relative; }
+  #word { overflow: hidden; padding: 6px 0; }
+  #sub { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(42% + 330px); text-align: center; font: 600 50px/1.25 var(--f-ui); color: var(--c-text); text-wrap: balance; }
+  .spark { opacity: 0; position: absolute; left: 50%; top: 42%; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; }
+  [data-ratio="16x9"] #line { top: 40%; font-size: 110px; }
+  [data-ratio="16x9"] #lock { flex-direction: row; justify-content: center; gap: 60px; top: 40%; transform: translateY(-140px); }
+  [data-ratio="16x9"] #sub { top: calc(40% + 210px); font-size: 44px; }
+  [data-ratio="16x9"] #pin, [data-ratio="16x9"] #ring, [data-ratio="16x9"] #glow, [data-ratio="16x9"] #rays, [data-ratio="16x9"] .spark { top: 40%; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02">
+  <div class="bg"></div><div class="dots"></div>
+  <div id="rays"></div><div id="glow"></div><div id="ring"></div>
+  <div id="line" class="head" data-copy="S02_line"></div>
+  <svg id="pin" viewBox="0 0 24 32"><defs><linearGradient id="pg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" style="stop-color:var(--c-mint)"/><stop offset="1" style="stop-color:var(--c-purple)"/></linearGradient></defs>
+    <path d="M12 31s10-10.4 10-18.5A10 10 0 0 0 2 12.5C2 20.6 12 31 12 31z" fill="url(#pg)"/><circle cx="12" cy="12.5" r="4.2" fill="var(--c-navy)"/></svg>
+  <div id="lock"><div id="mark"></div><div id="word"></div></div>
+  <div id="sub" data-copy="S02_sub"></div>
+</div>
+<script src="hf/parts/sami-logo.js"></script>
+<script src="hf/parts/intro.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), B = S.beat;
+  const big = S.pick({'16:9': 230, default: 300});
+  const M = I.mark(I.$('#mark'), big), W = I.word(I.$('#word'), S.pick({'16:9': 120, default: 118}));
+  // câu chuyển
+  S.arrive(tl, S.words(I.$('#line')), B(0), {stagger: 0.1, dist: 60, dur: 0.4});
+  tl.to('#line', {scale: 0.6, opacity: 0, filter: 'blur(16px)', duration: 0.35}, B(1.5));
+  // ghim rơi + nảy
+  tl.fromTo('#pin', {y: -1100, opacity: 1}, {y: 0, duration: 0.42}, B(1.4));
+  tl.to('#pin', {scaleY: 0.78, scaleX: 1.15, transformOrigin: '50% 100%', duration: 0.08, yoyo: true, repeat: 1}, B(1.4) + 0.42);
+  // nổ: chớp, vòng sóng, hạt
+  const hit = B(2.2);
+  I.flash(tl, hit, {peak: 0.7, dur: 0.4});
+  tl.to('#pin', {scale: 0, opacity: 0, duration: 0.18}, hit);
+  tl.fromTo('#ring', {scale: 0.2, opacity: 1}, {scale: 4.2, opacity: 0, duration: 0.8, immediateRender: false}, hit);
+  tl.fromTo('#glow', {opacity: 0, scale: 0.4}, {opacity: 1, scale: 1, duration: 0.6}, hit);
+  tl.fromTo('#rays', {opacity: 0}, {opacity: 1, duration: 0.6}, hit);
+  tl.fromTo('#rays', {rotation: 0}, {rotation: 40, duration: S.dur - hit, ease: 'none'}, hit);
+  for (let i = 0; i < 18; i++) {
+    const a = (i / 18) * Math.PI * 2 + S.rnd(i) * 0.3, r = 380 + S.rnd(i + 9) * 420;
+    const sp = I.el('div', 'spark', I.$('#root')); sp.style.background = i % 2 ? 'var(--c-mint)' : 'var(--c-purple)';
+    tl.fromTo(sp, {x: 0, y: 0, scale: 1.4, opacity: 1}, {x: Math.cos(a) * r, y: Math.sin(a) * r, scale: 0.2, opacity: 0, duration: 0.9, immediateRender: false}, hit + S.rnd(i + 3) * 0.06);
+  }
+  // logo tự dựng: S quét vào, 6 vạch trượt vào lần lượt
+  tl.fromTo(M.svg, {scale: 0.6, opacity: 0}, {scale: 1, opacity: 1, duration: 0.5}, hit);
+  tl.fromTo(M.clip, {attr: {width: 0}}, {attr: {width: 1000}, duration: 0.45}, hit);
+  M.stripes.forEach((p, k) => tl.fromTo(p, {x: (k < 3 ? 1 : -1) * 160, y: (k < 3 ? -1 : 1) * 300, opacity: 0}, {x: 0, y: 0, opacity: 1, duration: 0.4}, hit + 0.15 + k * 0.05));
+  tl.fromTo(W, {yPercent: 110, opacity: 0}, {yPercent: 0, opacity: 1, duration: 0.5}, B(3.2));
+  S.arrive(tl, S.words(I.$('#sub')), B(3.8), {stagger: 0.06, dist: 24, blur: 8, dur: 0.45});
+  // đẩy máy nhẹ cả khối logo
+  tl.fromTo('#lock', {scale: 1}, {scale: 1.05, duration: S.dur - hit, ease: 'none'}, hit);
+</script>
+</body>
+</html>

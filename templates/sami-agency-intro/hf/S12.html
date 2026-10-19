@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="hf/parts/intro.css">
+<style>
+  /* S12 · Thẻ kết SAMI: logo tự dựng (FINAL HIT), khẩu hiệu, nút WhatsApp + số, website. Giữ yên ≥ 3 s để đọc. */
+  #rays { position: absolute; left: 50%; top: 36%; width: 2400px; height: 2400px; margin: -1200px 0 0 -1200px; opacity: 0;
+    background: repeating-conic-gradient(from 0deg, rgba(118,103,254,.14) 0deg 6deg, transparent 6deg 18deg);
+    -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 60%); mask-image: radial-gradient(circle, #000 0%, transparent 60%); }
+  #glow { position: absolute; left: 50%; top: 36%; width: 1300px; height: 1300px; margin: -650px 0 0 -650px; border-radius: 50%; background: radial-gradient(circle, rgba(8,221,164,.28), rgba(118,103,254,.2) 40%, transparent 68%); }
+  #lock { position: absolute; left: 0; right: 0; top: 470px; display: flex; flex-direction: column; align-items: center; gap: 44px; }
+  #word { overflow: hidden; padding: 4px 0; }
+  #tag { position: absolute; left: var(--safe-side); right: var(--safe-side); top: 1040px; text-align: center; font: 600 40px/1.45 var(--f-ui); letter-spacing: .06em; color: var(--c-text); text-wrap: balance; }
+  #wa { position: absolute; left: 50%; top: 1210px; transform: translateX(-50%); display: flex; align-items: center; gap: 20px; padding: 22px 44px 22px 30px; border-radius: 999px; background: var(--wa); color: #fff;
+    font: 700 54px var(--f-ui); white-space: nowrap; box-shadow: 0 20px 50px rgba(37,211,102,.35); }
+  #wa .ic { width: 64px; height: 64px; }
+  #wa .lb { font: 600 26px var(--f-ui); opacity: .9; display: block; margin-bottom: 2px; }
+  #url { position: absolute; left: 0; right: 0; top: 1380px; text-align: center; font: 700 52px var(--f-ui); color: #fff; }
+  [data-ratio="16x9"] #rays, [data-ratio="16x9"] #glow { top: 40%; }
+  [data-ratio="16x9"] #lock { flex-direction: row; justify-content: center; top: 200px; gap: 56px; }
+  [data-ratio="16x9"] #tag { top: 560px; font-size: 36px; }
+  [data-ratio="16x9"] #wa { top: 680px; font-size: 50px; }
+  [data-ratio="16x9"] #url { top: 860px; font-size: 46px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S12">
+  <div class="bg"></div><div class="dots"></div><div id="rays"></div><div id="glow"></div>
+  <div id="lock"><div id="mark"></div><div id="word"></div></div>
+  <div id="tag" data-copy="S12_tagline"></div>
+  <div id="wa"><div class="ic"></div><div><span class="lb" data-copy="S12_wa"></span><span data-copy="S12_phone"></span></div></div>
+  <div id="url" data-copy="S12_url"></div>
+</div>
+<script src="hf/parts/sami-logo.js"></script>
+<script src="hf/parts/intro.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), B = S.beat, $ = I.$;
+  const M = I.mark($('#mark'), S.pick({'16:9': 240, default: 280})), W = I.word($('#word'), S.pick({'16:9': 110, default: 110}));
+  $('#wa .ic').innerHTML = I.icon('wa');
+  const hit = B(0);
+  I.flash(tl, hit, {peak: 0.55, dur: 0.45});
+  tl.fromTo('#glow', {scale: 0.4, opacity: 0}, {scale: 1, opacity: 1, duration: 0.7}, hit);
+  tl.fromTo('#rays', {opacity: 0}, {opacity: 1, duration: 0.6}, hit);
+  tl.fromTo('#rays', {rotation: 0}, {rotation: 30, duration: S.dur, ease: 'none'}, 0);
+  tl.fromTo(M.svg, {scale: 0.5, opacity: 0}, {scale: 1, opacity: 1, duration: 0.5}, hit);
+  tl.fromTo(M.clip, {attr: {width: 0}}, {attr: {width: 1000}, duration: 0.45}, hit);
+  M.stripes.forEach((p, k) => tl.fromTo(p, {x: (k < 3 ? 1 : -1) * 160, y: (k < 3 ? -1 : 1) * 300, opacity: 0}, {x: 0, y: 0, opacity: 1, duration: 0.4}, hit + 0.15 + k * 0.05));
+  tl.fromTo(W, {yPercent: 110, opacity: 0}, {yPercent: 0, opacity: 1, duration: 0.5}, B(1));
+  S.arrive(tl, S.words($('#tag')), B(2), {stagger: 0.06, dist: 20, blur: 8, dur: 0.4});
+  tl.fromTo('#wa', {scale: 0.6, opacity: 0}, {scale: 1, opacity: 1, duration: 0.4}, B(3));
+  S.arrive(tl, '#url', B(3.6), {dist: 20, blur: 6, dur: 0.4});
+  [5, 7].forEach((b) => tl.fromTo('#wa', {scale: 1.06}, {scale: 1, duration: 0.4, immediateRender: false}, B(b)));
+</script>
+</body>
+</html>

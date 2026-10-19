@@ -1,0 +1,1004 @@
+{
+ "name": "SAMI Agency Intro – 8 dịch vụ cho nhà hàng",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {},
+ "look": {
+  "grain": 0.05,
+  "vignette": 0.4
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook: tìm kiếm, quán không hiện",
+   "start": 0,
+   "end": 106,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "SAMI xuất hiện",
+   "start": 106,
+   "end": 196,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "8 dịch vụ, 1 đầu mối",
+   "start": 196,
+   "end": 331,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "01 Branding: dựng brandkit tua nhanh",
+   "start": 331,
+   "end": 616,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "02 Speisekarte: dàn trang menu tua nhanh",
+   "start": 616,
+   "end": 781,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "03 Website: dựng web tua nhanh, responsive",
+   "start": 781,
+   "end": 976,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "04+05 Đặt bàn + đặt món",
+   "start": 976,
+   "end": 1111,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "06+07 Local SEO + Google Ads Maps",
+   "start": 1111,
+   "end": 1291,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "08 Social Media",
+   "start": 1291,
+   "end": 1396,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "Dự án thật, số đo thật",
+   "start": 1396,
+   "end": 1516,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "Offer miễn phí + WhatsApp",
+   "start": 1516,
+   "end": 1666,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  },
+  {
+   "id": "S12",
+   "label": "Thẻ kết SAMI",
+   "start": 1666,
+   "end": 1801,
+   "engine": "hyperframes",
+   "src": "hf/S12.html"
+  }
+ ],
+ "copy": {
+  "S01_time": {
+   "label": "Nhãn thời điểm phía trên thanh tìm kiếm",
+   "scene": "S01",
+   "value": "Freitag, 19:12"
+  },
+  "S01_query": {
+   "label": "Chữ tự gõ trong thanh tìm kiếm",
+   "scene": "S01",
+   "value": "vietnamesisch essen in der Nähe"
+  },
+  "S01_head": {
+   "label": "Câu hook lớn (dùng *…* để tô đỏ, / để xuống dòng)",
+   "scene": "S01",
+   "value": "Ihr Essen ist gut. / Warum findet Sie *niemand?*",
+   "hint": "*…* = tô đỏ"
+  },
+  "S01_photo": {
+   "label": "Ảnh món ăn nền cảnh hook (ảnh dọc)",
+   "scene": "S01",
+   "value": "lib:img/sami-cases/84kitchen/bangkok.webp"
+  },
+  "S02_line": {
+   "label": "Câu chuyển trước logo",
+   "scene": "S02",
+   "value": "Wir ändern das."
+  },
+  "S02_sub": {
+   "label": "Dòng dưới logo SAMI",
+   "scene": "S02",
+   "value": "Marketing für Restaurants in Deutschland"
+  },
+  "S03_head": {
+   "label": "Tiêu đề 8 dịch vụ (dùng *…* để tô màu)",
+   "scene": "S03",
+   "value": "8 Leistungen. / *Ein* Ansprechpartner."
+  },
+  "S03_s1": {
+   "label": "Tên dịch vụ ô 1",
+   "scene": "S03",
+   "value": "Branding"
+  },
+  "S03_s1_photo": {
+   "label": "Ảnh nền ô dịch vụ 1",
+   "scene": "S03",
+   "value": "lib:img/sami-cases/vi/brand-1.webp"
+  },
+  "S03_s2": {
+   "label": "Tên dịch vụ ô 2",
+   "scene": "S03",
+   "value": "Speisekarte"
+  },
+  "S03_s2_photo": {
+   "label": "Ảnh nền ô dịch vụ 2",
+   "scene": "S03",
+   "value": "lib:img/sami-cases/84kitchen/brand-4.webp"
+  },
+  "S03_s3": {
+   "label": "Tên dịch vụ ô 3",
+   "scene": "S03",
+   "value": "Website"
+  },
+  "S03_s3_photo": {
+   "label": "Ảnh nền ô dịch vụ 3",
+   "scene": "S03",
+   "value": "lib:img/sami-cases/vi/review-laptop.webp"
+  },
+  "S03_s4": {
+   "label": "Tên dịch vụ ô 4",
+   "scene": "S03",
+   "value": "Online-Reservierung"
+  },
+  "S03_s4_photo": {
+   "label": "Ảnh nền ô dịch vụ 4",
+   "scene": "S03",
+   "value": "lib:img/sami-cases/mizuki/hero-3.webp"
+  },
+  "S03_s5": {
+   "label": "Tên dịch vụ ô 5",
+   "scene": "S03",
+   "value": "Online-Bestellung"
+  },
+  "S03_s5_photo": {
+   "label": "Ảnh nền ô dịch vụ 5",
+   "scene": "S03",
+   "value": "lib:img/sami-cases/84kitchen/ramen.webp"
+  },
+  "S03_s6": {
+   "label": "Tên dịch vụ ô 6",
+   "scene": "S03",
+   "value": "Local SEO"
+  },
+  "S03_s6_photo": {
+   "label": "Ảnh nền ô dịch vụ 6",
+   "scene": "S03",
+   "value": "lib:img/sami-cases/84kitchen/folio-1.webp"
+  },
+  "S03_s7": {
+   "label": "Tên dịch vụ ô 7",
+   "scene": "S03",
+   "value": "Google Ads Maps"
+  },
+  "S03_s7_photo": {
+   "label": "Ảnh nền ô dịch vụ 7",
+   "scene": "S03",
+   "value": "lib:img/sami-cases/84kitchen/folio-3.webp"
+  },
+  "S03_s8": {
+   "label": "Tên dịch vụ ô 8",
+   "scene": "S03",
+   "value": "Social Media"
+  },
+  "S03_s8_photo": {
+   "label": "Ảnh nền ô dịch vụ 8",
+   "scene": "S03",
+   "value": "lib:img/sami-cases/84kitchen/tartar.webp"
+  },
+  "S04_chapter": {
+   "label": "Nhãn chương (số + tên dịch vụ)",
+   "scene": "S04",
+   "value": "01 | Branding"
+  },
+  "S04_head": {
+   "label": "Tiêu đề cảnh branding (dùng *…* để tô màu)",
+   "scene": "S04",
+   "value": "Logo, Farben, Schrift. / Ihr *Brandkit.*"
+  },
+  "S04_file": {
+   "label": "Tên file trên thanh tiêu đề app thiết kế",
+   "scene": "S04",
+   "value": "Brand Identity · v12"
+  },
+  "S04_ff": {
+   "label": "Nhãn HUD tua nhanh",
+   "scene": "S04",
+   "value": "ZEITRAFFER"
+  },
+  "S04_logo": {
+   "label": "Logo vector (SVG) được vẽ nét trong app",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/84kitchen/logo.svg"
+  },
+  "S04_palette": {
+   "label": "Bảng màu chốt (5 mã HEX, cách nhau dấu cách)",
+   "scene": "S04",
+   "value": "#6B4E2E #C29B70 #232220 #E0DCD3 #D2D1CD"
+  },
+  "S04_font": {
+   "label": "Font tiêu đề được chốt (tên font có sẵn)",
+   "scene": "S04",
+   "value": "Playfair Display"
+  },
+  "S04_kit1_photo": {
+   "label": "Brandkit: bảng tổng (logo + ảnh món)",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/84kitchen/brand-1.webp"
+  },
+  "S04_kit2_photo": {
+   "label": "Brandkit: bảng màu + chữ",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/84kitchen/brand-2.webp"
+  },
+  "S04_kit3_photo": {
+   "label": "Brandkit: thẻ quà tặng",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/84kitchen/brand-3.webp"
+  },
+  "S04_kit4_photo": {
+   "label": "Brandkit: bìa menu",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/84kitchen/brand-4.webp"
+  },
+  "S04_kit5_photo": {
+   "label": "Brandkit: bộ ảnh món",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/84kitchen/brand-5.webp"
+  },
+  "S04_kit6_photo": {
+   "label": "Brandkit: ấn phẩm (dự án khác)",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/mizuki/brand-4.webp"
+  },
+  "S04_kit7_photo": {
+   "label": "Brandkit: thẻ quà tặng (dự án khác)",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/vi/brand-3.webp"
+  },
+  "S04_kit8_photo": {
+   "label": "Brandkit: ấn phẩm in (dự án khác)",
+   "scene": "S04",
+   "value": "lib:img/sami-cases/mizuki/brand-5.webp"
+  },
+  "S04_ui": {
+   "label": "Nhãn giao diện app (cách nhau |): Ebenen|Füllung|Schrift|Raster|Logo|Farbpalette|Typografie|Brandkit|Ankerpunkte",
+   "scene": "S04",
+   "value": "Ebenen|Füllung|Schrift|Raster|Logo|Farbpalette|Typografie|Brandkit|Ankerpunkte"
+  },
+  "S04_sample": {
+   "label": "Câu mẫu thử font trong app",
+   "scene": "S04",
+   "value": "Modern Asian Kitchen"
+  },
+  "S04_done": {
+   "label": "Con dấu khi brandkit xong",
+   "scene": "S04",
+   "value": "Brandkit fertig"
+  },
+  "S05_chapter": {
+   "label": "Nhãn chương",
+   "scene": "S05",
+   "value": "02 | Speisekarte"
+  },
+  "S05_head": {
+   "label": "Tiêu đề cảnh menu (dùng *…* để tô màu)",
+   "scene": "S05",
+   "value": "Eine Speisekarte, / die *verkauft.*"
+  },
+  "S05_sub": {
+   "label": "Dòng phụ dưới tiêu đề menu",
+   "scene": "S05",
+   "value": "Druck + Online · Allergene korrekt"
+  },
+  "S05_title": {
+   "label": "Tên trang menu trên artboard",
+   "scene": "S05",
+   "value": "Speisekarte"
+  },
+  "S05_d1": {
+   "label": "Tên món 1 trên menu",
+   "scene": "S05",
+   "value": "Nigiri Variation"
+  },
+  "S05_d1_desc": {
+   "label": "Mô tả món 1",
+   "scene": "S05",
+   "value": "Lachs, Thunfisch, Garnele"
+  },
+  "S05_d1_photo": {
+   "label": "Ảnh món 1",
+   "scene": "S05",
+   "value": "lib:img/sami-cases/84kitchen/nigiri-board.webp"
+  },
+  "S05_d2": {
+   "label": "Tên món 2 trên menu",
+   "scene": "S05",
+   "value": "Inside-Out Roll"
+  },
+  "S05_d2_desc": {
+   "label": "Mô tả món 2",
+   "scene": "S05",
+   "value": "Avocado, Gurke, Tobiko"
+  },
+  "S05_d2_photo": {
+   "label": "Ảnh món 2",
+   "scene": "S05",
+   "value": "lib:img/sami-cases/84kitchen/insideout.webp"
+  },
+  "S05_d3": {
+   "label": "Tên món 3 trên menu",
+   "scene": "S05",
+   "value": "Sashimi"
+  },
+  "S05_d3_desc": {
+   "label": "Mô tả món 3",
+   "scene": "S05",
+   "value": "Tagesfang, Wasabi, Ingwer"
+  },
+  "S05_d3_photo": {
+   "label": "Ảnh món 3",
+   "scene": "S05",
+   "value": "lib:img/sami-cases/84kitchen/sashimi.webp"
+  },
+  "S05_d4": {
+   "label": "Tên món 4 trên menu",
+   "scene": "S05",
+   "value": "Ramen"
+  },
+  "S05_d4_desc": {
+   "label": "Mô tả món 4",
+   "scene": "S05",
+   "value": "Brühe, Rind, Frühlingslauch"
+  },
+  "S05_d4_photo": {
+   "label": "Ảnh món 4",
+   "scene": "S05",
+   "value": "lib:img/sami-cases/84kitchen/ramen.webp"
+  },
+  "S05_d5": {
+   "label": "Tên món 5 trên menu",
+   "scene": "S05",
+   "value": "Thunfisch-Tatar"
+  },
+  "S05_d5_desc": {
+   "label": "Mô tả món 5",
+   "scene": "S05",
+   "value": "Avocado, Sesam, Kresse"
+  },
+  "S05_d5_photo": {
+   "label": "Ảnh món 5",
+   "scene": "S05",
+   "value": "lib:img/sami-cases/84kitchen/tartar.webp"
+  },
+  "S05_allergen": {
+   "label": "Dòng chú thích dị ứng cuối menu",
+   "scene": "S05",
+   "value": "Allergene: A Gluten · B Krebstiere · D Fisch · F Soja · N Sesam"
+  },
+  "S05_print_photo": {
+   "label": "Ảnh menu in (bìa)",
+   "scene": "S05",
+   "value": "lib:img/sami-cases/84kitchen/brand-4.webp"
+  },
+  "S05_print": {
+   "label": "Nhãn ảnh menu in",
+   "scene": "S05",
+   "value": "Druck"
+  },
+  "S05_online": {
+   "label": "Nhãn điện thoại menu online",
+   "scene": "S05",
+   "value": "Online"
+  },
+  "S06_chapter": {
+   "label": "Nhãn chương",
+   "scene": "S06",
+   "value": "03 | Website"
+  },
+  "S06_head": {
+   "label": "Tiêu đề cảnh website (dùng *…* để tô màu)",
+   "scene": "S06",
+   "value": "Schnell. / Auch auf dem *Handy.*"
+  },
+  "S06_badge": {
+   "label": "Nhãn dấu tích cuối cảnh website",
+   "scene": "S06",
+   "value": "Mobiloptimiert"
+  },
+  "S06_devices": {
+   "label": "Tên 3 thiết bị (cách nhau |)",
+   "scene": "S06",
+   "value": "Desktop|Tablet|Smartphone"
+  },
+  "S06_code": {
+   "label": "Dòng code chạy trong khung code (cách nhau |)",
+   "scene": "S06",
+   "value": "<header class=\"nav\">|<section class=\"hero\">|<img loading=\"lazy\" …>|.menu { display: grid; }|<form id=\"reservierung\">|@media (max-width: 768px)|font-display: swap;|<button>Tisch reservieren</button>|<footer> Impressum · Datenschutz"
+  },
+  "S06_live": {
+   "label": "Nhãn trạng thái khi web xong",
+   "scene": "S06",
+   "value": "Live"
+  },
+  "S06_b1_photo": {
+   "label": "Khối website 1 (ảnh chụp phần trang)",
+   "scene": "S06",
+   "value": "lib:img/sami-cases/vi/ui-01.webp"
+  },
+  "S06_b2_photo": {
+   "label": "Khối website 2 (ảnh chụp phần trang)",
+   "scene": "S06",
+   "value": "lib:img/sami-cases/vi/ui-02.webp"
+  },
+  "S06_b3_photo": {
+   "label": "Khối website 3 (ảnh chụp phần trang)",
+   "scene": "S06",
+   "value": "lib:img/sami-cases/vi/ui-03.webp"
+  },
+  "S06_b4_photo": {
+   "label": "Khối website 4 (ảnh chụp phần trang)",
+   "scene": "S06",
+   "value": "lib:img/sami-cases/vi/ui-04.webp"
+  },
+  "S06_b5_photo": {
+   "label": "Khối website 5 (ảnh chụp phần trang)",
+   "scene": "S06",
+   "value": "lib:img/sami-cases/vi/ui-05.webp"
+  },
+  "S06_b6_photo": {
+   "label": "Khối website 6 (ảnh chụp phần trang)",
+   "scene": "S06",
+   "value": "lib:img/sami-cases/vi/ui-06.webp"
+  },
+  "S06_desk_photo": {
+   "label": "Ảnh chụp website bản máy tính",
+   "scene": "S06",
+   "value": "lib:img/sami-cases/vi/resp-01.webp"
+  },
+  "S06_tab_photo": {
+   "label": "Ảnh chụp website bản máy tính bảng",
+   "scene": "S06",
+   "value": "lib:img/sami-cases/vi/resp-04.webp"
+  },
+  "S06_mob_photo": {
+   "label": "Ảnh chụp website bản điện thoại",
+   "scene": "S06",
+   "value": "lib:img/sami-cases/vi/resp-02.webp"
+  },
+  "S07_chapter": {
+   "label": "Nhãn chương (số | tên | số | tên)",
+   "scene": "S07",
+   "value": "04 | Reservierung | 05 | Bestellung"
+  },
+  "S07_head": {
+   "label": "Tiêu đề đặt bàn + đặt món (dùng *…* để tô màu)",
+   "scene": "S07",
+   "value": "Reservieren rund um die Uhr. / Bestellen *ohne Provision.*"
+  },
+  "S07_res": {
+   "label": "Nút/tiêu đề form đặt bàn",
+   "scene": "S07",
+   "value": "Tisch reservieren"
+  },
+  "S07_people": {
+   "label": "Ô số người",
+   "scene": "S07",
+   "value": "4 Personen"
+  },
+  "S07_time": {
+   "label": "Giờ được chọn",
+   "scene": "S07",
+   "value": "19:30"
+  },
+  "S07_done": {
+   "label": "Xác nhận đặt bàn",
+   "scene": "S07",
+   "value": "Reserviert"
+  },
+  "S07_order": {
+   "label": "Tiêu đề màn đặt món",
+   "scene": "S07",
+   "value": "Online bestellen"
+  },
+  "S07_pickup": {
+   "label": "Giờ lấy món",
+   "scene": "S07",
+   "value": "Abholung 18:45"
+  },
+  "S07_ordered": {
+   "label": "Xác nhận đặt món",
+   "scene": "S07",
+   "value": "Bestellt"
+  },
+  "S07_hero_photo": {
+   "label": "Ảnh đầu form đặt bàn",
+   "scene": "S07",
+   "value": "lib:img/sami-cases/vi/room-wide.webp"
+  },
+  "S07_o1": {
+   "label": "Tên món đặt 1",
+   "scene": "S07",
+   "value": "Ramen"
+  },
+  "S07_o1_photo": {
+   "label": "Ảnh món đặt 1",
+   "scene": "S07",
+   "value": "lib:img/sami-cases/84kitchen/ramen.webp"
+  },
+  "S07_o2": {
+   "label": "Tên món đặt 2",
+   "scene": "S07",
+   "value": "Maki"
+  },
+  "S07_o2_photo": {
+   "label": "Ảnh món đặt 2",
+   "scene": "S07",
+   "value": "lib:img/sami-cases/84kitchen/maki.webp"
+  },
+  "S07_o3": {
+   "label": "Tên món đặt 3",
+   "scene": "S07",
+   "value": "Nigiri"
+  },
+  "S07_o3_photo": {
+   "label": "Ảnh món đặt 3",
+   "scene": "S07",
+   "value": "lib:img/sami-cases/84kitchen/nigiri.webp"
+  },
+  "S07_days": {
+   "label": "Thứ trong tuần trên lịch đặt bàn (cách nhau |)",
+   "scene": "S07",
+   "value": "Mo|Di|Mi|Do|Fr|Sa|So"
+  },
+  "S07_slots": {
+   "label": "Các giờ trống (cách nhau |), giờ được chọn phải nằm trong danh sách",
+   "scene": "S07",
+   "value": "17:30|18:00|18:30|19:00|19:30|20:00"
+  },
+  "S07_buy": {
+   "label": "Nút đặt món",
+   "scene": "S07",
+   "value": "Jetzt bestellen"
+  },
+  "S07_cart": {
+   "label": "Chữ giỏ hàng",
+   "scene": "S07",
+   "value": "Warenkorb"
+  },
+  "S07_day": {
+   "label": "Ngày được chọn (hiện ở xác nhận)",
+   "scene": "S07",
+   "value": "Freitag"
+  },
+  "S08_chapter": {
+   "label": "Nhãn chương (số | tên | số | tên)",
+   "scene": "S08",
+   "value": "06 | Local SEO | 07 | Google Ads Maps"
+  },
+  "S08_head": {
+   "label": "Tiêu đề cảnh Maps (dùng *…* để tô màu)",
+   "scene": "S08",
+   "value": "Ganz oben, / wenn Gäste *suchen.*"
+  },
+  "S08_query": {
+   "label": "Chữ tìm kiếm trên bản đồ",
+   "scene": "S08",
+   "value": "Sushi in der Nähe"
+  },
+  "S08_you": {
+   "label": "Tên quán của bạn trên thẻ kết quả",
+   "scene": "S08",
+   "value": "Ihr Restaurant"
+  },
+  "S08_ad": {
+   "label": "Nhãn quảng cáo",
+   "scene": "S08",
+   "value": "Anzeige"
+  },
+  "S08_route": {
+   "label": "Nút chỉ đường",
+   "scene": "S08",
+   "value": "Route"
+  },
+  "S08_seo": {
+   "label": "Chip SEO trên thẻ quán mình",
+   "scene": "S08",
+   "value": "Local SEO"
+  },
+  "S08_here": {
+   "label": "Nhãn vị trí khách",
+   "scene": "S08",
+   "value": "Sie sind hier"
+  },
+  "S08_you_photo": {
+   "label": "Ảnh quán của bạn",
+   "scene": "S08",
+   "value": "lib:img/sami-cases/84kitchen/interior.webp"
+  },
+  "S09_chapter": {
+   "label": "Nhãn chương",
+   "scene": "S09",
+   "value": "08 | Social Media"
+  },
+  "S09_head": {
+   "label": "Tiêu đề social (dùng *…* để tô màu)",
+   "scene": "S09",
+   "value": "Sie kochen. / Wir *posten.*"
+  },
+  "S09_notif": {
+   "label": "Thông báo bài mới",
+   "scene": "S09",
+   "value": "Neuer Beitrag ist online"
+  },
+  "S09_p1_photo": {
+   "label": "Ảnh bài đăng 1 (ô 5 = reel giữa)",
+   "scene": "S09",
+   "value": "lib:img/sami-cases/vi/curry.webp"
+  },
+  "S09_p2_photo": {
+   "label": "Ảnh bài đăng 2 (ô 5 = reel giữa)",
+   "scene": "S09",
+   "value": "lib:img/sami-cases/84kitchen/sushi-hand.webp"
+  },
+  "S09_p3_photo": {
+   "label": "Ảnh bài đăng 3 (ô 5 = reel giữa)",
+   "scene": "S09",
+   "value": "lib:img/sami-cases/vi/drink-1.webp"
+  },
+  "S09_p4_photo": {
+   "label": "Ảnh bài đăng 4 (ô 5 = reel giữa)",
+   "scene": "S09",
+   "value": "lib:img/sami-cases/mizuki/food-lotus.webp"
+  },
+  "S09_p5_photo": {
+   "label": "Ảnh bài đăng 5 (ô 5 = reel giữa)",
+   "scene": "S09",
+   "value": "lib:img/sami-cases/84kitchen/team-1.webp"
+  },
+  "S09_p6_photo": {
+   "label": "Ảnh bài đăng 6 (ô 5 = reel giữa)",
+   "scene": "S09",
+   "value": "lib:img/sami-cases/vi/duck.webp"
+  },
+  "S09_p7_photo": {
+   "label": "Ảnh bài đăng 7 (ô 5 = reel giữa)",
+   "scene": "S09",
+   "value": "lib:img/sami-cases/84kitchen/sashimi-set.webp"
+  },
+  "S09_p8_photo": {
+   "label": "Ảnh bài đăng 8 (ô 5 = reel giữa)",
+   "scene": "S09",
+   "value": "lib:img/sami-cases/vi/spread.webp"
+  },
+  "S09_p9_photo": {
+   "label": "Ảnh bài đăng 9 (ô 5 = reel giữa)",
+   "scene": "S09",
+   "value": "lib:img/sami-cases/84kitchen/rolls.webp"
+  },
+  "S10_head": {
+   "label": "Tiêu đề dự án thật (dùng *…* để tô màu)",
+   "scene": "S10",
+   "value": "Echte Projekte. / *Gemessen.*"
+  },
+  "S10_c1_city": {
+   "label": "Thẻ 1: thành phố",
+   "scene": "S10",
+   "value": "Kempten"
+  },
+  "S10_c1_val": {
+   "label": "Thẻ 1: số đo (số thật)",
+   "scene": "S10",
+   "value": "1,5"
+  },
+  "S10_c1_unit": {
+   "label": "Thẻ 1: đơn vị",
+   "scene": "S10",
+   "value": " s"
+  },
+  "S10_c1_lbl": {
+   "label": "Thẻ 1: tên chỉ số",
+   "scene": "S10",
+   "value": "Ladezeit"
+  },
+  "S10_c1_photo": {
+   "label": "Thẻ 1: ảnh quán",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/84kitchen/hero.webp"
+  },
+  "S10_c2_city": {
+   "label": "Thẻ 2: thành phố",
+   "scene": "S10",
+   "value": "Baden-Baden"
+  },
+  "S10_c2_val": {
+   "label": "Thẻ 2: số đo (số thật)",
+   "scene": "S10",
+   "value": "1,55"
+  },
+  "S10_c2_unit": {
+   "label": "Thẻ 2: đơn vị",
+   "scene": "S10",
+   "value": " s"
+  },
+  "S10_c2_lbl": {
+   "label": "Thẻ 2: tên chỉ số",
+   "scene": "S10",
+   "value": "Ladezeit"
+  },
+  "S10_c2_photo": {
+   "label": "Thẻ 2: ảnh quán",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/mizuki/hero.webp"
+  },
+  "S10_c3_city": {
+   "label": "Thẻ 3: thành phố",
+   "scene": "S10",
+   "value": "Karlsruhe"
+  },
+  "S10_c3_val": {
+   "label": "Thẻ 3: số đo (số thật)",
+   "scene": "S10",
+   "value": "1,8"
+  },
+  "S10_c3_unit": {
+   "label": "Thẻ 3: đơn vị",
+   "scene": "S10",
+   "value": " s"
+  },
+  "S10_c3_lbl": {
+   "label": "Thẻ 3: tên chỉ số",
+   "scene": "S10",
+   "value": "Ladezeit"
+  },
+  "S10_c3_photo": {
+   "label": "Thẻ 3: ảnh quán",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/mizuki/related-1.webp"
+  },
+  "S10_c4_city": {
+   "label": "Thẻ 4: thành phố",
+   "scene": "S10",
+   "value": "Schliersee"
+  },
+  "S10_c4_val": {
+   "label": "Thẻ 4: số đo (số thật)",
+   "scene": "S10",
+   "value": "100"
+  },
+  "S10_c4_unit": {
+   "label": "Thẻ 4: đơn vị",
+   "scene": "S10",
+   "value": " %"
+  },
+  "S10_c4_lbl": {
+   "label": "Thẻ 4: tên chỉ số",
+   "scene": "S10",
+   "value": "mobiloptimiert"
+  },
+  "S10_c4_photo": {
+   "label": "Thẻ 4: ảnh quán",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/vi/hero.webp"
+  },
+  "S10_note": {
+   "label": "Chú thích nguồn số liệu",
+   "scene": "S10",
+   "value": "Ladezeit der Startseite (LCP), gemessen"
+  },
+  "S10_w1_photo": {
+   "label": "Ảnh tường dự án 1",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/84kitchen/folio-1.webp"
+  },
+  "S10_w2_photo": {
+   "label": "Ảnh tường dự án 2",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/84kitchen/folio-2.webp"
+  },
+  "S10_w3_photo": {
+   "label": "Ảnh tường dự án 3",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/84kitchen/folio-3.webp"
+  },
+  "S10_w4_photo": {
+   "label": "Ảnh tường dự án 4",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/84kitchen/folio-4.webp"
+  },
+  "S10_w5_photo": {
+   "label": "Ảnh tường dự án 5",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/84kitchen/related-4.webp"
+  },
+  "S10_w6_photo": {
+   "label": "Ảnh tường dự án 6",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/84kitchen/related-5.webp"
+  },
+  "S10_w7_photo": {
+   "label": "Ảnh tường dự án 7",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/84kitchen/related-6.webp"
+  },
+  "S10_w8_photo": {
+   "label": "Ảnh tường dự án 8",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/84kitchen/related-7.webp"
+  },
+  "S10_w9_photo": {
+   "label": "Ảnh tường dự án 9",
+   "scene": "S10",
+   "value": "lib:img/sami-cases/84kitchen/related-8.webp"
+  },
+  "S11_head": {
+   "label": "Tiêu đề offer (dùng *…* để tô màu)",
+   "scene": "S11",
+   "value": "Kostenloser Check: / *Google Maps + Website*"
+  },
+  "S11_old": {
+   "label": "Giá gốc (bị gạch)",
+   "scene": "S11",
+   "value": "250 €"
+  },
+  "S11_new": {
+   "label": "Giá offer",
+   "scene": "S11",
+   "value": "0 €"
+  },
+  "S11_chat": {
+   "label": "Tên trong đầu khung chat",
+   "scene": "S11",
+   "value": "SAMI Agency"
+  },
+  "S11_status": {
+   "label": "Trạng thái dưới tên chat",
+   "scene": "S11",
+   "value": "online"
+  },
+  "S11_msg": {
+   "label": "Tin nhắn khách gõ",
+   "scene": "S11",
+   "value": "Hallo SAMI, ich möchte den kostenlosen Check."
+  },
+  "S11_reply": {
+   "label": "Tin nhắn SAMI trả lời",
+   "scene": "S11",
+   "value": "Gerne! Wann passt es Ihnen?"
+  },
+  "S11_cta": {
+   "label": "Câu kêu gọi dưới khung chat (dùng *…* để tô màu)",
+   "scene": "S11",
+   "value": "Schreiben Sie SAMI / auf *WhatsApp.*"
+  },
+  "S11_bg_photo": {
+   "label": "Ảnh nền mờ cảnh offer",
+   "scene": "S11",
+   "value": "lib:img/sami-cases/vi/spread-2.webp"
+  },
+  "S12_tagline": {
+   "label": "Khẩu hiệu dưới logo",
+   "scene": "S12",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S12_phone": {
+   "label": "Số WhatsApp",
+   "scene": "S12",
+   "value": "+49 155 60456888"
+  },
+  "S12_url": {
+   "label": "Website",
+   "scene": "S12",
+   "value": "sami-agency.de"
+  },
+  "S12_wa": {
+   "label": "Nhãn nút WhatsApp",
+   "scene": "S12",
+   "value": "WhatsApp"
+  }
+ },
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke",
+  "style": {
+   "font": "Be Vietnam Pro",
+   "weight": 700,
+   "color": "#FFFFFF",
+   "highlight": "#08DDA4",
+   "shadow": true
+  }
+ },
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/sami-intro-120.mp3",
+   "gain": -3,
+   "edit": [],
+   "fadeOut": 0.5
+  },
+  "cues": [
+   {
+    "t": 0.6,
+    "sfx": "typing_burst",
+    "gain": -14,
+    "label": "gõ tìm kiếm"
+   },
+   {
+    "t": 10.98,
+    "sfx": "whoosh_a",
+    "gain": -16,
+    "label": "chương Branding"
+   },
+   {
+    "t": 25.98,
+    "sfx": "whoosh_b",
+    "gain": -18,
+    "label": "chương Website"
+   },
+   {
+    "t": 36.98,
+    "sfx": "whoosh_a",
+    "gain": -18,
+    "label": "chương Maps"
+   },
+   {
+    "t": 51.73,
+    "sfx": "pop",
+    "gain": -12,
+    "label": "con dấu 0 €"
+   },
+   {
+    "t": 55.56,
+    "sfx": "sub_hit",
+    "gain": -10,
+    "label": "logo cuối"
+   }
+  ]
+ },
+ "overlays": []
+}

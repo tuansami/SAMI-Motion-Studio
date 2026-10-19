@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="hf/parts/intro.css">
+<style>
+  /* S01 · Hook: ảnh món thật, thanh tìm kiếm tự gõ, kết quả lướt qua không có quán mình, câu hook dập theo nhịp */
+  #photo { position: absolute; inset: -4%; }
+  #shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,3,26,.82) 0%, rgba(6,3,26,.25) 34%, rgba(6,3,26,.35) 52%, rgba(6,3,26,.92) 78%, rgba(6,3,26,.97) 100%); }
+  #time { position: absolute; left: var(--safe-side); top: calc(var(--safe-top) + 10px); font-size: 30px; }
+  #time i { background: var(--red); }
+  #bar { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 90px); height: 128px; border-radius: 64px; background: #fff;
+    display: flex; align-items: center; gap: 26px; padding: 0 40px; box-shadow: 0 30px 80px rgba(0,0,0,.5); color: #1c1b23; font: 500 42px var(--f-ui); z-index: 5; }
+  #bar .ic { width: 50px; height: 50px; color: #6e6d7a; flex: none; }
+  #q { white-space: nowrap; overflow: hidden; }
+  #q .caret { color: var(--c-purple); font-weight: 400; margin-left: 2px; }
+  #res { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 250px); display: flex; flex-direction: column; gap: 18px; z-index: 4; }
+  .r { height: 150px; border-radius: 30px; background: rgba(255,255,255,.94); display: flex; align-items: center; gap: 26px; padding: 0 28px; box-shadow: 0 18px 40px rgba(0,0,0,.35); }
+  .r .th { width: 104px; height: 104px; border-radius: 20px; background: #d9d6e2; flex: none; }
+  .r .tx { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+  .r .tx b { display: block; height: 24px; border-radius: 12px; background: #cfcbdb; }
+  .r .tx s { display: block; height: 18px; width: 60%; border-radius: 9px; background: #e4e1ec; }
+  .r .pn { width: 46px; height: 46px; color: #b9b5c8; flex: none; }
+  #head { position: absolute; left: var(--safe-side); right: var(--safe-side); bottom: calc(var(--safe-bottom) + 10px); font-size: 92px; }
+  #head em.hl, #head em.hl .w { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--red); }
+  #head em.hl { display: inline-block; font-size: 1.62em; letter-spacing: -0.045em; line-height: 1; margin-top: 8px; position: relative; }
+  #uline { position: absolute; left: 0; right: 0; bottom: -10px; height: 16px; border-radius: 8px; background: var(--red); transform-origin: 0 50%; }
+  [data-ratio="16x9"] #photo { inset: -4% -4% -4% 38%; }
+  [data-ratio="16x9"] #shade { background: linear-gradient(90deg, rgba(6,3,26,.97) 0%, rgba(6,3,26,.9) 40%, rgba(6,3,26,.25) 70%, rgba(6,3,26,.5) 100%); }
+  [data-ratio="16x9"] #time { top: 110px; left: 110px; }
+  [data-ratio="16x9"] #bar { left: 110px; right: auto; width: 860px; top: 190px; height: 104px; font-size: 34px; }
+  [data-ratio="16x9"] #res { left: 110px; right: auto; width: 860px; top: 316px; }
+  [data-ratio="16x9"] .r { height: 112px; }
+  [data-ratio="16x9"] .r .th { width: 78px; height: 78px; }
+  [data-ratio="16x9"] #head { left: 110px; right: auto; width: 1000px; bottom: 110px; font-size: 76px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S01">
+  <div id="photo" data-img="S01_photo"></div>
+  <div id="shade"></div>
+  <div id="time" class="chip"><i></i><span data-copy="S01_time"></span></div>
+  <div id="bar"><div class="ic" id="sic"></div><div id="q"></div></div>
+  <div id="res"></div>
+  <div id="head" class="head" data-copy="S01_head"></div>
+</div>
+<script src="hf/parts/sami-logo.js"></script>
+<script src="hf/parts/intro.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), B = S.beat;
+  I.bindImgs();
+  I.$('#sic').innerHTML = I.icon('search', {sw: 2.4});
+  const res = I.$('#res');
+  for (let i = 0; i < 6; i++) I.el('div', 'r', res, '<div class="th"></div><div class="tx"><b style="width:' + (82 - (i % 3) * 14) + '%"></b><s></s></div><div class="pn">' + I.icon('pin') + '</div>');
+
+  // ảnh: đẩy vào chậm suốt cảnh, mất màu khi chữ "niemand?" đập xuống
+  tl.fromTo('#photo', {scale: 1.0}, {scale: 1.1, duration: S.dur, ease: 'none'}, 0);
+  // nhãn giờ + thanh tìm kiếm đập vào
+  S.arrive(tl, '#time', B(0), {dist: 20, blur: 6, dur: 0.4});
+  tl.fromTo('#bar', {scale: 1.25, opacity: 0, filter: 'blur(14px)'}, {scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.45}, B(0.2));
+  I.type(tl, I.$('#q'), S.text('S01_query'), B(0.5), 30);
+  // kết quả rơi xuống, rồi lướt qua nhanh (không có quán mình)
+  const rs = I.$$('.r');
+  tl.fromTo(rs, {y: -60, opacity: 0}, {y: 0, opacity: 1, duration: 0.3, stagger: 0.06}, B(2.4));
+  tl.to(res, {y: S.pick({'16:9': -110, default: -340}), duration: 1.0, ease: 'none'}, B(2.7));
+  tl.to(rs, {opacity: 0, filter: 'blur(10px)', duration: 0.3, stagger: 0.03}, B(3.7));
+  tl.to('#bar', {y: -30, opacity: 0.0, filter: 'blur(8px)', duration: 0.4}, B(3.9));
+  tl.to('#time', {opacity: 0, duration: 0.3}, B(3.9));
+  // câu hook: dòng 1 theo nhịp 4, "niemand?" đập ở nhịp 5
+  const head = I.$('#head'), hl = head.querySelector('em.hl');
+  const ul = I.el('div', '', hl); ul.id = 'uline';
+  const words = S.words(head), first = words.filter((w) => !hl.contains(w)), last = words.filter((w) => hl.contains(w));
+  S.arrive(tl, first, B(4), {stagger: 0.08, dist: 50, dur: 0.45});
+  tl.fromTo(last, {scale: 1.6, opacity: 0, filter: 'blur(18px)'}, {scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.3, transformOrigin: '0% 80%'}, B(5.2));
+  I.shake(tl, '#root', B(5.3), {amp: 14, n: 7});
+  tl.fromTo(ul, {scaleX: 0}, {scaleX: 1, duration: 0.4}, B(5.5));
+  tl.to('#photo', {filter: 'grayscale(1) brightness(.55)', duration: 0.5}, B(5.2));
+</script>
+</body>
+</html>

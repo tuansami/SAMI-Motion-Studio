@@ -1,0 +1,20 @@
+{
+ "id": "sami-agency-intro",
+ "name": "SAMI Agency Intro – 8 dịch vụ cho nhà hàng",
+ "version": "1.0.0",
+ "studio": ">=1.2.0",
+ "engine": "hyperframes",
+ "style": "night",
+ "category": "agency",
+ "goal": ["gioi-thieu"],
+ "description": "60 giây, 12 cảnh, giới thiệu SAMI cho nhà hàng tại Đức: hook tìm kiếm → logo SAMI → 8 dịch vụ → dựng brandkit, menu, website trong app thiết kế (tua nhanh, ảnh và logo thật) → đặt bàn + đặt món → Maps/Ads → social → số đo thật → Kostenloser Check + WhatsApp → thẻ kết. Ảnh thật nằm trong SAMI_Library (tools/import-images.mjs).",
+ "formats": ["9:16", "16:9"],
+ "duration": 60,
+ "bpm": 120,
+ "languages": ["de"],
+ "thumbFrame": 182,
+ "author": "SAMI Marketing Agency",
+ "license": "internal",
+ "audioLicense": "Nhạc tự tổng hợp bằng code (tools/make_music.py, numpy), SAMI sở hữu, không bản quyền bên thứ ba.",
+ "tags": ["agency", "full-service", "branding", "menu", "website", "maps", "time-lapse", "whatsapp"]
+}

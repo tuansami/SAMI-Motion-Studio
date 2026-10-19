@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/inter/700.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="hf/parts/intro.css">
+<style>
+  /* S09 · 08 Social Media: lưới 9 bài đăng ảnh thật lật vào liên tục, reel ở giữa, tim bay, thông báo "bài mới" */
+  #chap { left: var(--safe-side); top: calc(var(--safe-top) + 4px); font-size: 34px; }
+  #head { position: absolute; left: var(--safe-side); right: var(--safe-side); top: calc(var(--safe-top) + 80px); font-size: 96px; }
+  #grid { position: absolute; left: var(--safe-side); right: var(--safe-side); top: 590px; height: 936px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 12px; perspective: 1400px; }
+  .post { position: relative; border-radius: 22px; overflow: hidden; background: var(--c-navyLift); }
+  .post .im { position: absolute; inset: 0; }
+  .post .hrt { position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; margin: -60px 0 0 -60px; color: #fff; opacity: 0; filter: drop-shadow(0 6px 14px rgba(0,0,0,.4)); }
+  .post.reel::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 5px var(--c-mint); border-radius: 22px; }
+  .post .play { position: absolute; right: 16px; top: 16px; width: 44px; height: 44px; color: #fff; }
+  .fh { position: absolute; width: 64px; height: 64px; color: var(--red); opacity: 0; z-index: 10; }
+  #notif { position: absolute; left: var(--safe-side); right: var(--safe-side); top: 520px; height: 110px; border-radius: 28px; background: rgba(255,255,255,.96); color: #1c1b23; z-index: 20;
+    display: flex; align-items: center; gap: 20px; padding: 0 24px; box-shadow: var(--shadow); font: 700 32px var(--f-ui); opacity: 0; }
+  #notif .ic { width: 64px; height: 64px; border-radius: 18px; background: var(--grad); color: #fff; padding: 14px; box-sizing: border-box; flex: none; }
+  [data-ratio="16x9"] #chap { left: 110px; top: 120px; }
+  [data-ratio="16x9"] #head { left: 110px; right: auto; width: 620px; top: 200px; font-size: 96px; }
+  [data-ratio="16x9"] #grid { left: 800px; right: auto; width: 1000px; top: 80px; height: 920px; }
+  [data-ratio="16x9"] #notif { left: 110px; right: auto; width: 600px; top: 620px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S09">
+  <div class="bg"></div><div class="dots"></div>
+  <div id="chap" class="chapter"></div>
+  <div id="head" class="head" data-copy="S09_head"></div>
+  <div id="grid"></div>
+  <div id="notif"><div class="ic"></div><span data-copy="S09_notif"></span></div>
+</div>
+<script src="hf/parts/sami-logo.js"></script>
+<script src="hf/parts/intro.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), B = S.beat, $ = I.$;
+  const [num, name] = S.text('S09_chapter').split('|').map((x) => x.trim());
+  $('#chap').innerHTML = '<b>' + num + '</b><span>' + name + '</span>';
+  $('#notif .ic').innerHTML = I.icon('bell', {sw: 2.4});
+  const grid = $('#grid');
+  const posts = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => {
+    const p = I.el('div', 'post' + (i === 5 ? ' reel' : ''), grid, '<div class="im" data-img="S09_p' + i + '_photo"></div><div class="hrt">' + I.icon('heart', {fill: 'currentColor', stroke: 'none'}) + '</div>');
+    if (i === 5) I.el('div', 'play', p, I.icon('play', {fill: 'currentColor', stroke: 'none'}));
+    return p;
+  });
+  I.bindImgs(grid);
+  S.arrive(tl, '#chap', B(0), {dist: 20, blur: 6, dur: 0.4});
+  S.arrive(tl, S.words($('#head')), B(0), {stagger: 0.1, dist: 50, dur: 0.45});
+  // lật vào theo đường chéo, nhanh như lướt feed
+  const order = [0, 1, 3, 2, 4, 6, 5, 7, 8];
+  order.forEach((k, i) => tl.fromTo(posts[k], {rotationY: -90, opacity: 0, scale: 0.9}, {rotationY: 0, opacity: 1, scale: 1, duration: 0.32}, B(0.6 + i * 0.22)));
+  posts.forEach((p, i) => tl.fromTo(p.querySelector('.im'), {scale: 1.25}, {scale: 1.02, duration: 3}, B(0.6)));
+  // tim bật trên từng bài + tim bay lên
+  [0, 4, 7, 2, 6].forEach((k, i) => {
+    const at = B(3 + i * 0.45);
+    tl.fromTo(posts[k].querySelector('.hrt'), {scale: 0.2, opacity: 0}, {scale: 1, opacity: 1, duration: 0.2}, at);
+    tl.to(posts[k].querySelector('.hrt'), {scale: 1.3, opacity: 0, duration: 0.3}, at + 0.35);
+    for (let j = 0; j < 3; j++) {
+      const h = I.el('div', 'fh', $('#root'), I.icon('heart', {fill: 'currentColor', stroke: 'none'}));
+      const r = posts[k].getBoundingClientRect(); h.style.left = (r.left + r.width / 2 - 32 + (j - 1) * 40) + 'px'; h.style.top = (r.top + r.height / 2) + 'px';
+      tl.fromTo(h, {y: 0, opacity: 0, scale: 0.6}, {y: -260 - j * 60, opacity: 1, scale: 1, duration: 0.5, immediateRender: false}, at + 0.1 + j * 0.06);
+      tl.to(h, {opacity: 0, duration: 0.25}, at + 0.5 + j * 0.06);
+    }
+  });
+  // reel giữa nảy theo nhịp
+  [3.5, 4.5, 5.5].forEach((b) => tl.fromTo(posts[4], {scale: 1.07}, {scale: 1, duration: 0.3, immediateRender: false}, B(b)));
+  tl.fromTo('#notif', {y: -60, opacity: 0}, {y: 0, opacity: 1, duration: 0.4}, B(4.6));
+</script>
+</body>
+</html>
