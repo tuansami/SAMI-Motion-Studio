@@ -9,8 +9,8 @@ Cập nhật: 19.10.2026
 
 ## Đang làm / còn lại
 - [x] 9:16 xuất + SendUserFile (87 s, −13,9 LUFS, readcheck đạt, không khung đen)
-- [ ] 16:9 xuất + SendUserFile
-- [ ] Báo phiên điều phối session_01ENDrWfgWowxtPX9WgXNUEt
+- [x] 16:9 xuất + SendUserFile (87 s, −13,9 LUFS, readcheck đạt; 0,17 s navy ở 77,8 s là cột navy mọc lên, cố ý)
+- [x] Báo phiên điều phối session_01ENDrWfgWowxtPX9WgXNUEt
 
 ## Cách chạy lại (máy cloud)
 `export PLAYWRIGHT_CHROME=…headless_shell; sh build.sh 1080x1920` (hoặc `1920x1080`) → `out/SAMI_SA16_dataviz-van-dong_v1_<9x16|16x9>.mp4`. Ảnh tĩnh: `cd $LIB && node core/render/still.mjs <dự án> 10 40 --size 1080x1920`. Data: `python3 data/make_series.py`.
@@ -18,3 +18,4 @@ Cập nhật: 19.10.2026
 ## Ghi chú
 - Logo: dòng phụ "LEADING DIGITAL TECHNOLOGY" được cắt bằng clip khi vẽ end card (file SVG giữ nguyên).
 - Ngành nhà hàng không phải ngành tăng mạnh nhất (+19 %, thứ 7/8) → kể đúng: "không chừa ai", không nói "tệ nhất".
+- Worker bị khởi động lại giữa lúc xuất 16:9: video đã xong, chạy lại score.py + mux.sh bằng tay.
