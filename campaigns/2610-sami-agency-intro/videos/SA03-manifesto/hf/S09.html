@@ -37,7 +37,7 @@
   // mũi tên doanh thu: bậc thang từ trục bánh răng 4
   const G4 = M.G[3], NS = 'http://www.w3.org/2000/svg';
   const cam = M.preset(4);
-  const xr = cam.x + ((K.P ? 900 : 1560) - cam.sx) / cam.s;           // cột thẳng đứng của mũi tên (px màn hình → thế giới)
+  const xr = cam.x + ((K.P ? 900 : 1700) - cam.sx) / cam.s;           // cột thẳng đứng của mũi tên (px màn hình → thế giới)
   const pts = [[G4.x, G4.y], [xr, G4.y]];
   const rise = K.P ? 110 : 70, run = K.P ? 26 : 70;
   for (let i = 0; i < 18; i++) { const p = pts[pts.length - 1]; pts.push([p[0], p[1] - rise]); pts.push([p[0] + run, p[1] - rise]); }
