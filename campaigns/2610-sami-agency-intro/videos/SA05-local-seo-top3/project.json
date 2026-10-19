@@ -1,0 +1,296 @@
+{
+ "name": "SA05-local-seo-top3-khong-phai-may-man",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "mint": "#08DDA4",
+   "purple": "#7667FE",
+   "navy": "#0C0628"
+  }
+ },
+ "look": {
+  "grain": 0.0,
+  "vignette": 0.12
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook – gõ „Vietnamesisches Restaurant Berlin“, 10 làn rơi xuống",
+   "start": 0,
+   "end": 165,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Thứ 9, sau cả quán mới mở",
+   "start": 165,
+   "end": 345,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Top 3 được nhìn thấy, phía dưới bị lướt qua",
+   "start": 345,
+   "end": 510,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Giám khảo: món ngon ✕ / hồ sơ tốt ✓",
+   "start": 510,
+   "end": 735,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Chữ ký – 6 lần tăng tốc, leo lên hạng 1",
+   "start": 735,
+   "end": 1755,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "Ở lại đó, không trả tiền mỗi lượt bấm",
+   "start": 1755,
+   "end": 1935,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "Không mua link + báo cáo tháng, họp video",
+   "start": 1935,
+   "end": 2205,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "Nhịp thở + Top 3 không phải may mắn",
+   "start": 2205,
+   "end": 2415,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "End card SAMI + WhatsApp",
+   "start": 2415,
+   "end": 2625,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  }
+ ],
+ "copy": {
+  "S01_query": {
+   "label": "Chữ gõ trong ô tìm kiếm (tiếng Đức)",
+   "scene": "S01",
+   "value": "Vietnamesisches Restaurant Berlin"
+  },
+  "S01_headline": {
+   "label": "Telop mở đầu",
+   "scene": "S01",
+   "value": "Berlin, tối thứ Sáu. / Có người vừa tìm / *quán Việt.*"
+  },
+  "S02_q": {
+   "label": "Câu hỏi",
+   "scene": "S02",
+   "value": "Quán bạn đứng thứ mấy?"
+  },
+  "S02_headline": {
+   "label": "Câu trả lời (nỗi đau)",
+   "scene": "S02",
+   "value": "*Thứ 9.* / Sau cả quán mới mở tháng trước."
+  },
+  "S02_neu": {
+   "label": "Sticker quán mới",
+   "scene": "S02",
+   "value": "mới mở tháng trước"
+  },
+  "S02_you": {
+   "label": "Sticker quán của bạn",
+   "scene": "S02",
+   "value": "Quán của bạn"
+  },
+  "S03_headline": {
+   "label": "Telop Top 3",
+   "scene": "S03",
+   "value": "Ba quán đầu / được nhìn thấy trước. / Phía dưới, / *dễ bị lướt qua.*"
+  },
+  "S04_l1": {
+   "label": "Telop 1 (nỗi đau)",
+   "scene": "S04",
+   "value": "Bạn nấu ngon hơn quán bên cạnh. / Nhưng Google *không nếm được món ăn.*"
+  },
+  "S04_l2": {
+   "label": "Telop 2 (thông điệp chính)",
+   "scene": "S04",
+   "value": "Google chấm / *hồ sơ tốt nhất.*"
+  },
+  "S04_a": {
+   "label": "Bảng giám khảo trái",
+   "scene": "S04",
+   "value": "Món ngon nhất"
+  },
+  "S04_b": {
+   "label": "Bảng giám khảo phải",
+   "scene": "S04",
+   "value": "Hồ sơ tốt nhất"
+  },
+  "S05_intro": {
+   "label": "Telop mở cảnh chữ ký",
+   "scene": "S05",
+   "value": "SAMI vào cuộc. / *6 lần tăng tốc.*"
+  },
+  "S05_go": {
+   "label": "Chữ judgement mỗi lần tăng tốc",
+   "scene": "S05",
+   "value": "TĂNG TỐC!"
+  },
+  "S05_f1t": {
+   "label": "Yếu tố 1 – tiêu đề",
+   "scene": "S05",
+   "value": "Hồ sơ Google đầy đủ"
+  },
+  "S05_f1": {
+   "label": "Yếu tố 1 – mô tả",
+   "scene": "S05",
+   "value": "Giờ mở cửa, Speisekarte, dịch vụ: đủ từng ô."
+  },
+  "S05_f2t": {
+   "label": "Yếu tố 2 – tiêu đề",
+   "scene": "S05",
+   "value": "Ảnh thật, mới đều đặn"
+  },
+  "S05_f2": {
+   "label": "Yếu tố 2 – mô tả",
+   "scene": "S05",
+   "value": "Ảnh món, ảnh quán, thay mới thường xuyên."
+  },
+  "S05_f3t": {
+   "label": "Yếu tố 3 – tiêu đề",
+   "scene": "S05",
+   "value": "Review được trả lời"
+  },
+  "S05_f3": {
+   "label": "Yếu tố 3 – mô tả",
+   "scene": "S05",
+   "value": "Khen được cảm ơn. Chê được đáp tử tế."
+  },
+  "S05_f4t": {
+   "label": "Yếu tố 4 – tiêu đề",
+   "scene": "S05",
+   "value": "Thông tin khớp mọi nơi"
+  },
+  "S05_f4": {
+   "label": "Yếu tố 4 – mô tả",
+   "scene": "S05",
+   "value": "Tên, địa chỉ, số máy trùng khớp: Google, Apple Maps, Bing."
+  },
+  "S05_f5t": {
+   "label": "Yếu tố 5 – tiêu đề",
+   "scene": "S05",
+   "value": "Website chuẩn SEO"
+  },
+  "S05_f5": {
+   "label": "Yếu tố 5 – mô tả",
+   "scene": "S05",
+   "value": "30–60 từ khóa theo món, khu phố, „reservieren“."
+  },
+  "S05_f6t": {
+   "label": "Yếu tố 6 – tiêu đề",
+   "scene": "S05",
+   "value": "Google Posts đều đặn"
+  },
+  "S05_f6": {
+   "label": "Yếu tố 6 – mô tả",
+   "scene": "S05",
+   "value": "Hồ sơ lúc nào cũng có tín hiệu mới."
+  },
+  "S05_win": {
+   "label": "Chữ khi lên hạng 1",
+   "scene": "S05",
+   "value": "HẠNG 1"
+  },
+  "S06_headline": {
+   "label": "Telop bền vững",
+   "scene": "S06",
+   "value": "Và quán bạn *ở lại đó,* / không phải trả tiền / cho mỗi lượt bấm."
+  },
+  "S07_headline": {
+   "label": "Telop cam kết",
+   "scene": "S07",
+   "value": "SAMI không bao giờ mua link. / Không đánh cược *hồ sơ của bạn.*"
+  },
+  "S07_stamp": {
+   "label": "Con dấu (nguyên văn tiếng Đức)",
+   "scene": "S07",
+   "value": "Wir kaufen niemals Links."
+  },
+  "S07_report": {
+   "label": "Dòng báo cáo",
+   "scene": "S07",
+   "value": "Mỗi tháng: báo cáo rõ ràng / + họp video cùng bạn."
+  },
+  "S08_headline": {
+   "label": "Câu chốt",
+   "scene": "S08",
+   "value": "Top 3 trên bản đồ / không phải may mắn. / Đó là *một hồ sơ / được chăm đúng cách.*"
+  },
+  "S09_cta": {
+   "label": "Bong bóng chat – lời mời",
+   "scene": "S09",
+   "value": "Nhắn WhatsApp cho SAMI"
+  },
+  "S09_phone": {
+   "label": "Bong bóng chat – số WhatsApp",
+   "scene": "S09",
+   "value": "+49 155 60456888"
+  },
+  "S09_offer": {
+   "label": "Dòng ưu đãi",
+   "scene": "S09",
+   "value": "Phân tích marketing miễn phí, / gồm cả hồ sơ Google Maps của quán. / Không ràng buộc, phản hồi trong 24 giờ."
+  },
+  "S09_tagline": {
+   "label": "Tagline dưới logo",
+   "scene": "S09",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S09_web": {
+   "label": "Website",
+   "scene": "S09",
+   "value": "sami-agency.de"
+  }
+ },
+ "status": "draft",
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": []
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 1.5
+  },
+  "cues": []
+ }
+}

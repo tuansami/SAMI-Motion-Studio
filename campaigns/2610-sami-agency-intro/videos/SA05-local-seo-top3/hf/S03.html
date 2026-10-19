@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="hf/parts/lr.css">
+<style>
+  /* S03 · TOP 3: khung vàng rơi xuống ôm 3 làn đầu; ngón tay lướt qua phần dưới, làn 4–10 chìm xám */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 228px; font-size: 80px; }
+  #thumb { position: absolute; z-index: 16; width: 96px; height: 96px; margin: -48px 0 0 -48px; border-radius: 50%; background: var(--cream); border: 5px solid var(--ink); box-shadow: 7px 7px 0 var(--ink); }
+  #thumb:after { content: ""; position: absolute; left: 22px; top: 96px; width: 42px; height: 220px; background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .95) 0 6px, rgba(0, 0, 0, 0) 6px 14px); }
+  #demo { right: 72px; top: 1534px; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 800px; top: 200px; font-size: 84px; }
+  [data-ratio="16x9"] #demo { right: 90px; top: 990px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S03">
+  <div class="set st-sky" id="set"></div>
+  <div class="tp" id="hd" data-copy="S03_headline"></div>
+  <div id="bd"></div>
+  <div class="top3" id="top3"><span class="lab">TOP 3</span></div>
+  <div id="thumb"></div>
+  <div class="demo" id="demo">Minh họa</div>
+</div>
+<script src="hf/parts/race.js"></script>
+<script>
+  const S = window.SAMI, R = window.LR, tl = S.timeline(), $ = (s) => document.querySelector(s);
+  const B = R.board($('#bd')), g = B.g;
+  const T_BOX = 0.55, T_SWIPE = [2.3, 3.0], T_DIM = 2.5;
+  const box = $('#top3'); const pad = 14;
+  box.style.left = (g.x - pad) + 'px'; box.style.top = (g.y - pad) + 'px';
+  box.style.width = (g.w + pad * 2) + 'px'; box.style.height = (g.step * 3 - g.gap + pad * 2) + 'px';
+  const tx = g.x + g.w * 0.62, yA = g.y + g.step * 10.4, yB = g.y + g.step * 3.2;
+  R.clock(tl, (t) => {
+    R.scroll($('#set'), t, -20, 0);
+    const vals = B.vals(t, 52);
+    const sw = R.E(t, T_SWIPE[0], T_SWIPE[1]);
+    B.set(vals, {
+      drop: (i, p) => p > 2.5 ? -26 * Math.sin(Math.PI * R.L(t, T_SWIPE[0] + (9 - p) * 0.05, T_SWIPE[0] + (9 - p) * 0.05 + 0.45)) : 0,
+      dim: (i, p) => p > 2.5 ? R.E(t, T_DIM + (p - 3) * 0.06, T_DIM + 0.6 + (p - 3) * 0.06) : 0
+    });
+    B.slots.forEach((s, i) => { s.style.opacity = i > 2 ? (1 - 0.55 * R.E(t, T_DIM, T_DIM + 0.6)).toFixed(3) : 1; });
+    const by = R.drop(t, T_BOX - 0.4, T_BOX, 1200);
+    box.style.transform = 'translateY(' + by.toFixed(1) + 'px) scale(' + (1 + R.wob(t, T_BOX, 0.04)).toFixed(4) + ')';
+    box.style.opacity = t > T_BOX - 0.4 ? 1 : 0;
+    const th = $('#thumb');
+    th.style.left = tx + 'px'; th.style.top = R.mix(yA, yB, sw) + 'px';
+    th.style.opacity = t > T_SWIPE[0] - 0.15 && t < T_SWIPE[1] + 0.25 ? 1 : 0;
+  });
+  R.popIn(tl, S.words($('#hd')), 0.35, {stagger: 0.06});
+  R.popIn(tl, '#demo', 0.4, {dy: 0});
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/900.css">
+<link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="hf/parts/lr.css">
+<style>
+  /* S01 · HOOK: ô tìm kiếm rơi xuống nảy, gõ „Vietnamesisches Restaurant Berlin", Enter → 10 làn kết quả rơi xuống thành bảng đua */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 228px; font-size: 84px; }
+  #search { position: absolute; z-index: 15; left: 72px; width: 936px; height: 106px; top: 0; background: var(--cream); display: flex; align-items: center; gap: 18px; padding: 0 28px; box-sizing: border-box; transform-origin: 50% 100%; }
+  #search svg { width: 46px; height: 46px; flex: none; }
+  #q { font: 600 38px/1 "Be Vietnam Pro", sans-serif; color: var(--ink); white-space: nowrap; }
+  #caret { display: inline-block; width: 4px; height: 44px; background: var(--purple); margin-left: 4px; vertical-align: middle; }
+  #gm { position: absolute; left: 22px; top: -40px; font: 600 20px/1 "IBM Plex Mono", monospace; letter-spacing: .08em; color: var(--ink); background: var(--yellow); border: 4px solid var(--ink); border-bottom: 0; border-radius: 10px 10px 0 0; padding: 8px 14px 10px; }
+  #demo { right: 72px; top: 1524px; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 820px; top: 150px; font-size: 84px; }
+  [data-ratio="16x9"] #search { left: 110px; width: 800px; height: 104px; }
+  [data-ratio="16x9"] #q { font-size: 33px; }
+  [data-ratio="16x9"] #demo { left: auto; right: 90px; top: 990px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S01">
+  <div class="set st-purple" id="set"></div>
+  <div class="tp" id="hd" data-copy="S01_headline"></div>
+  <div class="blk" id="search">
+    <span id="gm">Google Maps</span>
+    <svg viewBox="0 0 46 46" fill="none" stroke="#0C0628" stroke-width="5" stroke-linecap="round"><circle cx="19" cy="19" r="13"/><path d="M29 29 L41 41"/></svg>
+    <span id="q"></span><span id="caret"></span>
+  </div>
+  <div id="bd"></div>
+  <div class="demo" id="demo">Minh họa</div>
+</div>
+<script src="hf/parts/race.js"></script>
+<script>
+  const S = window.SAMI, R = window.LR, tl = S.timeline(), $ = (s) => document.querySelector(s);
+  const L16 = S.landscape;
+  const B = R.board($('#bd'));
+  const QUERY = S.text('S01_query');
+  const T_TYPE = [0.75, 2.35], T_ENTER = 2.55, T_ROWS = 2.85;
+  const Y0 = L16 ? 690 : 800, Y1 = L16 ? 690 : 590; // ô tìm kiếm: giữa màn → lên trên bảng
+  R.clock(tl, (t) => {
+    R.scroll($('#set'), t, 22, 0);
+    // ô tìm kiếm: rơi + nảy, rồi nhấn Enter (nén), rồi trượt lên
+    const dy = R.drop(t, 0.12, 0.5, 1100);
+    const up = R.E(t, T_ENTER + 0.1, T_ENTER + 0.6);
+    const press = t > T_ENTER ? 1 - 0.06 * Math.exp(-(t - T_ENTER) * 10) * Math.sin((t - T_ENTER) * 22 + 1.5) : 1;
+    $('#search').style.transform = 'translateY(' + (R.mix(Y0, Y1, up) + dy).toFixed(1) + 'px) scaleY(' + (t < T_ENTER ? 1 : press).toFixed(3) + ')';
+    $('#q').textContent = R.typed(QUERY, t, T_TYPE[0], T_TYPE[1]);
+    $('#caret').style.opacity = (t < T_ENTER + 0.4 && Math.floor(t * 3) % 2 === 0) ? 1 : (t < T_TYPE[1] && t > T_TYPE[0] ? 1 : 0);
+    // 10 làn rơi xuống từng làn một (mỗi nửa nhịp), thanh mọc ra
+    const vals = B.vals(t, 52);
+    B.set(vals, {growI: (i) => R.E(t, T_ROWS + i * 0.25, T_ROWS + i * 0.25 + 0.5)});
+    B.slots.forEach((s, i) => { const k = R.pop(t, T_ROWS + i * 0.25 - 0.05); s.style.transform = 'scale(' + k.toFixed(3) + ')'; s.style.opacity = k > 0 ? 1 : 0; });
+  });
+  R.popIn(tl, S.words($('#hd')), 0.35, {stagger: 0.07});
+  R.popIn(tl, '#demo', T_ROWS + 2.4, {dy: 0});
+</script>
+</body>
+</html>
