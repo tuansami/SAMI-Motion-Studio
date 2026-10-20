@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/fredoka/700.css">
+<link rel="stylesheet" href="_fonts/lora/700.css">
+<link rel="stylesheet" href="_fonts/lora/400.css">
+<link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="_fonts/caveat/700.css">
+<link rel="stylesheet" href="_fonts/oswald/600.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S01 · HOOK: 4 ấn phẩm "Quán Mây" (hư cấu) lệch tông đập xuống → bạc màu, tên nhoè → tan thành nét blueprint */
+  [data-composition-id] { background: #141317; }
+  #desk { position: absolute; inset: 0; z-index: 0; background: radial-gradient(80% 60% at 50% 55%, #2A2730 0%, #17161B 60%, #0F0E12 100%); }
+  #bp { position: absolute; inset: 0; z-index: 1; opacity: 0; }
+  #shake { position: absolute; inset: 0; z-index: 5; }
+  .pc { position: absolute; z-index: 5; box-shadow: 0 30px 60px rgba(0, 0, 0, .55); will-change: transform, filter; }
+  .gh { position: absolute; z-index: 4; border: 2px solid var(--cy); opacity: 0; }
+  /* logo tròn đỏ */
+  #pA { width: 380px; height: 380px; border-radius: 50%; background: #FFF8EC; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  #pA .nm { font: 700 66px/1.1 "Fredoka", sans-serif; color: #E2262B; letter-spacing: -.01em; }
+  #pA svg { width: 150px; }
+  /* menu giấy vàng, serif */
+  #pB { width: 360px; height: 500px; background: #F4E3A1; padding: 34px 30px; box-sizing: border-box; font-family: "Lora", serif; color: #3B2A12; }
+  #pB .nm { font: 700 44px/1.15 "Lora", serif; text-align: center; border-bottom: 3px double #3B2A12; padding-bottom: 14px; }
+  #pB .r { display: flex; justify-content: space-between; font: 400 24px/1 "Lora", serif; margin-top: 26px; }
+  #pB .r span:nth-child(2) { flex: 1; border-bottom: 2px dotted #3B2A12; margin: 0 8px 4px; }
+  /* bài đăng neon hồng */
+  #pC { width: 400px; height: 400px; background: #FF2E93; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  #pC .big { font: 400 66px/1 "Anton", sans-serif; color: #FFF200; letter-spacing: .02em; white-space: nowrap; transform: rotate(-6deg); text-shadow: 6px 6px 0 #5B00FF; }
+  #pC .nm { font: 700 58px/1.1 "Caveat", cursive; color: #fff; margin-top: 18px; }
+  #pC .hd2 { position: absolute; left: 0; right: 0; top: 0; height: 52px; background: #fff; display: flex; align-items: center; gap: 10px; padding: 0 14px; }
+  #pC .hd2 i { width: 30px; height: 30px; border-radius: 50%; background: #FFB3D6; display: block; }
+  #pC .hd2 b { width: 120px; height: 12px; border-radius: 6px; background: #DDD; display: block; }
+  /* biển hiệu xanh lá, có bóng đèn */
+  #pD { width: 520px; height: 190px; background: #0E7A3A; border: 10px solid #E9E2C9; border-radius: 10px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
+  #pD .nm { font: 600 92px/1 "Oswald", sans-serif; color: #fff; letter-spacing: .08em; }
+  #pD .bulb { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #FFE58A; box-shadow: 0 0 14px #FFD24A; }
+  #t1, #t2 { text-align: left; }
+  /* bố cục 9:16 */
+  #pA { left: 80px; top: 720px; } #pB { left: 610px; top: 660px; } #pC { left: 100px; top: 1170px; } #pD { left: 480px; top: 1350px; }
+  [data-ratio="9x16"] #shake { transform-origin: 50% 60%; }
+  [data-ratio="16x9"] #pA { left: 900px; top: 130px; } [data-ratio="16x9"] #pB { left: 1390px; top: 90px; }
+  [data-ratio="16x9"] #pC { left: 880px; top: 560px; } [data-ratio="16x9"] #pD { left: 1310px; top: 700px; }
+  [data-ratio="16x9"] #t1, [data-ratio="16x9"] #t2 { top: 360px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S01">
+  <div id="desk"></div>
+  <div id="bp"><div class="paper" id="paper"></div></div>
+  <div id="shake">
+    <div class="gh" id="gA" style="border-radius:50%"></div><div class="gh" id="gB"></div><div class="gh" id="gC"></div><div class="gh" id="gD"></div>
+    <div class="pc" id="pA">
+      <svg viewBox="0 0 160 90"><path d="M10 34 H150 A70 52 0 0 1 10 34 Z" fill="#E2262B"/><path d="M52 26 q-9 -11 0 -22 M80 26 q-9 -11 0 -22 M108 26 q-9 -11 0 -22" fill="none" stroke="#E2262B" stroke-width="6" stroke-linecap="round"/></svg>
+      <div class="nm" data-copy="S01_name"></div>
+    </div>
+    <div class="pc" id="pB">
+      <div class="nm" id="nB"></div>
+      <div class="r"><span>Phở bò</span><span></span><span>14,90</span></div>
+      <div class="r"><span>Bún chả</span><span></span><span>13,50</span></div>
+      <div class="r"><span>Nem rán</span><span></span><span>6,90</span></div>
+      <div class="r"><span>Gỏi cuốn</span><span></span><span>6,50</span></div>
+      <div class="r"><span>Cơm rang</span><span></span><span>12,90</span></div>
+      <div class="r"><span>Chè</span><span></span><span>4,90</span></div>
+    </div>
+    <div class="pc" id="pC"><div class="hd2"><i></i><b></b></div><div class="big">KHAI TRƯƠNG!!!</div><div class="nm" id="nC"></div></div>
+    <div class="pc" id="pD"><div class="nm" id="nD"></div></div>
+  </div>
+  <div class="hd top" id="t1" data-copy="S01_t1"></div>
+  <div class="hd top" id="t2" data-copy="S01_t2"></div>
+  <div class="vig"></div>
+</div>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$;
+  const nm = S.text('S01_name');
+  // mỗi ấn phẩm viết tên quán một kiểu
+  $('#nB').textContent = nm.toUpperCase();
+  $('#nC').textContent = nm.toLowerCase();
+  $('#nD').textContent = nm.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toUpperCase();
+  const pD = $('#pD');
+  for (let i = 0; i < 9; i++) ['top', 'bottom'].forEach((side) => { const b = document.createElement('div'); b.className = 'bulb'; b.style.left = (22 + i * 58) + 'px'; b.style[side] = '-28px'; pD.appendChild(b); });
+  // khung "ma" blueprint trùng vị trí từng ấn phẩm
+  const P = ['A', 'B', 'C', 'D'].map((k, i) => {
+    const el = $('#p' + k), g = $('#g' + k);
+    B.box(g, el.offsetLeft, el.offsetTop, el.offsetWidth, el.offsetHeight);
+    return {el, g, nm: el.querySelector('.nm'), t: 0.4 + i * 0.68, rot: [-8, 5, -4, 3][i], dx: [-1, 1, -1, 1][i], dy: [-1, -1, 1, 1][i]};
+  });
+  B.clock(tl, (t) => {
+    // rung khung khi mỗi ấn phẩm đập xuống
+    let sx = 0, sy = 0;
+    P.forEach((p, i) => { sx += 26 * B.wob(t, p.t, 1, 40) * (i % 2 ? 1 : -1); sy += 18 * B.wob(t, p.t, 1, 33); });
+    $('#shake').style.transform = 'translate(' + sx.toFixed(1) + 'px,' + sy.toFixed(1) + 'px)';
+    const gray = B.E(t, 5.2, 6.6), fade = B.E(t, 7.6, 8.6);
+    P.forEach((p, i) => {
+      const u = B.E(t, p.t - 0.22, p.t), k = t < p.t - 0.22 ? 0 : 1.9 - 0.9 * u + B.wob(t, p.t, 0.06);
+      const drift = B.E(t, 5.2, 9.2);
+      const x = p.dx * 70 * drift, y = p.dy * 50 * drift;
+      p.el.style.opacity = (t < p.t - 0.22 ? 0 : B.L(t, p.t - 0.22, p.t - 0.1)) * (1 - fade);
+      p.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + (p.rot * (1 + 0.6 * drift)).toFixed(2) + 'deg) scale(' + (k * (1 - 0.08 * drift)).toFixed(4) + ')';
+      p.el.style.filter = gray > 0.001 ? 'grayscale(' + gray.toFixed(2) + ') brightness(' + (1 - 0.35 * gray).toFixed(2) + ')' : 'none';
+      // tên quán nhoè dần như trí nhớ phai
+      p.nm.style.filter = 'blur(' + (14 * B.E(t, 5.8 + i * 0.25, 7.6 + i * 0.2)).toFixed(1) + 'px)';
+      p.g.style.opacity = (B.E(t, 7.4, 8.2) * (0.9 - 0.5 * B.E(t, 8.8, 9.3))).toFixed(3);
+      p.g.style.transform = p.el.style.transform.replace(/scale\([^)]*\)/, 'scale(' + (1 - 0.08 * drift).toFixed(4) + ')');
+    });
+    $('#bp').style.opacity = B.E(t, 7.7, 9.0).toFixed(3);
+    $('#paper').style.transform = 'translate(' + (-t * 6).toFixed(1) + 'px,' + (-t * 4).toFixed(1) + 'px)';
+  });
+  B.rise(tl, S.words($('#t1')), 0.4, {stagger: 0.12});
+  B.fall(tl, '#t1', 4.95);
+  B.rise(tl, S.words($('#t2')), 5.3, {stagger: 0.1});
+</script>
+</body>
+</html>

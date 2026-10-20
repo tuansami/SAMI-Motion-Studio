@@ -1,0 +1,320 @@
+{
+ "name": "SA06-branding-mot-thuong-hieu-duoc-dung-the-nao",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "mint": "#08DDA4",
+   "purple": "#7667FE",
+   "navy": "#0C0628"
+  }
+ },
+ "look": {
+  "grain": 0.04,
+  "vignette": 0.14
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook – 4 ấn phẩm lệch tông, khách quên tên quán",
+   "start": 0,
+   "end": 270,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Bước ngoặt – thương hiệu bắt đầu từ câu chuyện (blueprint)",
+   "start": 270,
+   "end": 450,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Moodboard Mizuki + concept Warm Lantern Dining",
+   "start": 450,
+   "end": 660,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Dựng logo trên lưới hình học ×16",
+   "start": 660,
+   "end": 930,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "★ Chữ ký – đèn lồng bật sáng, đổi màu toàn khung",
+   "start": 930,
+   "end": 1050,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "Bảng màu – swatch quay, chọn 2 palette",
+   "start": 1050,
+   "end": 1275,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "Typography – Cormorant + Inter",
+   "start": 1275,
+   "end": 1485,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "Brand board hoàn chỉnh",
+   "start": 1485,
+   "end": 1650,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "Ấn phẩm thật lật nhanh",
+   "start": 1650,
+   "end": 1890,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "Mọi điểm chạm nói cùng một giọng",
+   "start": 1890,
+   "end": 2070,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "3 lợi ích",
+   "start": 2070,
+   "end": 2340,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  },
+  {
+   "id": "S12",
+   "label": "End card SAMI + WhatsApp",
+   "start": 2340,
+   "end": 2610,
+   "engine": "hyperframes",
+   "src": "hf/S12.html"
+  }
+ ],
+ "copy": {
+  "S01_t1": {
+   "label": "Câu 1 (ấn phẩm lệch tông)",
+   "scene": "S01",
+   "value": "Logo một kiểu. Menu một kiểu. / Instagram lại / *một kiểu khác.*"
+  },
+  "S01_t2": {
+   "label": "Câu 2 (nỗi đau)",
+   "scene": "S01",
+   "value": "Và khách ra về / *không nhớ nổi tên quán.*"
+  },
+  "S01_name": {
+   "label": "Tên quán tưởng tượng trên ấn phẩm",
+   "scene": "S01",
+   "value": "Quán Mây"
+  },
+  "S02_tag": {
+   "label": "Nhãn kỹ thuật góc trên",
+   "scene": "S02",
+   "value": "BRAND · 01 · CÂU CHUYỆN"
+  },
+  "S02_headline": {
+   "label": "Câu bước ngoặt",
+   "scene": "S02",
+   "value": "Thương hiệu không bắt đầu từ logo. / Nó bắt đầu từ *một câu chuyện.*"
+  },
+  "S03_tag": {
+   "label": "Nhãn case thật",
+   "scene": "S03",
+   "value": "Case thật · Mizuki, Baden-Baden"
+  },
+  "S03_headline": {
+   "label": "Câu moodboard",
+   "scene": "S03",
+   "value": "Với Mizuki, câu chuyện ấy là / *gỗ ấm và ánh đèn lồng.*"
+  },
+  "S03_chips": {
+   "label": "Chip từ khoá (cách nhau bằng |)",
+   "scene": "S03",
+   "value": "gỗ ấm|đèn lồng|tỉ mỉ|Á Đông"
+  },
+  "S03_concept": {
+   "label": "Tên concept trên artboard",
+   "scene": "S03",
+   "value": "Warm Lantern Dining"
+  },
+  "S04_tag": {
+   "label": "Nhãn quy trình",
+   "scene": "S04",
+   "value": "Tái hiện quy trình · tua nhanh ×16"
+  },
+  "S04_headline": {
+   "label": "Câu dựng logo",
+   "scene": "S04",
+   "value": "Phác thảo bằng bút chì, / rồi dựng trên *lưới hình học,* / từng đường cong một."
+  },
+  "S05_headline": {
+   "label": "Câu đèn bật",
+   "scene": "S05",
+   "value": "Và rồi, đèn lồng / *được thắp sáng.*"
+  },
+  "S06_headline": {
+   "label": "Câu bảng màu",
+   "scene": "S06",
+   "value": "Thử thật nhiều bảng màu, / giữ lại hai: *đỏ đèn lồng* / và *kem ánh đồng.*"
+  },
+  "S06_pa": {
+   "label": "Tên palette A",
+   "scene": "S06",
+   "value": "Burgundy Lantern"
+  },
+  "S06_pb": {
+   "label": "Tên palette B",
+   "scene": "S06",
+   "value": "Cream & Brass"
+  },
+  "S07_headline": {
+   "label": "Câu typography",
+   "scene": "S07",
+   "value": "Chữ cũng có giọng nói: / Cormorant *sang trọng,* / Inter *dễ đọc.*"
+  },
+  "S07_sample": {
+   "label": "Dòng mẫu thử font",
+   "scene": "S07",
+   "value": "Warm Lantern Dining"
+  },
+  "S07_slogan": {
+   "label": "Slogan Mizuki (Cormorant nghiêng)",
+   "scene": "S07",
+   "value": "Sorgfalt in jedem Detail"
+  },
+  "S07_body": {
+   "label": "Đoạn mẫu Inter",
+   "scene": "S07",
+   "value": "Frische Aromen aus ganz Asien, mit Liebe zubereitet in Baden-Baden."
+  },
+  "S08_headline": {
+   "label": "Câu brand board",
+   "scene": "S08",
+   "value": "Tất cả gói lại trong / *một bộ nhận diện.*"
+  },
+  "S09_headline": {
+   "label": "Câu ứng dụng",
+   "scene": "S09",
+   "value": "Rồi bước ra đời thật: / menu, Gutschein, danh thiếp, / túi mang đi và website."
+  },
+  "S09_tag": {
+   "label": "Nhãn ấn phẩm thật",
+   "scene": "S09",
+   "value": "Ấn phẩm thật · Mizuki"
+  },
+  "S09_labels": {
+   "label": "Nhãn 5 thẻ (cách nhau bằng |)",
+   "scene": "S09",
+   "value": "Speisekarte|Gutschein|Sticker & túi mang đi|Danh thiếp & thực đơn|Website"
+  },
+  "S10_headline": {
+   "label": "Câu thông điệp",
+   "scene": "S10",
+   "value": "Khách nhớ một quán / khi mọi điểm chạm / *nói cùng một giọng.*"
+  },
+  "S11_kicker": {
+   "label": "Dòng dẫn",
+   "scene": "S11",
+   "value": "Một thương hiệu rõ ràng giúp quán bạn"
+  },
+  "S11_b1t": {
+   "label": "Thẻ 1 tiêu đề",
+   "scene": "S11",
+   "value": "Được nhớ tên"
+  },
+  "S11_b1": {
+   "label": "Thẻ 1 dòng phụ",
+   "scene": "S11",
+   "value": "Khách nhắc lại, giới thiệu cho người quen."
+  },
+  "S11_b2t": {
+   "label": "Thẻ 2 tiêu đề",
+   "scene": "S11",
+   "value": "Tự tin định giá"
+  },
+  "S11_b2": {
+   "label": "Thẻ 2 dòng phụ",
+   "scene": "S11",
+   "value": "Quán trông xứng với giá trị món ăn."
+  },
+  "S11_b3t": {
+   "label": "Thẻ 3 tiêu đề",
+   "scene": "S11",
+   "value": "Nhất quán mọi nơi"
+  },
+  "S11_b3": {
+   "label": "Thẻ 3 dòng phụ",
+   "scene": "S11",
+   "value": "Từ biển hiệu, menu tới website."
+  },
+  "S12_cta": {
+   "label": "Nút CTA",
+   "scene": "S12",
+   "value": "Nhắn WhatsApp cho SAMI"
+  },
+  "S12_phone": {
+   "label": "Số WhatsApp",
+   "scene": "S12",
+   "value": "+49 155 60456888"
+  },
+  "S12_offer": {
+   "label": "Ưu đãi",
+   "scene": "S12",
+   "value": "Phân tích marketing miễn phí cho quán. / Không ràng buộc, phản hồi trong 24 giờ."
+  },
+  "S12_tagline": {
+   "label": "Tagline",
+   "scene": "S12",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S12_web": {
+   "label": "Website",
+   "scene": "S12",
+   "value": "sami-agency.de"
+  }
+ },
+ "status": "draft",
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": []
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 1.5
+  },
+  "cues": []
+ }
+}

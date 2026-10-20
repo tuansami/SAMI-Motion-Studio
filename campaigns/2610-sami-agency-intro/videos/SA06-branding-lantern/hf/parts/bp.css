@@ -1,0 +1,86 @@
+/* SA06 · "Blueprint → Lantern": giấy kỹ thuật xanh, công cụ thiết kế vẽ bằng code (không nhãn hiệu), rồi tông đèn lồng Mizuki */
+:root {
+  --bp: #0A2540; --bp2: #0E3354; --bpl: rgba(190, 225, 255, .15); --bpm: rgba(190, 225, 255, .055); --cy: #8FD8FF;
+  --bur: #572D2C; --bur2: #392014; --rose: #C08382; --cream: #F3F0ED; --brass: #C0A076; --brass2: #604D35; --gold: #E2C18E;
+  --ui: #16171C; --ui2: #1E1F26; --ui3: #2A2C35; --uit: #9EA1B0; --sel: #3D8BFF;
+}
+[data-composition-id] { background: var(--bp); }
+
+/* nền: giấy blueprint (lưới lớn 120 + lưới nhỏ 24) và nền đèn lồng ấm */
+.paper { position: absolute; inset: -240px; z-index: 0; background-color: var(--bp); will-change: transform;
+  background-image: linear-gradient(var(--bpl) 2px, transparent 2px), linear-gradient(90deg, var(--bpl) 2px, transparent 2px),
+    linear-gradient(var(--bpm) 1px, transparent 1px), linear-gradient(90deg, var(--bpm) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px; }
+.paper.brass { background-color: transparent;
+  background-image: linear-gradient(rgba(226, 193, 142, .12) 2px, transparent 2px), linear-gradient(90deg, rgba(226, 193, 142, .12) 2px, transparent 2px),
+    linear-gradient(rgba(226, 193, 142, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(226, 193, 142, .04) 1px, transparent 1px); }
+.warm { position: absolute; inset: 0; z-index: 0; background: radial-gradient(110% 75% at 50% 42%, #6E3735 0%, #45231A 52%, #22120C 100%); }
+.glow { position: absolute; z-index: 1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 214, 150, .55) 0%, rgba(226, 160, 100, .22) 35%, rgba(200, 120, 80, 0) 70%); }
+.vig { position: absolute; inset: 0; z-index: 30; pointer-events: none; background: radial-gradient(120% 90% at 50% 45%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, .38) 100%); }
+
+/* chữ: blueprint = Be Vietnam Pro trắng, nhấn xanh nhạt · lantern = Cormorant kem, nhấn đồng nghiêng */
+.hd { position: absolute; z-index: 20; font: 800 62px/1.25 "Be Vietnam Pro", sans-serif; letter-spacing: -.015em; color: #fff; text-wrap: balance; }
+.hd em.hl, .hd em.hl .w { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--cy); }
+.hd .w { padding-bottom: .05em; }
+.hd.lan { font: 600 86px/1.16 "Cormorant", serif; letter-spacing: 0; color: var(--cream); }
+.hd.lan em.hl { font-style: italic; }
+.hd.lan em.hl, .hd.lan em.hl .w { color: var(--gold); }
+.lbl { position: absolute; z-index: 20; white-space: nowrap; font: 500 23px/1 "JetBrains Mono", monospace; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--cy); padding: 10px 14px; border: 2px solid rgba(143, 216, 255, .6); border-radius: 6px; background: rgba(10, 37, 64, .6); }
+.lbl.lan { color: var(--gold); border-color: rgba(226, 193, 142, .55); background: rgba(34, 18, 12, .55); }
+
+/* vị trí chữ chuẩn theo tỉ lệ */
+.top { left: 80px; right: 80px; top: 250px; }
+.tagpos { left: 80px; top: 186px; }
+[data-ratio="16x9"] .top { left: 110px; right: auto; width: 680px; top: 330px; }
+[data-ratio="16x9"] .tagpos { left: 110px; top: 250px; }
+[data-ratio="16x9"] .hd { font-size: 60px; }
+[data-ratio="16x9"] .hd.lan { font-size: 80px; }
+
+/* ── công cụ thiết kế (không nhãn hiệu) ── */
+.tool { position: absolute; z-index: 10; background: var(--ui); border-radius: 22px; overflow: hidden;
+  box-shadow: 0 50px 110px rgba(0, 0, 0, .55), 0 0 0 2px rgba(255, 255, 255, .07); }
+.tool .bar { position: absolute; left: 0; right: 0; top: 0; height: 58px; display: flex; align-items: center; gap: 14px; padding: 0 20px; box-sizing: border-box;
+  background: var(--ui2); border-bottom: 1px solid rgba(255, 255, 255, .06); font: 500 19px/1 "JetBrains Mono", monospace; color: var(--uit); }
+.tool .dots { display: flex; gap: 9px; } .tool .dots i { width: 14px; height: 14px; border-radius: 50%; background: #3A3C47; display: block; }
+.tool .file { flex: 1; text-align: center; white-space: nowrap; overflow: hidden; }
+.tool .zoom { color: #C9CBD6; }
+.tool .ff { display: flex; align-items: center; gap: 9px; color: #fff; background: #B8373B; border-radius: 8px; padding: 7px 11px; font-weight: 700; white-space: nowrap; }
+.tool .ff .rec { width: 11px; height: 11px; border-radius: 50%; background: #fff; }
+.tool .side { position: absolute; left: 0; top: 58px; bottom: 0; width: 66px; background: var(--ui2); display: flex; flex-direction: column; align-items: center; padding-top: 14px; gap: 6px; box-sizing: border-box; }
+.tool .side svg { width: 46px; height: 46px; padding: 8px; box-sizing: border-box; border-radius: 9px; }
+.tool .side svg.on { background: var(--sel); }
+.tool .cv { position: absolute; left: 66px; top: 58px; right: 0; bottom: 0; overflow: hidden; background: var(--bp2); }
+.tool .cv .paper { inset: -400px; }
+.tool .panel { position: absolute; right: 0; top: 58px; bottom: 0; width: 250px; background: var(--ui2); border-left: 1px solid rgba(255, 255, 255, .06);
+  padding: 18px 16px; box-sizing: border-box; font: 500 17px/1 "JetBrains Mono", monospace; color: var(--uit); display: none; }
+.tool .panel h6 { margin: 0 0 14px; font: 700 15px/1 "JetBrains Mono", monospace; letter-spacing: .14em; color: #6F7282; }
+.tool .panel .ly { display: flex; align-items: center; gap: 10px; padding: 10px 8px; border-radius: 7px; white-space: nowrap; }
+.tool .panel .ly i { width: 18px; height: 14px; border: 2px solid #6F7282; border-radius: 3px; display: block; flex: none; }
+.tool .panel .ly.on { background: rgba(61, 139, 255, .25); color: #fff; }
+.tool .props { position: absolute; left: 66px; right: 0; bottom: 0; height: 62px; background: var(--ui2); border-top: 1px solid rgba(255, 255, 255, .06);
+  display: flex; align-items: center; gap: 26px; padding: 0 22px; box-sizing: border-box; font: 500 18px/1 "JetBrains Mono", monospace; color: var(--uit); white-space: nowrap; }
+.tool .props b { color: #E6E7EE; font-weight: 600; }
+[data-ratio="16x9"] .tool .panel { display: block; }
+[data-ratio="16x9"] .tool .cv { right: 250px; }
+[data-ratio="16x9"] .tool .props { right: 250px; }
+.tool.lan .ff { background: #8E5A2E; }
+.tool.lan .side svg.on { background: #8E6A3E; }
+.tool.lan .panel .ly.on { background: rgba(192, 160, 118, .25); }
+
+/* vị trí cửa sổ công cụ theo tỉ lệ */
+.tool.std { left: 60px; right: 60px; top: 600px; height: 1010px; }
+[data-ratio="16x9"] .tool.std { left: 840px; right: 80px; top: 100px; height: 880px; }
+
+/* artboard logic 800×800, được scale vừa canvas */
+.art { position: absolute; left: 50%; top: 50%; width: 800px; height: 800px; margin: -400px 0 0 -400px; }
+
+/* khung chọn + tay nắm */
+.selb { position: absolute; border: 2px solid var(--sel); pointer-events: none; z-index: 6; }
+.selb i { position: absolute; width: 12px; height: 12px; background: #fff; border: 2px solid var(--sel); box-sizing: border-box; }
+.selb i:nth-child(1) { left: -7px; top: -7px; } .selb i:nth-child(2) { right: -7px; top: -7px; }
+.selb i:nth-child(3) { left: -7px; bottom: -7px; } .selb i:nth-child(4) { right: -7px; bottom: -7px; }
+.selb.lan, .selb.lan i { border-color: var(--brass); }
+.cursor { position: absolute; z-index: 40; width: 40px; height: 40px; pointer-events: none; will-change: transform; }
+.mono { font-family: "JetBrains Mono", monospace; }

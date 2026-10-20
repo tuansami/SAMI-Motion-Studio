@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/700.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S02 · BƯỚC NGOẶT: blueprint toàn khung, compa vẽ vòng tròn + trục, rồi cửa sổ công cụ trượt vào (match sang S03) */
+  #geo { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; overflow: visible; }
+  #geo .ln { fill: none; stroke: rgba(190, 225, 255, .75); stroke-width: 2; }
+  #geo .dim { fill: none; stroke: rgba(143, 216, 255, .55); stroke-width: 1.5; stroke-dasharray: 8 8; }
+  #geo text { font: 500 20px "JetBrains Mono", monospace; fill: var(--cy); letter-spacing: .1em; }
+  #arm { transform-box: view-box; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02">
+  <div class="paper" id="paper"></div>
+  <svg id="geo"></svg>
+  <div class="lbl tagpos" id="tag" data-copy="S02_tag"></div>
+  <div class="hd top" id="hd" data-copy="S02_headline"></div>
+  <div class="vig"></div>
+</div>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$;
+  const cx = S.landscape ? 1340 : 540, cy = S.landscape ? 540 : 1105, R = 300;
+  const W = S.w, H = S.h;
+  $('#geo').setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  $('#geo').innerHTML =
+    '<path class="ln" id="ax" d="M' + cx + ' ' + (cy - R - 120) + ' V' + (cy + R + 120) + '"/>' +
+    '<path class="ln" id="ay" d="M' + (cx - R - 120) + ' ' + cy + ' H' + (cx + R + 120) + '"/>' +
+    '<circle class="ln" id="c1" cx="' + cx + '" cy="' + cy + '" r="' + R + '" transform="rotate(-90 ' + cx + ' ' + cy + ')"/>' +
+    '<circle class="dim" id="c2" cx="' + cx + '" cy="' + cy + '" r="' + (R * 0.618).toFixed(1) + '"/>' +
+    '<path class="dim" id="d1" d="M' + (cx - R * 0.707) + ' ' + (cy - R * 0.707) + ' L' + (cx + R * 0.707) + ' ' + (cy + R * 0.707) + '"/>' +
+    '<path class="dim" id="d2" d="M' + (cx + R * 0.707) + ' ' + (cy - R * 0.707) + ' L' + (cx - R * 0.707) + ' ' + (cy + R * 0.707) + '"/>' +
+    '<text id="tr" x="' + (cx + R + 20) + '" y="' + (cy - 14) + '">R 300</text>' +
+    '<text id="tp" x="' + (cx + 14) + '" y="' + (cy - R * 0.618 - 14) + '">φ 0.618</text>' +
+    '<g id="arm"><path d="M' + cx + ' ' + cy + ' L' + (cx + R) + ' ' + cy + '" stroke="#fff" stroke-width="4" stroke-linecap="round"/>' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="10" fill="#fff"/><path d="M' + (cx + R) + ' ' + cy + ' l-8 -22 h16 z" fill="#fff"/></g>';
+  const len = (id) => { const e = $('#' + id); const l = e.getTotalLength(); e.style.strokeDasharray = e.classList.contains('dim') ? '' : l + ' ' + l; return {e, l}; };
+  const ax = len('ax'), ay = len('ay'), c1 = len('c1');
+  const tool = B.tool($('#root'), {tool: 'ell', layers: ['moodboard', 'concept', 'lantern / mark', 'grid'], on: 0, props: 'X <b>0</b> &nbsp;Y <b>0</b> &nbsp;W <b>800</b> &nbsp;H <b>800</b>'});
+  B.clock(tl, (t) => {
+    $('#paper').style.transform = 'translate(' + (-(t + 9) * 6).toFixed(1) + 'px,' + (-(t + 9) * 4).toFixed(1) + 'px)';
+    const ua = B.E(t, 0.3, 1.2);
+    ax.e.style.strokeDashoffset = ax.l * (1 - ua); ay.e.style.strokeDashoffset = ay.l * (1 - ua);
+    const uc = B.E(t, 1.0, 2.6);
+    c1.e.style.strokeDashoffset = c1.l * (1 - uc);
+    $('#arm').style.transform = 'rotate(' + (-90 + 360 * uc) + 'deg)';
+    $('#arm').style.transformOrigin = cx + 'px ' + cy + 'px';
+    $('#arm').style.opacity = B.io(t, 0.9, 1.1, 2.6, 2.9);
+    ['c2', 'd1', 'd2'].forEach((id, i) => { $('#' + id).style.opacity = B.E(t, 2.4 + i * 0.2, 2.9 + i * 0.2); });
+    $('#tr').style.opacity = B.E(t, 2.6, 3.0); $('#tp').style.opacity = B.E(t, 2.9, 3.3);
+    // cửa sổ công cụ trượt lên bao lấy hình dựng
+    const u = B.E(t, 4.5, 5.6);
+    tool.el.style.opacity = B.L(t, 4.5, 4.9);
+    tool.el.style.transform = 'translateY(' + (180 * (1 - u)).toFixed(1) + 'px) scale(' + (1.12 - 0.12 * u).toFixed(4) + ')';
+    $('#geo').style.opacity = 1 - 0.9 * B.E(t, 4.8, 5.6);
+    tool.tick(t, 0);
+  });
+  B.rise(tl, '#tag', 0.35, {dy: 14});
+  B.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.07});
+</script>
+</body>
+</html>

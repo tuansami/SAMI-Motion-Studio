@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/700.css">
+<link rel="stylesheet" href="_fonts/cormorant/600.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S03 · MOODBOARD Mizuki trong công cụ: ảnh thật bay vào ô, chip từ khoá gõ, concept "Warm Lantern Dining" */
+  .ph { position: absolute; overflow: hidden; border-radius: 6px; box-shadow: 0 16px 34px rgba(0, 0, 0, .45); will-change: transform; }
+  .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #chips { position: absolute; left: 30px; top: 588px; display: flex; gap: 14px; }
+  .chip { font: 600 26px/1 "Be Vietnam Pro", sans-serif; color: #fff; padding: 12px 18px; border-radius: 30px; border: 2px solid var(--cy); background: rgba(143, 216, 255, .12); white-space: nowrap; min-height: 26px; }
+  #concept { position: absolute; left: 30px; top: 668px; font: 600 74px/1.1 "Cormorant", serif; color: #fff; white-space: nowrap; }
+  #concept .bar { display: inline-block; width: 4px; height: 66px; background: var(--cy); vertical-align: -8px; margin-left: 4px; }
+  #ck { position: absolute; left: 30px; top: 760px; font: 500 18px/1 "JetBrains Mono", monospace; letter-spacing: .14em; color: var(--cy); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S03">
+  <div class="paper" id="paper"></div>
+  <div class="lbl tagpos" id="tag" data-copy="S03_tag"></div>
+  <div class="hd top" id="hd" data-copy="S03_headline"></div>
+  <div class="vig"></div>
+</div>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$;
+  const tool = B.tool($('#root'), {tool: 'move', layers: ['moodboard', 'concept', 'lantern / mark', 'grid'], on: 0, props: 'MOODBOARD · <b>5 ảnh</b> &nbsp;· &nbsp;W <b>800</b> &nbsp;H <b>800</b>'});
+  const art = tool.art;
+  const PH = [
+    ['mz-interior-1', 30, 30, 440, 335, -900, -200], ['mz-ambience-1', 490, 30, 280, 380, 900, -300],
+    ['mz-food-3', 30, 383, 215, 180, -800, 500], ['mz-food-lotus', 262, 383, 208, 180, 0, 900], ['mz-hero-3', 490, 428, 280, 135, 900, 400]
+  ].map((p, i) => {
+    const d = document.createElement('div'); d.className = 'ph'; B.box(d, p[1], p[2], p[3], p[4]);
+    d.innerHTML = '<img src="public/img/' + p[0] + '.webp">'; art.appendChild(d);
+    return {el: d, x: p[1], y: p[2], w: p[3], h: p[4], fx: p[5], fy: p[6], t: 0.75 + i * 0.42};
+  });
+  const chips = document.createElement('div'); chips.id = 'chips'; art.appendChild(chips);
+  const CH = B.list('S03_chips').map((w, i) => { const c = document.createElement('div'); c.className = 'chip'; chips.appendChild(c); return {el: c, w, t: 3.0 + i * 0.32}; });
+  const con = document.createElement('div'); con.id = 'concept'; art.appendChild(con);
+  const ck = document.createElement('div'); ck.id = 'ck'; ck.textContent = 'CONCEPT'; art.appendChild(ck);
+  const sel = B.selb(art), cur = B.cursor(art);
+  const cTxt = S.text('S03_concept');
+  B.clock(tl, (t) => {
+    $('#paper').style.transform = 'translate(' + (-(t + 15) * 6).toFixed(1) + 'px,' + (-(t + 15) * 4).toFixed(1) + 'px)';
+    tool.paper.style.transform = 'translate(' + (-t * 10).toFixed(1) + 'px,0)';
+    tool.tick(t, 96);
+    let sb = null, cx = 700, cy = 760, press = false;
+    PH.forEach((p) => {
+      const u = B.E(t, p.t, p.t + 0.42);
+      p.el.style.opacity = t < p.t ? 0 : 1;
+      p.el.style.transform = 'translate(' + (p.fx * (1 - u)).toFixed(1) + 'px,' + (p.fy * (1 - u)).toFixed(1) + 'px) rotate(' + (8 * (1 - u)).toFixed(2) + 'deg)';
+      if (t >= p.t) { sb = [p.x, p.y, p.w, p.h]; cx = p.x + p.w * 0.6 + p.fx * (1 - u); cy = p.y + p.h * 0.6 + p.fy * (1 - u); press = u < 1; }
+    });
+    CH.forEach((c) => { c.el.textContent = B.typed(c.w, t, c.t, c.t + 0.28); c.el.style.opacity = t < c.t ? 0 : 1; });
+    if (t > 3.0) { const last = CH.filter((c) => t >= c.t).pop(); sb = [30 + last.el.offsetLeft - 6, 582, last.el.offsetWidth + 12, last.el.offsetHeight + 12]; cx = sb[0] + sb[2] - 10; cy = 640; press = false; }
+    const tc0 = 4.45, tc1 = 5.5;
+    con.innerHTML = B.typed(cTxt, t, tc0, tc1) + (t > tc0 && t < 6.6 && Math.floor(t * 3) % 2 === 0 ? '<span class="bar"></span>' : '');
+    con.style.opacity = t < tc0 ? 0 : 1;
+    ck.style.opacity = B.E(t, tc0, tc0 + 0.3);
+    if (t > tc0) { sb = [22, 662, con.offsetWidth + 16, 88]; cx = 40 + con.offsetWidth; cy = 760; }
+    if (sb) { B.box(sel, sb[0], sb[1], sb[2], sb[3]); sel.style.opacity = 1; } else sel.style.opacity = 0;
+    cur.at(cx, cy, press);
+    cur.style.opacity = B.L(t, 0.5, 0.7);
+  });
+  B.rise(tl, '#tag', 0.35, {dy: 14});
+  B.rise(tl, S.words($('#hd')), 0.6, {stagger: 0.08});
+</script>
+</body>
+</html>

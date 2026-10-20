@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/700.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S04 · DỰNG LOGO ×16: nét chì → lưới hình học (vòng tròn, trục, chéo 45°, chữ nhật vàng) → đường viền logo + điểm neo bezier */
+  #sv { position: absolute; left: 0; top: 0; width: 800px; height: 800px; overflow: visible; }
+  .sk path { fill: none; stroke: rgba(225, 235, 245, .5); stroke-width: 2.6; stroke-linecap: round; }
+  .cn { fill: none; stroke: rgba(143, 216, 255, .7); stroke-width: 1.6; }
+  .cn.dash { stroke-dasharray: 7 7; }
+  .lb { font: 500 17px "JetBrains Mono", monospace; fill: var(--cy); letter-spacing: .08em; }
+  .lg path { fill: none; stroke: #fff; stroke-width: 1.8; stroke-linejoin: round; }
+  .anc { fill: #fff; stroke: var(--sel); stroke-width: 1.6; }
+  .hdl { stroke: var(--sel); stroke-width: 1.6; }
+  .hdc { fill: var(--sel); }
+  #big { position: absolute; z-index: 8; left: 22px; top: 20px; display: flex; align-items: center; gap: 12px; font: 700 34px/1 "JetBrains Mono", monospace; color: #fff;
+    background: rgba(184, 55, 59, .92); border-radius: 10px; padding: 10px 16px; }
+  #big svg { width: 34px; height: 26px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S04">
+  <div class="paper" id="paper"></div>
+  <div class="lbl tagpos" id="tag" data-copy="S04_tag"></div>
+  <div class="hd top" id="hd" data-copy="S04_headline"></div>
+  <div class="vig"></div>
+</div>
+<script src="hf/parts/mz-logo.js"></script>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$, NS = 'http://www.w3.org/2000/svg';
+  const tool = B.tool($('#root'), {tool: 'pen', layers: ['moodboard', 'concept', 'lantern / mark', 'grid'], on: 2, file: 'Mizuki_Brandkit · Logo', props: 'PEN · <b>Bezier</b> &nbsp;· &nbsp;SNAP <b>Grid 8</b>'});
+  const big = document.createElement('div'); big.id = 'big';
+  big.innerHTML = '<svg viewBox="0 0 34 26"><path d="M2 2 L16 13 L2 24 Z M18 2 L32 13 L18 24 Z" fill="#fff"/></svg>×16';
+  tool.cv.appendChild(big);
+  const sv = document.createElementNS(NS, 'svg'); sv.id = 'sv'; sv.setAttribute('viewBox', '0 0 800 800'); tool.art.appendChild(sv);
+  const s = 1.25, ox = 400 - 451 * s / 2, oy = 70;
+  const T = 'translate(' + ox + ' ' + oy + ') scale(' + s + ')';
+  // 1 · nét chì: 3 lớp lệch tay của biểu tượng
+  const sk = [[-4, 3, -1.2], [3, -2, 0.8], [1, 4, 0.3]].map((j) => {
+    const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'sk');
+    g.setAttribute('transform', 'translate(' + (ox + j[0]) + ' ' + (oy + j[1]) + ') rotate(' + j[2] + ' 225 200) scale(' + s + ')');
+    sv.appendChild(g); return B.logo(g, {noWord: true});
+  });
+  // 2 · lưới dựng hình
+  const cn = document.createElementNS(NS, 'g'); sv.appendChild(cn);
+  const sx = (x) => ox + x * s, sy = (y) => oy + y * s;
+  const C = [
+    ['path', {d: 'M400 20 V780', cls: 'cn'}], ['path', {d: 'M60 ' + sy(0) + ' H740', cls: 'cn dash'}], ['path', {d: 'M60 ' + sy(386) + ' H740', cls: 'cn dash'}],
+    ['circle', {cx: 400, cy: sy(110), r: 100 * s, cls: 'cn'}], ['circle', {cx: 400, cy: sy(240), r: 175 * s, cls: 'cn'}], ['circle', {cx: 400, cy: sy(240), r: 108 * s, cls: 'cn dash'}],
+    ['path', {d: 'M' + sx(40) + ' ' + sy(20) + ' L' + sx(411) + ' ' + sy(391), cls: 'cn dash'}], ['path', {d: 'M' + sx(411) + ' ' + sy(20) + ' L' + sx(40) + ' ' + sy(391), cls: 'cn dash'}],
+    ['rect', {x: sx(65), y: sy(92), width: 320 * s, height: 198 * s, cls: 'cn'}], ['path', {d: 'M' + sx(263) + ' ' + sy(92) + ' V' + sy(290), cls: 'cn dash'}]
+  ].map((c) => { const e = document.createElementNS(NS, c[0]); Object.keys(c[1]).forEach((k) => e.setAttribute(k === 'cls' ? 'class' : k, c[1][k])); cn.appendChild(e); return e; });
+  const LB = [['R 175', sx(240) + 140, sy(240) - 168], ['φ 1.618', sx(268), sy(92) - 12], ['45°', sx(372), sy(58)], ['AXIS', 410, 40]].map((l) => {
+    const e = document.createElementNS(NS, 'text'); e.setAttribute('class', 'lb'); e.setAttribute('x', l[1]); e.setAttribute('y', l[2]); e.textContent = l[0]; cn.appendChild(e); return e;
+  });
+  C.forEach((e) => { const l = e.getTotalLength(); e.len = l; if (!e.classList.contains('dash')) e.style.strokeDasharray = l + ' ' + l; });
+  // 3 · đường viền logo thật
+  const lgG = document.createElementNS(NS, 'g'); lgG.setAttribute('class', 'lg'); lgG.setAttribute('transform', T); sv.appendChild(lgG);
+  const LG = B.logo(lgG);
+  // 4 · điểm neo bezier trên đường lớn nhất
+  const main = LG.sym.reduce((a, b) => (b.len > a.len ? b : a));
+  const ancG = document.createElementNS(NS, 'g'); ancG.setAttribute('transform', T); sv.appendChild(ancG);
+  const N = 22, AN = [];
+  for (let i = 0; i < N; i++) {
+    const L = main.len * (i + 0.5) / N, p = main.getPointAtLength(L), q = main.getPointAtLength(Math.min(main.len, L + 4));
+    const a = Math.atan2(q.y - p.y, q.x - p.x), hl = 16;
+    const g = document.createElementNS(NS, 'g');
+    const hx = Math.cos(a) * hl, hy = Math.sin(a) * hl, show = i % 4 === 1;
+    g.innerHTML = (show ? '<path class="hdl" d="M' + (p.x - hx) + ' ' + (p.y - hy) + ' L' + (p.x + hx) + ' ' + (p.y + hy) + '"/><circle class="hdc" cx="' + (p.x - hx) + '" cy="' + (p.y - hy) + '" r="2.6"/><circle class="hdc" cx="' + (p.x + hx) + '" cy="' + (p.y + hy) + '" r="2.6"/>' : '') +
+      '<rect class="anc" x="' + (p.x - 3.2) + '" y="' + (p.y - 3.2) + '" width="6.4" height="6.4"/>';
+    ancG.appendChild(g); AN.push({g, f: (i + 0.5) / N, x: p.x, y: p.y});
+  }
+  const drag = AN[9];
+  const cur = B.cursor(tool.art);
+  const t0 = 0.45, tSk = [0.5, 2.5], tCn = [2.2, 4.6], tLg = [4.1, 7.2], tW = [6.6, 7.7];
+  B.clock(tl, (t) => {
+    $('#paper').style.transform = 'translate(' + (-(t + 22) * 6).toFixed(1) + 'px,' + (-(t + 22) * 4).toFixed(1) + 'px)';
+    tool.paper.style.transform = 'translate(' + (-t * 10).toFixed(1) + 'px,0)';
+    tool.tick(t, 610);
+    big.style.opacity = (0.75 + 0.25 * Math.round(0.5 + 0.5 * Math.sin(t * 9))) * B.L(t, 0.3, 0.5);
+    // nét chì (run tay nhẹ theo thời gian)
+    sk.forEach((L, i) => { L.draw(L.sym, B.L(t, tSk[0] + i * 0.25, tSk[1] + i * 0.2), 0.3); L.g.parentNode.style.opacity = 1 - 0.85 * B.E(t, 4.6, 6.2); });
+    // lưới
+    C.forEach((e, i) => {
+      const u = B.E(t, tCn[0] + i * 0.18, tCn[0] + i * 0.18 + 0.6);
+      if (e.classList.contains('dash')) e.style.opacity = u; else e.style.strokeDashoffset = (e.len * (1 - u)).toFixed(1);
+      e.style.opacity = (e.classList.contains('dash') ? u : 1) * (1 - 0.55 * B.E(t, 7.4, 8.6));
+    });
+    LB.forEach((e, i) => { e.style.opacity = B.E(t, 3.4 + i * 0.25, 3.8 + i * 0.25) * (1 - 0.6 * B.E(t, 7.4, 8.6)); });
+    // logo
+    const ul = B.L(t, tLg[0], tLg[1]);
+    LG.draw(LG.sym, ul, 0.18);
+    LG.draw(LG.word, B.L(t, tW[0], tW[1]), 0.12);
+    // điểm neo xuất hiện khi nét chạy qua (đường lớn là path thứ 3 → lấy tiến độ của nó)
+    const mi = LG.sym.indexOf(main), st = 0.18, n = LG.sym.length;
+    const um = B.cl(ul * (1 + st * (n - 1)) - mi * st);
+    AN.forEach((a) => { a.g.style.opacity = (um >= a.f ? 1 : 0) * (1 - B.E(t, 8.2, 8.9)); });
+    // con trỏ: chạy theo đầu bút, rồi kéo một tay cầm
+    let cx, cy, press = false;
+    if (t < tLg[0]) { const k = B.keys(t, [[0.4, 560, 700], [1.4, 330, 300], [2.4, 470, 420], [3.4, 640, 230], [4.1, 400, 160]]); cx = k[0]; cy = k[1]; }
+    else if (t < 7.3) { const p = main.getPointAtLength(main.len * Math.min(0.999, um)); cx = ox + p.x * s; cy = oy + p.y * s; press = true; }
+    else { const u = B.E(t, 7.3, 7.8), w = B.E(t, 7.9, 8.6); cx = B.mix(ox + main.getPointAtLength(main.len * 0.999).x * s, ox + drag.x * s, u) + 26 * w; cy = B.mix(oy + main.getPointAtLength(main.len * 0.999).y * s, oy + drag.y * s, u) - 12 * w; press = t > 7.8; }
+    cur.at(cx, cy, press);
+    cur.style.opacity = B.L(t, 0.3, 0.5);
+  });
+  B.rise(tl, '#tag', 0.35, {dy: 14});
+  B.rise(tl, S.words($('#hd')), 0.6, {stagger: 0.07});
+</script>
+</body>
+</html>

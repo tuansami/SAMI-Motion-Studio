@@ -1,0 +1,23 @@
+# SCRIPT + STORYBOARD · SA06 Branding (87 s · 30 fps · 2610 khung)
+
+Xưng "bạn". Thời gian đọc = số chữ ÷ 3 + 1 s (đã kiểm từng màn). Mọi cảnh: Hyperframes viết tay (`hf/S01–S12.html`, chung `hf/parts/bp.css|bp.js|mz-logo.js`).
+
+| Cảnh | Giây (khung) | Chữ trên màn hình | Hình / chuyển động | SFX | Điểm dừng đọc |
+|---|---|---|---|---|---|
+| S01 Hook / nỗi đau | 0–9 (0–270) | ① „Logo một kiểu. Menu một kiểu. / Instagram lại *một kiểu khác.*" ② „Và khách ra về / *không nhớ nổi tên quán.*" | Bàn tối. 4 ấn phẩm "Quán Mây" lệch tông đập xuống theo nhịp (logo đỏ tròn, menu giấy vàng chữ serif, bài đăng neon hồng, biển hiệu xanh lá), khung rung. ② ấn phẩm bạc màu, tên quán nhoè dần như trí nhớ phai; cuối cảnh tan thành nét xanh → lưới blueprint. | 4 thud, rung; whoosh cuối | ① đủ chữ lúc 2,4 s, giữ tới 4,9 s; ② 5,2→9 s (9 chữ, 4 s) |
+| S02 Bước ngoặt | 9–15 (270–450) | „Thương hiệu không bắt đầu từ logo. / Nó bắt đầu từ *một câu chuyện.*" · nhãn `BRAND · 01 / CÂU CHUYỆN` | Blueprint toàn khung: lưới tự kẻ từ tâm, compa quay vẽ vòng tròn; cuối cảnh khung công cụ thiết kế trượt vào từ mép. | whoosh | 0,5→6 s (13 chữ ≥ 5,3 s) |
+| S03 Moodboard + concept | 15–22 (450–660) | nhãn „Case thật · Mizuki, Baden-Baden" · „Với Mizuki, câu chuyện ấy là / *gỗ ấm và ánh đèn lồng.*" · chip: gỗ ấm · đèn lồng · tỉ mỉ · Á Đông · concept „Warm Lantern Dining" | Trong công cụ (artboard blueprint): 5 ảnh thật bay vào, con trỏ thả, khung chọn xanh có tay nắm; chip gõ chữ; tiêu đề concept gõ bằng Cormorant. Huy hiệu ▶▶ ×16 + đồng hồ. | click, typing | 0,6→7 s (11 chữ) |
+| S04 Dựng logo ×16 | 22–31 (660–930) | „Phác thảo bằng bút chì, / rồi dựng lại trên *lưới hình học,* / từng đường cong một." · nhãn „Tái hiện quy trình · tua nhanh ×16" | Nét chì run tay → vòng tròn đồng tâm, trục, đường chéo 45°, chữ nhật vàng φ 1.618, kích thước → đường viền logo thật vẽ chính xác, điểm neo + tay cầm bezier, con trỏ kéo tay cầm. Đồng hồ chạy vèo. | tick nhanh, click | 0,6→9 s (16 chữ ≥ 6,3 s) |
+| S05 ★ Chữ ký: đèn bật | 31–35 (930–1050) | „Và rồi, đèn lồng / *được thắp sáng.*" | Logo được đổ đồng từ trong ra, quầng sáng tràn khắp khung, xanh blueprint chuyển burgundy, lưới thành ánh đồng rồi tắt; chữ MIZUKI hiện. | shimmer + đàn dây dâng | 0,9→4 s (7 chữ) |
+| S06 Màu | 35–42,5 (1050–1275) | „Thử thật nhiều bảng màu, / giữ lại hai: *đỏ đèn lồng* / và *kem ánh đồng.*" · „Burgundy Lantern" „Cream & Brass" + mã hex | Công cụ (tông ấm): vòng swatch quay ×16, logo mẫu đổi màu liên tục; chậm lại → 2 dải palette trượt ra, mã hex gõ. | tick, click khoá | 0,5→7,5 s (14 chữ) |
+| S07 Chữ | 42,5–49,5 (1275–1485) | „Chữ cũng có giọng nói: / Cormorant *sang trọng,* / Inter *dễ đọc.*" · mẫu „Warm Lantern Dining" · „Sorgfalt in jedem Detail" | Bảng thử chữ: tiêu đề đổi font ×16 rồi dừng ở Cormorant; tay cầm giãn chữ (Tracking); thẻ ghép đôi Cormorant + Inter. | typing | 0,5→7 s (11 chữ) |
+| S08 Brand board | 49,5–55 (1485–1650) | „Tất cả gói lại trong / *một bộ nhận diện.*" | Ô logo, màu, chữ, họa tiết, ảnh, slogan bay vào lưới thành brand board; camera lùi, khung công cụ rời đi. | whoosh nhỏ | 0,5→5,5 s (9 chữ) |
+| S09 Ứng dụng thật | 55–63 (1650–1890) | „Rồi bước ra đời thật: / menu, Gutschein, danh thiếp, / túi mang đi và website." · nhãn từng ấn phẩm · „Ấn phẩm thật · Mizuki" | Thẻ ấn phẩm thật lật nhanh (Speisekarte, Gutschein, sticker & túi, danh thiếp, website trong trình duyệt + điện thoại), rồi xoè thành bộ sưu tập. | flip ×5 | 0,5→8 s (13 chữ) |
+| S10 Thông điệp | 63–69 (1890–2070) | „Khách nhớ một quán / khi mọi điểm chạm / *nói cùng một giọng.*" | Logo phát sáng ở tâm, các ấn phẩm quay quanh, sợi sáng đồng nối về tâm. | — | 0,5→6 s (13 chữ ≥ 5,3) |
+| S11 Lợi ích | 69–78 (2070–2340) | kicker „Một thương hiệu rõ ràng giúp quán bạn" · ① „Được nhớ tên" / „Khách nhắc lại, giới thiệu cho người quen." ② „Tự tin định giá" / „Quán trông xứng với giá trị món ăn." ③ „Nhất quán mọi nơi" / „Từ biển hiệu, menu tới website." | 3 thẻ ấm (icon vẽ nét) lần lượt vào, đứng yên; nền đèn lồng thở chậm. Cuối cảnh ánh ấm dịu xuống (nhịp thở). | pop nhẹ ×3 | ① 0,6 ② 3,0 ③ 5,4 → giữ tới 9 s |
+| S12 End card SAMI | 78–87 (2340–2610) | „Nhắn WhatsApp cho SAMI" · „+49 155 60456888" · „Phân tích marketing miễn phí cho quán. / Không ràng buộc, phản hồi trong 24 giờ." · tagline · sami-agency.de | Nhịp thở 1,2 s: đốm đèn lồng nhỏ dần thành điểm mint; bong bóng chat (vẽ code) bật vào, logo SAMI, tagline. | pop CTA, sub-hit logo | CTA từ 1,4 s, giữ ≥ 6 s |
+
+## Tự phản biện
+- Hook 0–3 s: 4 ấn phẩm đập xuống + rung khung (không mở bằng logo).
+- Sự thật: chỉ dữ kiện case Mizuki (concept, slogan, font, palette, ấn phẩm, website). "Quán Mây" hư cấu. Không số, không giá, không địa chỉ.
+- Không nhãn hiệu phần mềm: công cụ vẽ bằng code, tên file chung chung.
