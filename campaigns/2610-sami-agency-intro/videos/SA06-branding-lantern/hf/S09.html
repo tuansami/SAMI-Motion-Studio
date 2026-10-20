@@ -1,1 +1,98 @@
-<!doctype html><html><body><div id="root" data-composition-id="S09"></div><script>window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/700.css">
+<link rel="stylesheet" href="_fonts/cormorant/600.css">
+<link rel="stylesheet" href="_fonts/cormorant/600-italic.css">
+<link rel="stylesheet" href="_fonts/inter/500.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S09 · ẤN PHẨM THẬT: thẻ lật nhanh (Speisekarte, Gutschein, sticker & túi, danh thiếp, website) rồi xoè thành bộ sưu tập */
+  #stage { position: absolute; inset: 0; z-index: 10; perspective: 1800px; }
+  .cd { position: absolute; left: 0; top: 0; transform-origin: 0 0; border-radius: 14px; overflow: hidden; box-shadow: 0 30px 70px rgba(0, 0, 0, .5); backface-visibility: hidden; will-change: transform; }
+  .cd img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .cd .cap { position: absolute; left: 14px; top: 14px; font: 600 20px/1 "Be Vietnam Pro", sans-serif; color: #fff; background: rgba(34, 18, 12, .72); padding: 8px 12px; border-radius: 8px; }
+  #chip { position: absolute; z-index: 12; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 600 38px/1 "Be Vietnam Pro", sans-serif; color: var(--cream);
+    padding: 16px 26px; border-radius: 40px; background: rgba(34, 18, 12, .75); border: 2px solid rgba(226, 193, 142, .6); }
+  [data-ratio="9x16"] #hd { font-size: 74px; }
+  [data-ratio="9x16"] #chip { top: 1520px; } [data-ratio="16x9"] #chip { left: 1330px; top: 945px; }
+  /* website mockup vẽ bằng code (theo site thật mizuki-restaurant.de) */
+  .web { width: 1000px; height: 520px; background: #fff; }
+  .web .bb { height: 38px; background: #ECE7E2; display: flex; align-items: center; gap: 8px; padding: 0 14px; }
+  .web .bb i { width: 12px; height: 12px; border-radius: 50%; background: #C9BFB5; display: block; }
+  .web .bb b { margin-left: 18px; flex: 1; height: 22px; border-radius: 11px; background: #fff; font: 500 13px/22px "Inter", sans-serif; color: #8A7F76; padding-left: 14px; font-weight: 500; }
+  .web .nav { height: 62px; display: flex; align-items: center; gap: 26px; padding: 0 34px; font: 600 12px/1 "Inter", sans-serif; letter-spacing: .12em; color: #3A2A22; }
+  .web .nav svg { width: 34px; height: 40px; margin-right: 18px; }
+  .web .nav .rs { margin-left: auto; background: var(--bur); color: #fff; padding: 12px 18px; }
+  .web .hero { position: relative; height: 420px; background: url(public/img/mz-hero.webp) center/cover; }
+  .web .hero:before { content: ""; position: absolute; inset: 0; background: rgba(20, 10, 6, .45); }
+  .web .hero h1 { position: absolute; left: 0; right: 0; top: 96px; margin: 0; text-align: center; font: 600 48px/1.08 "Cormorant", serif; letter-spacing: .04em; color: #fff; }
+  .web .hero p { position: absolute; left: 0; right: 0; top: 222px; margin: 0; text-align: center; font: 500 17px/1 "Inter", sans-serif; color: #F3F0ED; }
+  .web .hero .bt { position: absolute; top: 268px; left: 50%; display: flex; gap: 16px; transform: translateX(-50%); }
+  .web .hero .bt span { font: 600 12px/1 "Inter", sans-serif; letter-spacing: .14em; color: #fff; border: 1px solid rgba(255, 255, 255, .8); padding: 14px 20px; white-space: nowrap; }
+  .web .hero .bt span:first-child { background: var(--bur); border-color: var(--bur); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S09">
+  <div class="warm"></div>
+  <div class="glow" id="glow"></div>
+  <div id="stage"></div>
+  <div id="chip"></div>
+  <div class="lbl lan tagpos" id="tag" data-copy="S09_tag"></div>
+  <div class="hd lan top" id="hd" data-copy="S09_headline"></div>
+  <div class="vig"></div>
+</div>
+<script src="hf/parts/mz-logo.js"></script>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$;
+  const LBL = B.list('S09_labels');
+  const symD = window.MZ_LOGO.sym.map((p) => p[0]).join(' ');
+  const web = '<div class="web"><div class="bb"><i></i><i></i><i></i><b>mizuki-restaurant.de</b></div><div class="nav"><svg viewBox="0 0 451 400"><path d="' + symD + '" fill="#572D2C" fill-rule="evenodd"/></svg>RESERVIERUNGEN<span>ONLINE-BESTELLUNG</span><span>GUTSCHEINE</span><span>SPEISEKARTE</span><span class="rs">RESERVIEREN</span></div>' +
+    '<div class="hero"><h1>EIN AUSSERGEWÖHNLICHES<br>PANASIATISCHES ERLEBNIS</h1><p>Ein Stück Asien für jeden Anlass</p><div class="bt"><span>JETZT RESERVIEREN</span><span>SPEISEKARTE ANSEHEN</span></div></div></div>';
+  const C = [['mz-brand-2', 880, 990], ['mz-brand-3', 1352, 990], ['mz-brand-4', 1408, 990], ['mz-brand-5', 1760, 990], [null, 1000, 520]].map((c, i) => {
+    const e = document.createElement('div'); e.className = 'cd'; e.style.width = c[1] + 'px'; e.style.height = c[2] + 'px';
+    e.innerHTML = (c[0] ? '<img src="public/img/' + c[0] + '.webp">' : web) + '<div class="cap">' + LBL[i] + '</div>';
+    $('#stage').appendChild(e); return {el: e, w: c[1], h: c[2], cap: e.querySelector('.cap'), t: 0.45 + i * 0.85};
+  });
+  // vị trí bộ sưu tập (giữ tỉ lệ ảnh)
+  function rows(spec, x0, w, y0, gap) {
+    let y = y0; const out = [];
+    spec.forEach((r) => { const sa = r.idx.reduce((a, i) => a + C[i].w / C[i].h, 0); let h = (r.w || w) - gap * (r.idx.length - 1); h /= sa; let x = x0 + ((w - (r.w || w)) / 2);
+      r.idx.forEach((i) => { const ww = h * C[i].w / C[i].h; out[i] = {x, y, s: ww / C[i].w}; x += ww + gap; }); y += h + gap; });
+    return {slots: out, bottom: y - gap};
+  }
+  let L, big;
+  if (S.landscape) { L = rows([{idx: [0, 1, 2]}, {idx: [3, 4]}], 830, 1000, 0, 20); const off = 90 + (880 - L.bottom) / 2; L.slots.forEach((s) => (s.y += off)); big = {cx: 1330, cy: 520, w: 960, h: 700}; }
+  else { L = rows([{idx: [0, 1]}, {idx: [2, 3]}, {idx: [4], w: 590}], 70, 940, 580, 18); big = {cx: 540, cy: 1090, w: 900, h: 700}; }
+  C.forEach((c) => { c.bs = Math.min(big.w / c.w, big.h / c.h); });
+  B.clock(tl, (t) => {
+    let cur = -1;
+    C.forEach((c, i) => {
+      const fin = B.E(t, c.t, c.t + 0.45), mv = B.E(t, c.t + 0.85, c.t + 1.35);
+      const sl = L.slots[i];
+      const bx = big.cx - c.w * c.bs / 2, by = big.cy - c.h * c.bs / 2;
+      const x = B.mix(bx, sl.x, mv), y = B.mix(by, sl.y, mv), s = B.mix(c.bs, sl.s, mv);
+      const ry = 75 * (1 - fin);
+      c.el.style.opacity = t < c.t ? 0 : 1;
+      c.el.style.zIndex = t < c.t + 0.85 ? 10 + i : 2 + i;
+      c.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + (y + 80 * (1 - fin)).toFixed(1) + 'px) scale(' + s.toFixed(4) + ') rotateY(' + ry.toFixed(1) + 'deg)';
+      c.cap.style.opacity = mv; c.cap.style.transform = 'scale(' + (1 / Math.max(0.3, s)).toFixed(3) + ')'; c.cap.style.transformOrigin = '0 0';
+      if (t >= c.t && t < c.t + 0.9) cur = i;
+    });
+    // nhãn lớn của thẻ đang lật
+    const chip = $('#chip');
+    chip.textContent = cur >= 0 ? LBL[cur] : '';
+    chip.style.opacity = cur >= 0 ? B.L(t, C[cur].t + 0.1, C[cur].t + 0.25) * (1 - B.L(t, C[cur].t + 0.75, C[cur].t + 0.85)) : 0;
+    const g = $('#glow'), gs = 1700; g.style.left = (big.cx - gs / 2) + 'px'; g.style.top = (big.cy - gs / 2) + 'px'; g.style.width = g.style.height = gs + 'px';
+    g.style.opacity = 0.35 + 0.08 * Math.sin(t * 2);
+  });
+  B.rise(tl, '#tag', 0.35, {dy: 14});
+  B.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.08, dur: 0.6});
+</script>
+</body>
+</html>

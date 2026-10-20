@@ -1,1 +1,63 @@
-<!doctype html><html><body><div id="root" data-composition-id="S10"></div><script>window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/cormorant/600.css">
+<link rel="stylesheet" href="_fonts/cormorant/600-italic.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S10 · THÔNG ĐIỆP: logo đèn lồng sáng ở tâm, ấn phẩm quay quanh, sợi sáng đồng nối mọi điểm chạm về một giọng */
+  #net { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; }
+  .tp { position: absolute; z-index: 5; width: 220px; height: 156px; margin: -78px 0 0 -110px; border-radius: 12px; overflow: hidden; box-shadow: 0 16px 36px rgba(0, 0, 0, .5), 0 0 0 2px rgba(226, 193, 142, .35); will-change: transform; }
+  .tp img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #mark { position: absolute; z-index: 6; width: 270px; height: 306px; margin: -153px 0 0 -135px; overflow: visible; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S10">
+  <div class="warm"></div>
+  <div class="glow" id="glow"></div>
+  <svg id="net"></svg>
+  <svg id="mark" viewBox="0 0 451 512"><defs><linearGradient id="brass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1D6A6"/><stop offset=".55" stop-color="#C0A076"/><stop offset="1" stop-color="#8E6A3E"/></linearGradient></defs><g id="lg"></g></svg>
+  <div class="hd lan top" id="hd" data-copy="S10_headline"></div>
+  <div class="vig"></div>
+</div>
+<script src="hf/parts/mz-logo.js"></script>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$, NS = 'http://www.w3.org/2000/svg';
+  const CX = S.landscape ? 1340 : 540, CY = S.landscape ? 560 : 1110, RX = S.landscape ? 440 : 370, RY = S.landscape ? 360 : 390;
+  const LG = B.logo($('#lg'));
+  LG.all.forEach((p) => { p.removeAttribute('stroke-dasharray'); p.setAttribute('fill', 'url(#brass)'); p.setAttribute('stroke', '#FFE6B8'); p.setAttribute('stroke-width', '2'); });
+  const mk = $('#mark'); mk.style.left = CX + 'px'; mk.style.top = CY + 'px';
+  if (S.landscape) { $('#hd').style.top = '380px'; }
+  const IM = ['mz-brand-2', 'mz-brand-3', 'mz-brand-4', 'mz-brand-5', 'mz-hero', 'mz-brand-6'];
+  const net = $('#net'); net.setAttribute('viewBox', '0 0 ' + S.w + ' ' + S.h);
+  const P = IM.map((n, i) => {
+    const e = document.createElement('div'); e.className = 'tp'; e.innerHTML = '<img src="public/img/' + n + '.webp">'; $('#root').appendChild(e);
+    const ln = document.createElementNS(NS, 'path'); ln.setAttribute('stroke', 'rgba(226,193,142,.55)'); ln.setAttribute('stroke-width', '2'); ln.setAttribute('fill', 'none'); net.appendChild(ln);
+    const dot = document.createElementNS(NS, 'circle'); dot.setAttribute('r', '6'); dot.setAttribute('fill', '#FFE2AE'); net.appendChild(dot);
+    return {e, ln, dot, a0: -90 + i * 60, t: 0.5 + i * 0.16};
+  });
+  B.clock(tl, (t) => {
+    const g = $('#glow'), gs = 1300 + 120 * Math.sin(t * 1.6); g.style.left = (CX - gs / 2) + 'px'; g.style.top = (CY - gs / 2) + 'px'; g.style.width = g.style.height = gs + 'px';
+    g.style.opacity = (0.55 + 0.1 * Math.sin(t * 2.2)) * B.E(t, 0, 0.6);
+    mk.style.transform = 'scale(' + (0.9 + 0.1 * B.E(t, 0.2, 1.2)).toFixed(4) + ')';
+    mk.style.filter = 'drop-shadow(0 0 ' + (18 + 6 * Math.sin(t * 2.2)).toFixed(1) + 'px rgba(255,200,120,.7))';
+    P.forEach((p, i) => {
+      const u = B.E(t, p.t, p.t + 0.7);
+      const a = (p.a0 + t * 7) * Math.PI / 180, r = 0.55 + 0.45 * u;
+      const x = CX + RX * r * Math.cos(a), y = CY + RY * r * Math.sin(a);
+      p.e.style.left = x.toFixed(1) + 'px'; p.e.style.top = y.toFixed(1) + 'px';
+      p.e.style.opacity = B.L(t, p.t, p.t + 0.2);
+      p.e.style.transform = 'scale(' + (0.6 + 0.4 * u).toFixed(3) + ')';
+      const ul = B.E(t, p.t + 0.5, p.t + 1.3);
+      p.ln.setAttribute('d', 'M' + x.toFixed(1) + ' ' + y.toFixed(1) + ' L' + B.mix(x, CX, ul).toFixed(1) + ' ' + B.mix(y, CY, ul).toFixed(1));
+      const k = ((t - p.t - 1.3) * 0.7 + i * 0.17) % 1;
+      p.dot.setAttribute('cx', B.mix(x, CX, k).toFixed(1)); p.dot.setAttribute('cy', B.mix(y, CY, k).toFixed(1));
+      p.dot.setAttribute('opacity', t > p.t + 1.3 ? (Math.sin(k * Math.PI)).toFixed(2) : 0);
+    });
+  });
+  B.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.1, dur: 0.7});
+</script>
+</body>
+</html>

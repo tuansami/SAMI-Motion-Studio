@@ -1,1 +1,76 @@
-<!doctype html><html><body><div id="root" data-composition-id="S12"></div><script>window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S12 · END CARD SAMI: nhịp thở (đốm đèn lồng nhỏ dần thành ánh mint–tím), bong bóng chat vẽ code, logo + tagline */
+  [data-composition-id] { background: #0C0628; }
+  #ember { position: absolute; z-index: 1; border-radius: 50%; pointer-events: none; }
+  #aur { position: absolute; inset: 0; z-index: 0; opacity: 0;
+    background: radial-gradient(60% 40% at 20% 25%, rgba(118, 103, 254, .35) 0%, rgba(118, 103, 254, 0) 70%), radial-gradient(60% 40% at 85% 80%, rgba(8, 221, 164, .22) 0%, rgba(8, 221, 164, 0) 70%); }
+  #wrap { position: absolute; z-index: 5; left: 70px; right: 70px; top: 440px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #colA, #colB { display: flex; flex-direction: column; align-items: center; }
+  #bubble { position: relative; padding: 40px 56px 44px; border-radius: 52px 52px 52px 14px; background: linear-gradient(120deg, #08DDA4, #2FE3B6); color: #0C0628;
+    box-shadow: 0 30px 70px rgba(8, 221, 164, .28), 0 0 0 1px rgba(255, 255, 255, .2) inset; }
+  #bubble .ic { position: absolute; left: -34px; top: -34px; width: 84px; height: 84px; border-radius: 50%; background: #7667FE; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px rgba(0, 0, 0, .35); }
+  #bubble .ic svg { width: 44px; height: 44px; }
+  #cta { font: 800 50px/1.2 "Be Vietnam Pro", sans-serif; }
+  #phone { font: 800 82px/1.15 "Be Vietnam Pro", sans-serif; letter-spacing: -.01em; margin-top: 8px; white-space: nowrap; }
+  #offer { margin-top: 64px; font: 500 39px/1.42 "Be Vietnam Pro", sans-serif; color: #E3E4F7; }
+  #lw { margin-top: 90px; width: 560px; overflow: hidden; }
+  #logo { width: 100%; display: block; clip-path: polygon(0 0, 100% 0, 100% 58%, 39% 58%, 39% 100%, 0 100%); }
+  #tag { margin-top: 26px; font: 500 24px/1.4 "JetBrains Mono", monospace; letter-spacing: .05em; color: #A8A3C9; white-space: nowrap; }
+  #web { margin-top: 14px; font: 800 44px/1.2 "Be Vietnam Pro", sans-serif; color: #08DDA4; }
+  [data-ratio="16x9"] #wrap { left: 0; right: 0; top: 0; bottom: 0; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; justify-items: center; padding: 0 120px; gap: 70px; }
+  [data-ratio="16x9"] #colA { align-items: flex-start; text-align: left; }
+  [data-ratio="16x9"] #offer { font-size: 36px; }
+  [data-ratio="16x9"] #lw { margin-top: 0; width: 600px; }
+  [data-ratio="16x9"] #tag { font-size: 21px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S12">
+  <div id="aur"></div>
+  <div id="ember"></div>
+  <div id="wrap">
+    <div id="colA">
+      <div id="bubble">
+        <div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 31 L10 24 A12 12 0 1 1 16 30 Z"/><path d="M15 17 h10 M15 22 h6"/></svg></div>
+        <div id="cta" data-copy="S12_cta"></div>
+        <div id="phone" data-copy="S12_phone"></div>
+      </div>
+      <div id="offer" data-copy="S12_offer"></div>
+    </div>
+    <div id="colB">
+      <div id="lw"><img id="logo" src="public/img/logo-white.svg"></div>
+      <div id="tag" data-copy="S12_tagline"></div>
+      <div id="web" data-copy="S12_web"></div>
+    </div>
+  </div>
+</div>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$;
+  B.clock(tl, (t) => {
+    // nhịp thở: đốm đèn lồng ấm co lại, chuyển sang ánh mint
+    const u = B.E(t, 0, 1.3), sz = B.mix(900, 140, u);
+    const e = $('#ember'); e.style.width = e.style.height = sz + 'px'; e.style.left = (S.w / 2 - sz / 2) + 'px'; e.style.top = (S.h * (S.landscape ? 0.5 : 0.45) - sz / 2) + 'px';
+    const c = B.lerpC('#FFC67A', '#08DDA4', B.E(t, 0.5, 1.4));
+    e.style.background = 'radial-gradient(circle, ' + c + ' 0%, rgba(0,0,0,0) 68%)';
+    e.style.opacity = (0.85 * (1 - B.E(t, 1.2, 1.8))).toFixed(3);
+    $('#aur').style.opacity = B.E(t, 1.0, 2.4).toFixed(3);
+    const b = B.E(t, 1.4, 1.8);
+    $('#bubble').style.opacity = B.L(t, 1.4, 1.55);
+    $('#bubble').style.transform = 'scale(' + (0.6 + 0.4 * b + B.wob(t, 1.75, 0.05, 24)).toFixed(4) + ')';
+  });
+  B.rise(tl, '#offer', 2.0, {dy: 20});
+  B.rise(tl, '#lw', 2.6, {dy: 20});
+  B.rise(tl, '#tag', 3.0, {dy: 12});
+  B.rise(tl, '#web', 3.2, {dy: 12});
+</script>
+</body>
+</html>

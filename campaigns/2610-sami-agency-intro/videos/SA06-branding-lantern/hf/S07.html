@@ -1,1 +1,88 @@
-<!doctype html><html><body><div id="root" data-composition-id="S07"></div><script>window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/700.css">
+<link rel="stylesheet" href="_fonts/cormorant/600.css">
+<link rel="stylesheet" href="_fonts/cormorant/600-italic.css">
+<link rel="stylesheet" href="_fonts/inter/400.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="_fonts/fredoka/700.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css">
+<link rel="stylesheet" href="_fonts/caveat/700.css">
+<link rel="stylesheet" href="_fonts/montserrat/800.css">
+<link rel="stylesheet" href="_fonts/oswald/600.css">
+<link rel="stylesheet" href="_fonts/vt323/400.css">
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/archivo-black/400.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S07 · CHỮ: bảng thử font đổi ×16 → dừng ở Cormorant, kéo Tracking, thẻ ghép đôi Cormorant + Inter */
+  #cvw { position: absolute; inset: 0; background: radial-gradient(90% 80% at 50% 45%, #4A2620 0%, #2B1711 70%); }
+  #cvw .paper { inset: -400px; }
+  .k { position: absolute; left: 50px; font: 700 16px/1 "JetBrains Mono", monospace; letter-spacing: .2em; color: #A88E70; }
+  #smp { position: absolute; left: 0; right: 0; top: 80px; height: 130px; display: flex; align-items: center; justify-content: center; color: var(--cream); white-space: nowrap; font-size: 84px; line-height: 1.1; }
+  #fn { position: absolute; left: 0; right: 0; top: 224px; text-align: center; font: 500 22px/1 "JetBrains Mono", monospace; color: var(--gold); letter-spacing: .08em; }
+  #trk { position: absolute; left: 130px; right: 130px; top: 300px; height: 30px; display: flex; align-items: center; gap: 18px; font: 500 19px/1 "JetBrains Mono", monospace; color: #D9C7B2; }
+  #trk .rail { position: relative; flex: 1; height: 4px; background: rgba(226, 193, 142, .3); border-radius: 2px; }
+  #trk .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--gold); border-radius: 2px; }
+  #trk .th { position: absolute; top: -10px; width: 24px; height: 24px; margin-left: -12px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, .4); }
+  #trk .v { width: 56px; text-align: right; }
+  #card { position: absolute; left: 50px; right: 50px; top: 392px; height: 360px; border-radius: 16px; background: var(--cream); box-shadow: 0 24px 50px rgba(0, 0, 0, .45); padding: 34px 40px; box-sizing: border-box; }
+  #card .tg { font: 700 15px/1 "JetBrains Mono", monospace; letter-spacing: .18em; color: #9A7B55; }
+  #card .sl { margin: 14px 0 26px; font: italic 600 60px/1.1 "Cormorant", serif; color: var(--bur); white-space: nowrap; }
+  #card .bd { margin-top: 14px; font: 400 25px/1.45 "Inter", sans-serif; color: #3A2A22; }
+  #card .ln { height: 1px; background: rgba(87, 45, 44, .2); margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S07">
+  <div class="warm"></div>
+  <div class="hd lan top" id="hd" data-copy="S07_headline"></div>
+  <div class="vig"></div>
+</div>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$;
+  const tool = B.tool($('#root'), {cls: 'lan', tool: 'text', layers: ['lantern / mark', 'palette', 'type / heading', 'type / body', 'grid'], on: 2, file: 'Mizuki_Brandkit · Typography', props: 'FONT · <b id="pf">Anton</b> &nbsp;· &nbsp;TRACKING <b id="pt">0</b>'});
+  const cvw = document.createElement('div'); cvw.id = 'cvw'; cvw.innerHTML = '<div class="paper brass"></div>'; tool.cv.insertBefore(cvw, tool.art);
+  tool.paper.style.opacity = 0;
+  const art = tool.art;
+  art.insertAdjacentHTML('beforeend',
+    '<div class="k" style="top:40px">TYPE TESTER</div><div id="smp"></div><div id="fn"></div>' +
+    '<div id="trk"><span>TRACKING</span><div class="rail"><div class="fill"></div><div class="th"></div></div><span class="v">0</span></div>' +
+    '<div id="card"><div class="tg">CORMORANT · TIÊU ĐỀ</div><div class="sl" data-copy="S07_slogan"></div><div class="ln"></div><div class="tg">INTER · NỘI DUNG</div><div class="bd" data-copy="S07_body"></div></div>');
+  $('#card .sl').innerHTML = S.html('S07_slogan'); $('#card .bd').innerHTML = S.html('S07_body');
+  $('#smp').innerHTML = '<span id="sp"></span>'; $('#sp').textContent = S.text('S07_sample');
+  const F = [['Anton', 400, 'Anton'], ['Fredoka', 700, 'Fredoka'], ['Playfair Display', 700, 'Playfair Display'], ['Caveat', 700, 'Caveat'], ['Montserrat', 800, 'Montserrat'],
+    ['Oswald', 600, 'Oswald'], ['VT323', 400, 'VT323'], ['Bricolage Grotesque', 800, 'Bricolage'], ['Archivo Black', 400, 'Archivo Black'], ['Playfair Display', 700, 'Playfair Display'], ['Cormorant', 600, 'Cormorant']];
+  const cur = B.cursor(art);
+  const T0 = 0.4, T1 = 2.75;
+  B.clock(tl, (t) => {
+    tool.tick(t, 1020);
+    const i = t < T1 ? Math.min(F.length - 2, Math.floor(B.L(t, T0, T1) * (F.length - 1))) : F.length - 1;
+    const f = F[i], smp = $('#smp');
+    smp.style.fontFamily = '"' + f[0] + '"'; smp.style.fontWeight = f[1];
+    smp.style.opacity = B.L(t, 0.3, 0.45);
+    const tr = Math.round(40 * B.E(t, 3.05, 4.0));
+    smp.style.letterSpacing = (tr / 1000) + 'em';
+    const fitk = Math.min(1, 730 / Math.max(1, $('#sp').offsetWidth));
+    smp.style.transform = 'scale(' + (fitk * (1 + 0.04 * B.wob(t, T1, 1, 22))).toFixed(4) + ')';
+    $('#fn').textContent = (i === F.length - 1 ? '✓ ' : '') + f[2] + ' · ' + f[1];
+    $('#fn').style.opacity = B.L(t, 0.3, 0.45);
+    $('#pf').textContent = f[2]; $('#pt').textContent = tr; $('#trk .v').textContent = '+' + tr;
+    $('#trk').style.opacity = B.E(t, 2.9, 3.2);
+    const p = tr / 100; $('#trk .th').style.left = (p * 100) + '%'; $('#trk .fill').style.width = (p * 100) + '%';
+    const uc = B.E(t, 4.1, 4.8);
+    $('#card').style.opacity = uc; $('#card').style.transform = 'translateY(' + (60 * (1 - uc)).toFixed(1) + 'px)';
+    // con trỏ: bấm chọn font ×16 → kéo thanh Tracking → vào thẻ
+    const rail = 130 + 128 + 18; // x bắt đầu thanh (ước lượng)
+    const k = B.keys(t, [[0.3, 600, 260], [2.9, 600, 250], [3.05, rail + 10, 318], [4.0, rail + 10 + 0.4 * 300, 318], [4.9, 600, 520]]);
+    cur.at(k[0], k[1], (t > 3.05 && t < 4.0) || Math.floor(t * 7) % 2 === 0 && t < T1);
+    cur.style.opacity = B.L(t, 0.2, 0.4);
+  });
+  B.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.08, dur: 0.6});
+</script>
+</body>
+</html>

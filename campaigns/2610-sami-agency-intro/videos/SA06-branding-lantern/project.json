@@ -252,7 +252,7 @@
   "S11_b1": {
    "label": "Thẻ 1 dòng phụ",
    "scene": "S11",
-   "value": "Khách nhắc lại, giới thiệu cho người quen."
+   "value": "Khách nhắc tên, giới thiệu cho bạn bè."
   },
   "S11_b2t": {
    "label": "Thẻ 2 tiêu đề",

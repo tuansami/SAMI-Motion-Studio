@@ -1,1 +1,87 @@
-<!doctype html><html><body><div id="root" data-composition-id="S06"></div><script>window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/700.css">
+<link rel="stylesheet" href="_fonts/cormorant/600.css">
+<link rel="stylesheet" href="_fonts/cormorant/600-italic.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S06 · MÀU: vòng swatch quay ×16, logo mẫu đổi màu liên tục → dừng ở đỏ đèn lồng → 2 palette Mizuki trượt ra, mã hex gõ */
+  #cvw { position: absolute; inset: 0; background: radial-gradient(90% 80% at 50% 45%, #4A2620 0%, #2B1711 70%); }
+  #cvw .paper { inset: -400px; }
+  #sv { position: absolute; left: 0; top: 0; width: 800px; height: 800px; overflow: visible; }
+  .pal { position: absolute; left: 70px; width: 660px; }
+  .pal .nm { font: 600 38px/1 "Cormorant", serif; color: var(--cream); margin-bottom: 12px; white-space: nowrap; }
+  .pal .row { display: flex; gap: 14px; }
+  .pal .sw { width: 210px; height: 74px; border-radius: 10px; box-shadow: 0 10px 24px rgba(0, 0, 0, .35), inset 0 0 0 1px rgba(255, 255, 255, .12); position: relative; }
+  .pal .hx { position: absolute; left: 0; top: 84px; font: 500 19px/1 "JetBrains Mono", monospace; color: #D9C7B2; letter-spacing: .06em; }
+  #pa { top: 488px; } #pb { top: 650px; }
+  #lockt { position: absolute; left: 456px; top: 14px; font: 700 18px/1 "JetBrains Mono", monospace; letter-spacing: .2em; color: var(--gold); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S06">
+  <div class="warm"></div>
+  <div class="hd lan top" id="hd" data-copy="S06_headline"></div>
+  <div class="vig"></div>
+</div>
+<script src="hf/parts/mz-logo.js"></script>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$, NS = 'http://www.w3.org/2000/svg';
+  const tool = B.tool($('#root'), {cls: 'lan', tool: 'drop', layers: ['moodboard', 'concept', 'lantern / mark', 'palette', 'grid'], on: 3, file: 'Mizuki_Brandkit · Palette', props: 'SWATCH · <b id="cur">#2F6F8F</b> &nbsp;· &nbsp;<b id="cnt">01</b> / 16'});
+  const cvw = document.createElement('div'); cvw.id = 'cvw'; cvw.innerHTML = '<div class="paper brass"></div>'; tool.cv.insertBefore(cvw, tool.art);
+  tool.paper.style.opacity = 0;
+  const art = tool.art;
+  const SW = ['#2F6F8F', '#3E8E5E', '#D9822B', '#7A4E9E', '#1F3A5F', '#C0392B', '#E7B93C', '#5B6770', '#572D2C', '#8AA29E', '#B85C38', '#C08382', '#2E4A3F', '#C0A076', '#6B4F8A', '#604D35'];
+  const CX = 400, CY = 250, RR = 196;
+  const sv = document.createElementNS(NS, 'svg'); sv.id = 'sv'; sv.setAttribute('viewBox', '0 0 800 800'); art.appendChild(sv);
+  let h = '<circle cx="' + CX + '" cy="' + CY + '" r="' + (RR + 44) + '" fill="none" stroke="rgba(226,193,142,.25)" stroke-width="1.5" stroke-dasharray="4 8"/>' +
+    '<circle id="disc" cx="' + CX + '" cy="' + CY + '" r="138" fill="#F3F0ED"/><g id="ring">';
+  SW.forEach((c, i) => { const a = (i * 22.5 - 90) * Math.PI / 180; h += '<circle class="dot" cx="' + (CX + RR * Math.cos(a)).toFixed(1) + '" cy="' + (CY + RR * Math.sin(a)).toFixed(1) + '" r="30" fill="' + c + '" stroke="rgba(255,255,255,.25)" stroke-width="2"/>'; });
+  h += '</g><path d="M' + CX + ' ' + (CY - RR - 52) + ' l-14 -22 h28 z" fill="#E2C18E"/><circle id="sel" cx="' + CX + '" cy="' + (CY - RR) + '" r="40" fill="none" stroke="#E2C18E" stroke-width="4"/>' +
+    '<g id="mini" transform="translate(' + (CX - 451 * 0.33 / 2) + ' ' + (CY - 512 * 0.33 / 2 + 6) + ') scale(0.33)"></g>';
+  sv.innerHTML = h;
+  const LG = B.logo($('#mini'));
+  LG.all.forEach((p) => p.removeAttribute('stroke-dasharray'));
+  const lockt = document.createElement('div'); lockt.id = 'lockt'; lockt.textContent = '● LOCKED'; art.appendChild(lockt);
+  function pal(id, name, cols) {
+    const d = document.createElement('div'); d.className = 'pal'; d.id = id;
+    d.innerHTML = '<div class="nm">' + name + '</div><div class="row">' + cols.map((c) => '<div class="sw" style="background:' + c + '"><div class="hx" data-h="' + c + '"></div></div>').join('') + '</div>';
+    art.appendChild(d); return {el: d, sw: [...d.querySelectorAll('.sw')], hx: [...d.querySelectorAll('.hx')]};
+  }
+  const PA = pal('pa', S.text('S06_pa'), ['#572D2C', '#392014', '#C08382']);
+  const PB = pal('pb', S.text('S06_pb'), ['#F3F0ED', '#C0A076', '#604D35']);
+  const cur = B.cursor(art);
+  const T0 = 0.35, T1 = 3.7, A = 1980;
+  B.clock(tl, (t) => {
+    tool.tick(t, 900);
+    const a = A * B.E(t, T0, T1);
+    $('#ring').setAttribute('transform', 'rotate(' + a.toFixed(2) + ' ' + CX + ' ' + CY + ')');
+    const idx = Math.round(((((-a) % 360) + 360) % 360) / 22.5) % 16;
+    const locked = t > T1;
+    const col = locked ? '#C0A076' : SW[idx];
+    LG.all.forEach((p) => { p.setAttribute('fill', col); p.setAttribute('stroke', 'none'); });
+    $('#disc').setAttribute('fill', B.lerpC('#F3F0ED', '#572D2C', B.E(t, T1, T1 + 0.5)));
+    $('#cur').textContent = locked ? '#572D2C' : SW[idx];
+    $('#cnt').textContent = (locked ? 9 : idx + 1).toString().padStart(2, '0');
+    $('#sel').setAttribute('r', (40 + 8 * B.wob(t, T1, 1, 20)).toFixed(2));
+    lockt.style.opacity = B.E(t, T1, T1 + 0.3);
+    // vòng nhỏ lại nhường chỗ cho palette
+    [PA, PB].forEach((P, k) => {
+      const t0 = T1 + 0.5 + k * 0.6;
+      P.el.style.opacity = B.L(t, t0, t0 + 0.25);
+      P.sw.forEach((e, i) => { const u = B.E(t, t0 + i * 0.1, t0 + i * 0.1 + 0.45); e.style.transform = 'translateX(' + (-60 * (1 - u)).toFixed(1) + 'px) scaleX(' + (0.3 + 0.7 * u).toFixed(3) + ')'; e.style.transformOrigin = '0 50%'; });
+      P.hx.forEach((e, i) => { e.textContent = B.typed(e.dataset.h, t, t0 + 0.4 + i * 0.15, t0 + 0.7 + i * 0.15); });
+    });
+    sv.style.opacity = 1;
+    // con trỏ chấm vào swatch đang chọn, rồi đi tới palette
+    const k = B.keys(t, [[0.3, 620, 700], [1.2, 520, 120], [3.4, 470, 70], [T1 + 0.6, 300, 560], [T1 + 1.4, 520, 720]]);
+    cur.at(k[0], k[1], Math.abs(t - T1) < 0.12 || Math.abs(t - T1 - 0.6) < 0.1);
+    cur.style.opacity = B.L(t, 0.2, 0.4);
+  });
+  B.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.08, dur: 0.6});
+</script>
+</body>
+</html>

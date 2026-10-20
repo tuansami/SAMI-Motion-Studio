@@ -1,1 +1,77 @@
-<!doctype html><html><body><div id="root" data-composition-id="S08"></div><script>window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/700.css">
+<link rel="stylesheet" href="_fonts/cormorant/600.css">
+<link rel="stylesheet" href="_fonts/cormorant/600-italic.css">
+<link rel="stylesheet" href="_fonts/inter/600.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S08 · BRAND BOARD: logo, 2 palette, chữ, ảnh, slogan, họa tiết bay vào lưới; giao diện công cụ lùi đi */
+  #cvw { position: absolute; inset: 0; background: radial-gradient(90% 80% at 50% 45%, #4A2620 0%, #2B1711 70%); }
+  #cvw .paper { inset: -400px; }
+  .tl { position: absolute; border-radius: 12px; overflow: hidden; box-shadow: 0 18px 40px rgba(0, 0, 0, .45); will-change: transform; }
+  .tl .cap { position: absolute; left: 14px; bottom: 12px; font: 700 13px/1 "JetBrains Mono", monospace; letter-spacing: .16em; color: rgba(243, 240, 237, .75); }
+  .tl.lt .cap { color: rgba(87, 45, 44, .7); }
+  .stripes { display: flex; width: 100%; height: 100%; } .stripes i { flex: 1; display: block; }
+  #tType { background: var(--cream); display: flex; align-items: center; gap: 22px; padding: 0 26px; box-sizing: border-box; }
+  #tType .a1 { font: 600 82px/1 "Cormorant", serif; color: var(--bur); } #tType .a2 { font: 600 58px/1 "Inter", sans-serif; color: var(--bur2); }
+  #tType .nm { font: 700 13px/1.6 "JetBrains Mono", monospace; letter-spacing: .14em; color: #9A7B55; }
+  #tSlo { background: var(--bur2); display: flex; align-items: center; justify-content: center; }
+  #tSlo div { font: italic 600 50px/1.1 "Cormorant", serif; color: var(--gold); white-space: nowrap; }
+  .tl img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tl svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S08">
+  <div class="warm"></div>
+  <div class="hd lan top" id="hd" data-copy="S08_headline"></div>
+  <div class="vig"></div>
+</div>
+<script src="hf/parts/mz-logo.js"></script>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$, NS = 'http://www.w3.org/2000/svg';
+  const tool = B.tool($('#root'), {cls: 'lan', tool: 'move', layers: ['brand board', 'lantern / mark', 'palette', 'type', 'pattern'], on: 0, file: 'Mizuki_Brandkit · Brand Board', props: 'BOARD · <b>7 ô</b> &nbsp;· &nbsp;EXPORT <b>PDF</b>'});
+  const cvw = document.createElement('div'); cvw.id = 'cvw'; cvw.innerHTML = '<div class="paper brass"></div>'; tool.cv.insertBefore(cvw, tool.art);
+  tool.paper.style.opacity = 0; tool.cv.style.background = 'transparent';
+  const art = tool.art;
+  const M = window.MZ_LOGO;
+  const symD = M.sym.map((p) => p[0]).join(' '), allD = symD + ' ' + M.word.map((p) => p[0]).join(' ');
+  const T = [
+    ['tLogo', 30, 30, 360, 420, '<svg viewBox="0 0 360 420"><defs><pattern id="pt" width="60" height="68" patternUnits="userSpaceOnUse"><path transform="translate(14 12) scale(0.07)" d="' + symD + '" fill="rgba(192,131,130,.16)" fill-rule="evenodd"/></pattern></defs>' +
+      '<rect width="360" height="420" fill="#572D2C"/><rect width="360" height="420" fill="url(#pt)"/><path transform="translate(' + (180 - 451 * 0.5 / 2) + ' 70) scale(0.5)" d="' + allD + '" fill="#C0A076" fill-rule="evenodd"/></svg><div class="cap">LOGO</div>', -500, -100],
+    ['tPA', 406, 30, 364, 130, '<div class="stripes"><i style="background:#572D2C"></i><i style="background:#392014"></i><i style="background:#C08382"></i></div><div class="cap">BURGUNDY LANTERN</div>', 600, -200],
+    ['tPB', 406, 176, 364, 130, '<div class="stripes"><i style="background:#F3F0ED"></i><i style="background:#C0A076"></i><i style="background:#604D35"></i></div><div class="cap" style="color:rgba(87,45,44,.75)">CREAM &amp; BRASS</div>', 600, 0],
+    ['tType', 406, 322, 364, 128, '<div class="a1">Aa</div><div class="a2">Aa</div><div class="nm">CORMORANT<br>INTER</div>', 600, 200],
+    ['tPh', 30, 466, 250, 304, '<img src="public/img/mz-food-lotus.webp"><div class="cap">FOTO</div>', -500, 300],
+    ['tSlo', 296, 466, 474, 150, '<div>' + S.text('S07_slogan') + '</div>', 0, 600],
+    ['tPat', 296, 632, 474, 138, '<svg viewBox="0 0 474 138"><defs><pattern id="pt2" width="46" height="52" patternUnits="userSpaceOnUse"><path transform="translate(8 6) scale(0.068)" d="' + symD + '" fill="#C0A076" fill-rule="evenodd"/></pattern></defs><rect width="474" height="138" fill="#392014"/><rect width="474" height="138" fill="url(#pt2)" opacity=".55"/></svg><div class="cap">PATTERN</div>', 300, 600]
+  ].map((d, i) => {
+    const e = document.createElement('div'); e.className = 'tl' + (d[0] === 'tPB' || d[0] === 'tType' ? ' lt' : ''); e.id = d[0]; B.box(e, d[1], d[2], d[3], d[4]); e.innerHTML = d[5]; art.appendChild(e);
+    return {el: e, fx: d[6], fy: d[7], t: 0.45 + i * 0.24};
+  });
+  const sel = B.selb(art, 'lan');
+  B.clock(tl, (t) => {
+    tool.tick(t, 1130);
+    T.forEach((p) => {
+      const u = B.E(t, p.t, p.t + 0.5);
+      p.el.style.opacity = B.L(t, p.t, p.t + 0.12);
+      p.el.style.transform = 'translate(' + (p.fx * (1 - u)).toFixed(1) + 'px,' + (p.fy * (1 - u)).toFixed(1) + 'px) scale(' + (0.7 + 0.3 * u).toFixed(4) + ') rotate(' + (6 * (1 - u)).toFixed(2) + 'deg)';
+    });
+    const sb = B.E(t, 2.4, 2.8);
+    B.box(sel, 22, 22, 756, 756); sel.style.opacity = sb * (1 - B.E(t, 3.4, 3.7));
+    // lùi camera: giao diện mờ đi, board nổi lên
+    const out = B.E(t, 3.5, 5.3);
+    ['.bar', '.side', '.panel', '.props'].forEach((q) => { const e = tool.el.querySelector(q); if (e) e.style.opacity = 1 - out; });
+    tool.el.style.background = 'rgba(22,23,28,' + (1 - out).toFixed(3) + ')';
+    tool.el.style.boxShadow = out > 0.5 ? 'none' : '';
+    cvw.style.opacity = 1 - out;
+    tool.el.style.transform = 'scale(' + (1 - 0.06 * out).toFixed(4) + ')';
+  });
+  B.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.09, dur: 0.6});
+</script>
+</body>
+</html>

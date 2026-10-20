@@ -1,1 +1,81 @@
-<!doctype html><html><body><div id="root" data-composition-id="S05"></div><script>window.SAMI.timeline();</script></body></html>
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/700.css">
+<link rel="stylesheet" href="_fonts/cormorant/600.css">
+<link rel="stylesheet" href="_fonts/cormorant/600-italic.css">
+<link rel="stylesheet" href="hf/parts/bp.css">
+<style>
+  /* S05 · ★ CHỮ KÝ: logo được đổ đồng từ trong ra, quầng sáng tràn cả khung, blueprint → đèn lồng */
+  #warm { opacity: 0; }
+  #sv { position: absolute; left: 0; top: 0; width: 800px; height: 800px; overflow: visible; }
+  .cn { fill: none; stroke: rgba(143, 216, 255, .5); stroke-width: 1.6; }
+  #lg path { stroke-width: 1.8; stroke-linejoin: round; }
+  #cvw { position: absolute; inset: 0; opacity: 0; background: radial-gradient(90% 80% at 50% 45%, #4A2620 0%, #2B1711 70%); }
+  #cvw .paper { inset: -400px; }
+  #glow { z-index: 25; }
+  #halo { position: absolute; left: 400px; top: 300px; width: 10px; height: 10px; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, rgba(255, 220, 160, .9) 0%, rgba(240, 170, 100, .35) 40%, rgba(200, 120, 80, 0) 70%); }
+  #hd { z-index: 26; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S05">
+  <div class="paper" id="paper"></div>
+  <div class="warm" id="warm"></div>
+  <div class="glow" id="glow"></div>
+  <div class="hd lan top" id="hd" data-copy="S05_headline"></div>
+  <div class="vig"></div>
+</div>
+<script src="hf/parts/mz-logo.js"></script>
+<script src="hf/parts/bp.js"></script>
+<script>
+  const S = window.SAMI, B = window.BP, tl = S.timeline(), $ = B.$, NS = 'http://www.w3.org/2000/svg';
+  const tool = B.tool($('#root'), {tool: 'pen', layers: ['moodboard', 'concept', 'lantern / mark', 'grid'], on: 2, file: 'Mizuki_Brandkit · Logo', props: 'FILL · <b id="fhex">#FFFFFF</b> &nbsp;· &nbsp;GLOW <b id="gl">0%</b>'});
+  const cvw = document.createElement('div'); cvw.id = 'cvw'; cvw.innerHTML = '<div class="paper brass"></div>'; tool.cv.insertBefore(cvw, tool.art);
+  const sv = document.createElementNS(NS, 'svg'); sv.id = 'sv'; sv.setAttribute('viewBox', '0 0 800 800'); tool.art.appendChild(sv);
+  const s = 1.25, ox = 400 - 451 * s / 2, oy = 70;
+  const halo = document.createElement('div'); halo.id = 'halo'; tool.art.insertBefore(halo, sv);
+  sv.innerHTML = '<defs><linearGradient id="brass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1D6A6"/><stop offset=".55" stop-color="#C0A076"/><stop offset="1" stop-color="#8E6A3E"/></linearGradient></defs>' +
+    '<g id="cn"><path class="cn" d="M400 20 V780"/><circle class="cn" cx="400" cy="207" r="125"/><circle class="cn" cx="400" cy="370" r="219"/><rect class="cn" x="' + (ox + 65 * s) + '" y="' + (oy + 92 * s) + '" width="400" height="248"/></g>' +
+    '<g id="lg" transform="translate(' + ox + ' ' + oy + ') scale(' + s + ')"></g>';
+  const LG = B.logo($('#lg'));
+  LG.all.forEach((p) => { p.removeAttribute('stroke-dasharray'); });
+  const tL = 0.45; // khoảnh khắc bật đèn (ngay sau nhịp cắt)
+  B.clock(tl, (t) => {
+    const fill = B.E(t, tL, tL + 0.9), spill = B.E(t, tL + 0.35, tL + 1.9), warm = B.E(t, tL + 0.5, tL + 1.8);
+    $('#paper').style.transform = 'translate(' + (-(t + 31) * 6).toFixed(1) + 'px,' + (-(t + 31) * 4).toFixed(1) + 'px)';
+    $('#paper').style.opacity = 1 - warm;
+    $('#warm').style.opacity = warm;
+    cvw.style.opacity = warm;
+    tool.paper.style.opacity = 1 - warm;
+    $('#cn').style.opacity = 1 - B.E(t, tL, tL + 0.7);
+    // logo: viền trắng → đồng, đổ đồng từ trong ra
+    LG.sym.concat(LG.word).forEach((p) => {
+      p.setAttribute('stroke', B.lerpC('#FFFFFF', '#E2C18E', fill));
+      p.setAttribute('fill', 'url(#brass)');
+      p.setAttribute('fill-opacity', fill.toFixed(3));
+    });
+    $('#lg').style.filter = 'drop-shadow(0 0 ' + (4 + 26 * fill * (1 - 0.4 * B.E(t, 2.6, 3.8))).toFixed(1) + 'px rgba(255, 200, 120, ' + (0.85 * fill).toFixed(2) + '))';
+    // quầng sáng trong canvas + tràn ra cả khung
+    const hs = 40 + 1300 * spill;
+    halo.style.width = halo.style.height = hs + 'px'; halo.style.marginLeft = halo.style.marginTop = (-hs / 2) + 'px';
+    halo.style.opacity = (fill * (1 - 0.5 * B.E(t, 2.2, 3.6))).toFixed(3);
+    const r = tool.art.getBoundingClientRect(), root = $('#root').getBoundingClientRect(), k = root.width / S.w;
+    const gx = (r.left - root.left) / k + r.width / k / 2, gy = (r.top - root.top) / k + r.height / k * 0.375;
+    const gs = 200 + 4200 * spill;
+    const g = $('#glow'); g.style.left = (gx - gs / 2) + 'px'; g.style.top = (gy - gs / 2) + 'px'; g.style.width = g.style.height = gs + 'px';
+    g.style.opacity = (B.L(t, tL + 0.2, tL + 0.5) * (1 - 0.75 * B.E(t, tL + 1.4, 3.6))).toFixed(3);
+    // giao diện công cụ ấm dần
+    tool.ff.style.background = B.lerpC('#B8373B', '#8E5A2E', warm);
+    tool.el.querySelector('.side svg.on').style.background = B.lerpC('#3D8BFF', '#8E6A3E', warm);
+    tool.el.querySelector('.ly.on').style.background = warm > 0.5 ? 'rgba(192,160,118,.25)' : 'rgba(61,139,255,.25)';
+    $('#fhex').textContent = fill < 0.5 ? '#FFFFFF' : '#C0A076';
+    $('#gl').textContent = Math.round(100 * fill) + '%';
+    tool.tick(t, 760);
+  });
+  B.rise(tl, S.words($('#hd')), tL + 0.6, {stagger: 0.1, dur: 0.7});
+</script>
+</body>
+</html>
