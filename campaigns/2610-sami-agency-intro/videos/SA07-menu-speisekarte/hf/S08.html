@@ -34,7 +34,7 @@
   const bg = R.bg($('#root'), {seed: 60});
   const INKS = [['#FF4F9A', '#2E3B8F'], ['#00A95C', '#1F4E5A'], ['#FFA41B', '#A0322E']];
   const names = R.list('S08_names');
-  const L = S.pick({'16:9': {k: 0.5, x: 870, y: 250, gap: 30}, default: {k: 0.56, x: 60, y: 740, gap: -41}});
+  const L = S.pick({'16:9': {k: 0.58, x: 850, y: 250, gap: -30}, default: {k: 0.56, x: 60, y: 740, gap: -41}});
   const W = 620 * L.k, H = 880 * L.k;
   const slots = INKS.map((ink, i) => {
     const sl = document.createElement('div'); sl.className = 'slot'; $('#slots').appendChild(sl);

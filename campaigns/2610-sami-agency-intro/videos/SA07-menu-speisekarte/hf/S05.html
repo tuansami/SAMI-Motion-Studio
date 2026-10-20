@@ -62,7 +62,7 @@
     let fi = 0; if (t >= tF0) fi = Math.min(FONTS.length - 1, Math.floor((t - tF0) / ((tF1 - tF0) / FONTS.length)));
     const F = t < tF0 ? ['Lora', '400'] : FONTS[fi];
     nms.forEach((n) => { n.style.fontFamily = '"' + F[0] + '"'; n.style.fontWeight = F[1]; });
-    $('#pf').textContent = $('#xf').textContent = F[0] + (t >= tF1 ? ' + Be Vietnam Pro' : '');
+    $('#pf').textContent = F[0];
     $('#xf').textContent = F[0];
     const sz = t < tF1 ? 12 : R.mix(12, 15.5, R.E(t, tF1, tF1 + 0.4));
     nms.forEach((n) => { n.style.fontSize = sz.toFixed(2) + 'px'; });

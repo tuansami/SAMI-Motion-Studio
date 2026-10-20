@@ -29,10 +29,10 @@
 .top { left: 76px; right: 76px; top: 248px; }
 .tagpos { left: 76px; top: 176px; }
 .demopos { left: 76px; bottom: 300px; }
-[data-ratio="16x9"] .top { left: 110px; right: auto; width: 720px; top: 300px; }
+[data-ratio="16x9"] .top { left: 100px; right: auto; width: 760px; top: 300px; }
 [data-ratio="16x9"] .tagpos { left: 110px; top: 214px; }
 [data-ratio="16x9"] .demopos { left: 110px; bottom: 70px; }
-[data-ratio="16x9"] .hd { font-size: 64px; }
+[data-ratio="16x9"] .hd { font-size: 62px; }
 
 /* tem đóng dấu */
 .stamp { position: absolute; z-index: 22; white-space: nowrap; font: 800 40px/1 "Bricolage Grotesque", sans-serif; letter-spacing: .02em; color: var(--pink);
