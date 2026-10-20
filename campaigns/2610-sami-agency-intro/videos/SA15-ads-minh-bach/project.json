@@ -1,0 +1,371 @@
+{
+ "name": "SA15-ads-minh-bach-v.1",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "status": "draft",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "navy": "#0C0628",
+   "mint": "#08DDA4",
+   "purple": "#7667FE"
+  }
+ },
+ "look": {
+  "grain": 0.03,
+  "vignette": 0.35,
+  "background": "#0A0E14"
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook: đồng xu rơi vào hộp đen",
+   "start": 0,
+   "end": 180,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Nỗi đau: nhật ký hộp đen",
+   "start": 180,
+   "end": 450,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Chữ ký: hộp đen vỡ thành hộp kính",
+   "start": 450,
+   "end": 684,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Sankey: chia theo mục tiêu (Vị, minh họa)",
+   "start": 684,
+   "end": 954,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Từ khóa → quảng cáo → trang đích",
+   "start": 954,
+   "end": 1188,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "Van tuần: Ruhetag tắt",
+   "start": 1188,
+   "end": 1404,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "Rà cụm tìm kiếm, từ khóa phủ định",
+   "start": 1404,
+   "end": 1638,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "5 hành động thật, được đo",
+   "start": 1638,
+   "end": 1854,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "Báo cáo tuần/tháng",
+   "start": 1854,
+   "end": 2106,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "Nhịp thở + cam kết minh bạch",
+   "start": 2106,
+   "end": 2304,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "CTA WhatsApp",
+   "start": 2304,
+   "end": 2556,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  },
+  {
+   "id": "S12",
+   "label": "End card SAMI",
+   "start": 2556,
+   "end": 2700,
+   "engine": "hyperframes",
+   "src": "hf/S12.html"
+  }
+ ],
+ "copy": {
+  "S01_head": {
+   "label": "Câu hook",
+   "scene": "S01",
+   "value": "Mỗi tháng, bạn thả tiền quảng cáo / vào *một chiếc hộp đen.*",
+   "multiline": false
+  },
+  "S01_meter": {
+   "label": "Nhãn đồng hồ",
+   "scene": "S01",
+   "value": "NGÂN SÁCH THÁNG NÀY",
+   "multiline": false
+  },
+  "S02_head": {
+   "label": "Câu nỗi đau",
+   "scene": "S02",
+   "value": "Tiền vào đều. Đi đâu thì / *không ai nói rõ.*",
+   "multiline": false
+  },
+  "S02_l1": {
+   "label": "Nhật ký 1",
+   "scene": "S02",
+   "value": "Thứ Hai quán nghỉ, quảng cáo vẫn chạy",
+   "multiline": false
+  },
+  "S02_l2": {
+   "label": "Nhật ký 2",
+   "scene": "S02",
+   "value": "„pho rezept\": vẫn tính tiền click",
+   "multiline": false
+  },
+  "S02_l3": {
+   "label": "Nhật ký 3",
+   "scene": "S02",
+   "value": "Báo cáo tháng này: trống",
+   "multiline": false
+  },
+  "S03_head": {
+   "label": "Câu bước ngoặt",
+   "scene": "S03",
+   "value": "Ở SAMI, chiếc hộp ấy / *được làm bằng kính.*",
+   "multiline": false
+  },
+  "S03_sub": {
+   "label": "Câu phụ",
+   "scene": "S03",
+   "value": "Bạn thấy từng đồng chảy qua đâu, / dừng ở đâu.",
+   "multiline": false
+  },
+  "S04_kick": {
+   "label": "Kicker case",
+   "scene": "S04",
+   "value": "VỊ VIETNAMESE CUISINE · SCHLIERSEE",
+   "multiline": false
+  },
+  "S04_note": {
+   "label": "Ghi chú minh hoạ",
+   "scene": "S04",
+   "value": "MINH HỌA CÁCH SAMI DỰNG",
+   "multiline": false
+  },
+  "S04_head": {
+   "label": "Câu chính",
+   "scene": "S04",
+   "value": "Mỗi đồng chia *theo mục tiêu,* / không rải đều cho mọi thứ.",
+   "multiline": false
+  },
+  "S04_src": {
+   "label": "Nút nguồn",
+   "scene": "S04",
+   "value": "Ngân sách",
+   "multiline": false
+  },
+  "S04_g": {
+   "label": "4 nhóm quảng cáo, cách nhau |",
+   "scene": "S04",
+   "value": "Nhà hàng Việt tại Schliersee|Pho · Bánh Xèo · Curry|Quà tặng|Brand",
+   "multiline": false
+  },
+  "S04_p": {
+   "label": "4 trang đích, cách nhau |",
+   "scene": "S04",
+   "value": "Trang đặt bàn|Speisekarte|Gutschein|Trang chủ",
+   "multiline": false
+  },
+  "S05_head": {
+   "label": "Câu chính",
+   "scene": "S05",
+   "value": "Khách gõ đúng điều họ muốn, / thấy đúng quảng cáo, *vào đúng trang.*",
+   "multiline": false
+  },
+  "S05_q": {
+   "label": "Từ khóa gõ",
+   "scene": "S05",
+   "value": "vietnamesisch schliersee",
+   "multiline": false
+  },
+  "S05_c1": {
+   "label": "Nhãn 1",
+   "scene": "S05",
+   "value": "Một trang, một mục tiêu",
+   "multiline": false
+  },
+  "S05_c2": {
+   "label": "Nhãn 2",
+   "scene": "S05",
+   "value": "Thông điệp khớp quảng cáo",
+   "multiline": false
+  },
+  "S06_head": {
+   "label": "Câu chính",
+   "scene": "S06",
+   "value": "Quán nghỉ thứ Hai? / *Quảng cáo cũng nghỉ.*",
+   "multiline": false
+  },
+  "S06_sub": {
+   "label": "Câu phụ",
+   "scene": "S06",
+   "value": "Ngân sách chạy theo giờ mở cửa của quán.",
+   "multiline": false
+  },
+  "S07_head": {
+   "label": "Câu chính",
+   "scene": "S07",
+   "value": "Mỗi tuần, SAMI rà lại / *từng cụm khách đã gõ.*",
+   "multiline": false
+  },
+  "S07_sub": {
+   "label": "Câu phụ",
+   "scene": "S07",
+   "value": "Cụm nào không dẫn tới bàn ăn, bị loại.",
+   "multiline": false
+  },
+  "S07_rows": {
+   "label": "7 cụm tìm kiếm (+ giữ, - loại), cách nhau |",
+   "scene": "S07",
+   "value": "+vietnamesisch schliersee|-pho rezept selber machen|+pho schliersee|-restaurant jobs schliersee|+restaurant gutschein|-vietnam reise günstig|+vị schliersee",
+   "multiline": false
+  },
+  "S08_head": {
+   "label": "Câu chính",
+   "scene": "S08",
+   "value": "Mỗi ống dẫn kết thúc ở / *một hành động thật* của khách.",
+   "multiline": false
+  },
+  "S08_sub": {
+   "label": "Câu phụ",
+   "scene": "S08",
+   "value": "Và từng hành động đều được đo.",
+   "multiline": false
+  },
+  "S08_acts": {
+   "label": "5 hành động, cách nhau |",
+   "scene": "S08",
+   "value": "Đặt bàn|Gọi điện|Chỉ đường|Gutschein|Xem menu",
+   "multiline": false
+  },
+  "S08_tag": {
+   "label": "Nhãn đo",
+   "scene": "S08",
+   "value": "5 CHUYỂN ĐỔI · ĐO BẰNG GOOGLE TAG MANAGER",
+   "multiline": false
+  },
+  "S09_head": {
+   "label": "Câu chính",
+   "scene": "S09",
+   "value": "Mỗi tuần, mỗi tháng: / *một bản báo cáo* rõ ràng.",
+   "multiline": false
+  },
+  "S09_sub": {
+   "label": "Câu phụ",
+   "scene": "S09",
+   "value": "Tiền đi đâu, mang về gì, tuần tới làm gì.",
+   "multiline": false
+  },
+  "S10_head": {
+   "label": "Lời cam kết",
+   "scene": "S10",
+   "value": "Không chi phí ẩn. / Không cộng phí vào *ngân sách quảng cáo.*",
+   "multiline": false
+  },
+  "S11_head": {
+   "label": "Câu hỏi CTA",
+   "scene": "S11",
+   "value": "Tiền quảng cáo của quán / *đang đi đâu?*",
+   "multiline": false
+  },
+  "S11_sub": {
+   "label": "Lời mời",
+   "scene": "S11",
+   "value": "Nhắn SAMI, nhận *phân tích marketing miễn phí,* / không ràng buộc.",
+   "multiline": false
+  },
+  "S11_wa": {
+   "label": "Số WhatsApp",
+   "scene": "S11",
+   "value": "+49 155 60456888",
+   "multiline": false
+  },
+  "S11_note": {
+   "label": "Ghi chú",
+   "scene": "S11",
+   "value": "Phản hồi trong 24 giờ",
+   "multiline": false
+  },
+  "S12_claim": {
+   "label": "Câu chốt",
+   "scene": "S12",
+   "value": "Thêm khách. Thêm doanh thu. / Thêm thời gian.",
+   "multiline": false
+  },
+  "S12_tag": {
+   "label": "Tagline",
+   "scene": "S12",
+   "value": "Strategy • Automation • Marketing • Intelligence",
+   "multiline": false
+  },
+  "S12_contact": {
+   "label": "Liên hệ",
+   "scene": "S12",
+   "value": "WhatsApp +49 155 60456888",
+   "multiline": false
+  },
+  "S12_url": {
+   "label": "Web",
+   "scene": "S12",
+   "value": "sami-agency.de",
+   "multiline": false
+  }
+ },
+ "titles": [],
+ "overlays": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke"
+ },
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 0.5
+  },
+  "cues": [],
+  "voice": []
+ }
+}
