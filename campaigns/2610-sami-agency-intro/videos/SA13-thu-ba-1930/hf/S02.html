@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/400.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/cn.css">
+<style>
+  /* S02 · toàn cảnh quán Phở Lan: 12 bàn trống, đèn ấm, bếp còn hơi nước, mưa trên kính */
+  #l1 { font-size: 70px; }
+  .stack { gap: 26px; }
+  .scrim-top { height: 820px; }
+  [data-ratio="16x9"] .scrim-top { display: none; }
+  [data-ratio="16x9"] .scrim-left { width: 1100px; }
+  [data-ratio="9x16"] .scrim-left { display: none; }
+  [data-ratio="16x9"] #l1 { font-size: 60px; }
+  [data-ratio="16x9"] .stack { top: 44%; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02">
+  <div class="cam" id="cam"><div class="fill" id="room"></div></div>
+  <div class="scrim-top"></div><div class="scrim-left"></div>
+  <div class="stack"><div class="hd" id="l1" data-copy="S02_l1"></div><div class="hd" id="l2" data-copy="S02_l2"></div></div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/cine.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), CN = window.CN, $ = (s) => document.querySelector(s);
+  const room = CN.room($('#room'), {sign: S.text('S02_sign', 'PHỞ LAN')});
+  CN.clock(tl, (t) => {
+    const k = t / S.dur;
+    $('#cam').style.transform = 'scale(' + (1.06 - 0.04 * S.EASE(Math.min(1, t / 1.2)) + 0.03 * k).toFixed(4) + ') translateY(' + (-10 * k).toFixed(1) + 'px)';
+    room.draw(t, {warm: 0.5, clock: 19.5 + t / 3600});
+  });
+  S.arrive(tl, '#l1', 0.6, {dist: 24, blur: 10, dur: 0.9});
+  S.arrive(tl, '#l2', 2.6, {dist: 24, blur: 10, dur: 0.9});
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="hf/parts/cn.css">
+<style>
+  /* S10 · CTA: chuyển xưng hô sang "bạn"; kính mưa tan dần, màu chuyển từ teal-amber về navy SAMI */
+  #a { background: radial-gradient(ellipse at 50% 50%, #12363D 0%, #0A2228 45%, #051216 100%); }
+  #b { background: radial-gradient(ellipse at 50% 45%, #1E1650 0%, #0C0628 60%, #07031A 100%); opacity: 0; }
+  #l1 { font-size: 84px; }
+  #l2 { font-size: 104px; }
+  .stack { top: 50%; transform: translateY(-50%); gap: 30px; }
+  [data-ratio="16x9"] .stack { left: 160px; width: 1600px; align-items: center; text-align: center; }
+  [data-ratio="16x9"] #l1 { font-size: 80px; }
+  [data-ratio="16x9"] #l2 { font-size: 100px; }
+  #bar { position: absolute; z-index: 21; left: 50%; width: 0; height: 3px; margin-left: 0; background: linear-gradient(90deg, #08DDA4, #7667FE); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S10">
+  <div class="fill" id="a"></div><div class="fill" id="b"></div>
+  <div class="fill" id="bk"></div>
+  <div class="fill" id="gl"></div>
+  <div class="stack"><div class="hd" id="l1" data-copy="S10_l1"></div><div class="hd" id="l2" data-copy="S10_l2"></div></div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/cine.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), CN = window.CN, $ = (s) => document.querySelector(s);
+  const bok = CN.bokeh($('#bk'), {n: 16, seed: 101, rmin: 50, rmax: 160, blur: 10});
+  const gl = CN.rainGlass(CN.canvas($('#gl'), 0, 0, S.w, S.h), {seed: 23, scale: 1.3});
+  CN.clock(tl, (t) => {
+    const k = CN.E(t, 1.0, S.dur - 0.6);
+    bok(t, 0.9 * (1 - k)); gl(t, 1 - CN.E(t, 0.3, S.dur - 1.2));
+    $('#b').style.opacity = k.toFixed(3);
+  });
+  S.arrive(tl, '#l1', 0.4, {dist: 20, blur: 10, dur: 1.0});
+  S.arrive(tl, '#l2', 1.7, {dist: 20, blur: 12, dur: 1.0});
+</script>
+</body>
+</html>

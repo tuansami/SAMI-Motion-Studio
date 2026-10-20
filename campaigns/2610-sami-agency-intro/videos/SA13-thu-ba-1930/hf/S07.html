@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/300.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/cn.css">
+<style>
+  /* S07 · SAMI vào cuộc: phân tích miễn phí, 3 bước Analyse → Strategie → Umsetzung, giao diện làm việc tua nhanh */
+  #back { background: radial-gradient(ellipse at 50% 30%, #12363D 0%, #0B2026 50%, #061418 100%); }
+  #grid { position: absolute; inset: -10%; background-image: linear-gradient(rgba(8, 221, 164, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(8, 221, 164, .05) 1px, transparent 1px); background-size: 72px 72px; }
+  #head { position: absolute; z-index: 20; left: var(--safe-side); right: var(--safe-side); top: 236px; text-align: center; font-size: 76px; }
+  #ff { position: absolute; z-index: 21; right: 72px; top: 150px; font: 500 22px/1 "IBM Plex Mono", monospace; letter-spacing: .16em; color: #08DDA4; padding: 10px 14px; border: 1px solid rgba(8, 221, 164, .4); border-radius: 8px; background: rgba(6, 20, 24, .7); }
+  #cards { position: absolute; z-index: 10; left: 56px; right: 56px; top: 520px; display: flex; flex-direction: column; gap: 26px; }
+  .card { position: relative; height: 312px; display: grid; grid-template-columns: 1fr 420px; gap: 26px; padding: 30px 30px 30px 36px; border-radius: 30px; background: linear-gradient(160deg, rgba(23, 58, 61, .92), rgba(8, 26, 30, .94)); border: 1px solid rgba(243, 235, 221, .12); box-shadow: 0 30px 70px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .06); }
+  .num { font: 500 24px/1 "IBM Plex Mono", monospace; letter-spacing: .18em; color: #08DDA4; }
+  .num small { color: rgba(243, 235, 221, .5); margin-left: 10px; font-size: 20px; }
+  .ttl { font: 400 58px/1.15 "Fraunces", serif; color: #F3EBDD; margin-top: 16px; }
+  .dsc { font: 300 33px/1.4 "Be Vietnam Pro", sans-serif; color: #D4DCD8; margin-top: 10px; }
+  .ui { position: relative; border-radius: 20px; background: #F3F1EC; overflow: hidden; font-family: "Be Vietnam Pro", sans-serif; color: #1E2526; }
+  [data-ratio="16x9"] #head { left: 110px; right: 110px; top: 96px; text-align: left; font-size: 70px; }
+  [data-ratio="16x9"] #ff { right: 110px; top: 110px; }
+  [data-ratio="16x9"] #cards { left: 110px; right: 110px; top: 340px; flex-direction: row; gap: 34px; }
+  [data-ratio="16x9"] .card { flex: 1; height: 660px; grid-template-columns: 1fr; grid-template-rows: auto 330px; padding: 30px; }
+  [data-ratio="16x9"] .ttl { font-size: 52px; }
+  [data-ratio="16x9"] .dsc { font-size: 30px; }
+  /* UI 1: checklist hồ sơ */
+  .ck { display: flex; align-items: center; justify-content: space-between; padding: 0 22px; height: 46px; font-size: 21px; border-bottom: 1px solid #E3E0DA; }
+  .ck em { font-style: normal; font: 600 20px/1 "IBM Plex Mono", monospace; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; }
+  .uibar { height: 40px; background: #0C0628; color: #08DDA4; font: 500 17px/40px "IBM Plex Mono", monospace; letter-spacing: .12em; padding: 0 18px; }
+  #scan { position: absolute; left: 0; right: 0; height: 60px; background: linear-gradient(180deg, rgba(8, 221, 164, 0), rgba(8, 221, 164, .35), rgba(8, 221, 164, 0)); }
+  /* UI 2: bản đồ + quảng cáo */
+  #ad { position: absolute; left: 14px; right: 14px; bottom: 14px; padding: 12px 16px; border-radius: 14px; background: #fff; box-shadow: 0 6px 20px rgba(0, 0, 0, .18); font-size: 22px; }
+  #ad b { font-weight: 600; } #ad small { display: block; font-size: 17px; color: #5F6868; margin-top: 2px; }
+  #ad .an { font: 600 16px/1 "Be Vietnam Pro"; color: #1E2526; border: 1px solid #1E2526; border-radius: 4px; padding: 2px 5px; margin-right: 8px; }
+  /* UI 3: website */
+  #site .nav { height: 46px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; font: 400 22px/1 "Fraunces", serif; background: #13262A; color: #F3EBDD; }
+  #site .nav span { font: 400 15px/1 "Be Vietnam Pro"; color: #A9B8B6; letter-spacing: .04em; }
+  #site .hero { position: absolute; left: 0; right: 0; top: 46px; bottom: 0; background: radial-gradient(circle at 70% 55%, #D99A5A 0%, #7A4424 40%, #2A1A12 75%); }
+  #site .h1 { position: absolute; left: 20px; top: 70px; font: 300 32px/1.15 "Fraunces", serif; color: #fff; width: 58%; }
+  #btn { position: absolute; left: 20px; bottom: 24px; padding: 14px 22px; border-radius: 30px; background: #F2A65A; color: #1E1208; font: 600 20px/1 "Be Vietnam Pro"; }
+  #cur { position: absolute; width: 30px; height: 40px; z-index: 3; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S07">
+  <div class="fill" id="back"></div><div id="grid"></div>
+  <div class="hd" id="head" data-copy="S07_head"></div>
+  <div id="ff">TUA NHANH ×16</div>
+  <div id="cards">
+    <div class="card" id="c1"><div><div class="num">01 <small>ANALYSE</small></div><div class="ttl" data-copy="S07_s1t"></div><div class="dsc" data-copy="S07_s1"></div></div>
+      <div class="ui" id="u1"><div class="uibar">AUDIT · PHỞ LAN</div><div id="cks"></div><div id="scan"></div></div></div>
+    <div class="card" id="c2"><div><div class="num">02 <small>STRATEGIE</small></div><div class="ttl" data-copy="S07_s2t"></div><div class="dsc" data-copy="S07_s2"></div></div>
+      <div class="ui" id="u2"><svg id="mapv" style="position:absolute;inset:0;width:100%;height:100%"></svg><div id="ad"><span class="an">Anzeige</span><b>Phở Lan</b> · Pho in der Nähe<small>Jetzt geöffnet · Route · Anrufen</small></div></div></div>
+    <div class="card" id="c3"><div><div class="num">03 <small>UMSETZUNG</small></div><div class="ttl" data-copy="S07_s3t"></div><div class="dsc" data-copy="S07_s3"></div></div>
+      <div class="ui" id="site"><div class="nav">Phở Lan <span>Speisekarte · Kontakt</span></div><div class="hero"><svg id="bowl" style="position:absolute;right:3%;top:34%;width:36%;height:52%" viewBox="0 0 200 160"></svg><div class="h1">Pho wie in Hà Nội. Mitten in Leipzig.</div><div id="btn">Jetzt reservieren</div></div>
+        <svg id="cur" viewBox="0 0 30 40"><path d="M2 2 L2 32 L10 25 L16 38 L21 36 L15 23 L26 23 Z" fill="#fff" stroke="#111" stroke-width="2"/></svg></div></div>
+  </div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/cine.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), CN = window.CN, el = CN.el, $ = (s) => document.querySelector(s);
+  const P = S.portrait, T1 = 2.4, T2 = 5.4, T3 = 8.4;
+  // UI 1 · checklist
+  const items = [['Google-Unternehmensprofil', '!', '#E8A33D'], ['Öffnungszeiten', '✕', '#D93025'], ['Fotos', '✕', '#D93025'], ['Bewertungen', '!', '#E8A33D'], ['Website · Mobil', '✕', '#D93025']];
+  items.forEach((it, i) => { const d = document.createElement('div'); d.className = 'ck'; d.innerHTML = '<span>' + it[0] + '</span><em style="background:' + it[2] + '">' + it[1] + '</em>'; $('#cks').appendChild(d); });
+  const cks = document.querySelectorAll('.ck');
+  // UI 2 · bản đồ bán kính
+  const mv = $('#mapv'); mv.setAttribute('viewBox', '0 0 420 300'); mv.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+  mv.innerHTML = '<rect width="420" height="300" fill="#DCE5DF"/><path d="M-10 200 L430 120" stroke="#fff" stroke-width="18"/><path d="M150 -10 L220 310" stroke="#fff" stroke-width="13"/><path d="M-10 60 L430 95" stroke="#fff" stroke-width="8"/><rect x="270" y="150" width="70" height="55" fill="#C9D6CD"/><rect x="30" y="95" width="80" height="60" fill="#C9D6CD"/>';
+  const ring = el('circle', {cx: 200, cy: 120, r: 10, fill: 'rgba(8,221,164,.18)', stroke: '#08A87E', 'stroke-width': 3, 'stroke-dasharray': '8 6'}, mv);
+  el('path', {d: 'M188 118 c0-16 24-16 24 0 c0 13 -12 24 -12 24 s-12-11-12-24z', fill: '#F2A65A', stroke: '#7A4424', 'stroke-width': 2, transform: 'translate(0,-26)'}, mv);
+  el('circle', {cx: 200, cy: 92, r: 4.5, fill: '#fff'}, mv);
+  const dots = []; for (let i = 0; i < 14; i++) { const a = CN.R(i, 71) * 6.28, r = 40 + 110 * CN.R(i, 72); dots.push(el('circle', {cx: 200 + Math.cos(a) * r, cy: 120 + Math.sin(a) * r * 0.7, r: 5, fill: '#1A73E8', opacity: 0}, mv)); }
+  // UI 3 · tô phở (vẽ)
+  $('#bowl').innerHTML = '<ellipse cx="100" cy="70" rx="86" ry="26" fill="#F1EADC"/><ellipse cx="100" cy="70" rx="74" ry="20" fill="#C98A4A"/><path d="M14 70 Q100 190 186 70" fill="#E9DFC9"/><path d="M60 64 q20 -10 40 0 q20 10 40 0" stroke="#F6E7C8" stroke-width="5" fill="none"/><circle cx="80" cy="66" r="6" fill="#4F8A3A"/><circle cx="120" cy="70" r="5" fill="#4F8A3A"/><path d="M70 40 q-8 -18 4 -34 M100 38 q-8 -18 4 -34 M130 40 q-8 -18 4 -34" stroke="#fff" stroke-width="4" fill="none" opacity=".5" id="stm"/>';
+  CN.clock(tl, (t) => {
+    // 1: quét + đánh dấu lần lượt
+    const k1 = CN.L(t, T1 + 0.5, T1 + 2.6);
+    $('#scan').style.top = (40 + k1 * 240 - 30).toFixed(1) + 'px'; $('#scan').style.opacity = (k1 > 0 && k1 < 1 ? 1 : 0);
+    cks.forEach((c, i) => { const on = CN.E(t, T1 + 0.6 + i * 0.4, T1 + 0.9 + i * 0.4); c.querySelector('em').style.transform = 'scale(' + on.toFixed(3) + ')'; });
+    // 2: vòng bán kính mở rộng, người dùng gần (chấm xanh) hiện, quảng cáo trượt lên
+    const k2 = CN.E(t, T2 + 0.4, T2 + 2.0);
+    ring.setAttribute('r', (10 + 140 * k2).toFixed(1));
+    dots.forEach((d, i) => d.setAttribute('opacity', CN.E(t, T2 + 0.8 + i * 0.08, T2 + 1.1 + i * 0.08).toFixed(3)));
+    $('#ad').style.transform = 'translateY(' + (120 * (1 - CN.E(t, T2 + 1.6, T2 + 2.3))).toFixed(1) + 'px)';
+    // 3: con trỏ tới nút, bấm
+    const ui = $('#site'), bw = ui.clientWidth, bh = ui.clientHeight;
+    const k3 = CN.E(t, T3 + 0.7, T3 + 1.9), cx = CN.mix(bw * 0.85, 120, k3), cy = CN.mix(bh * 0.3, bh - 52, k3);
+    $('#cur').style.left = cx + 'px'; $('#cur').style.top = cy + 'px';
+    const clicked = t > T3 + 2.1;
+    $('#btn').textContent = clicked ? 'Reserviert ✓' : 'Jetzt reservieren';
+    $('#btn').style.background = clicked ? '#08DDA4' : '#F2A65A';
+    $('#btn').style.transform = 'scale(' + (t > T3 + 1.95 && t < T3 + 2.15 ? 0.93 : 1) + ')';
+    $('#grid').style.transform = 'translateY(' + (-t * 6).toFixed(1) + 'px)';
+  });
+  S.arrive(tl, '#head', 0.4, {dist: 24, blur: 10, dur: 0.9});
+  tl.fromTo('#ff', {opacity: 0}, {opacity: 1, duration: 0.4}, T1);
+  [['#c1', T1], ['#c2', T2], ['#c3', T3]].forEach(([s, at]) => tl.fromTo(s, {opacity: 0, y: 60, scale: 0.96, filter: 'blur(10px)'}, {opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.8}, at));
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/cn.css">
+<style>
+  /* S05 · điện thoại người qua đường: gõ „Pho in der Nähe", 3 kết quả; ô Phở Lan hiện viền đứt rồi tan */
+  #back { background: radial-gradient(ellipse at 50% 60%, #12363D 0%, #0A2228 40%, #051216 100%); }
+  #l1, #l2 { font-size: 56px; }
+  .stack { gap: 26px; }
+  #phoneWrap { position: absolute; z-index: 10; left: 270px; top: 690px; width: 540px; height: 1080px; transform-origin: 50% 0; }
+  [data-ratio="16x9"] #phoneWrap { left: 1190px; top: 96px; transform: scale(.82); }
+  [data-ratio="16x9"] .stack { width: 860px; }
+  [data-ratio="16x9"] #l1, [data-ratio="16x9"] #l2 { font-size: 64px; }
+  #phone { position: absolute; inset: 0; border-radius: 64px; background: #0B0F10; box-shadow: 0 40px 120px rgba(0, 0, 0, .7), 0 0 0 3px #22393C, inset 0 0 0 10px #0B0F10; overflow: hidden; }
+  #screen { position: absolute; left: 14px; top: 14px; right: 14px; bottom: 14px; border-radius: 52px; background: #F3F1EC; overflow: hidden; font-family: "Be Vietnam Pro", sans-serif; }
+  #glow { position: absolute; z-index: 9; left: 50%; top: 52%; width: 1400px; height: 1400px; margin: -700px 0 0 -700px; border-radius: 50%; background: radial-gradient(circle, rgba(220, 235, 235, .18), rgba(220, 235, 235, 0) 60%); }
+  #search { position: absolute; left: 26px; right: 26px; top: 60px; height: 92px; border-radius: 46px; background: #fff; box-shadow: 0 6px 20px rgba(0, 0, 0, .12); display: flex; align-items: center; padding: 0 30px; gap: 18px; font-size: 34px; color: #1E2526; }
+  #search svg { width: 34px; height: 34px; flex: none; }
+  #caret { display: inline-block; width: 3px; height: 38px; background: #1A73E8; margin-left: 2px; vertical-align: -6px; }
+  #map { position: absolute; left: 0; right: 0; top: 0; height: 330px; background: #DCE5DF; }
+  #map svg { width: 100%; height: 100%; }
+  #list { position: absolute; left: 0; right: 0; top: 330px; bottom: 0; background: #fff; border-radius: 34px 34px 0 0; padding: 28px 26px; box-shadow: 0 -8px 24px rgba(0, 0, 0, .08); }
+  .res { position: relative; height: 150px; border-bottom: 1px solid #E6E4DF; padding: 18px 8px; }
+  .res b { display: block; font-weight: 600; font-size: 33px; color: #1E2526; }
+  .res span { display: block; max-width: 330px; white-space: nowrap; overflow: hidden; font-size: 25px; color: #5F6868; margin-top: 8px; }
+  .res i { font-style: normal; color: #E8A33D; letter-spacing: 2px; }
+  .res .open { color: #188038; }
+  .res .thumb { position: absolute; right: 8px; top: 22px; width: 104px; height: 104px; border-radius: 18px; }
+  #ghost { position: absolute; left: 22px; right: 22px; top: 22px; height: 150px; border: 4px dashed #F2A65A; border-radius: 22px; background: rgba(242, 166, 90, .08); padding: 18px 26px; }
+  #ghost b { font: 600 33px/1.2 "Be Vietnam Pro", sans-serif; color: #B86A20; }
+  #ghost span { display: block; font: 500 22px/1.3 "IBM Plex Mono", monospace; letter-spacing: .1em; text-transform: uppercase; color: #B86A20; margin-top: 10px; }
+  #items { position: absolute; left: 26px; right: 26px; top: 200px; }
+  .tag-demo { right: 40px; top: 40px; }
+  [data-ratio="16x9"] .tag-demo { right: auto; left: 40px; top: auto; bottom: 40px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S05">
+  <div class="cam" id="cam">
+    <div class="fill" id="back"></div>
+    <div class="fill" id="bk"></div>
+    <div class="fill" id="fall"></div>
+    <div id="glow"></div>
+    <div id="phoneWrap"><div id="phone"><div id="screen">
+      <div id="map"><svg viewBox="0 0 512 330" preserveAspectRatio="xMidYMid slice">
+        <rect width="512" height="330" fill="#DCE5DF"/>
+        <path d="M-10 230 L520 140" stroke="#fff" stroke-width="22"/><path d="M170 -10 L250 340" stroke="#fff" stroke-width="16"/><path d="M-10 70 L520 110" stroke="#fff" stroke-width="10"/>
+        <rect x="300" y="170" width="90" height="70" fill="#C9D6CD"/><rect x="40" y="110" width="100" height="80" fill="#C9D6CD"/>
+        <circle cx="236" cy="200" r="11" fill="#1A73E8" stroke="#fff" stroke-width="4"/><circle cx="236" cy="200" r="30" fill="#1A73E8" opacity=".15"/>
+        <g id="pins" fill="#D93025"><path d="M380 140 c0-12 20-12 20 0 c0 10 -10 20 -10 20 s-10-10-10-20z"/><path d="M90 250 c0-12 20-12 20 0 c0 10 -10 20 -10 20 s-10-10-10-20z"/><path d="M440 60 c0-12 20-12 20 0 c0 10 -10 20 -10 20 s-10-10-10-20z"/></g>
+      </svg></div>
+      <div id="search"><svg viewBox="0 0 24 24" fill="none" stroke="#5F6868" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 L21 21"/></svg><span id="q"></span><span id="caret"></span></div>
+      <div id="list">
+        <div id="ghost"><b>Phở Lan · 50 m</b><span>không xuất hiện</span></div>
+        <div id="items">
+          <div class="res" id="r1"><b>Saigon Bowl</b><span><i>★★★★☆</i> 4,1 · Vietnamesisch · 650 m</span><span class="open">Geöffnet</span><div class="thumb" style="background:linear-gradient(135deg,#C98A4A,#7A4A26)"></div></div>
+          <div class="res" id="r2"><b>Asia Wok Haus</b><span><i>★★★★☆</i> 3,9 · Asiatisch · 900 m</span><span class="open">Geöffnet</span><div class="thumb" style="background:linear-gradient(135deg,#B8562E,#6A2E18)"></div></div>
+          <div class="res" id="r3"><b>Noodle Corner</b><span><i>★★★★☆</i> 4,0 · Nudeln · 1,2 km</span><span class="open">Geöffnet</span><div class="thumb" style="background:linear-gradient(135deg,#D9A867,#8A5A2E)"></div></div>
+        </div>
+      </div>
+    </div></div></div>
+  </div>
+  <div class="tag-demo">Minh họa</div>
+  <div class="stack"><div class="hd" id="l1" data-copy="S05_l1"></div><div class="hd" id="l2" data-copy="S05_l2"></div></div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/cine.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), CN = window.CN, $ = (s) => document.querySelector(s);
+  const bok = CN.bokeh($('#bk'), {n: 20, seed: 51, rmin: 50, rmax: 160, blur: 8});
+  const fall = CN.rainFall(CN.canvas($('#fall'), 0, 0, S.w, S.h), {seed: 8, n: Math.round(S.w * S.h / 6000)});
+  const Q = S.text('S05_query', 'Pho in der Nähe');
+  CN.clock(tl, (t) => {
+    bok(t, 1); fall(t, 1);
+    const n = Math.round(Q.length * CN.L(t, 0.7, 2.3));
+    $('#q').textContent = Q.slice(0, n);
+    $('#caret').style.opacity = (t > 2.6 ? 0 : (Math.floor(t * 2.4) % 2 ? 0.2 : 1));
+    // ô ma "Phở Lan": hiện 3.2 s, tan 6.4 → 7.4 s; danh sách trượt lên lấp chỗ
+    const gi = CN.E(t, 3.2, 3.8), go = CN.E(t, 6.4, 7.4);
+    $('#ghost').style.opacity = (gi * (1 - go)).toFixed(3);
+    $('#ghost').style.filter = 'blur(' + (10 * go).toFixed(2) + 'px)';
+    $('#ghost').style.transform = 'translateY(' + (30 * go).toFixed(1) + 'px) scale(' + (1 + 0.04 * go).toFixed(3) + ')';
+    $('#items').style.transform = 'translateY(' + (-176 * CN.E(t, 6.9, 7.7)).toFixed(1) + 'px)';
+    $('#cam').style.transform = 'scale(' + (1.0 + 0.04 * t / S.dur).toFixed(4) + ')';
+    $('#phoneWrap').style.translate = '0 ' + (Math.sin(t * 0.8) * 6).toFixed(1) + 'px';
+  });
+  ['#r1', '#r2', '#r3'].forEach((s, i) => tl.fromTo(s, {opacity: 0, y: 24}, {opacity: 1, y: 0, duration: 0.45}, 2.5 + i * 0.18));
+  tl.fromTo('#phoneWrap', {opacity: 0, y: 80}, {opacity: 1, y: 0, duration: 0.9}, 0.1);
+  S.arrive(tl, '#l1', 0.5, {dist: 20, blur: 10, dur: 1.0});
+  S.arrive(tl, '#l2', 5.0, {dist: 20, blur: 10, dur: 1.0});
+</script>
+</body>
+</html>

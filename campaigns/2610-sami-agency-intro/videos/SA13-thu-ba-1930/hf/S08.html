@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/400.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/cn.css">
+<style>
+  /* S08 · KHOẢNH KHẮC CHỮ KÝ: đúng khung quán S02; lịch xé tua nhanh từng thứ Ba, đồng hồ quay, ghế trống lần lượt có người, đèn ấm dần */
+  #l1 { font-size: 80px; }
+  #l2 { font-size: 92px; }
+  .stack { gap: 22px; }
+  .scrim-top { height: 820px; }
+  [data-ratio="16x9"] .scrim-top { display: none; }
+  [data-ratio="9x16"] .scrim-left { display: none; }
+  [data-ratio="16x9"] .scrim-left { width: 1100px; }
+  [data-ratio="16x9"] #l1 { font-size: 70px; }
+  [data-ratio="16x9"] #l2 { font-size: 80px; }
+  [data-ratio="16x9"] .stack { top: 44%; }
+  #grade { position: absolute; inset: 0; z-index: 12; pointer-events: none; background: radial-gradient(ellipse at 50% 70%, rgba(242, 166, 90, .35), rgba(242, 166, 90, 0) 70%); mix-blend-mode: screen; }
+  #bigcal { position: absolute; z-index: 18; width: 300px; height: 360px; left: 390px; top: 250px; perspective: 1200px; transform-origin: 50% 0; }
+  [data-ratio="16x9"] #bigcal { left: 300px; top: 300px; }
+  .pg { position: absolute; inset: 0; background: #EDE3CF; border-radius: 6px; box-shadow: 0 20px 60px rgba(0, 0, 0, .5); transform-origin: 50% 0; backface-visibility: hidden; overflow: hidden; }
+  .pg .bar { height: 84px; background: #A8402E; color: #FBEFDC; font: 500 28px/84px "IBM Plex Mono", monospace; letter-spacing: .2em; text-align: center; }
+  .pg .d { font: 400 168px/1 "Fraunces", serif; color: #2A1A12; text-align: center; margin-top: 24px; }
+  .pg .m { font: 500 26px/1 "IBM Plex Mono", monospace; letter-spacing: .16em; color: #6B5A48; text-align: center; margin-top: 18px; }
+  .rings { position: absolute; z-index: 2; left: 0; right: 0; top: -14px; display: flex; justify-content: space-around; padding: 0 50px; }
+  .rings i { width: 14px; height: 30px; border-radius: 7px; background: #2B1B12; }
+  #ff { position: absolute; z-index: 19; font: 500 22px/1 "IBM Plex Mono", monospace; letter-spacing: .16em; color: #FFD59A; left: 390px; width: 300px; text-align: center; top: 640px; }
+  [data-ratio="16x9"] #ff { left: 300px; top: 690px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S08">
+  <div class="cam" id="cam"><div class="fill" id="room"></div></div>
+  <div id="grade"></div>
+  <div class="scrim-top" id="scT"></div><div class="scrim-left" id="scL"></div>
+  <div id="bigcal"><div class="pg" id="pgBase"><div class="bar">THỨ BA</div><div class="d"></div><div class="m"></div></div><div class="pg" id="pgFly"><div class="bar">THỨ BA</div><div class="d"></div><div class="m"></div></div><div class="rings"><i></i><i></i><i></i></div></div>
+  <div id="ff">TUA NHANH ▸▸</div>
+  <div class="stack"><div class="hd" id="l1" data-copy="S08_l1"></div><div class="hd" id="l2" data-copy="S08_l2"></div></div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/cine.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), CN = window.CN, $ = (s) => document.querySelector(s);
+  const room = CN.room($('#room'), {sign: S.text('S02_sign', 'PHỞ LAN')});
+  // các thứ Ba từ 20.10 tới 19.01
+  const D = [[20, 10], [27, 10], [3, 11], [10, 11], [17, 11], [24, 11], [1, 12], [8, 12], [15, 12], [22, 12], [29, 12], [5, 1], [12, 1], [19, 1]].map((a) => ({d: a[0], m: a[1]}));
+  const N = D.length - 1, T0 = 0.8, T1 = 6.6, FL = 0.32;
+  const tf = (i) => T0 + (T1 - T0) * (0.5 - 0.5 * Math.cos(Math.PI * i / N)); // chậm – nhanh – chậm
+  const setPg = (el, k) => { el.querySelector('.d').textContent = String(D[k].d).padStart(2, '0'); el.querySelector('.m').textContent = 'THÁNG ' + D[k].m; };
+  const seats = []; room.tables.forEach((T, i) => seats.push([0.06 + 0.86 * CN.R(i * 2, 91), 0.06 + 0.86 * CN.R(i * 2 + 1, 91)]));
+  CN.clock(tl, (t) => {
+    // lịch: k = số trang đã xé
+    let k = 0; for (let i = 1; i <= N; i++) if (t >= tf(i)) k = i;
+    setPg($('#pgBase'), k);
+    const nxt = Math.min(N, k + 1), fs = tf(k), fp = k > 0 ? CN.L(t, fs, fs + FL) : 1;
+    if (k > 0 && fp < 1) { setPg($('#pgFly'), k - 1); $('#pgFly').style.opacity = 1; $('#pgFly').style.transform = 'rotateX(' + (-110 * S.EASE(fp)).toFixed(1) + 'deg) translateY(' + (fp * 140).toFixed(1) + 'px) rotateZ(' + (fp * 14 * (k % 2 ? 1 : -1)).toFixed(1) + 'deg)'; }
+    else $('#pgFly').style.opacity = 0;
+    room.setCal('THỨ BA', String(D[k].d).padStart(2, '0'), 'THÁNG ' + D[k].m);
+    // lịch lớn thu về lịch tường, nhường chỗ cho chữ
+    const go = CN.E(t, 6.9, 7.7), bc = $('#bigcal');
+    const cx = room.cal.x, cy = room.cal.y, sc = room.cal.w / 300;
+    const bx = parseFloat(getComputedStyle(bc).left), by = parseFloat(getComputedStyle(bc).top);
+    bc.style.transform = 'translate(' + ((cx - bx) * go).toFixed(1) + 'px,' + ((cy - by) * go).toFixed(1) + 'px) scale(' + (1 + (sc - 1) * go).toFixed(4) + ')';
+    bc.style.transformOrigin = '0 0';
+    bc.style.opacity = (CN.E(t, 0.15, 0.6) * (1 - CN.E(t, 7.4, 7.8))).toFixed(3);
+    $('#ff').style.opacity = (CN.E(t, 0.6, 0.9) * (1 - CN.E(t, 6.6, 7.0)) * (0.6 + 0.4 * (Math.floor(t * 3) % 2))).toFixed(3);
+    // ghế có người dần, đèn ấm dần
+    const p = CN.E(t, 1.0, 6.9);
+    const fill = (i, j) => CN.cl((p - seats[i][j]) / 0.07);
+    room.draw(t, {
+      fill: fill,
+      lit: (i) => 0.42 + 0.58 * Math.max(fill(i, 0), fill(i, 1)),
+      rain: 1 - 0.65 * p,
+      clock: 19.5 + 12 * N * CN.E(t, 0.8, 6.9)
+    });
+    $('#grade').style.opacity = (0.2 + 0.8 * p).toFixed(3);
+    $('#cam').style.transform = 'scale(' + (1.05 + 0.04 * t / S.dur).toFixed(4) + ') translateY(' + (-8 * t / S.dur).toFixed(1) + 'px)';
+    const sc2 = CN.E(t, 6.9, 7.6); $('#scT').style.opacity = sc2; $('#scL').style.opacity = sc2;
+  });
+  S.arrive(tl, '#l1', 7.5, {dist: 20, blur: 10, dur: 1.0});
+  S.arrive(tl, '#l2', 8.7, {dist: 20, blur: 10, dur: 1.0});
+</script>
+</body>
+</html>

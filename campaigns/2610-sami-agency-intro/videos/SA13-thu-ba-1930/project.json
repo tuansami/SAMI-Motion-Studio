@@ -234,7 +234,7 @@
   "S09_l1": {
    "label": "Câu chốt cảm xúc",
    "scene": "S09",
-   "value": "Món ngon / *xứng đáng được tìm thấy.*"
+   "value": "Món ngon / *xứng đáng / được tìm thấy.*"
   },
   "S10_l1": {
    "label": "CTA",
@@ -264,7 +264,7 @@
   "S11_claim": {
    "label": "Câu chốt",
    "scene": "S11",
-   "value": "Thêm khách. Thêm doanh thu. Thêm thời gian."
+   "value": "Thêm khách. Thêm doanh thu. / Thêm thời gian."
   },
   "S11_tagline": {
    "label": "Tagline",

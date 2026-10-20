@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/400.css">
+<link rel="stylesheet" href="hf/parts/cn.css">
+<style>
+  /* S04 · nhìn qua kính mưa: quán bên kia đường sáng rực, hàng người cầm ô; rack focus kính → phố */
+  #street, #glassL { position: absolute; inset: 0; }
+  #refl { position: absolute; z-index: 9; font: 400 120px/1 "Fraunces", serif; letter-spacing: 10px; color: #FFD59A; opacity: .14; transform: scaleX(-1); filter: blur(3px); white-space: nowrap; text-shadow: 0 0 30px #F2A65A; }
+  #l1, #l2 { font-size: 74px; }
+  .scrim-top { height: 860px; }
+  [data-ratio="16x9"] .scrim-top { display: none; }
+  [data-ratio="9x16"] .scrim-left { display: none; }
+  [data-ratio="16x9"] .scrim-left { width: 1000px; }
+  [data-ratio="16x9"] #l1, [data-ratio="16x9"] #l2 { font-size: 66px; }
+  [data-ratio="16x9"] .stack { width: 820px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S04">
+  <div class="cam" id="cam">
+    <div id="street"><svg id="sv"></svg><div class="fill" id="fall"></div></div>
+    <div id="refl"></div>
+    <div id="glassL"></div>
+  </div>
+  <div class="scrim-top"></div><div class="scrim-left"></div>
+  <div class="stack"><div class="hd" id="l1" data-copy="S04_l1"></div><div class="hd" id="l2" data-copy="S04_l2"></div></div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/cine.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), CN = window.CN, el = CN.el, $ = (s) => document.querySelector(s);
+  const W = S.w, H = S.h, P = S.portrait;
+  const sv = $('#sv'); sv.setAttribute('width', W); sv.setAttribute('height', H); sv.setAttribute('viewBox', '0 0 ' + W + ' ' + H); sv.style.position = 'absolute';
+  const F = P ? {x: 150, y: 860, w: 780, h: 560, side: 1450} : {x: 940, y: 250, w: 860, h: 560, side: 870};
+  sv.innerHTML = '<defs>' +
+    '<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#03090B"/><stop offset="1" stop-color="#0D2A30"/></linearGradient>' +
+    '<linearGradient id="win" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE2B0"/><stop offset="1" stop-color="#F29A4A"/></linearGradient>' +
+    '<linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E2226"/><stop offset="1" stop-color="#03090B"/></linearGradient>' +
+    '<linearGradient id="refl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2A65A" stop-opacity=".5"/><stop offset="1" stop-color="#F2A65A" stop-opacity="0"/></linearGradient>' +
+    '<radialGradient id="spill"><stop offset="0" stop-color="#F2A65A" stop-opacity=".5"/><stop offset="1" stop-color="#F2A65A" stop-opacity="0"/></radialGradient>' +
+    '<filter id="glow" x="-30%" y="-80%" width="160%" height="260%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  el('rect', {x: 0, y: 0, width: W, height: H, fill: 'url(#sky)'}, sv);
+  // khối nhà
+  el('rect', {x: F.x - 140, y: F.y - 380, width: F.w + 280, height: F.side - F.y + 380, fill: '#0A1C20'}, sv);
+  for (let i = 0; i < 8; i++) el('rect', {x: F.x - 100 + (i % 4) * (F.w + 200) / 4 + 20, y: F.y - 330 + Math.floor(i / 4) * 150, width: 90, height: 100, fill: CN.R(i, 3) > 0.6 ? '#3B3222' : '#0E2428'}, sv);
+  el('circle', {cx: F.x + F.w / 2, cy: F.y + F.h * 0.55, r: F.w * 0.9, fill: 'url(#spill)'}, sv);
+  // mặt tiền quán đối diện
+  el('rect', {x: F.x, y: F.y, width: F.w, height: F.h, fill: '#1C1712'}, sv);
+  el('rect', {x: F.x + 40, y: F.y + 120, width: F.w - 80, height: F.h - 150, fill: 'url(#win)'}, sv);
+  for (let i = 1; i < 4; i++) el('line', {x1: F.x + 40 + i * (F.w - 80) / 4, y1: F.y + 120, x2: F.x + 40 + i * (F.w - 80) / 4, y2: F.y + F.h - 30, stroke: '#2A2018', 'stroke-width': 8}, sv);
+  // bóng khách bên trong
+  for (let i = 0; i < 9; i++) { const x = F.x + 80 + i * (F.w - 160) / 8, y = F.y + F.h - 70 - 40 * CN.R(i, 9); el('circle', {cx: x, cy: y - 70, r: 20, fill: '#5A3A22', opacity: .8}, sv); el('rect', {x: x - 28, y: y - 48, width: 56, height: 90, rx: 22, fill: '#5A3A22', opacity: .8}, sv); }
+  // mái hiên sọc + biển
+  const aw = el('g', {}, sv);
+  for (let i = 0; i < 10; i++) el('path', {d: 'M' + (F.x - 20 + i * (F.w + 40) / 10) + ' ' + (F.y + 20) + ' h' + (F.w + 40) / 10 + ' l6 70 h-' + ((F.w + 40) / 10 + 12) + 'z', fill: i % 2 ? '#8A2E22' : '#D9CBB0'}, aw);
+  const sign = el('text', {x: F.x + F.w / 2, y: F.y - 26, 'text-anchor': 'middle', fill: '#FFE7BF', 'font-family': 'Fraunces', 'font-weight': 400, 'font-size': P ? 64 : 62, 'letter-spacing': 8, filter: 'url(#glow)'}, sv);
+  sign.textContent = S.text('S04_other', 'NUDELHAUS');
+  // vỉa hè, đường ướt, phản chiếu
+  el('rect', {x: 0, y: F.side, width: W, height: 30, fill: '#1A2C2E'}, sv);
+  el('rect', {x: 0, y: F.side + 30, width: W, height: H - F.side - 30, fill: 'url(#road)'}, sv);
+  for (let i = 0; i < 6; i++) el('rect', {x: F.x + 60 + i * (F.w - 120) / 6, y: F.side + 34, width: (F.w - 120) / 9, height: (H - F.side) * 0.8, fill: 'url(#refl)', opacity: .5}, sv);
+  // hàng người cầm ô (ngược sáng)
+  const Q = [];
+  const nq = P ? 6 : 7;
+  for (let i = 0; i < nq; i++) {
+    const g = el('g', {}, sv), x = F.x + 60 + i * (F.w - 100) / (nq - 1) + (CN.R(i, 4) - 0.5) * 30, y = F.side + 18, hgt = 270 + 40 * CN.R(i, 5), col = '#05100F';
+    el('path', {d: 'M' + (x - 34) + ' ' + y + ' L' + (x - 40) + ' ' + (y - hgt * 0.62) + ' Q' + x + ' ' + (y - hgt * 0.8) + ' ' + (x + 40) + ' ' + (y - hgt * 0.62) + ' L' + (x + 34) + ' ' + y + 'Z', fill: col}, g);
+    el('circle', {cx: x, cy: y - hgt * 0.8, r: 26, fill: col}, g);
+    el('line', {x1: x + 10, y1: y - hgt * 0.55, x2: x + 10, y2: y - hgt * 1.02, stroke: col, 'stroke-width': 5}, g);
+    const uc = ['#12363D', '#2B1B12', '#3A1E22', '#0E2A2F'][i % 4];
+    el('path', {d: 'M' + (x + 10 - 92) + ' ' + (y - hgt * 0.98) + ' Q' + (x + 10) + ' ' + (y - hgt * 1.32) + ' ' + (x + 10 + 92) + ' ' + (y - hgt * 0.98) + ' Q' + (x + 10) + ' ' + (y - hgt * 1.04) + ' ' + (x + 10 - 92) + ' ' + (y - hgt * 0.98) + 'Z', fill: uc, stroke: '#F2A65A', 'stroke-opacity': .45, 'stroke-width': 3}, g);
+    Q.push({g, ph: CN.R(i, 6) * 6, x, y});
+  }
+  const fall = CN.rainFall(CN.canvas($('#fall'), 0, 0, W, H), {seed: 4, n: Math.round(W * H / 4500), width: 2});
+  const glass = CN.rainGlass(CN.canvas($('#glassL'), 0, 0, W, H), {seed: 17, scale: 1.4, beads: Math.round(W * H / 5200), drops: Math.round(W / 40)});
+  const R = $('#refl'); R.textContent = S.text('S02_sign', 'PHỞ LAN');
+  R.style.left = (P ? 160 : 1100) + 'px'; R.style.top = (P ? 1560 : 880) + 'px';
+  CN.clock(tl, (t) => {
+    fall(t, 1); glass(t, 1);
+    Q.forEach((q, i) => q.g.setAttribute('transform', 'rotate(' + (Math.sin(t * 1.1 + q.ph) * 1.4).toFixed(2) + ' ' + q.x + ' ' + q.y + ') translate(0,' + (Math.sin(t * 0.9 + q.ph) * 2).toFixed(1) + ')'));
+    // rack focus: kính rõ trước, rồi phố rõ
+    const f = CN.E(t, 0.5, 2.2);
+    $('#street').style.filter = 'blur(' + (9 * (1 - f)).toFixed(2) + 'px)';
+    $('#glassL').style.filter = 'blur(' + (3.5 * f).toFixed(2) + 'px)';
+    $('#glassL').style.opacity = (1 - 0.35 * f).toFixed(3);
+    $('#cam').style.transform = 'scale(' + (1.02 + 0.04 * t / S.dur).toFixed(4) + ')';
+  });
+  S.arrive(tl, '#l1', 0.8, {dist: 20, blur: 10, dur: 1.0});
+  S.arrive(tl, '#l2', 3.4, {dist: 20, blur: 10, dur: 1.0});
+</script>
+</body>
+</html>

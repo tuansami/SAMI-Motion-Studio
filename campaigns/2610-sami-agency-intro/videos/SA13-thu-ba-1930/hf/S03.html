@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="hf/parts/cn.css">
+<style>
+  /* S03 · cận mặt bàn: tay + khăn lau vòng tròn trên chiếc bàn đã sạch; cuối cảnh khăn quét ngang thành mask */
+  #back { background: radial-gradient(ellipse at 50% 20%, #173A3D 0%, #0A2228 45%, #051216 100%); }
+  #l1 { font-style: italic; font-size: 76px; color: #E9E1D2; }
+  #l2 { font-size: 92px; }
+  #wipe { position: absolute; top: 0; bottom: 0; left: -20%; width: 120%; z-index: 40; background: linear-gradient(90deg, rgba(5, 18, 22, 0), #051216 18%); transform: translateX(110%); }
+  [data-ratio="16x9"] #l1 { font-size: 66px; }
+  [data-ratio="16x9"] #l2 { font-size: 82px; }
+  [data-ratio="9x16"] .scrim-left { display: none; }
+  [data-ratio="16x9"] .scrim-left { width: 1050px; }
+  .scrim-top { height: 900px; }
+  [data-ratio="16x9"] .scrim-top { display: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S03">
+  <div class="cam" id="cam">
+    <div class="fill" id="back"></div>
+    <div class="fill" id="bk"></div>
+    <div class="fill" id="cvh"></div>
+  </div>
+  <div class="scrim-top"></div><div class="scrim-left"></div>
+  <div class="stack"><div class="hd" id="l1" data-copy="S03_l1"></div><div class="hd" id="l2" data-copy="S03_l2"></div></div>
+  <div class="vign"></div>
+  <div id="wipe"></div>
+</div>
+<script src="hf/parts/cine.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), CN = window.CN, $ = (s) => document.querySelector(s);
+  const W = S.w, H = S.h, P = S.portrait;
+  const bok = CN.bokeh($('#bk'), {n: 14, seed: 31, rmin: 50, rmax: 150, blur: 10, h: H * 0.5});
+  const cv = CN.canvas($('#cvh'), 0, 0, W, H, 'tbl'); cv.style.position = 'absolute';
+  const ctx = cv.getContext('2d');
+  const tY = P ? 0.5 * H : 0.36 * H;           // mép xa của mặt bàn
+  const C0 = P ? {x: 0.5 * W, y: 0.72 * H} : {x: 0.66 * W, y: 0.7 * H}, RX = P ? 190 : 230, RY = P ? 90 : 95, WV = 2.3;
+  const at = (tt) => ({x: C0.x + Math.cos(tt * WV) * RX, y: C0.y + Math.sin(tt * WV) * RY});
+  const grain = []; for (let i = 0; i < 46; i++) grain.push({y: CN.R(i, 5), a: 0.04 + 0.08 * CN.R(i, 6), f: 0.003 + 0.006 * CN.R(i, 7), ph: CN.R(i, 8) * 6});
+  function table(t) {
+    // mặt bàn phối cảnh: hình thang
+    const xl = P ? -0.25 * W : 0.1 * W, xr = P ? 1.25 * W : 1.1 * W;
+    ctx.save(); ctx.beginPath(); ctx.moveTo(xl + 0.2 * W, tY); ctx.lineTo(xr - 0.2 * W, tY); ctx.lineTo(xr + 0.2 * W, H); ctx.lineTo(xl - 0.2 * W, H); ctx.closePath(); ctx.clip();
+    const g = ctx.createLinearGradient(0, tY, 0, H); g.addColorStop(0, '#3A2214'); g.addColorStop(0.5, '#6E4428'); g.addColorStop(1, '#4A2C19');
+    ctx.fillStyle = g; ctx.fillRect(0, tY, W, H - tY);
+    for (const gr of grain) {
+      ctx.strokeStyle = 'rgba(30,15,6,' + gr.a + ')'; ctx.lineWidth = 2 + 4 * gr.a * 10; ctx.beginPath();
+      for (let x = -40; x <= W + 40; x += 20) { const yy = tY + gr.y * (H - tY) + Math.sin(x * gr.f + gr.ph) * 14; x ? ctx.lineTo(x, yy) : ctx.moveTo(x, yy); }
+      ctx.stroke();
+    }
+    // phản chiếu đèn thả
+    const L0 = P ? {x: 0.42 * W, y: tY + 0.22 * (H - tY)} : {x: 0.55 * W, y: tY + 0.25 * (H - tY)};
+    const rg = ctx.createRadialGradient(L0.x, L0.y, 0, L0.x, L0.y, P ? 420 : 520); rg.addColorStop(0, 'rgba(255,213,154,.55)'); rg.addColorStop(0.3, 'rgba(242,166,90,.22)'); rg.addColorStop(1, 'rgba(242,166,90,0)');
+    ctx.fillStyle = rg; ctx.fillRect(0, tY, W, H - tY);
+    // vệt ẩm sau khăn (mờ dần)
+    for (let k = 40; k >= 1; k--) {
+      const p = at(t - k * 0.035), a = 0.11 * (1 - k / 40);
+      ctx.fillStyle = 'rgba(255,230,190,' + a.toFixed(3) + ')'; ctx.beginPath(); ctx.ellipse(p.x, p.y, 150, 76, 0, 0, 6.283); ctx.fill();
+    }
+    // ống đũa + thẻ thực đơn ở mép xa
+    const ox = P ? 0.78 * W : 0.86 * W, oy = tY + 0.1 * (H - tY);
+    ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); ctx.ellipse(ox + 10, oy + 92, 60, 16, 0, 0, 6.283); ctx.fill();
+    ctx.fillStyle = '#2B3A3A'; ctx.fillRect(ox - 40, oy - 10, 80, 100);
+    ctx.strokeStyle = '#C9A36A'; ctx.lineWidth = 7; for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.moveTo(ox - 28 + i * 11, oy); ctx.lineTo(ox - 34 + i * 13, oy - 90 - 10 * CN.R(i, 2)); ctx.stroke(); }
+    ctx.fillStyle = '#E9DFC9'; ctx.save(); ctx.translate(ox - 170, oy + 20); ctx.rotate(-0.06); ctx.fillRect(0, -80, 100, 150); ctx.fillStyle = '#A8402E'; ctx.fillRect(0, -80, 100, 26); ctx.fillStyle = 'rgba(42,26,18,.5)'; for (let i = 0; i < 5; i++) ctx.fillRect(14, -36 + i * 20, 72 - 14 * (i % 2), 6); ctx.restore();
+    ctx.restore();
+    // mép bàn gần
+    ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(0, tY - 6, W, 6);
+  }
+  function hand(t) {
+    const p = at(t), a = Math.sin(t * WV) * 0.18;
+    const sh = P ? {x: W + 160, y: H + 80} : {x: W + 120, y: H + 160};
+    // tay áo + cánh tay
+    ctx.save();
+    const dx = p.x - sh.x, dy = p.y - sh.y, ang = Math.atan2(dy, dx), len = Math.hypot(dx, dy);
+    ctx.translate(sh.x, sh.y); ctx.rotate(ang);
+    let g = ctx.createLinearGradient(0, -70, 0, 70); g.addColorStop(0, '#1F4146'); g.addColorStop(1, '#0B1E21');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, -150); ctx.lineTo(len * 0.62, -84); ctx.lineTo(len * 0.62, 84); ctx.lineTo(0, 150); ctx.closePath(); ctx.fill();
+    g = ctx.createLinearGradient(0, -45, 0, 45); g.addColorStop(0, '#D9A27A'); g.addColorStop(1, '#8E5B3E');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(len * 0.6, -70); ctx.lineTo(len * 0.93, -64); ctx.quadraticCurveTo(len + 40, 0, len * 0.93, 66); ctx.lineTo(len * 0.6, 70); ctx.closePath(); ctx.fill();
+    ctx.restore();
+    // khăn
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(a); ctx.scale(1.7, 1.7);
+    ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(10, 18, 120, 58, 0, 0, 6.283); ctx.fill();
+    g = ctx.createLinearGradient(-110, -50, 110, 50); g.addColorStop(0, '#EFE6D6'); g.addColorStop(1, '#BFB29C');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-110, -20); ctx.quadraticCurveTo(-60, -66, 20, -50); ctx.quadraticCurveTo(110, -40, 112, 6); ctx.quadraticCurveTo(100, 54, 10, 52); ctx.quadraticCurveTo(-100, 52, -110, -20); ctx.fill();
+    ctx.strokeStyle = 'rgba(120,100,80,.5)'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+    [[-60, -20, 30, -6], [-40, 14, 60, 22], [-80, 30, -10, 40]].forEach((l) => { ctx.beginPath(); ctx.moveTo(l[0], l[1]); ctx.quadraticCurveTo((l[0] + l[2]) / 2, l[1] - 12, l[2], l[3]); ctx.stroke(); });
+    ctx.restore();
+  }
+  CN.clock(tl, (t) => {
+    bok(t, 0.8);
+    ctx.clearRect(0, 0, W, H); table(t); hand(t);
+    $('#cam').style.transform = 'scale(' + (1.03 + 0.03 * t / S.dur).toFixed(4) + ')';
+    // khăn quét ngang thành mask sang S04
+    $('#wipe').style.transform = 'translateX(' + (110 - 110 * CN.E(t, S.dur - 0.8, S.dur - 0.1)).toFixed(2) + '%)';
+  });
+  S.arrive(tl, '#l1', 0.6, {dist: 20, blur: 10, dur: 1.0});
+  S.arrive(tl, '#l2', 3.3, {dist: 20, blur: 10, dur: 1.0});
+</script>
+</body>
+</html>

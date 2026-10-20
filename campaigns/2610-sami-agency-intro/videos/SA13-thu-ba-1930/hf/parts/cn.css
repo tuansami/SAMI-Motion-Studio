@@ -1,0 +1,35 @@
+/* SA13 · "Cinematic Night" — teal sâu đối amber đèn, mưa, bokeh, serif mảnh */
+:root {
+  --cn-bg: #051216; --cn-bg2: #0A2228; --cn-teal: #12363D; --cn-teal-hi: #2E6E73;
+  --cn-amber: #F2A65A; --cn-warm: #FFD59A; --cn-ink: #F3EBDD; --cn-dim: #A9B8B6;
+  --cn-wood: #5A3420; --cn-wood-hi: #8A5631; --cn-shadow: #020809;
+}
+[data-composition-id] { background: var(--cn-bg); overflow: hidden; }
+.abs { position: absolute; }
+.fill { position: absolute; inset: 0; }
+
+/* chữ: serif mảnh + nghiêng amber cho chữ nhấn */
+.hd { position: absolute; z-index: 20; font-family: "Fraunces", serif; font-weight: 300; font-size: 94px; line-height: 1.2; letter-spacing: -.012em; color: var(--cn-ink); text-wrap: balance; text-shadow: 0 4px 30px rgba(2, 8, 9, .9), 0 0 2px rgba(2, 8, 9, .6); }
+.hd em.hl, .sub em.hl { font-style: italic; background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #F6B871; -webkit-text-fill-color: #F6B871; }
+.hd em.hl .w, .sub em.hl .w { background: none; color: #F6B871; -webkit-text-fill-color: #F6B871; }
+.sub { position: absolute; z-index: 20; font-family: "Be Vietnam Pro", sans-serif; font-weight: 300; font-size: 42px; line-height: 1.42; color: #D4DCD8; text-shadow: 0 3px 22px rgba(2, 8, 9, .95); }
+.mono { font-family: "IBM Plex Mono", monospace; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+.tag-demo { position: absolute; z-index: 22; font: 500 20px/1 "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: rgba(243, 235, 221, .6); padding: 8px 12px; border: 1px solid rgba(243, 235, 221, .25); border-radius: 8px; background: rgba(5, 18, 22, .6); }
+[data-ratio="16x9"] .hd { font-size: 84px; }
+[data-ratio="16x9"] .sub { font-size: 38px; }
+
+/* lớp màn tối để chữ đọc được */
+.scrim-top { position: absolute; left: 0; right: 0; top: 0; z-index: 15; pointer-events: none; background: linear-gradient(180deg, rgba(3, 10, 12, .92) 0%, rgba(3, 10, 12, .75) 55%, rgba(3, 10, 12, 0) 100%); }
+.scrim-left { position: absolute; left: 0; top: 0; bottom: 0; z-index: 15; pointer-events: none; background: linear-gradient(90deg, rgba(3, 10, 12, .94) 0%, rgba(3, 10, 12, .78) 55%, rgba(3, 10, 12, 0) 100%); }
+
+/* bokeh + mưa */
+.bokeh { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.bokeh i { position: absolute; border-radius: 50%; will-change: transform, opacity; }
+canvas.rain { position: absolute; pointer-events: none; }
+.vign { position: absolute; inset: 0; z-index: 30; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, .55) 100%); }
+.cam { position: absolute; inset: 0; transform-origin: 50% 50%; will-change: transform; }
+
+/* khối chữ xếp dọc (không chồng khi xuống dòng) */
+.stack { position: absolute; z-index: 20; display: flex; flex-direction: column; gap: 34px; left: var(--safe-side); right: var(--safe-side); top: 240px; text-align: center; align-items: center; }
+.stack .hd, .stack .sub { position: relative; left: auto; right: auto; top: auto; }
+[data-ratio="16x9"] .stack { left: 110px; right: auto; width: 840px; text-align: left; align-items: flex-start; top: 50%; transform: translateY(-50%); }

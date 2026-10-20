@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/cn.css">
+<style>
+  /* S06 · bước ngoặt: điện thoại của chị Lan trên quầy, tin nhắn gửi SAMI; bong bóng nở ra lấp màn hình */
+  #back { background: radial-gradient(ellipse at 50% 70%, #1B2A26 0%, #0A1A1D 45%, #040D10 100%); }
+  #l1 { font-size: 96px; }
+  #pw { position: absolute; z-index: 10; left: 300px; top: 820px; width: 480px; height: 900px; transform: rotate(-3deg); }
+  [data-ratio="16x9"] #pw { left: 1220px; top: 110px; transform: rotate(-3deg) scale(.92); transform-origin: 50% 0; }
+  [data-ratio="16x9"] .stack { width: 820px; }
+  [data-ratio="16x9"] #l1 { font-size: 92px; }
+  #ph { position: absolute; inset: 0; border-radius: 58px; background: #0B0F10; box-shadow: 0 40px 120px rgba(0, 0, 0, .75), 0 0 0 3px #22393C; }
+  #sc { position: absolute; left: 13px; top: 13px; right: 13px; bottom: 13px; border-radius: 46px; background: #ECE7DE; overflow: hidden; font-family: "Be Vietnam Pro", sans-serif; }
+  #hdr { position: absolute; left: 0; right: 0; top: 0; height: 150px; background: #0C0628; display: flex; align-items: flex-end; gap: 18px; padding: 0 26px 22px; color: #fff; }
+  #av { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #08DDA4, #7667FE); display: flex; align-items: center; justify-content: center; font: 600 32px/1 "Be Vietnam Pro"; color: #0C0628; }
+  #hdr b { display: block; font-weight: 600; font-size: 28px; } #hdr span { font-size: 21px; color: #08DDA4; }
+  #msg { position: absolute; right: 22px; top: 420px; width: 360px; padding: 22px 24px 40px; border-radius: 28px 28px 8px 28px; background: #FFF8EC; box-shadow: 0 6px 20px rgba(0, 0, 0, .12); font-size: 27px; line-height: 1.4; color: #1E2526; transform-origin: 90% 90%; }
+  #tick { position: absolute; right: 18px; bottom: 10px; font: 500 18px/1 "IBM Plex Mono", monospace; color: #7A8585; }
+  #inp { position: absolute; left: 18px; right: 18px; bottom: 22px; height: 76px; border-radius: 38px; background: #fff; display: flex; align-items: center; padding: 0 26px; font-size: 24px; color: #8A9393; }
+  #flood { position: absolute; z-index: 25; left: 50%; top: 60%; width: 200px; height: 200px; margin: -100px 0 0 -100px; border-radius: 50%; background: radial-gradient(circle, #10303A 0%, #0B2026 70%); transform: scale(0); }
+  [data-ratio="16x9"] #flood { left: 72%; top: 52%; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S06">
+  <div class="fill" id="back"></div>
+  <div class="fill" id="bk"></div>
+  <div id="pw"><div id="ph"><div id="sc">
+    <div id="hdr"><div id="av">S</div><div><b>SAMI Marketing Agency</b><span>Online</span></div></div>
+    <div id="msg"><span id="mt"></span><div id="tick"></div></div>
+    <div id="inp">Nachricht…</div>
+  </div></div></div>
+  <div class="stack"><div class="hd" id="l1" data-copy="S06_l1"></div></div>
+  <div id="flood"></div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/cine.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), CN = window.CN, $ = (s) => document.querySelector(s);
+  const bok = CN.bokeh($('#bk'), {n: 12, seed: 61, rmin: 60, rmax: 180, blur: 12});
+  const M = S.text('S06_msg', '');
+  CN.clock(tl, (t) => {
+    bok(t, 0.7 * (1 - CN.E(t, 3.4, 4.2)));
+    $('#mt').textContent = M.slice(0, Math.round(M.length * CN.L(t, 0.7, 2.4)));
+    $('#msg').style.opacity = t > 0.6 ? 1 : 0;
+    $('#tick').textContent = t > 2.7 ? 'Gesendet ✓✓' : '';
+    $('#tick').style.color = t > 3.0 ? '#08A87E' : '#7A8585';
+    $('#flood').style.transform = 'scale(' + (22 * CN.E(t, 3.5, 4.4)).toFixed(3) + ')';
+  });
+  tl.fromTo('#pw', {opacity: 0, y: 60}, {opacity: 1, y: 0, duration: 0.8}, 0.05);
+  tl.fromTo('#msg', {scale: 0.96}, {scale: 1.03, duration: 0.25}, 2.6).to('#msg', {scale: 1, duration: 0.3}, 2.85);
+  S.arrive(tl, '#l1', 0.45, {dist: 20, blur: 10, dur: 0.9});
+</script>
+</body>
+</html>

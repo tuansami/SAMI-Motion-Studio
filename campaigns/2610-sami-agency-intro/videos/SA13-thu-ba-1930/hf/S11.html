@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/cn.css">
+<style>
+  /* S11 · end card SAMI: bong bóng chat vẽ bằng code, số WhatsApp, ưu đãi, câu chốt, logo + tagline */
+  [data-composition-id] { background: #0C0628; }
+  #glow { position: absolute; inset: 0; background: radial-gradient(circle at 50% 36%, rgba(118, 103, 254, .26), rgba(12, 6, 40, 0) 55%), radial-gradient(circle at 50% 82%, rgba(8, 221, 164, .12), rgba(12, 6, 40, 0) 50%); }
+  #wrap { position: absolute; z-index: 5; left: var(--safe-side); right: var(--safe-side); top: 300px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #colA, #colB { display: flex; flex-direction: column; align-items: center; }
+  #bubble { position: relative; padding: 40px 54px 44px; border-radius: 48px 48px 48px 12px; background: linear-gradient(135deg, #12C98E, #08DDA4); color: #052019; box-shadow: 0 30px 80px rgba(8, 221, 164, .35); }
+  #bubble:after { content: ""; position: absolute; left: -2px; bottom: -26px; width: 50px; height: 40px; background: #0DD39A; clip-path: polygon(0 0, 100% 0, 0 100%); }
+  #bubble .ic { position: absolute; left: -34px; top: -34px; width: 78px; height: 78px; border-radius: 50%; background: #0C0628; border: 3px solid #08DDA4; display: flex; align-items: center; justify-content: center; }
+  #bubble .ic svg { width: 40px; height: 40px; }
+  #cta { font: 600 48px/1.2 "Be Vietnam Pro", sans-serif; }
+  #phone { font: 800 76px/1.15 "Be Vietnam Pro", sans-serif; letter-spacing: -.01em; margin-top: 8px; white-space: nowrap; }
+  #offer { margin-top: 64px; font: 400 37px/1.4 "Be Vietnam Pro", sans-serif; color: #E3E4F7; }
+  #claim { margin-top: 44px; font: 300 52px/1.25 "Fraunces", serif; font-style: italic; color: #fff; }
+  #lg { position: relative; margin-top: 80px; width: 540px; height: 177px; overflow: hidden; }
+  #lg img { width: 540px; display: block; clip-path: polygon(0 0, 100% 0, 100% 56%, 36% 56%, 36% 100%, 0 100%); transform: translateX(60px); }
+  #tag { margin-top: 22px; font: 500 23px/1.4 "IBM Plex Mono", monospace; letter-spacing: .05em; color: #A8A3C9; }
+  #web { margin-top: 14px; font: 600 40px/1.2 "Be Vietnam Pro", sans-serif; color: #08DDA4; }
+  [data-ratio="16x9"] #wrap { left: 0; right: 0; top: 0; bottom: 0; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; justify-items: center; padding: 0 110px; gap: 70px; }
+  [data-ratio="16x9"] #colA { align-items: flex-start; text-align: left; }
+  [data-ratio="16x9"] #offer { margin-top: 64px; font-size: 34px; }
+  [data-ratio="16x9"] #claim { font-size: 46px; margin-top: 34px; }
+  [data-ratio="16x9"] #lg { margin-top: 0; }
+  [data-ratio="16x9"] #tag { white-space: nowrap; font-size: 20px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S11">
+  <div id="glow"></div>
+  <div id="wrap">
+    <div id="colA">
+      <div id="bubble">
+        <div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#08DDA4" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30 L10 23 A12 12 0 1 1 16 30 Z"/></svg></div>
+        <div id="cta" data-copy="S11_cta"></div>
+        <div id="phone" data-copy="S11_phone"></div>
+      </div>
+      <div id="offer" data-copy="S11_offer"></div>
+      <div id="claim" data-copy="S11_claim"></div>
+    </div>
+    <div id="colB">
+      <div id="lg"><img src="public/img/logo-white.svg"></div>
+      <div id="tag" data-copy="S11_tagline"></div>
+      <div id="web" data-copy="S11_web"></div>
+    </div>
+  </div>
+</div>
+<script>
+  const S = window.SAMI, tl = S.timeline();
+  tl.fromTo('#bubble', {opacity: 0, scale: 0.5, y: 40}, {opacity: 1, scale: 1, y: 0, duration: 0.7}, 0.35);
+  S.arrive(tl, '#offer', 1.0);
+  S.arrive(tl, '#claim', 1.5, {dist: 20});
+  S.arrive(tl, '#lg', 2.1, {dist: 30});
+  S.arrive(tl, '#tag', 2.5, {dist: 20, blur: 6});
+  S.arrive(tl, '#web', 2.7, {dist: 20, blur: 6});
+</script>
+</body>
+</html>
