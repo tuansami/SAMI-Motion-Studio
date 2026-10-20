@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="hf/parts/ik.css">
+<style>
+  /* S04 · CHỮ KÝ: đường cắt nét đứt chạy dọc ống → các khúc ống bật tung khỏi bàn → tia hàn mint chạy thẳng từ điện thoại vào bếp → giọt tiền bay ngược vào két quán */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 250px; }
+  #cut { left: 0; top: 0; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 760px; top: 340px; font-size: 70px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S04">
+  <div class="hd" id="hd" data-copy="S04_headline"></div>
+  <div class="lab p" id="cut"><i></i><span>SAMI</span></div>
+</div>
+<script src="hf/parts/iso.js"></script>
+<script src="hf/parts/world.js"></script>
+<script>
+  const S = window.SAMI, I = window.ISO, tl = S.timeline(), root = W.$('#root'), L16 = S.landscape;
+  const iso = W.setup(root);
+  const C0 = W.FULL(1), C1 = W.FULL(2.5);
+  const cut = W.$('#cut');
+  const N = W.PIECES.length, T_CUT = [0.35, 1.4], T_BLAST = 1.35, T_WELD = [2.2, 3.4], T_BACK = 3.4;
+  // hướng bay của mỗi khúc: ra xa tâm bàn
+  function away(c, u, seed) {
+    const L = Math.hypot(c[0] - 0.5, c[1] - 0.5) || 1, dx = (c[0] - 0.5) / L, dy = (c[1] - 0.5) / L;
+    return [dx * 22 * u * u + (S.rnd(seed) - 0.5) * 3 * u, dy * 22 * u * u + (S.rnd(seed + 9) - 0.5) * 3 * u, 7 * u - 2 * u * u];
+  }
+  // các giọt tiền nằm quanh khớp ống → bay ngược vào két
+  const DROPS = [];
+  W.JOINTS.forEach((j, i) => { for (let r = 0; r < 2; r++) DROPS.push([j[0] + (S.rnd(i * 3 + r) - 0.5) * 0.9, j[1] + (S.rnd(i * 5 + r) - 0.5) * 0.9, 0.12]); });
+  W.clock(tl, (t) => {
+    W.cam(iso, W.lerpCam(C0, C1, W.E(t, 0, S.dur)));
+    W.bg(iso, t);
+    W.board(iso);
+    W.phone(iso, t, {bar: t > T_WELD[0] ? '#08DDA4' : '#7667FE'});
+    W.restaurant(iso, t, {kasse: W.L(t, T_BACK + 0.5, T_BACK + 0.7), printLed: t > 4.5});
+    // máy trung gian bay lên rồi biến khỏi khung
+    const mu = W.L(t, 1.55, 2.5);
+    if (mu < 1) W.machine(iso, t, {coins: 24, dz: 9 * mu * mu, dy: 10 * mu * mu, dx: 2 * mu * mu});
+    W.pipe(iso, t, {
+      fly: (i, c) => { const u = W.L(t, T_BLAST + 0.6 * (i / N), T_BLAST + 0.6 * (i / N) + 0.85); return u >= 1 ? null : away(c, u, i); },
+      flyJ: (i, j) => { const k = i < 0 ? 0 : (i + 1) / (W.JOINTS.length + 1), u = W.L(t, T_BLAST + 0.6 * k, T_BLAST + 0.6 * k + 0.85); return u >= 1 ? null : away(j, u, 100 + i); }
+    });
+    // băng chuyền hàn thẳng
+    const gw = W.E(t, T_WELD[0], T_WELD[1]);
+    W.belt(iso, t, {grow: gw, spark: t > T_WELD[0] && t < T_WELD[1] + 0.4 ? 1 - W.L(t, T_WELD[1], T_WELD[1] + 0.4) : 0, speed: 2.4});
+    // giọt tiền: nằm dưới đất (vũng), rồi bay ngược vào két
+    DROPS.forEach((d, k) => {
+      const ts = T_BACK + k * 0.09, u = W.E(t, ts, ts + 0.85);
+      if (u >= 1) return;
+      const K = W.KASSE, p = [W.mix(d[0], K[0], u), W.mix(d[1], K[1], u), W.mix(d[2], K[2], u) + Math.sin(u * Math.PI) * 3.2];
+      W.drop(iso, p[0], p[1], p[2], 0.24);
+    });
+    // đơn hàng chạy thẳng trên băng chuyền
+    if (t > T_WELD[1]) for (let k = 0; k < 3; k++) {
+      const x = W.BELT.x0 + 0.6 + ((t - T_WELD[1]) * 2.4 + k * 4.4) % 12.4;
+      W.order(iso, x, -4.5, W.BELT.h, {s: Math.min(1, (t - T_WELD[1]) * 3)});
+    }
+    iso.flush();
+    // đường cắt nét đứt dọc ống
+    const pts = W.PIPE_A.concat(W.PIPE_B).map((p) => iso.P(p[0], p[1], p[2] + 0.75));
+    const ca = W.L(t, T_CUT[0], T_CUT[1]);
+    if (t < T_BLAST + 0.3) I.cutLine(iso.g, pts, ca, {color: '#4B3FD8', lw: 3.5, dash: [14, 9]});
+    // nhãn SAMI chạy theo đầu đường cắt
+    let L = 0; const dd = []; for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); dd.push(l); L += l; }
+    let rem = L * ca, hx = pts[0][0], hy = pts[0][1];
+    for (let i = 1; i < pts.length && rem > 0; i++) { const f = Math.min(1, rem / dd[i - 1]); hx = W.mix(pts[i - 1][0], pts[i][0], f); hy = W.mix(pts[i - 1][1], pts[i][1], f); rem -= dd[i - 1]; }
+    cut.style.left = (hx + 18).toFixed(1) + 'px'; cut.style.top = (hy - 74).toFixed(1) + 'px';
+    const cv = W.L(t, 0.25, 0.45) * (1 - W.L(t, 1.5, 1.75));
+    cut.style.opacity = cv.toFixed(3); cut.style.transform = 'scale(' + (0.6 + 0.4 * cv).toFixed(3) + ')';
+  });
+  W.words(tl, '#hd', 3.0, {stagger: 0.06});
+</script>
+</body>
+</html>

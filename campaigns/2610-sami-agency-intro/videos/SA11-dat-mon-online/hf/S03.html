@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="hf/parts/ik.css">
+<style>
+  /* S03 · KHÁCH KHÔNG PHẢI CỦA BẠN: khách nhận túi; thẻ thông tin khách bay về máy trung gian; quán chỉ còn phiếu "Gast ••••". Cả bàn xám dần, chỉ khách + máy giữ màu */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 240px; }
+  #sub { left: var(--safe-side); right: var(--safe-side); top: 520px; }
+  .card.c { padding: 16px 20px; width: 330px; transform-origin: 50% 50%; }
+  .card.c .t { font: 800 26px/1.2 "Be Vietnam Pro", sans-serif; display: flex; align-items: center; gap: 10px; }
+  .card.c .t i { width: 16px; height: 16px; transform: rotate(45deg) scaleY(.82); border-radius: 2px; }
+  .card.c .r { font: 500 21px/1.45 "JetBrains Mono", monospace; color: var(--ink2); }
+  #cg .t i { background: #3C7FB1; } #cr .t i { background: var(--order); }
+  .lock { display: inline-block; width: 18px; height: 14px; background: var(--ink2); border-radius: 3px; position: relative; margin-left: 6px; vertical-align: -1px; }
+  .lock:before { content: ""; position: absolute; left: 3px; top: -9px; width: 8px; height: 10px; border: 2.5px solid var(--ink2); border-bottom: 0; border-radius: 7px 7px 0 0; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 760px; top: 300px; font-size: 68px; }
+  [data-ratio="16x9"] #sub { left: 110px; right: auto; width: 700px; top: 600px; font-size: 36px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S03">
+  <div class="hd bad" id="hd" data-copy="S03_headline"></div>
+  <div class="sub" id="sub" data-copy="S03_sub"></div>
+  <div class="card c" id="cg"><div class="t"><i></i>Gast: Anna K.</div><div class="r">Bestellung Nr. 3<br>E-Mail · Telefon</div></div>
+  <div class="card c" id="cr"><div class="t"><i></i>Bestellung #0418</div><div class="r">Gast: •••••<span class="lock"></span><br>Kontakt: —</div></div>
+</div>
+<script src="hf/parts/iso.js"></script>
+<script src="hf/parts/world.js"></script>
+<script>
+  const S = window.SAMI, I = window.ISO, tl = S.timeline(), root = W.$('#root'), L16 = S.landscape;
+  const iso = W.setup(root);
+  const C0 = W.FULL(1.5), C1 = Object.assign({}, W.FULL(4), {x: -1.5, y: 1.5});
+  const cg = W.$('#cg'), cr = W.$('#cr');
+  const CUST = [-9.7, -0.4, 0];
+  W.clock(tl, (t) => {
+    W.cam(iso, W.lerpCam(C0, C1, W.E(t, 0, S.dur)));
+    W.bg(iso, t);
+    iso.desat = 0.85 * W.E(t, 1.0, 2.2);
+    W.board(iso);
+    W.phone(iso, t, {});
+    W.restaurant(iso, t, {});
+    W.pipe(iso, t, {});
+    iso.keep = true;
+    W.machine(iso, t, {coins: 18 + 6 * W.L(t, 0.5, 4)});
+    W.person(iso, CUST[0], CUST[1], 0, {face: 1, bag: t > 1.1, arm: t > 1.1 ? 0.6 : 0.2});
+    iso.keep = false;
+    // đơn tới quán (0 → 0,7 s), rồi rơi xuống quầy
+    if (t < 0.75) W.bulge(iso, W.SB, W.mix(0.8, 1, W.L(t, 0, 0.75)));
+    else if (t < 1.4) { const u = W.L(t, 0.75, 1.1); W.order(iso, 9.6, -1.2 - 0.8 * u, W.mix(1.9, 1.15, u * u), {squash: t > 1.1 ? 0.3 * Math.sin(W.L(t, 1.1, 1.3) * Math.PI) : 0}); }
+    iso.flush();
+    iso.desat = 0;
+    // thẻ khách: hiện cạnh khách rồi bay vào máy trung gian
+    const sCust = iso.P(CUST[0], CUST[1], 2.6), sMac = iso.P(W.MAC.x + W.MAC.w / 2, W.MAC.y + W.MAC.d / 2, W.MAC.h);
+    const ga = I.back(W.L(t, 1.3, 1.65), 1.6), gf = W.E(t, 2.4, 3.4);
+    const gx = W.mix(sCust[0] - 40, sMac[0] - 165, gf), gy = W.mix(sCust[1] - 230, sMac[1] - 60, gf);
+    cg.style.left = gx.toFixed(1) + 'px'; cg.style.top = gy.toFixed(1) + 'px';
+    cg.style.transform = 'scale(' + Math.max(0, ga * (1 - 0.82 * gf)).toFixed(3) + ') rotate(' + (-6 * gf).toFixed(2) + 'deg)';
+    cg.style.opacity = t < 1.3 || gf >= 1 ? 0 : 1;
+    // phiếu phía quán: không tên
+    const sR = iso.P(9.2, -2.4, 2.6), ra = I.back(W.L(t, 3.3, 3.7), 1.6);
+    cr.style.left = (sR[0] - (L16 ? 330 : 300)).toFixed(1) + 'px'; cr.style.top = (sR[1] - 250).toFixed(1) + 'px';
+    cr.style.transform = 'scale(' + Math.max(0, ra).toFixed(3) + ')'; cr.style.opacity = t > 3.3 ? 1 : 0;
+  });
+  W.words(tl, '#hd', 0.4, {stagger: 0.05});
+  W.fadeIn(tl, '#sub', 2.6);
+</script>
+</body>
+</html>

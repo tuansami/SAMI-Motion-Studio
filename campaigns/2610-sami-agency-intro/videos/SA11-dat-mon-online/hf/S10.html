@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="hf/parts/ik.css">
+<style>
+  /* S10 · BẰNG CHỨNG: hai ảnh case thật (Mizuki, +84 Kitchen) trên hai tấm bảng isometric dựng thành góc gian trưng bày, băng chuyền đơn chạy phía trước */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 240px; }
+  .ph { position: absolute; z-index: 10; left: 0; top: 0; width: 600px; height: 450px; object-fit: cover; transform-origin: 0 0; }
+  .lab { transform: translateX(-50%); }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 720px; top: 360px; font-size: 70px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S10">
+  <div class="hd" id="hd" data-copy="S10_headline"></div>
+  <img class="ph" id="pa" src="public/img/mizuki-hero.webp">
+  <img class="ph" id="pb" src="public/img/84kitchen-hero.webp">
+  <div class="lab o" id="la"><i></i>Mizuki · Baden-Baden</div>
+  <div class="lab o" id="lb"><i></i>+84 Kitchen · Kempten</div>
+</div>
+<script src="hf/parts/iso.js"></script>
+<script src="hf/parts/world.js"></script>
+<script>
+  const S = window.SAMI, I = window.ISO, tl = S.timeline(), root = W.$('#root'), L16 = S.landscape;
+  const iso = W.setup(root);
+  const B = {x0: -4.4, x1: 5.4, y0: -4.4, y1: 5.4};
+  const CAM = L16 ? {x: 0.5, y: 0.5, z: 2.6, k: 58, cx: 1320, cy: 560} : {x: 0.5, y: 0.5, z: 2.6, k: 66, cx: 540, cy: 1130};
+  const pa = W.$('#pa'), pb = W.$('#pb'), la = W.$('#la'), lb = W.$('#lb');
+  const Z0 = 0.6, PH = 4.5, PW = 6;
+  W.clock(tl, (t) => {
+    W.cam(iso, Object.assign({}, CAM, {k: CAM.k * (1 + 0.04 * W.E(t, 0, S.dur))}));
+    W.bg(iso, t);
+    W.board(iso, {B: B});
+    const da = 10 * Math.pow(1 - W.E(t, 0.2, 1.0), 2), db = 10 * Math.pow(1 - W.E(t, 0.5, 1.3), 2);
+    iso.box(-3.35, -3, Z0 - 0.25 + da, 0.35, PW, PH + 0.5, W.T.navy);
+    iso.box(-3.35, -3.35, Z0 - 0.25 + db, PW + 0.35, 0.35, PH + 0.5, W.T.navy);
+    iso.box(-3.35, -3.35, 0, 0.5, 0.5, Z0, W.T.steel);
+    // băng chuyền mint + đơn
+    iso.box(-4.2, 3.6, 0, 9.4, 0.9, 0.35, W.T.purple);
+    for (let k = 0; k < 3; k++) W.order(iso, -3.7 + ((t * 1.8 + k * 3.0) % 8.8), 4.05, 0.35, {s: 0.75});
+    iso.flush();
+    const k = iso.cam.k, s = k / 100;
+    const A = iso.P(-3, 3, Z0 + PH + da), Bp = iso.P(-3, -3, Z0 + PH + db);
+    pa.style.transform = 'translate(' + A[0].toFixed(1) + 'px,' + A[1].toFixed(1) + 'px) matrix(' + (I.C30 * s).toFixed(4) + ',' + (-0.5 * s).toFixed(4) + ',0,' + s.toFixed(4) + ',0,0)';
+    pb.style.transform = 'translate(' + Bp[0].toFixed(1) + 'px,' + Bp[1].toFixed(1) + 'px) matrix(' + (I.C30 * s).toFixed(4) + ',' + (0.5 * s).toFixed(4) + ',0,' + s.toFixed(4) + ',0,0)';
+    const sa = iso.P(-3, 0, Z0 - 0.2), sb = iso.P(0, -3, Z0 - 0.2);
+    la.style.left = (sa[0] - 90) + 'px'; la.style.top = (sa[1] + (L16 ? 50 : 70)) + 'px';
+    lb.style.left = (sb[0] + 120) + 'px'; lb.style.top = (sb[1] + (L16 ? 50 : 70)) + 'px';
+  });
+  W.words(tl, '#hd', 0.4, {stagger: 0.05});
+  W.fadeIn(tl, '#la', 1.2, {dist: 14}); W.fadeIn(tl, '#lb', 1.5, {dist: 14});
+</script>
+</body>
+</html>

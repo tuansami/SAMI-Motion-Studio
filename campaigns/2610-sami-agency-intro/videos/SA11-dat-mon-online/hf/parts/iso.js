@@ -57,10 +57,10 @@ class Iso {
   }
   wn(nx, ny, nz) { let T = this.T; while (T) { const X = nx * T.c - ny * T.s, Y = nx * T.s + ny * T.c; nx = X; ny = Y; T = T.parent; } return [nx, ny, nz]; }
   // world → screen
-  P(x, y, z) { const c = this.cam, k = c.k, X = x - c.x, Y = y - c.y; return [this.W / 2 + (X - Y) * C30 * k, this.H / 2 + ((X + Y) * S30 - (z - c.z)) * k]; }
+  P(x, y, z) { const c = this.cam, k = c.k, X = x - c.x, Y = y - c.y; return [(this.CX ?? this.W / 2) + (X - Y) * C30 * k, (this.CY ?? this.H / 2) + ((X + Y) * S30 - (z - c.z)) * k]; }
   L(x, y, z) { const [a, b, c] = this.w(x, y, z); return this.P(a, b, c); } // local → screen
   // inverse of P on plane z
-  unP(sx, sy, z = 0) { const c = this.cam, k = c.k; const u = (sx - this.W / 2) / (C30 * k), v = (sy - this.H / 2) / k + (z - c.z); const X = v + u / 2, Y = v - u / 2; return [X + c.x, Y + c.y]; }
+  unP(sx, sy, z = 0) { const c = this.cam, k = c.k; const u = (sx - (this.CX ?? this.W / 2)) / (C30 * k), v = (sy - (this.CY ?? this.H / 2)) / k + (z - c.z); const X = v + u / 2, Y = v - u / 2; return [X + c.x, Y + c.y]; }
   vis(x, y, z, r) { const [sx, sy] = this.P(x, y, z), R = r * this.cam.k * 1.2 + 4; return sx > -R && sx < this.W + R && sy > -R && sy < this.H + R; }
   // ---- colour pipeline (desaturation with one-colour exception) ----
   col(c, a = 1) {

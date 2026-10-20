@@ -127,7 +127,7 @@
   "S01_headline": {
    "label": "Tiêu đề hook",
    "scene": "S01",
-   "value": "Đơn hàng này là của quán bạn. / Vậy mà nó *đi đường vòng.*"
+   "value": "Đơn hàng này / là của quán bạn. / Vậy mà nó *đi đường vòng.*"
   },
   "S02_pin": {
    "label": "Pin trung gian",
@@ -137,7 +137,7 @@
   "S02_headline": {
    "label": "Tiêu đề rò rỉ",
    "scene": "S02",
-   "value": "Qua mỗi khúc quanh, / *tiền của bạn rỉ ra từng giọt.*"
+   "value": "Qua mỗi khúc quanh, / *tiền của bạn rỉ ra* / *từng giọt.*"
   },
   "S03_headline": {
    "label": "Tiêu đề khách",
@@ -172,7 +172,7 @@
   "S07_headline": {
    "label": "Tiêu đề bếp",
    "scene": "S07",
-   "value": "Đơn mới *báo thẳng về bếp*: / rõ món, rõ giờ lấy, không qua tay ai."
+   "value": "Đơn mới *báo thẳng về bếp*: / rõ món, rõ giờ lấy, / không qua tay ai."
   },
   "S08_headline": {
    "label": "Tiêu đề quay lại",
@@ -182,7 +182,7 @@
   "S09_headline": {
    "label": "Tiêu đề lợi ích",
    "scene": "S09",
-   "value": "Đơn đặt thẳng mang về ba thứ / *mà trung gian không trả lại.*"
+   "value": "Đơn đặt thẳng mang về ba thứ / *mà trung gian / không trả lại.*"
   },
   "S09_a": {
    "label": "Cột 1",

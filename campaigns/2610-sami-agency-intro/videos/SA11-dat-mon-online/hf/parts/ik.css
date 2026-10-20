@@ -1,0 +1,25 @@
+/* SA11 · "Isometric Kitchen": nền kem, chữ mực navy, nhãn bản đồ (thẻ kem viền mực + khối iso nhỏ) */
+:root { --ink: #1F1A3D; --ink2: #4A4468; --paper: #FBF6EC; --ground: #F4EBDC; --order: #EE6A44; --money: #E9B949; --mint: #08DDA4; --purple: #7667FE; --deep: #4B3FD8; }
+[data-composition-id] { background: var(--ground); }
+canvas.cv { position: absolute; left: 0; top: 0; z-index: 1; }
+
+/* tiêu đề: chữ mực đậm, quầng kem để đọc trên mọi khối */
+.hd { position: absolute; z-index: 20; font: 800 76px/1.2 "Be Vietnam Pro", sans-serif; letter-spacing: -.022em; color: var(--ink); text-wrap: balance;
+  text-shadow: 0 0 18px rgba(244, 235, 220, .95), 0 0 6px rgba(244, 235, 220, .9); }
+.hd .w { padding-bottom: .06em; }
+em.hl, em.hl .w { font-style: normal; background: linear-gradient(100deg, #7667FE 0%, #4B3FD8 100%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; }
+.bad em.hl, .bad em.hl .w { background: linear-gradient(100deg, #F07A4E 0%, #D9482A 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sub { position: absolute; z-index: 20; font: 500 40px/1.42 "Be Vietnam Pro", sans-serif; color: var(--ink2); text-shadow: 0 0 14px rgba(244, 235, 220, .95); }
+
+/* nhãn bản đồ: thẻ kem bo nhỏ, viền mực, khối iso tí hon làm chú giải */
+.lab { position: absolute; z-index: 22; display: inline-flex; align-items: center; gap: 14px; padding: 12px 18px 12px 14px; background: var(--paper); border: 2.5px solid var(--ink); border-radius: 10px;
+  font: 700 26px/1.1 "Be Vietnam Pro", sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); white-space: nowrap; box-shadow: 5px 6px 0 rgba(31, 26, 61, .14); }
+.lab i { width: 20px; height: 20px; flex: none; transform: rotate(45deg) scaleY(.82); border-radius: 3px; }
+.lab.o i { background: var(--order); } .lab.m i { background: var(--mint); } .lab.g i { background: #A9A3BC; } .lab.y i { background: var(--money); } .lab.p i { background: var(--purple); }
+.demo { position: absolute; z-index: 30; font: 600 20px/1 "JetBrains Mono", monospace; letter-spacing: .12em; text-transform: uppercase; color: rgba(31, 26, 61, .62);
+  padding: 8px 12px; border: 1.5px solid rgba(31, 26, 61, .3); border-radius: 8px; background: rgba(251, 246, 236, .85); }
+
+/* thẻ UI (thông báo, phiếu bếp, Gutschein…) */
+.card { position: absolute; z-index: 24; background: #FFFDF8; border: 2.5px solid var(--ink); border-radius: 18px; box-shadow: 8px 10px 0 rgba(31, 26, 61, .14);
+  font: 500 26px/1.35 "Be Vietnam Pro", sans-serif; color: var(--ink); }
+.mono { font-family: "JetBrains Mono", monospace; }

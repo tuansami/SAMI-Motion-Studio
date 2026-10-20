@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="hf/parts/ik.css">
+<link rel="stylesheet" href="hf/parts/phone.css">
+<style>
+  /* S06 · SHOP: tua nhanh ×16 cảnh SAMI dựng shop (lưới, khung dây, layers) → shop thật: thêm món, giỏ hàng, chọn giờ lấy, thanh toán */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 230px; font-size: 66px; }
+  .blk { position: absolute; left: 0; right: 0; }
+  .wf { position: absolute; z-index: 8; border: 2.5px dashed #7667FE; border-radius: 10px; background: rgba(118, 103, 254, .07); font: 500 17px/1 "JetBrains Mono", monospace; color: #5A4FD8; padding: 6px 8px; box-sizing: border-box; letter-spacing: .06em; text-transform: uppercase; }
+  #grid { position: absolute; inset: 0; z-index: 7; display: flex; gap: 10px; padding: 0 14px; }
+  #grid i { flex: 1; background: rgba(118, 103, 254, .08); border-left: 1px solid rgba(118, 103, 254, .25); border-right: 1px solid rgba(118, 103, 254, .25); }
+  #hdr { top: 0; height: 128px; background: #2E2A63; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 24px 20px; box-sizing: border-box; }
+  #hdr b { font: 800 34px/1 "Be Vietnam Pro", sans-serif; color: #FFF4E2; letter-spacing: .02em; }
+  #cart { position: relative; width: 46px; height: 40px; border: 4px solid #FFF4E2; border-top: 0; border-radius: 0 0 10px 10px; box-sizing: border-box; }
+  #cart:before { content: ""; position: absolute; left: 6px; top: -14px; width: 20px; height: 12px; border: 4px solid #FFF4E2; border-bottom: 0; border-radius: 12px 12px 0 0; }
+  #badge { position: absolute; right: -16px; top: -24px; width: 32px; height: 32px; border-radius: 50%; background: var(--order); color: #fff; font: 800 19px/32px "Be Vietnam Pro", sans-serif; text-align: center; }
+  #hero { top: 128px; height: 170px; background: linear-gradient(120deg, #F6D9B5, #EEB98A); overflow: hidden; }
+  #hero .bowl { position: absolute; left: 72%; top: 40px; width: 210px; height: 210px; margin-left: -105px; border-radius: 50%; background: radial-gradient(circle at 50% 45%, #F4E3C0 0 46%, #C9874E 47% 52%, #FFF8EE 53% 64%, #E6D8C4 65%); }
+  #hero .t { position: absolute; left: 22px; top: 18px; font: 800 24px/1.1 "Be Vietnam Pro", sans-serif; color: #5B2E16; }
+  #tabs { top: 306px; height: 56px; display: flex; gap: 10px; padding: 0 16px; box-sizing: border-box; }
+  #tabs span { padding: 0 16px; height: 48px; border-radius: 24px; background: #F1EEE8; font: 700 19px/48px "Be Vietnam Pro", sans-serif; color: var(--ink2); white-space: nowrap; }
+  #tabs span.on { background: var(--ink); color: #fff; }
+  .it { left: 16px; right: 16px; height: 118px; border-bottom: 2px solid #EEEAE2; display: flex; align-items: center; gap: 14px; }
+  .it .ph { width: 86px; height: 86px; border-radius: 16px; flex: none; }
+  .it .tx { flex: 1; } .it .n { font: 800 25px/1.15 "Be Vietnam Pro", sans-serif; color: var(--ink); }
+  .it .a { font: 500 17px/1.4 "JetBrains Mono", monospace; color: #8A85A6; } .it .p { font: 700 22px/1.3 "Be Vietnam Pro", sans-serif; color: var(--ink); }
+  .it .pl { width: 54px; height: 54px; border-radius: 50%; background: var(--mint); flex: none; position: relative; }
+  .it .pl:before, .it .pl:after { content: ""; position: absolute; left: 25px; top: 14px; width: 5px; height: 26px; background: #0C0628; border-radius: 2px; }
+  .it .pl:after { transform: rotate(90deg); }
+  #co { position: absolute; z-index: 12; left: 0; right: 0; bottom: 0; padding: 22px 24px 30px; background: #fff; border-radius: 30px 30px 0 0; box-shadow: 0 -12px 30px rgba(31, 26, 61, .22); font: 500 21px/1.45 "Be Vietnam Pro", sans-serif; color: var(--ink); }
+  #co h4 { margin: 0 0 10px; font: 800 28px/1.1 "Be Vietnam Pro", sans-serif; }
+  #co .l { display: flex; justify-content: space-between; } #co .o { display: flex; gap: 22px; margin: 10px 0; font-weight: 700; }
+  #co .o i { display: inline-block; width: 16px; height: 16px; border-radius: 50%; border: 3px solid var(--ink); margin-right: 8px; vertical-align: -2px; } #co .o i.on { background: var(--mint); }
+  #pay { margin-top: 12px; height: 70px; border-radius: 35px; background: var(--ink); color: #fff; font: 800 27px/70px "Be Vietnam Pro", sans-serif; text-align: center; }
+  #ok { position: absolute; z-index: 14; inset: 0; background: rgba(255, 253, 248, .96); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; font: 800 30px/1.2 "Be Vietnam Pro", sans-serif; color: var(--ink); }
+  #ok .ck { width: 120px; height: 120px; border-radius: 50%; background: var(--mint); position: relative; }
+  #ok .ck:after { content: ""; position: absolute; left: 40px; top: 24px; width: 30px; height: 56px; border-right: 10px solid #0C0628; border-bottom: 10px solid #0C0628; transform: rotate(45deg); }
+  #mflash { position: absolute; z-index: 20; inset: 0; background: #08DDA4; }
+  #ff { left: 30px; top: 640px; } #lay { position: absolute; z-index: 16; left: 22px; top: 720px; width: 250px; padding: 16px 16px 10px; }
+  #lay .h { font: 700 18px/1 "JetBrains Mono", monospace; letter-spacing: .12em; color: var(--ink2); margin-bottom: 10px; }
+  #lay .r { display: flex; align-items: center; gap: 10px; font: 600 20px/1.9 "Be Vietnam Pro", sans-serif; color: var(--ink); }
+  #lay .r i { width: 18px; height: 18px; border-radius: 4px; border: 2.5px solid #7667FE; flex: none; } #lay .r i.on { background: #7667FE; }
+  #clk { font: 600 22px/1 "JetBrains Mono", monospace; color: var(--ink2); margin-top: 8px; }
+  #demo { left: 290px; top: 1630px; }
+  .fly { position: absolute; z-index: 13; width: 26px; height: 26px; margin: -13px; background: var(--order); border-radius: 4px; transform: rotate(45deg) scaleY(.82); }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 820px; top: 300px; font-size: 64px; }
+  [data-ratio="16x9"] #ff { left: 1640px; top: 120px; } [data-ratio="16x9"] #lay { left: 1640px; top: 200px; width: 240px; }
+  [data-ratio="16x9"] #demo { left: 1640px; top: 930px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S06">
+  <div class="hd" id="hd" data-copy="S06_headline"></div>
+  <div class="lab p" id="ff"><i></i><span>Shop-Build ×16</span></div>
+  <div class="card" id="lay"><div class="h">LAYERS</div><div id="lrows"></div><div id="clk">00:00</div></div>
+  <div id="ph"><div class="scr" id="scr">
+    <div class="blk" id="hdr"><b>BẾP GIÓ</b><div id="cart"><div id="badge">0</div></div></div>
+    <div class="blk" id="hero"><div class="t">Online bestellen<br>Abholen &amp; genießen</div><div class="bowl"></div></div>
+    <div class="blk" id="tabs"><span>Vorspeisen</span><span class="on">Pho &amp; Nudeln</span><span>Bowls</span></div>
+    <div class="blk it" id="i0" style="top:370px"><div class="ph" style="background:radial-gradient(circle at 40% 40%,#F7F1E4 0 30%,#9FC98A 31% 45%,#F2D6B2 46%)"></div><div class="tx"><div class="n">Phở Bò</div><div class="a">Allergene: A, C</div><div class="p">13,90 €</div></div><div class="pl"></div></div>
+    <div class="blk it" id="i1" style="top:490px"><div class="ph" style="background:radial-gradient(circle at 50% 50%,#FFF6E8 0 25%,#E9A8A0 26% 40%,#CFE6B8 41%)"></div><div class="tx"><div class="n">Sommerrollen (2 St.)</div><div class="a">Allergene: A, F</div><div class="p">6,90 €</div></div><div class="pl"></div></div>
+    <div class="blk it" id="i2" style="top:610px"><div class="ph" style="background:radial-gradient(circle at 55% 45%,#8B4A2B 0 22%,#F3E6CF 23% 45%,#B9D79A 46%)"></div><div class="tx"><div class="n">Bún Chả</div><div class="a">Allergene: A, F, K</div><div class="p">14,50 €</div></div><div class="pl"></div></div>
+    <div class="blk it" id="i3" style="top:730px"><div class="ph" style="background:radial-gradient(circle at 50% 50%,#F6C453 0 30%,#F7EBD3 31%)"></div><div class="tx"><div class="n">Mango-Bowl</div><div class="a">Allergene: H</div><div class="p">8,50 €</div></div><div class="pl"></div></div>
+    <div id="grid"><i></i><i></i><i></i><i></i></div>
+    <div id="co"><h4>Warenkorb (3)</h4><div class="l"><span>2× Phở Bò</span><span>27,80 €</span></div><div class="l"><span>1× Sommerrollen</span><span>6,90 €</span></div>
+      <div class="o"><span><i class="on"></i>Abholung</span><span><i></i>Lieferung</span><span>18:45</span></div><div id="pay">Jetzt bezahlen</div></div>
+    <div id="ok"><div class="ck"></div><div>Bestellung gesendet</div></div>
+    <div class="tap" id="tap"></div><div class="ripple" id="rip"></div>
+    <div id="mflash"></div>
+    <div class="notch"></div>
+  </div></div>
+  <div class="demo" id="demo">Minh họa</div>
+</div>
+<script src="hf/parts/iso.js"></script>
+<script src="hf/parts/world.js"></script>
+<script>
+  const S = window.SAMI, I = window.ISO, tl = S.timeline(), root = W.$('#root'), L16 = S.landscape;
+  const iso = W.setup(root);
+  const scr = W.$('#scr'), SW = scr.clientWidth, SH = scr.clientHeight, sr = scr.getBoundingClientRect();
+  const rel = (el) => { const r = el.getBoundingClientRect(); return [r.left - sr.left + r.width / 2, r.top - sr.top + r.height / 2]; };
+  // khung dây cho từng khối (tua nhanh)
+  const BL = [['hdr', 'Header'], ['hero', 'Hero'], ['tabs', 'Speisekarte'], ['i0', 'Produkt'], ['i1', 'Produkt'], ['i2', 'Produkt'], ['i3', 'Produkt']];
+  const WF = BL.map((b, k) => { const e = W.$('#' + b[0]), w = W.el('div', 'wf', scr, b[1]); w.style.left = (e.offsetLeft + 4) + 'px'; w.style.top = (e.offsetTop + 4) + 'px'; w.style.width = (e.offsetWidth - 8) + 'px'; w.style.height = (e.offsetHeight - 8) + 'px'; return {e: e, w: w, at: 0.25 + k * 0.2}; });
+  const LR = ['Header', 'Hero', 'Speisekarte', 'Allergene', 'Warenkorb', 'Checkout'].map((n, k) => { const r = W.el('div', 'r', W.$('#lrows'), '<i></i>' + n); return {i: r.querySelector('i'), at: 0.35 + k * 0.28}; });
+  const PL = [W.$('#i0 .pl'), W.$('#i0 .pl'), W.$('#i1 .pl')].map(rel), CART = rel(W.$('#cart')), PAY = rel(W.$('#pay'));
+  const TAPS = [3.0, 3.55, 4.1], flies = TAPS.map(() => W.el('div', 'fly', scr));
+  const co = W.$('#co'), ok = W.$('#ok'), tap = W.$('#tap'), rip = W.$('#rip');
+  const T_PAY = 6.1;
+  W.clock(tl, (t) => {
+    W.cam(iso, W.FULL());
+    W.bg(iso, t);
+    W.$('#mflash').style.opacity = (1 - W.L(t, 0.1, 0.45)).toFixed(3);
+    // tua nhanh: lưới + khung dây, rồi nội dung thật
+    const real = W.E(t, 1.9, 2.4);
+    W.$('#grid').style.opacity = (W.L(t, 0.15, 0.4) * (1 - real)).toFixed(3);
+    WF.forEach((b) => { const a = W.L(t, b.at, b.at + 0.12); b.w.style.opacity = (a * (1 - real)).toFixed(3); b.w.style.transform = 'scale(' + (0.9 + 0.1 * I.back(a, 2)).toFixed(3) + ')'; b.e.style.opacity = real.toFixed(3); });
+    LR.forEach((r) => r.i.classList.toggle('on', t > r.at));
+    const hrs = Math.floor(W.L(t, 0.2, 2.0) * 16 * 60 * 3), clkOn = t < 2.3;
+    W.$('#clk').textContent = String(Math.floor(hrs / 60)).padStart(2, '0') + ':' + String(hrs % 60).padStart(2, '0') + ' h';
+    W.$('#ff').style.opacity = W.L(t, 0.15, 0.35) * (1 - W.L(t, 2.4, 2.7)); W.$('#lay').style.opacity = W.L(t, 0.25, 0.45) * (1 - W.L(t, 2.4, 2.7));
+    // chạm thêm món → khối cam bay vào giỏ
+    let n = 0, tp = null;
+    TAPS.forEach((ts, k) => {
+      if (t > ts) n++;
+      const u = W.E(t, ts, ts + 0.5), f = flies[k];
+      f.style.left = W.mix(PL[k][0], CART[0], u) + 'px'; f.style.top = (W.mix(PL[k][1], CART[1], u) - Math.sin(u * Math.PI) * 120) + 'px';
+      f.style.opacity = t > ts && u < 1 ? 1 : 0;
+      if (t > ts - 0.35 && t < ts + 0.15) tp = PL[k];
+    });
+    W.$('#badge').textContent = n; W.$('#badge').style.transform = 'scale(' + (1 + 0.3 * TAPS.reduce((a, ts) => a + Math.max(0, 1 - Math.abs(t - ts - 0.5) * 6), 0)).toFixed(3) + ')';
+    // giỏ hàng trượt lên, bấm thanh toán
+    co.style.transform = 'translateY(' + (110 * (1 - W.E(t, 4.7, 5.2))).toFixed(1) + '%)';
+    if (t > T_PAY - 0.4 && t < T_PAY + 0.15) tp = PAY;
+    tap.style.opacity = tp ? 1 : 0; if (tp) { tap.style.left = tp[0] + 'px'; tap.style.top = tp[1] + 'px'; }
+    const lastTap = [...TAPS, T_PAY].filter((x) => x <= t).pop(), ru = lastTap == null ? 1 : W.L(t, lastTap, lastTap + 0.5);
+    const rp = lastTap === T_PAY ? PAY : PL[TAPS.indexOf(lastTap)] || PAY;
+    rip.style.left = rp[0] + 'px'; rip.style.top = rp[1] + 'px'; rip.style.opacity = ru < 1 ? (1 - ru) : 0; rip.style.transform = 'scale(' + (1 + 2.5 * ru) + ')';
+    const oa = W.E(t, T_PAY + 0.3, T_PAY + 0.7);
+    ok.style.opacity = oa; ok.querySelector('.ck').style.transform = 'scale(' + I.back(W.L(t, T_PAY + 0.35, T_PAY + 0.8), 2).toFixed(3) + ')';
+  });
+  W.words(tl, '#hd', 1.6, {stagger: 0.04});
+  W.fadeIn(tl, '#demo', 2.6, {dist: 8});
+</script>
+</body>
+</html>

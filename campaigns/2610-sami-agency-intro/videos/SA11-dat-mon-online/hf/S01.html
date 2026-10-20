@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="hf/parts/ik.css">
+<style>
+  /* S01 · HOOK: điện thoại bật "Neue Bestellung", khối đơn nảy ra, rơi vào miệng ống và bị hút đi; camera lùi nhanh lộ đường ống uốn khúc quanh cả bàn */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 250px; }
+  #note { width: 420px; padding: 20px 24px; display: flex; gap: 18px; align-items: center; transform-origin: 0 100%; }
+  #note .ic { width: 58px; height: 58px; border-radius: 14px; background: var(--order); flex: none; position: relative; }
+  #note .ic:after { content: ""; position: absolute; left: 25px; top: 0; width: 8px; height: 58px; background: #FFF4E2; }
+  #note b { display: block; font: 800 32px/1.15 "Be Vietnam Pro", sans-serif; }
+  #note span { font: 500 22px/1.3 "JetBrains Mono", monospace; color: var(--ink2); }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 760px; top: 340px; font-size: 70px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S01">
+  <div class="hd bad" id="hd" data-copy="S01_headline"></div>
+  <div class="card" id="note"><div class="ic"></div><div><b data-copy="S01_ui"></b><span>#0418 · 2× Phở Bò</span></div></div>
+</div>
+<script src="hf/parts/iso.js"></script>
+<script src="hf/parts/world.js"></script>
+<script>
+  const S = window.SAMI, I = window.ISO, tl = S.timeline(), root = W.$('#root'), L16 = S.landscape;
+  const iso = W.setup(root);
+  const NEAR = L16 ? {x: -7.4, y: -4.4, z: 2.6, k: 92, cx: 1150, cy: 560} : {x: -7.4, y: -4.4, z: 2.6, k: 100, cx: 470, cy: 1080};
+  const FAR = W.FULL(-1);
+  const note = W.$('#note');
+  // đường bay của khối đơn: từ màn hình → miệng ống
+  const P0 = [-7.35, -4.6, 3.6], P1 = [-7.25, -4.35, 0.75], MOUTH = [-7.25, -3.75, 0.75];
+  W.clock(tl, (t) => {
+    W.cam(iso, W.lerpCam(NEAR, FAR, W.E(t, 1.25, 3.1)));
+    W.bg(iso, t);
+    W.board(iso);
+    W.phone(iso, t, {notify: W.L(t, 0.3, 0.6), card: t > 0.3 ? '#FFE3D8' : '#E9E5F7'});
+    W.restaurant(iso, t, {});
+    W.machine(iso, t, {coins: 4});
+    W.pipe(iso, t, {});
+    W.person(iso, -9.7, -0.4, 0, {face: 1, arm: t < 0.9 ? 1.2 : 0.2});
+    // khối đơn hàng
+    if (t > 0.7 && t < 1.85) {
+      const u = W.L(t, 0.7, 1.25), v = W.E(t, 1.4, 1.8);
+      let p, sq = 0, s = 1;
+      if (t < 1.25) { p = [W.mix(P0[0], P1[0], u), W.mix(P0[1], P1[1], u), W.mix(P0[2], P1[2], u) + Math.sin(u * Math.PI) * 1.2 - 0.0]; s = I.back(W.L(t, 0.7, 0.95), 2.2); }
+      else { p = [W.mix(P1[0], MOUTH[0], v), W.mix(P1[1], MOUTH[1], v), P1[2]]; sq = Math.max(0, 0.3 * Math.sin(W.L(t, 1.25, 1.45) * Math.PI)); s = 1 - 0.85 * v; }
+      W.order(iso, p[0], p[1], p[2] - 0.35, {s: s, squash: sq});
+    }
+    let bp = null;
+    if (t > 1.75) bp = W.bulge(iso, W.SA, W.mix(0.0, 0.62, W.E(t, 1.75, S.dur)));
+    iso.flush();
+    if (bp) { const s = iso.P(bp[0], bp[1], bp[2]); I.ring(iso.g, s[0], s[1], 44, W.E(t, 2.6, 3.2), t, null, {color: '#EE6A44', lw: 3}); }
+    // thẻ thông báo bám theo màn hình điện thoại
+    const sc = iso.P(-7.5, -5.2, 5.4);
+    note.style.left = (sc[0] + (L16 ? 60 : 40)).toFixed(1) + 'px'; note.style.top = (sc[1] - 160).toFixed(1) + 'px';
+    const na = I.back(W.L(t, 0.25, 0.6), 1.8) * (1 - W.E(t, 1.2, 1.6));
+    note.style.transform = 'scale(' + Math.max(0, na).toFixed(3) + ')'; note.style.opacity = na > 0.02 ? 1 : 0;
+  });
+  W.words(tl, '#hd', 1.9, {stagger: 0.07});
+</script>
+</body>
+</html>

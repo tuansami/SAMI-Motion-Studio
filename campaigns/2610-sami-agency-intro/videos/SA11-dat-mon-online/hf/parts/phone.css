@@ -1,0 +1,8 @@
+/* SA11 · điện thoại đứng (2D, mặt trước) cho cảnh Maps + Shop: khung navy, màn hình kem, giao diện vẽ bằng code */
+#ph { position: absolute; z-index: 15; width: 500px; height: 1000px; left: 290px; top: 600px; border-radius: 64px; background: #2E2A63; padding: 18px; box-sizing: border-box;
+  box-shadow: 18px 26px 0 rgba(31, 26, 61, .16), inset 0 0 0 3px rgba(255, 255, 255, .12); }
+#ph .scr { position: relative; width: 100%; height: 100%; border-radius: 48px; overflow: hidden; background: #FFFDF8; }
+#ph .notch { position: absolute; z-index: 9; left: 50%; top: 14px; width: 130px; height: 32px; margin-left: -65px; border-radius: 16px; background: #2E2A63; }
+[data-ratio="16x9"] #ph { width: 450px; height: 900px; left: 1150px; top: 90px; }
+.tap { position: absolute; z-index: 40; width: 64px; height: 64px; margin: -32px; border-radius: 50%; background: rgba(31, 26, 61, .22); border: 3px solid rgba(31, 26, 61, .55); pointer-events: none; }
+.ripple { position: absolute; z-index: 39; width: 64px; height: 64px; margin: -32px; border-radius: 50%; border: 3px solid var(--mint); pointer-events: none; }

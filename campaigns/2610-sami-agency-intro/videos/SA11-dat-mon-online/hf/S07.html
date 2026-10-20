@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="hf/parts/ik.css">
+<style>
+  /* S07 · BẾP: khối đơn chạy trên băng chuyền mint vào bếp cắt lớp, máy in nhả phiếu, chuông quầy rung, đầu bếp quay sang */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 240px; }
+  #tk { width: 420px; padding: 18px 24px 20px; font: 500 29px/1.5 "JetBrains Mono", monospace; transform-origin: 50% 100%;
+    background: repeating-linear-gradient(0deg, #FFFDF8 0 34px, #FBF5E8 34px 35px); }
+  #tk b { display: block; font: 600 26px/1.3 "JetBrains Mono", monospace; letter-spacing: .1em; color: #fff; background: var(--ink); margin: -18px -22px 12px; padding: 12px 22px; border-radius: 15px 15px 0 0; }
+  #tk .tm { color: #0A9E77; font-weight: 600; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 720px; top: 340px; font-size: 70px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S07">
+  <div class="hd" id="hd" data-copy="S07_headline"></div>
+  <div class="card" id="tk"><b>NEUE BESTELLUNG</b>#0419 · <span class="tm">Abholung 18:45</span><br>2× Phở Bò<br>1× Sommerrollen</div>
+</div>
+<script src="hf/parts/iso.js"></script>
+<script src="hf/parts/world.js"></script>
+<script>
+  const S = window.SAMI, I = window.ISO, tl = S.timeline(), root = W.$('#root'), L16 = S.landscape;
+  const iso = W.setup(root);
+  const C0 = L16 ? {x: 4.2, y: -4.4, z: 1.2, k: 58, cx: 1330, cy: 600} : {x: 4.6, y: -4.4, z: 1.2, k: 60, cx: 560, cy: 1160};
+  const C1 = Object.assign({}, C0, {x: 5.6, k: C0.k * 1.12});
+  const tk = W.$('#tk');
+  const T_IN = 1.5, T_PRINT = 1.7, T_BELL = 2.9;
+  W.clock(tl, (t) => {
+    W.cam(iso, W.lerpCam(C0, C1, W.E(t, 0, S.dur)));
+    W.bg(iso, t);
+    W.board(iso);
+    W.phone(iso, t, {bar: '#08DDA4'});
+    W.belt(iso, t, {speed: t < T_IN ? 2.4 : 0.6});
+    const bell = t > T_BELL ? W.L(t, T_BELL, T_BELL + 0.8) : 0;
+    W.restaurant(iso, t, {printLed: t > T_IN, ticket: W.L(t, T_PRINT, T_PRINT + 1.0), bell: bell, chefFace: t > T_BELL + 0.2 ? 1 : -1, chefArm: t > T_BELL + 0.2 ? 1.3 + 0.2 * Math.sin(t * 6) : null, kasse: 1});
+    const u = W.E(t, 0, T_IN), x = W.mix(-1.5, 5.15, u), sq = t > T_IN ? 0.22 * Math.sin(W.L(t, T_IN, T_IN + 0.25) * Math.PI) : 0;
+    W.order(iso, x, -4.5, W.BELT.h, {squash: sq});
+    iso.flush();
+    // vòng chuông
+    if (bell > 0 && bell < 1) { const s = iso.P(6.3, -4.1, 1.5), g = iso.g; g.save(); g.strokeStyle = '#1F1A3D'; g.lineWidth = 3; for (let r = 0; r < 2; r++) { const k = (bell * 2 + r * 0.5) % 1; g.globalAlpha = 1 - k; g.beginPath(); g.arc(s[0], s[1], 20 + k * 60, -2.6, -0.5); g.stroke(); } g.restore(); }
+    // phiếu bếp (thẻ HTML + đường dẫn)
+    const sp = iso.P(5.95, -5.0, 2.5), a = I.back(W.L(t, T_PRINT + 0.5, T_PRINT + 0.95), 1.5);
+    const tx = sp[0] - (L16 ? 500 : 440), ty = sp[1] - (L16 ? 360 : 400);
+    W.leader(iso, [5.95, -5.0, 2.45], tx + 380, ty + 290, W.E(t, T_PRINT + 0.3, T_PRINT + 0.6));
+    tk.style.left = tx + 'px'; tk.style.top = ty + 'px'; tk.style.transform = 'scale(' + Math.max(0, a).toFixed(3) + ')'; tk.style.opacity = t > T_PRINT + 0.5 ? 1 : 0;
+  });
+  W.words(tl, '#hd', 0.5, {stagger: 0.05});
+</script>
+</body>
+</html>

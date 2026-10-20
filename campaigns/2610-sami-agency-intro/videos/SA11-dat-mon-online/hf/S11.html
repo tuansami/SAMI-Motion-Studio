@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="hf/parts/ik.css">
+<style>
+  /* S11 · NHỊP THỞ: bàn diorama lùi xa, tĩnh; chỉ một khối đơn chạy chậm trên băng chuyền vào bếp đèn ấm → câu chốt */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 300px; text-align: center; font-size: 80px; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 720px; top: 380px; text-align: left; font-size: 74px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S11">
+  <div class="hd" id="hd" data-copy="S11_headline"></div>
+</div>
+<script src="hf/parts/iso.js"></script>
+<script src="hf/parts/world.js"></script>
+<script>
+  const S = window.SAMI, I = window.ISO, tl = S.timeline(), root = W.$('#root'), L16 = S.landscape;
+  const iso = W.setup(root);
+  const C0 = Object.assign({}, W.FULL(-2), L16 ? {cy: 600} : {cy: 1240}), C1 = Object.assign({}, C0, {k: C0.k * 0.92});
+  W.clock(tl, (t) => {
+    W.cam(iso, W.lerpCam(C0, C1, W.E(t, 0, S.dur)));
+    W.bg(iso, t);
+    W.board(iso);
+    W.phone(iso, t, {bar: '#08DDA4'});
+    W.belt(iso, t, {speed: 0.9});
+    W.restaurant(iso, t, {kasse: 1, glow: 1});
+    W.person(iso, -9.7, -0.4, 0, {face: 1});
+    const u = W.E(t, 0.2, 5.5);
+    W.order(iso, W.mix(W.BELT.x0 + 0.6, 5.15, u), -4.5, W.BELT.h, {});
+    iso.flush();
+  });
+  W.words(tl, '#hd', 1.4, {stagger: 0.09});
+</script>
+</body>
+</html>
