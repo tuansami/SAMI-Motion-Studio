@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/fraunces/400-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/600.css">
+<link rel="stylesheet" href="_fonts/fraunces/700.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S11 · thông điệp: menu Bếp Sen hoàn chỉnh đứng giữa, vệt sáng in quét qua, rồi lặng (nhịp thở) */
+  #sh { position: absolute; z-index: 9; top: 0; bottom: 0; width: 160px; background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .55), rgba(255, 255, 255, 0)); transform: skewX(-18deg); pointer-events: none; }
+  #hd { top: 250px; }
+  [data-ratio="16x9"] #hd { top: 380px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S11">
+  <div id="stage"></div>
+  <div class="hd top" id="hd" data-copy="S11_t1"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'), {seed: 90});
+  const P = R.page($('#stage'), {});
+  const X = S.pick({'16:9': 1080, default: 215}), Y = S.pick({'16:9': 110, default: 610}), k = S.pick({'16:9': 0.98, default: 1.05});
+  P.el.style.zIndex = 5;
+  const sh = document.createElement('div'); sh.id = 'sh'; P.el.appendChild(sh);
+  R.clock(tl, (t) => {
+    bg(t);
+    const z = k * (1 + 0.04 * R.E(t, 0, 5.5));
+    P.el.style.left = X + 'px'; P.el.style.top = Y + 'px';
+    P.el.style.transform = 'scale(' + z.toFixed(4) + ') rotate(' + (-2 + 1.2 * R.E(t, 0, 4)).toFixed(3) + 'deg)';
+    P.el.style.transformOrigin = '50% 40%';
+    sh.style.left = R.mix(-260, 760, R.E(t, 0.8, 2.4)).toFixed(1) + 'px';
+    sh.style.opacity = R.io(t, 0.8, 1.0, 2.2, 2.5);
+  });
+  R.rise(tl, S.words($('#hd')), 0.4, {stagger: 0.09, dur: 0.7});
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/fraunces/400-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/600.css">
+<link rel="stylesheet" href="_fonts/fraunces/700.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S09 · một thiết kế → 5 nơi khách gặp: bản in, PDF, website, bản đồ, QR trên bàn (mọi giao diện vẽ code, không logo nền tảng) */
+  .card { position: absolute; z-index: 6; box-sizing: border-box; will-change: transform; }
+  .card .lbl { left: -10px; top: -26px; font-size: 22px; padding: 9px 13px; z-index: 3; }
+  .box { position: absolute; inset: 0; overflow: hidden; border-radius: 10px; }
+  /* PDF */
+  #pdf .box { background: #fff; border: 3px solid var(--uil); box-shadow: 8px 8px 0 var(--ink); }
+  #pdf .fold { position: absolute; right: -3px; top: -3px; width: 64px; height: 64px; background: linear-gradient(225deg, var(--paper) 50%, #DCD3C0 50%); }
+  #pdf .badge { position: absolute; left: 22px; bottom: 74px; font: 800 44px/1 "Bricolage Grotesque", sans-serif; color: #fff; background: var(--red); padding: 8px 14px 10px; border-radius: 6px; }
+  #pdf .fn { position: absolute; left: 22px; right: 16px; bottom: 26px; font: 600 17px/1.2 "IBM Plex Mono", monospace; color: var(--uil); white-space: nowrap; overflow: hidden; }
+  /* điện thoại */
+  #ph .box { border-radius: 46px; background: #1B1B1B; padding: 14px; box-shadow: 8px 8px 0 var(--pink); }
+  #ph .scr { position: absolute; inset: 14px; border-radius: 34px; overflow: hidden; background: var(--paper2); }
+  #ph .wh { position: absolute; left: 0; right: 0; top: 0; height: 120px; background: var(--ink); color: #fff; display: flex; align-items: flex-end; gap: 10px; padding: 0 20px 16px; box-sizing: border-box; z-index: 2; }
+  #ph .wh svg { width: 46px; height: 46px; } #ph .wh svg path, #ph .wh svg g { }
+  #ph .wh b { font: 700 30px/1 "Fraunces", serif; }
+  #ph .tabs { position: absolute; left: 0; right: 0; top: 120px; height: 56px; display: flex; gap: 8px; align-items: center; padding: 0 14px; background: #F6EFDF; border-bottom: 2px solid var(--ink); z-index: 2; white-space: nowrap; }
+  #ph .tabs span { font: 700 15px/1 "IBM Plex Mono", monospace; padding: 8px 10px; border-radius: 20px; border: 2px solid var(--ink); color: var(--ink); }
+  #ph .tabs span.on { background: var(--pink); border-color: var(--pink); color: #fff; }
+  #ph .lst { position: absolute; left: 16px; right: 16px; top: 190px; }
+  #ph .mi { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px dotted rgba(46, 59, 143, .4); }
+  #ph .mi i { flex: none; width: 58px; height: 58px; border-radius: 10px; background: radial-gradient(circle at 50% 45%, var(--pink) 0 34%, var(--ink) 35% 60%, var(--yel) 61%); mix-blend-mode: multiply; }
+  #ph .mi b { display: block; font: 600 18px/1.15 "Fraunces", serif; color: var(--ink); }
+  #ph .mi small { display: block; margin-top: 4px; font: 600 13px/1 "IBM Plex Mono", monospace; color: var(--pink); }
+  #ph .cta { position: absolute; left: 16px; right: 16px; bottom: 18px; height: 58px; border-radius: 30px; background: var(--pink); color: #fff; z-index: 2; display: flex; align-items: center; justify-content: center; font: 800 21px/1 "Bricolage Grotesque", sans-serif; }
+  /* bản đồ */
+  #mp .box { background: #E9E2CF; border: 3px solid var(--uil); box-shadow: 8px 8px 0 var(--teal); }
+  #mp svg.map { position: absolute; left: 0; top: 0; }
+  #mp .pin { position: absolute; width: 54px; height: 70px; margin: -70px 0 0 -27px; }
+  #mp .inf { position: absolute; right: 14px; top: 14px; bottom: 14px; width: 52%; background: #fff; border: 2.5px solid var(--uil); border-radius: 10px; padding: 16px; box-sizing: border-box; }
+  #mp .inf b { display: block; font: 700 28px/1 "Fraunces", serif; color: var(--ink); }
+  #mp .inf small { display: block; margin-top: 6px; font: 500 15px/1.2 "IBM Plex Mono", monospace; color: var(--uit); }
+  #mp .inf .tb { display: flex; gap: 14px; margin-top: 14px; border-bottom: 2px solid #DDD; font: 600 15px/1 "IBM Plex Mono", monospace; color: var(--uit); white-space: nowrap; }
+  #mp .inf .tb span { padding-bottom: 8px; }
+  #mp .inf .tb span.on { color: var(--pink); border-bottom: 4px solid var(--pink); margin-bottom: -3px; }
+  #mp .inf .th { display: flex; gap: 8px; margin-top: 14px; }
+  #mp .inf .th i { flex: 1; height: 92px; border: 2px solid var(--uil); border-radius: 4px; background: var(--paper2);
+    background-image: linear-gradient(var(--pink) 0 0), repeating-linear-gradient(var(--ink) 0 3px, transparent 3px 11px); background-size: 50% 8px, 70% 60%; background-position: 8px 10px, 8px 30px; background-repeat: no-repeat; }
+  /* QR trên bàn */
+  #qr .box { background: var(--paper2); border: 3px solid var(--uil); border-radius: 12px 12px 4px 4px; box-shadow: 8px 8px 0 var(--yel); display: flex; align-items: center; gap: 14px; padding: 0 16px; }
+  #qr .q { flex: none; width: 120px; height: 120px; }
+  #qr .tt b { display: block; font: 800 25px/1.1 "Bricolage Grotesque", sans-serif; color: var(--ink); }
+  #qr .tt small { display: block; margin-top: 8px; font: italic 400 18px/1.2 "Fraunces", serif; color: var(--ink); }
+  #qr .leg2 { position: absolute; left: 10%; right: 10%; bottom: -26px; height: 26px; background: #CFC6B2; clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S09">
+  <div class="card" id="pr"><div class="lbl"></div></div>
+  <div class="card" id="pdf"><div class="box"><div class="fold"></div><div class="badge">PDF</div><div class="fn">BepSen_Speisekarte.pdf</div></div><div class="lbl"></div></div>
+  <div class="card" id="ph"><div class="box"><div class="scr"><div class="wh"><svg viewBox="0 0 100 100" style="--ia:#FF4F9A;--ib:#fff"></svg><b>Bếp Sen</b></div>
+    <div class="tabs"><span>Vorspeisen</span><span class="on">Phở &amp; Nudeln</span><span>Suppen</span></div><div class="lst"></div><div class="cta">Jetzt reservieren</div></div></div><div class="lbl"></div></div>
+  <div class="card" id="mp"><div class="box"><svg class="map"></svg><div class="pin"></div>
+    <div class="inf"><b>Bếp Sen</b><small>Vietnamesisch · Dresden</small><div class="tb"><span>Übersicht</span><span class="on">Speisekarte</span><span>Fotos</span></div><div class="th"><i></i><i></i><i></i></div></div></div><div class="lbl"></div></div>
+  <div class="card" id="qr"><div class="box"><div class="q"></div><div class="tt"><b>Speisekarte<br>scannen</b><small>Menu · DE / EN</small></div></div><div class="leg2"></div><div class="lbl"></div></div>
+  <div class="hd top" id="hd" data-copy="S09_t1"></div>
+  <div class="demo demopos" id="demo" data-copy="S01_demo"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'), {seed: 70});
+  const labels = R.list('S09_labels');
+  const ids = ['pr', 'pdf', 'ph', 'mp', 'qr'];
+  const LAY = S.pick({
+    '16:9': {pr: [880, 130, 300, 426], pdf: [1210, 130, 260, 426], ph: [1520, 100, 320, 640], mp: [880, 640, 590, 330], qr: [1520, 790, 320, 190]},
+    default: {pr: [70, 690, 300, 426], pdf: [400, 690, 260, 426], ph: [700, 670, 310, 600], mp: [70, 1180, 600, 330], qr: [700, 1330, 310, 200]}});
+  ids.forEach((id, i) => { const c = $('#' + id), b = LAY[id]; R.box(c, b[0], b[1], b[2], b[3]); c.querySelector('.lbl').textContent = labels[i]; });
+  // bản in + thumbnail PDF = trang menu thật
+  const PR = R.page($('#pr'), {}); PR.place(0, 0, 300 / 620);
+  const th = R.page($('#pdf .box'), {}); th.place(30, 26, 0.3); th.el.style.boxShadow = '0 0 0 2px #DDD';
+  // web menu
+  $('#ph .wh svg').innerHTML = R.lotus();
+  $('#ph .lst').innerHTML = R.MENU[2].it.concat(R.MENU[0].it).map((it) => '<div class="mi"><i></i><div><b>' + it[0] + '</b><small>' + it[4] + ' €' + (it[2] ? ' · ' + it[2] : '') + (it[3] ? ' · V' : '') + '</small></div></div>').join('');
+  // bản đồ vẽ code
+  const mw = LAY.mp[2], mh = LAY.mp[3], map = $('#mp svg.map'); map.setAttribute('width', mw); map.setAttribute('height', mh);
+  let roads = '';
+  for (let i = 0; i < 9; i++) roads += '<path d="M' + (i * 80 - 40) + ' 0 L' + (i * 80 + 60) + ' ' + mh + '" stroke="#fff" stroke-width="' + (i % 3 ? 7 : 14) + '"/>';
+  for (let j = 0; j < 5; j++) roads += '<path d="M0 ' + (j * 80 + 20) + ' L' + mw + ' ' + (j * 80 - 30) + '" stroke="#fff" stroke-width="' + (j % 2 ? 7 : 12) + '"/>';
+  map.innerHTML = '<rect width="' + mw + '" height="' + mh + '" fill="#E9E2CF"/><path d="M0 ' + (mh * 0.72) + ' C' + (mw * 0.2) + ' ' + (mh * 0.6) + ' ' + (mw * 0.35) + ' ' + (mh * 0.95) + ' ' + (mw * 0.6) + ' ' + (mh * 0.82) + '" stroke="#9ED4CF" stroke-width="34" fill="none"/>' + roads +
+    '<rect x="40" y="60" width="70" height="50" fill="#CFE3B8"/><rect x="170" y="210" width="60" height="40" fill="#CFE3B8"/>';
+  const pin = $('#mp .pin'); pin.style.left = (mw * 0.24) + 'px'; pin.style.top = (mh * 0.5) + 'px';
+  pin.innerHTML = '<svg viewBox="0 0 54 70"><path d="M27 68 C27 68 4 40 4 25 a23 23 0 0 1 46 0 C50 40 27 68 27 68 Z" fill="#FF4F9A" stroke="#1B1B1B" stroke-width="3"/><circle cx="27" cy="25" r="9" fill="#fff"/></svg>';
+  $('#qr .q').innerHTML = R.qr('#2E3B8F');
+  // bay ra từ tâm (một thiết kế → 5 nơi)
+  const t0 = [0.5, 0.85, 1.2, 1.55, 1.9];
+  const CX = S.pick({'16:9': [1360, 540], default: [540, 1080]});
+  R.clock(tl, (t) => {
+    bg(t);
+    ids.forEach((id, i) => {
+      const c = $('#' + id), b = LAY[id], u = R.E(t, t0[i], t0[i] + 0.7);
+      const dx = (CX[0] - (b[0] + b[2] / 2)) * (1 - u), dy = (CX[1] - (b[1] + b[3] / 2)) * (1 - u);
+      c.style.opacity = R.L(t, t0[i], t0[i] + 0.12).toFixed(3);
+      c.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(' + (0.35 + 0.65 * u).toFixed(4) + ') rotate(' + ((i % 2 ? 8 : -8) * (1 - u) + (i % 2 ? 1 : -1) * 0.8 * Math.sin(t * 0.8 + i)).toFixed(2) + 'deg)';
+    });
+    // web menu cuộn, ghim nảy
+    $('#ph .lst').style.transform = 'translateY(' + (-120 * R.E(t, 3.4, 5.5)).toFixed(1) + 'px)';
+    pin.style.transform = 'translateY(' + (-14 * Math.abs(Math.sin(Math.max(0, t - 2.6) * 3)) * Math.exp(-Math.max(0, t - 2.6) * 0.8)).toFixed(1) + 'px)';
+  });
+  R.rise(tl, S.words($('#hd')), 0.4, {stagger: 0.06, dur: 0.6});
+</script>
+</body>
+</html>

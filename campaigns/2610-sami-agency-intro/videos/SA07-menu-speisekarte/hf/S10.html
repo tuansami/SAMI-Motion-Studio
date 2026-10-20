@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S10 · 4 lợi ích = 4 sticker in riso dập lần lượt, đứng yên để đọc */
+  #cards { position: absolute; z-index: 10; left: 76px; right: 76px; top: 470px; display: flex; flex-direction: column; gap: 46px; }
+  .bn { position: relative; display: flex; align-items: center; gap: 30px; padding: 34px 34px; background: var(--paper2); border: 4px solid var(--ink); border-radius: 18px; box-shadow: 9px 9px 0 var(--c); }
+  .bn .ic { flex: none; width: 116px; height: 116px; border-radius: 50%; background: var(--c); display: flex; align-items: center; justify-content: center; mix-blend-mode: multiply; }
+  .bn .ic svg { width: 66px; height: 66px; }
+  .bn b { font: 800 50px/1.2 "Bricolage Grotesque", sans-serif; letter-spacing: -.015em; color: var(--ink); }
+  .bn .no { position: absolute; right: 22px; top: 16px; font: 600 22px/1 "IBM Plex Mono", monospace; color: var(--ink); opacity: .55; }
+  [data-ratio="16x9"] #cards { left: 860px; right: 80px; top: 170px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px 36px; }
+  [data-ratio="16x9"] .bn { flex-direction: column; align-items: flex-start; gap: 22px; padding: 34px; min-height: 300px; box-sizing: border-box; }
+  [data-ratio="16x9"] .bn b { font-size: 48px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S10">
+  <div class="hd top" id="hd" data-copy="S10_kicker"></div>
+  <div id="cards"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'), {seed: 80});
+  const W = 'fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"';
+  const IC = [
+    '<path ' + W + ' d="M36 6 L14 38 H32 L28 60 L52 26 H34 Z"/>',
+    '<path ' + W + ' d="M33 6 L41 24 L60 26 L46 39 L50 58 L33 48 L16 58 L20 39 L6 26 L25 24 Z"/>',
+    '<path ' + W + ' d="M10 14 H56 V42 H30 L18 54 V42 H10 Z"/><path ' + W + ' d="M24 28 L30 34 L44 22"/>',
+    '<path ' + W + ' d="M33 6 L56 14 V32 C56 46 46 55 33 60 C20 55 10 46 10 32 V14 Z"/><path ' + W + ' d="M22 33 L30 41 L45 25"/>'];
+  const COL = ['#FF4F9A', '#FFD23F', '#00A3A0', '#7C8BE0'];
+  ['b1', 'b2', 'b3', 'b4'].forEach((k, i) => {
+    $('#cards').insertAdjacentHTML('beforeend', '<div class="bn" style="--c:' + COL[i] + '"><div class="ic"><svg viewBox="0 0 66 66">' + IC[i] + '</svg></div><b data-copy="S10_' + k + '">' + S.html('S10_' + k) + '</b><div class="no">0' + (i + 1) + '</div></div>');
+  });
+  const bns = document.querySelectorAll('.bn'), T = [1.0, 2.4, 3.8, 5.2], rot = [-2.5, 2, -1.5, 2.5];
+  R.clock(tl, (t) => {
+    bg(t);
+    bns.forEach((b, i) => {
+      const u = R.E(t, T[i], T[i] + 0.22);
+      b.style.opacity = R.L(t, T[i], T[i] + 0.06).toFixed(3);
+      b.style.transform = 'rotate(' + rot[i] + 'deg) scale(' + (1.5 - 0.5 * u + R.wob(t, T[i] + 0.22, 0.04, 30)).toFixed(4) + ')';
+      b.querySelector('.ic').style.transform = 'rotate(' + (-360 * (1 - R.E(t, T[i] + 0.1, T[i] + 0.7))).toFixed(1) + 'deg)';
+    });
+  });
+  R.rise(tl, S.words($('#hd')), 0.4, {stagger: 0.07, dur: 0.6});
+</script>
+</body>
+</html>

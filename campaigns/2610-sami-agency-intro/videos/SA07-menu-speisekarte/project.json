@@ -212,7 +212,7 @@
   "S09_t1": {
    "label": "Câu mọi nơi",
    "scene": "S09",
-   "value": "Một thiết kế cho mọi nơi khách gặp: / bản in, PDF, website, Google Maps / và *mã QR ngay trên bàn.*"
+   "value": "Một thiết kế, / theo khách tới mọi nơi: / bản in, PDF, website, Maps / và *mã QR ngay trên bàn.*"
   },
   "S09_labels": {
    "label": "Nhãn 5 thẻ (cách |)",
@@ -247,7 +247,7 @@
   "S11_t1": {
    "label": "Câu thông điệp",
    "scene": "S11",
-   "value": "Bếp đã đủ ngon. / *Giờ để menu bán hàng thay bạn.*"
+   "value": "Bếp đã đủ ngon. / Giờ để menu / *bán hàng thay bạn.*"
   },
   "S12_cta": {
    "label": "Nút CTA",
