@@ -1,0 +1,54 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css"><link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css"><link rel="stylesheet" href="_fonts/playfair-display/600-italic.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css"><link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S10 · 01 Tải nhanh: lớp lõi, biểu đồ thác tải trang chạy tới 1,5 s; chip số đo thật của 3 case. */
+  .dv { position: absolute; inset: 0; border-radius: 30px; overflow: hidden; background: linear-gradient(170deg, #17142F, #0E0C20); color: #E3E4F7; font-family: "JetBrains Mono"; font-weight: 600; }
+  .dv .top { position: absolute; left: 34px; right: 34px; top: 28px; display: flex; justify-content: space-between; font-size: 19px; letter-spacing: .08em; color: rgba(227,228,247,.6); }
+  .dv .ctr { position: absolute; right: 34px; top: 64px; font-size: 112px; line-height: 1; color: var(--acc); text-shadow: 0 0 30px rgba(8,221,164,.45); letter-spacing: -.02em; }
+  .dv .lab { position: absolute; left: 34px; top: 98px; font-size: 22px; color: #fff; letter-spacing: .04em; }
+  .dv .lab small { display: block; font-size: 17px; color: rgba(227,228,247,.55); margin-top: 6px; }
+  .ax { position: absolute; left: 210px; right: 34px; top: 200px; height: 270px; }
+  .ax .tk { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(227,228,247,.12); }
+  .ax .tk span { position: absolute; top: -26px; left: -14px; font-size: 16px; color: rgba(227,228,247,.5); }
+  .row { position: absolute; left: -176px; right: 0; height: 30px; }
+  .row b { position: absolute; left: 0; top: 4px; font-size: 17px; color: rgba(227,228,247,.75); font-weight: 600; }
+  .row i { position: absolute; top: 7px; height: 18px; border-radius: 4px; background: linear-gradient(90deg, #08DDA4, #7667FE); transform-origin: 0 50%; }
+  .ph { position: absolute; top: -8px; bottom: -8px; width: 3px; background: #fff; box-shadow: 0 0 14px #fff; }
+  .ph.done { background: var(--acc); box-shadow: 0 0 16px var(--acc); }
+  .chips2 { position: absolute; left: 34px; right: 34px; bottom: 30px; display: flex; gap: 12px; }
+  .chips2 span { flex: 1; text-align: center; padding: 14px 0; border-radius: 14px; background: rgba(8,221,164,.1); box-shadow: inset 0 0 0 1.5px rgba(8,221,164,.55); font-size: 19px; color: #fff; white-space: nowrap; }
+  .chips2 span em { font-style: normal; color: var(--acc); }
+</style></head>
+<body>
+<div id="root" data-composition-id="S10"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K;
+  K.item({n: 1, key: 'S10', pw: 760, ph: 580, focus: 0.3,
+    build: function (pl, c) {
+      const tl = c.tl, MAX = 2.0;
+      const R = [['document', 0, 0.25], ['styles.css', 0.2, 0.45], ['fonts.woff2', 0.3, 0.65], ['hero.avif', 0.4, 1.05], ['menu.avif', 0.55, 1.2], ['app.js', 0.6, 1.42]];
+      let h = '<div class="dv"><div class="top"><span>NETZWERK · quan-may.de</span><span>SMARTPHONE · 4G</span></div><div class="lab">Seite geladen<small>Ladezeit (Beispiel)</small></div><div class="ctr" id="ctr">0,0 s</div><div class="ax" id="ax">';
+      [0, 0.5, 1, 1.5, 2].forEach((v) => h += '<div class="tk" style="left:' + (v / MAX * 100) + '%"><span>' + String(v).replace('.', ',') + '</span></div>');
+      R.forEach((r, i) => h += '<div class="row" style="top:' + (20 + i * 42) + 'px"><b>' + r[0] + '</b><i style="left:calc(176px + (100% - 176px) * ' + (r[1] / MAX) + ');width:calc((100% - 176px) * ' + ((r[2] - r[1]) / MAX) + ')"></i></div>');
+      h += '<div class="ph" id="ph"></div></div><div class="chips2"><span>+84 Kitchen <em>1,5 s</em></span><span>Mizuki <em>1,6 s</em></span><span>An Vegan <em>1,8 s</em></span></div></div>';
+      pl.innerHTML = h;
+      const bars = K.$$('.row i', pl), ph = K.$('#ph', pl), ctr = K.$('#ctr', pl);
+      const a = K.b(2.4), b = K.b(7.4);
+      K.tick(tl, (t) => {
+        const v = 1.5 * K.clamp((t - a) / (b - a), 0, 1);
+        ph.style.left = (v / MAX * 100) + '%'; ph.classList.toggle('done', t >= b);
+        ctr.textContent = v.toFixed(1).replace('.', ',') + ' s';
+        bars.forEach((e, i) => { const r = R[i]; e.style.transform = 'scaleX(' + K.clamp((v - r[1]) / (r[2] - r[1]), 0, 1) + ')'; });
+      });
+      S.arrive(tl, K.$$('.dv > :not(.chips2)', pl), 0.5, {dist: 16, blur: 6, stagger: 0.06});
+      S.arrive(tl, K.$$('.chips2 span', pl), K.b(8.2), {dist: 20, blur: 6, stagger: 0.22});
+      tl.fromTo(ctr, {scale: 1}, {scale: 1.12, duration: 0.15, yoyo: true, repeat: 1, transformOrigin: '100% 50%'}, b);
+    }
+  });
+</script>
+</body></html>

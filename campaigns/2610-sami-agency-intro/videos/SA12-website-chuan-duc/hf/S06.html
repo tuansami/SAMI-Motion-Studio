@@ -1,0 +1,64 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css"><link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css"><link rel="stylesheet" href="_fonts/playfair-display/600-italic.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css"><link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S06 · 05 Song ngữ: đầu trang Quán Mây, chạm EN → chữ giải mã sang tiếng Anh, rồi về DE. */
+  .ln { position: absolute; inset: 0; border-radius: 30px; overflow: hidden; background: linear-gradient(165deg, #2C3E5C, #23324A 60%, #1B273B); color: var(--cream); }
+  .ln .nv { position: absolute; left: 36px; right: 36px; top: 30px; display: flex; align-items: center; justify-content: space-between; }
+  .ln .lg { display: flex; align-items: center; gap: 12px; font-family: "Playfair Display"; font-weight: 700; font-size: 32px; }
+  .ln .lg svg { width: 46px; height: 31px; }
+  .ln .tgl { position: relative; display: flex; border-radius: 99px; background: rgba(244,239,230,.12); box-shadow: inset 0 0 0 1.5px rgba(244,239,230,.35); padding: 6px; font-weight: 800; font-size: 24px; }
+  .ln .tgl span { position: relative; z-index: 2; width: 70px; text-align: center; padding: 8px 0; }
+  .ln .tgl i { position: absolute; left: 6px; top: 6px; width: 70px; bottom: 6px; border-radius: 99px; background: var(--cream); z-index: 1; }
+  .ln .tgl span.on { color: var(--slate); }
+  .ln .mm { position: absolute; left: 40px; top: 112px; font-size: 21px; font-weight: 600; letter-spacing: .02em; color: rgba(244,239,230,.7); white-space: pre; }
+  .ln h2 { position: absolute; left: 40px; right: 40px; top: 170px; margin: 0; font-family: "Playfair Display"; font-weight: 700; font-size: 68px; line-height: 1.1; white-space: pre; }
+  .ln h2 i { font-style: italic; color: var(--pink); font-weight: 600; }
+  .ln .ld { position: absolute; left: 40px; top: 344px; font-size: 25px; color: rgba(244,239,230,.85); white-space: pre; }
+  .ln .bt { position: absolute; left: 40px; top: 410px; padding: 20px 34px; border-radius: 99px; background: var(--terra); color: #fff; font-weight: 800; font-size: 25px; white-space: pre; }
+  .ln .bw { position: absolute; right: -70px; bottom: -80px; width: 330px; height: 330px; }
+  .mo { font-family: "JetBrains Mono"; font-weight: 600; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S06"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K;
+  K.item({n: 5, key: 'S06', pw: 680, ph: 540, focus: 0.16,
+    build: function (pl, c) {
+      const tl = c.tl;
+      pl.innerHTML = '<div class="ln"><div class="bw">' + K.bowl('pho') + '</div><div class="nv"><div class="lg">' + K.cloudSvg + 'Quán Mây</div><div class="tgl" id="tgl"><i></i><span>DE</span><span>EN</span></div></div>' +
+        '<div class="mm" id="mm"></div><h2><span id="h1"></span><br><i id="h2"></i></h2><div class="ld" id="ld"></div><div class="bt" id="bt"></div></div>';
+      const T = {mm: ['Speisekarte · Gutschein · Kontakt', 'Menu · Gift card · Contact'], h1: ['Frisch gekocht.', 'Freshly cooked.'], h2: ['Jeden Tag.', 'Every day.'],
+        ld: ['Vietnamesische Küche in Leipzig', 'Vietnamese kitchen in Leipzig'], bt: ['Tisch reservieren', 'Book a table']};
+      const E = {}; Object.keys(T).forEach((k) => E[k] = K.$('#' + k, pl));
+      const sp = K.$$('#tgl span', pl), knob = K.$('#tgl i', pl);
+      const on = K.b(4.8), off = K.b(10.0);
+      K.tick(tl, (t) => {
+        const pe = K.clamp((t - on - 0.1) / 0.55, 0, 1), pd = K.clamp((t - off - 0.1) / 0.45, 0, 1);
+        Object.keys(T).forEach((k, i) => {
+          const a = T[k][0], b = T[k][1];
+          E[k].textContent = pd > 0 ? (pd >= 1 ? a : K.scramble(b, a, pd, 7 + i)) : (pe <= 0 ? a : pe >= 1 ? b : K.scramble(a, b, pe, 3 + i));
+        });
+        const en = t >= on && t < off;
+        sp[0].classList.toggle('on', !en); sp[1].classList.toggle('on', en);
+        const kx = K.ramp(t, on, on + 0.3) * (1 - K.ramp(t, off, off + 0.3));
+        knob.style.transform = 'translateX(' + (kx * 70) + 'px)';
+      });
+      S.arrive(tl, K.$$('.ln > *', pl), 0.5, {dist: 16, blur: 6, stagger: 0.06});
+      const tb = () => { const r = K.$('#tgl', pl); return r; };
+      const cur = K.cursor(c.stage);
+      const ex = c.px(680 - 36 - 40), ey = c.py(30 + 30);
+      K.path(tl, cur, [{x: c.px(520), y: c.py(520), t: 0}, {x: ex + 10, y: ey + 50, t: K.b(3.8)}, {x: ex, y: ey, t: on, click: true}, {x: ex - 70, y: ey + 4, t: off, click: true}],
+        (p) => K.ring(tl, c.stage, p.x, p.y, p.t));
+      tl.fromTo(cur, {opacity: 0}, {opacity: 1, duration: 0.3}, K.b(3.2));
+      tl.to(cur, {opacity: 0, duration: 0.3}, off + 0.5);
+    },
+    labels: [{key: 'S06_c1', sp: 'hreflang de · en', anc: (c) => K.$('#tgl', c.plate), at: K.b(4.0)},
+             {key: 'S06_c2', sp: '1 Website · 2 Sprachen', anc: (c) => K.$('#bt', c.plate), at: K.b(6.4)}]
+  });
+</script>
+</body></html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css"><link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css"><link rel="stylesheet" href="_fonts/playfair-display/600-italic.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css"><link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S14 · CTA: bong bóng chat gửi link website, SAMI trả lời; nút WhatsApp lớn có vòng sóng. Biểu tượng chat vẽ bằng code (không logo). */
+  #head { top: 236px; font-size: 64px; left: 60px; right: 60px; }
+  #sub { top: 1170px; font-size: 46px; color: var(--ink); }
+  [data-ratio="16x9"] #head { left: 100px; right: auto; width: 820px; top: 150px; text-align: left; font-size: 62px; }
+  [data-ratio="16x9"] #sub { left: 100px; right: auto; width: 820px; top: 420px; text-align: left; font-size: 44px; }
+  .chat { position: absolute; z-index: 10; border-radius: 34px; background: #0F1F1B; box-shadow: inset 0 0 0 1.5px rgba(227,228,247,.18), 0 40px 90px rgba(0,0,0,.5); overflow: hidden; font-family: Inter; }
+  .chat .top { height: 86px; background: #13302A; display: flex; align-items: center; gap: 16px; padding: 0 26px; color: #fff; font-weight: 700; font-size: 26px; }
+  .chat .top i { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #08DDA4, #7667FE); display: flex; align-items: center; justify-content: center; font-style: normal; font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 26px; color: #0C0628; }
+  .chat .top small { display: block; font-size: 18px; font-weight: 500; color: rgba(255,255,255,.6); }
+  .bb { position: absolute; max-width: 74%; padding: 18px 22px; border-radius: 22px; font-size: 25px; line-height: 1.38; font-weight: 500; }
+  .bb.me { right: 24px; background: #1E6B52; color: #fff; border-bottom-right-radius: 6px; }
+  .bb.yo { left: 24px; background: #233B36; color: #fff; border-bottom-left-radius: 6px; }
+  .bb .lnk { margin-top: 12px; border-radius: 14px; background: rgba(0,0,0,.25); overflow: hidden; display: flex; gap: 14px; align-items: center; padding: 10px; }
+  .bb .lnk .th { width: 84px; height: 84px; border-radius: 10px; background: linear-gradient(170deg, #2C3E5C, #23324A); flex: none; position: relative; overflow: hidden; }
+  .bb .lnk .th div { position: absolute; right: -14px; bottom: -14px; width: 70px; height: 70px; }
+  .bb .lnk b { display: block; font-size: 21px; } .bb .lnk small { font-size: 18px; opacity: .7; }
+  .bb .tm { display: block; text-align: right; font-size: 16px; opacity: .65; margin-top: 6px; }
+  .typing { position: absolute; left: 24px; padding: 18px 22px; border-radius: 22px; background: #233B36; display: flex; gap: 8px; }
+  .typing i { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,.7); }
+  .wa { position: absolute; z-index: 20; display: flex; align-items: center; gap: 22px; padding: 26px 46px 26px 30px; border-radius: 99px; background: var(--wa); color: #06281A; font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 50px; white-space: nowrap; box-shadow: 0 24px 60px rgba(37,211,102,.35); }
+  .wa svg { width: 70px; height: 70px; flex: none; }
+  .wa small { display: block; font-family: "JetBrains Mono"; font-weight: 600; font-size: 20px; letter-spacing: .12em; color: rgba(6,40,26,.75); margin-bottom: 2px; }
+  .wv { position: absolute; z-index: 19; border-radius: 99px; border: 3px solid var(--wa); opacity: 0; }
+  #note { position: absolute; z-index: 20; font-family: "JetBrains Mono"; font-weight: 600; font-size: 24px; letter-spacing: .08em; color: var(--ink2); white-space: nowrap; }
+  #note i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--acc); margin-right: 12px; box-shadow: 0 0 10px var(--acc); }
+</style></head>
+<body>
+<div id="root" data-composition-id="S14"><div id="stage" class="clip">
+  <div id="head" class="hd shadow" data-copy="S14_head"></div>
+  <div id="sub" class="sub shadow" data-copy="S14_sub"></div>
+</div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.bg(tl, stage, {seed: 71});
+  const CH = P ? {x: 110, y: 470, w: 860, h: 640} : {x: 1060, y: 110, w: 760, h: 860};
+  const ch = K.el('div', 'chat', '<div class="top"><i>S</i><div>SAMI Marketing Agency<small>WhatsApp · online</small></div></div>', stage);
+  ch.style.cssText += 'left:' + CH.x + 'px;top:' + CH.y + 'px;width:' + CH.w + 'px;height:' + CH.h + 'px';
+  const b1 = K.el('div', 'bb me', 'Chào SAMI, đây là website quán mình, nhờ xem giúp nhé!<div class="lnk"><div class="th"><div>' + K.bowl('pho') + '</div></div><div><b>Quán Mây · Leipzig</b><small>quan-may.de</small></div></div><span class="tm">19:02 ✓✓</span>', ch);
+  b1.style.top = '116px';
+  const ty = K.el('div', 'typing', '<i></i><i></i><i></i>', ch); ty.style.top = (P ? 400 : 420) + 'px';
+  const b2 = K.el('div', 'bb yo', 'SAMI đã nhận ✓ Chúng tôi sẽ phân tích website và gửi lại bạn trong 24 giờ.<span class="tm">19:03</span>', ch);
+  b2.style.top = (P ? 400 : 420) + 'px';
+  // nút WhatsApp (bong bóng chat vẽ bằng code, không logo)
+  const bub = '<svg viewBox="0 0 48 48"><path d="M24 5 C13.5 5 5 12.8 5 22.5 C5 28 7.8 32.9 12.2 36.1 L10.5 43 L18.2 39.2 C20 39.7 22 40 24 40 C34.5 40 43 32.2 43 22.5 C43 12.8 34.5 5 24 5 Z" fill="#fff"/><path d="M15 22 H33 M15 28 H27" stroke="#25D366" stroke-width="3.4" stroke-linecap="round"/></svg>';
+  const wa = K.el('div', 'wa', bub + '<div><small>WHATSAPP</small><span data-copy="S14_wa"></span></div>', stage);
+  wa.querySelector('span').innerHTML = S.html('S14_wa');
+  const note = K.el('div', '', '<i></i>' + S.html('S14_note'), stage); note.id = 'note';
+  const WY = P ? 1340 : 610;
+  if (P) { wa.style.left = '50%'; wa.style.top = WY + 'px'; wa.style.transform = 'translateX(-50%)'; note.style.left = '0'; note.style.right = '0'; note.style.textAlign = 'center'; note.style.top = (WY + 158) + 'px'; }
+  else { wa.style.left = '100px'; wa.style.top = WY + 'px'; note.style.left = '110px'; note.style.top = (WY + 162) + 'px'; }
+  tl.fromTo(ch, {opacity: 0, y: 40, rotationX: 30, transformPerspective: 1600}, {opacity: 1, y: 0, rotationX: 0, duration: 0.8}, 0.1);
+  S.arrive(tl, b1, K.b(1.2), {dist: 30});
+  tl.fromTo(ty, {opacity: 0}, {opacity: 1, duration: 0.2}, K.b(3));
+  tl.fromTo(ty.children, {y: 0}, {y: -8, duration: 0.18, stagger: 0.09, yoyo: true, repeat: 5}, K.b(3));
+  tl.to(ty, {opacity: 0, duration: 0.15}, K.b(5));
+  S.arrive(tl, b2, K.b(5.05), {dist: 30});
+  // nút WhatsApp bật vào + vòng sóng
+  const pop = K.b(3.6);
+  tl.fromTo(wa, {opacity: 0, scale: 0.6}, {opacity: 1, scale: 1, duration: 0.6}, pop);
+  for (let i = 0; i < 3; i++) {
+    const v = K.el('div', 'wv', null, stage);
+    const r = wa.getBoundingClientRect(), r0 = stage.getBoundingClientRect(), k = S.w / r0.width;
+    v.style.cssText += 'left:' + ((r.left - r0.left) * k) + 'px;top:' + ((r.top - r0.top) * k) + 'px;width:' + (r.width * k) + 'px;height:' + (r.height * k) + 'px';
+    tl.fromTo(v, {opacity: 0.8, scale: 1}, {opacity: 0, scale: 1.35, duration: 1.3, ease: 'power1.out', immediateRender: false}, pop + 0.5 + i * 1.2);
+  }
+  S.arrive(tl, note, pop + 0.6, {dist: 10});
+  K.say(tl, '#head', K.b(0.4));
+  K.say(tl, '#sub', K.b(2.4), {stagger: 0.05});
+</script>
+</body></html>

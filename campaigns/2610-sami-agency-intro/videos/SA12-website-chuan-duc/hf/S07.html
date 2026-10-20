@@ -1,0 +1,61 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css"><link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css"><link rel="stylesheet" href="_fonts/playfair-display/600-italic.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css"><link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S07 · 04 Speisekarte: 4 món rõ giá, mã dị ứng sáng lần lượt, chú giải, tải PDF. */
+  .mn { position: absolute; inset: 0; padding: 32px 36px; box-sizing: border-box; }
+  .mn .hh { display: flex; align-items: center; justify-content: space-between; }
+  .mn .hh b { font-family: "Playfair Display"; font-weight: 700; font-size: 42px; }
+  .pdf2 { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; min-width: 250px; box-sizing: border-box; gap: 10px; padding: 13px 22px; border-radius: 99px; box-shadow: inset 0 0 0 2.5px var(--slate); color: var(--slate); font-weight: 800; font-size: 20px; white-space: nowrap; }
+  .pdf2 .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: var(--slate); transform-origin: 0 50%; transform: scaleX(0); }
+  .pdf2 .lb { position: relative; z-index: 2; }
+  .mn .tabs { display: flex; gap: 22px; margin: 14px 0 6px; font-size: 19px; font-weight: 700; color: #8B8F99; }
+  .mn .tabs span:first-child { color: var(--pgink); box-shadow: 0 3px 0 var(--terra); padding-bottom: 6px; }
+  .it { display: flex; align-items: center; gap: 18px; padding: 13px 0; border-bottom: 1.5px solid #EEE9E1; }
+  .it .ic { width: 70px; height: 70px; flex: none; }
+  .it .nm { flex: 1; font-weight: 800; font-size: 26px; }
+  .it .al { display: flex; gap: 8px; margin-top: 7px; }
+  .it .al u { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; border-radius: 8px; font-family: "JetBrains Mono"; font-weight: 600; font-size: 17px; background: #EFEBE4; color: #4A5060; }
+  .it .al u.v { background: #DDEBD5; color: #3C7A2E; padding: 0 8px; }
+  .it .pr { font-family: "Playfair Display"; font-weight: 700; font-size: 30px; }
+  .lgd { margin-top: 14px; font-family: "JetBrains Mono"; font-weight: 600; font-size: 17px; color: #6C7180; letter-spacing: .03em; }
+  .lgd em { font-style: normal; color: var(--pgink); }
+</style></head>
+<body>
+<div id="root" data-composition-id="S07"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K;
+  K.item({n: 4, key: 'S07', pw: 680, ph: 600, focus: 0.72,
+    build: function (pl, c) {
+      const tl = c.tl;
+      const al = {'A, F': ['A', 'F'], 'F': ['F']};
+      let h = '<div class="mn"><div class="hh"><b>Speisekarte</b><div class="pdf2" id="pdf"><div class="bar"></div><span class="lb" id="pl">Speisekarte als PDF ↓</span></div></div><div class="tabs"><span>Hauptgerichte</span><span>Vorspeisen</span><span>Suppen</span><span>Getränke</span></div>';
+      K.MENU.forEach((m, i) => {
+        const v = m[1].indexOf('[V]') > 0, nm = m[1].replace(' [V]', '');
+        h += '<div class="it"><div class="ic">' + K.bowl(m[0]) + '</div><div class="nm">' + nm + '<div class="al">' + al[m[2]].map((x) => '<u>' + x + '</u>').join('') + (v ? '<u class="v">V</u>' : '') + '</div></div><div class="pr">' + m[3] + '</div></div>';
+      });
+      h += '<div class="lgd" id="lgd"><em>A</em> Gluten · <em>F</em> Soja · <em>V</em> vegetarisch</div></div>';
+      pl.innerHTML = h;
+      S.arrive(tl, K.$$('.mn > *', pl), 0.5, {dist: 16, blur: 6, stagger: 0.07});
+      const chips = K.$$('.al u', pl);
+      tl.fromTo(chips, {backgroundColor: '#EFEBE4'}, {backgroundColor: '#B8F3E2', duration: 0.25, stagger: 0.07, yoyo: true, repeat: 1}, K.b(4.4));
+      tl.fromTo(chips, {scale: 1}, {scale: 1.18, duration: 0.25, stagger: 0.07, yoyo: true, repeat: 1}, K.b(4.4));
+      tl.fromTo('#lgd', {opacity: 0, x: -20}, {opacity: 1, x: 0, duration: 0.5}, K.b(5.4));
+      const dl = K.b(8.3);
+      tl.to('#pdf .bar', {scaleX: 1, duration: 0.8, ease: 'none'}, dl + 0.1);
+      tl.set('#pdf', {color: '#fff'}, dl + 0.3);
+      K.tick(tl, (t) => { const e = K.$('#pl', pl); e.textContent = t < dl + 0.1 ? 'Speisekarte als PDF ↓' : t < dl + 0.95 ? 'Lädt … ' + Math.round(K.clamp((t - dl - 0.1) / 0.8, 0, 1) * 100) + ' %' : '✓ Speisekarte.pdf'; });
+      const cur = K.cursor(c.stage), px = c.px(680 - 36 - 120), py = c.py(32 + 26);
+      K.path(tl, cur, [{x: c.px(600), y: c.py(660), t: 0}, {x: px + 20, y: py + 80, t: K.b(7)}, {x: px, y: py, t: dl, click: true}], (p) => K.ring(tl, c.stage, p.x, p.y, p.t));
+      tl.fromTo(cur, {opacity: 0}, {opacity: 1, duration: 0.3}, K.b(6.4));
+      tl.to(cur, {opacity: 0, duration: 0.3}, dl + 1.1);
+    },
+    labels: [{key: 'S07_c1', sp: '14 Allergene · LMIV', anc: (c) => K.$$('.al u', c.plate)[0], at: K.b(4.2)},
+             {key: 'S07_c2', sp: 'vegetarisch · vegan', anc: (c) => K.$('.al u.v', c.plate), at: K.b(5.6)}]
+  });
+</script>
+</body></html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css"><link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css"><link rel="stylesheet" href="_fonts/playfair-display/600-italic.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css"><link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S03 · Khoảnh khắc chữ ký: trang Quán Mây xoay isometric rồi nổ thành 7 lớp kính + nền móng SEO; nhãn bản vẽ mọc ra từng lớp. */
+  #head { top: 236px; font-size: 64px; left: 60px; right: 60px; }
+  [data-ratio="16x9"] #head { left: 100px; right: auto; width: 640px; top: 360px; text-align: left; font-size: 66px; }
+  .lbl .nm { font-size: 24px; } .lbl .sp { font-size: 17px; }
+  #flash { position: absolute; inset: 0; background: radial-gradient(40% 30% at 50% 58%, rgba(8,221,164,.5), transparent 70%); opacity: 0; z-index: 25; pointer-events: none; }
+  [data-ratio="16x9"] #flash { background: radial-gradient(30% 40% at 60% 50%, rgba(8,221,164,.5), transparent 70%); }
+</style></head>
+<body>
+<div id="root" data-composition-id="S03"><div id="stage" class="clip">
+  <div id="head" class="hd shadow" data-copy="S03_head"></div>
+  <div id="flash"></div>
+</div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.bg(tl, stage, {seed: 31});
+  const fl = K.el('div', 'floor', null, stage); fl.style.top = (P ? 1500 : 860) + 'px'; if (!P) fl.style.left = '58%';
+  const W = P ? 440 : 380, pg = K.rig(stage, W), st = pg.st, sub = K.sub();
+  const CX = P ? 450 : 1040, CY = P ? 1190 : 560;
+  Object.assign(st, {x: CX, y: CY + 40, s: P ? 0.92 : 0.95, gap: 0});
+  const T0 = K.b(3.0), GAP = P ? 100 : 92;
+  // xoay sang isometric (orbit chậm suốt cảnh)
+  sub.fromTo(st, {rx: 0, rz: 0, s: P ? 0.92 : 0.95, y: CY + 40}, {rx: 58, rz: -36, s: P ? 0.8 : 0.78, y: CY, duration: 1.6}, 0.35);
+  sub.to(st, {rz: -28, ry: 4, duration: S.dur - 2, ease: 'none'}, 1.95);
+  sub.fromTo(st, {ex: 0, glass: 0, bg: 1}, {ex: 1, glass: 1, bg: 0.12, duration: 1.0}, T0);
+  K.tick(tl, (t) => {
+    sub.seek(t);
+    for (let i = 0; i < 8; i++) st.lift[i] = (i - 3.5) * GAP * K.ramp(t, T0 + (7 - i) * 0.17, T0 + (7 - i) * 0.17 + 1.1);
+    pg.apply();
+  });
+  tl.fromTo('#flash', {opacity: 0}, {opacity: 1, duration: 0.12, yoyo: true, repeat: 1}, T0);
+  K.say(tl, '#head', K.b(0.6));
+  // nhãn bản vẽ: chỉ số, tên (copy), thông số
+  const SP = ['schema.org/Restaurant', '1,5 – 1,8 s', '390 → 1440 px', 'position: sticky', 'Allergene · PDF', 'hreflang de · en', '25 – 200 € · 3 Jahre', 'DSGVO · Opt-in'];
+  const its = [];
+  for (let i = 7; i >= 0; i--) {
+    const a = K.el('i', 'anc', null, pg.L[i]); a.style.left = '100%'; a.style.top = '18%';
+    its.push({anc: a, ix: i ? '0' + i : '+', nm: S.html('L' + i), sp: SP[i], x: P ? 735 : 1440, y: (P ? 690 : 170) + (7 - i) * (P ? 112 : 104), at: T0 + 0.9 + (7 - i) * 0.17});
+  }
+  const ld = K.leads(stage, its);
+  K.tick(tl, (t) => ld.update(t));
+</script>
+</body></html>

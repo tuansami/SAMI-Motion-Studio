@@ -178,7 +178,7 @@
   "S03_head": {
    "label": "Câu dẫn vào cảnh tháo lớp",
    "scene": "S03",
-   "value": "Hãy *tháo rời* một website chuẩn Đức / để xem khách kiểm tra những gì.",
+   "value": "Hãy *tháo rời* một website / chuẩn Đức, để xem khách / kiểm tra những gì.",
    "multiline": false
   },
   "L7": {
@@ -196,7 +196,7 @@
   "L5": {
    "label": "Tên lớp 05",
    "scene": "S03",
-   "value": "Song ngữ DE / EN",
+   "value": "Song ngữ DE · EN",
    "multiline": false
   },
   "L4": {
@@ -292,7 +292,7 @@
   "S06_c1": {
    "label": "05 · nhãn 1",
    "scene": "S06",
-   "value": "DE / EN",
+   "value": "DE · EN",
    "multiline": false
   },
   "S06_c2": {
@@ -376,25 +376,25 @@
   "S11_head": {
    "label": "Câu khi các lớp sập lại",
    "scene": "S11",
-   "value": "Bảy lớp ghép lại thành một, / trên nền móng *cấu trúc SEO* từ ngày đầu.",
+   "value": "Bảy lớp ghép lại thành một, / trên nền móng *cấu trúc SEO* / từ ngày đầu.",
    "multiline": false
   },
   "S12_head": {
    "label": "Câu trên các thẻ case",
    "scene": "S12",
-   "value": "Không phải lý thuyết. / Đây là những website *SAMI đã dựng* tại Đức.",
+   "value": "Không phải lý thuyết. / Đây là những website / *SAMI đã dựng* tại Đức.",
    "multiline": false
   },
   "S12_k1": {
    "label": "Thẻ Mizuki: thông số",
    "scene": "S12",
-   "value": "1,6 s · DE / EN · đặt món online",
+   "value": "1,6 s · DE · EN · đặt món online",
    "multiline": false
   },
   "S12_k2": {
    "label": "Thẻ Vị: thông số",
    "scene": "S12",
-   "value": "DE / EN · 1 chạm tới đặt bàn · Gutschein",
+   "value": "DE · EN · 1 chạm tới đặt bàn · Gutschein",
    "multiline": false
   },
   "S12_k3": {

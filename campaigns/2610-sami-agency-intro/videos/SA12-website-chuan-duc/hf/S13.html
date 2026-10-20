@@ -1,0 +1,75 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css"><link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css"><link rel="stylesheet" href="_fonts/playfair-display/600-italic.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css"><link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S13 · Nhịp thở + câu chốt: danh thiếp Quán Mây trôi trong tối (1 s tĩnh) → xoay, tách lớp, mặt sau thành màn hình đặt bàn; vòng 24 giờ quét quanh. */
+  #head { top: 1330px; font-size: 68px; }
+  [data-ratio="16x9"] #head { left: 100px; right: auto; width: 760px; top: 340px; text-align: left; font-size: 66px; }
+  #obj { position: absolute; width: 560px; height: 340px; perspective: 1800px; z-index: 10; }
+  #card { position: absolute; inset: 0; transform-style: preserve-3d; }
+  .fc { position: absolute; inset: 0; border-radius: 22px; backface-visibility: hidden; }
+  #f1 { background: linear-gradient(150deg, #F7F2E9, #E9E1D2); box-shadow: 0 40px 80px rgba(0,0,0,.55); color: var(--slate); }
+  #f1 .lg { position: absolute; left: 40px; top: 40px; display: flex; align-items: center; gap: 14px; font-family: "Playfair Display"; font-weight: 700; font-size: 44px; }
+  #f1 .lg svg { width: 60px; height: 40px; } #f1 .lg svg path { stroke: var(--terra); }
+  #f1 .t { position: absolute; left: 40px; bottom: 40px; font-family: Inter; font-weight: 600; font-size: 21px; line-height: 1.6; color: #5B6170; }
+  #f1 .t i { display: block; width: 220px; height: 10px; border-radius: 9px; background: #D9D1C3; margin-top: 10px; }
+  #f2 { transform: rotateY(180deg); background: linear-gradient(165deg, #2C3E5C, #23324A); box-shadow: 0 0 0 2px rgba(8,221,164,.8), 0 0 60px rgba(8,221,164,.35), 0 40px 80px rgba(0,0,0,.55); color: var(--cream); font-family: Inter; }
+  #f2 .h { position: absolute; left: 34px; top: 30px; font-weight: 800; font-size: 28px; display: flex; align-items: center; gap: 12px; }
+  #f2 .h u { text-decoration: none; font-family: "JetBrains Mono"; font-weight: 600; font-size: 18px; color: #0C0628; background: var(--acc); padding: 4px 10px; border-radius: 6px; }
+  #f2 .sl { position: absolute; left: 34px; right: 34px; top: 90px; display: flex; gap: 10px; }
+  #f2 .sl span { flex: 1; text-align: center; padding: 12px 0; border-radius: 12px; background: rgba(244,239,230,.1); font-weight: 700; font-size: 20px; }
+  #f2 .sl span.on { background: var(--cream); color: var(--slate); }
+  #f2 .bt { position: absolute; left: 34px; right: 34px; bottom: 30px; height: 64px; border-radius: 99px; background: var(--terra); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 24px; }
+  #f2 .bk { position: absolute; left: 34px; top: 160px; font-size: 19px; color: rgba(244,239,230,.7); font-weight: 600; }
+  #clk { position: absolute; z-index: 5; overflow: visible; }
+  #clk text { font-family: "JetBrains Mono"; font-weight: 600; font-size: 22px; fill: rgba(227,228,247,.55); }
+  .nt { position: absolute; z-index: 12; display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 16px; background: rgba(21,18,43,.88); box-shadow: inset 0 0 0 1.5px rgba(227,228,247,.25); font-family: Inter; font-weight: 600; font-size: 22px; color: var(--ink); white-space: nowrap; }
+  .nt b { font-family: "JetBrains Mono"; font-weight: 600; color: var(--acc); font-size: 20px; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S13"><div id="stage" class="clip">
+  <div id="obj"><div id="card"><div class="fc" id="f1"><div class="lg"></div><div class="t">Vietnamesische Küche · Leipzig<i></i><i style="width:160px"></i></div></div>
+    <div class="fc" id="f2"><div class="h">Tisch reservieren <u>24/7</u></div><div class="sl"><span>18:00</span><span>18:30</span><span class="on">19:00</span><span>19:30</span></div><div class="bk">Sa · 4 Personen</div><div class="bt">Jetzt reservieren</div></div></div></div>
+  <div id="head" class="hd shadow" data-copy="S13_head"></div>
+</div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.bg(tl, stage, {seed: 61, dust: 18});
+  K.$('#f1 .lg').innerHTML = K.cloudSvg + 'Quán Mây';
+  const CX = P ? 540 : 1340, CY = P ? 760 : 520, R = 400;
+  const ob = K.$('#obj'); ob.style.left = (CX - 280) + 'px'; ob.style.top = (CY - 170) + 'px';
+  // nhịp thở: danh thiếp trôi nhẹ trong ~1 s, rồi lật
+  const FL = K.b(2.4);
+  tl.fromTo('#obj', {opacity: 0, y: 30}, {opacity: 1, y: 0, duration: 0.9}, 0.05);
+  tl.fromTo('#card', {rotationY: -14, rotationX: 8}, {rotationY: 8, rotationX: -4, duration: FL - 0.1, ease: 'none'}, 0);
+  tl.to('#card', {rotationY: 180, rotationX: 0, duration: 1.0}, FL);
+  tl.to('#obj', {scale: 1.08, duration: 1.0}, FL);
+  // vòng 24 giờ
+  const NS = 'http://www.w3.org/2000/svg', sv = document.createElementNS(NS, 'svg');
+  sv.id = 'clk'; sv.setAttribute('width', 2 * R + 80); sv.setAttribute('height', 2 * R + 80); sv.style.left = (CX - R - 40) + 'px'; sv.style.top = (CY - R - 40) + 'px'; stage.appendChild(sv);
+  const c0 = R + 40;
+  let h = '<circle cx="' + c0 + '" cy="' + c0 + '" r="' + R + '" fill="none" stroke="rgba(227,228,247,.12)" stroke-width="2"/>';
+  for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2 - Math.PI / 2, r1 = R - (i % 6 ? 10 : 22); h += '<line x1="' + (c0 + Math.cos(a) * r1) + '" y1="' + (c0 + Math.sin(a) * r1) + '" x2="' + (c0 + Math.cos(a) * R) + '" y2="' + (c0 + Math.sin(a) * R) + '" stroke="rgba(227,228,247,.35)" stroke-width="2"/>'; }
+  ['00', '06', '12', '18'].forEach((s, i) => { const a = i / 4 * Math.PI * 2 - Math.PI / 2; h += '<text x="' + (c0 + Math.cos(a) * (R - 52)) + '" y="' + (c0 + Math.sin(a) * (R - 52) + 8) + '" text-anchor="middle">' + s + '</text>'; });
+  h += '<circle id="arc" cx="' + c0 + '" cy="' + c0 + '" r="' + R + '" fill="none" stroke="#08DDA4" stroke-width="5" stroke-linecap="round" transform="rotate(-90 ' + c0 + ' ' + c0 + ')" style="filter:drop-shadow(0 0 10px #08DDA4)"/>';
+  sv.innerHTML = h;
+  const L = 2 * Math.PI * R, arc = sv.querySelector('#arc');
+  arc.setAttribute('stroke-dasharray', L); 
+  tl.fromTo(sv, {opacity: 0}, {opacity: 1, duration: 0.6}, FL + 0.3);
+  tl.fromTo(arc, {attr: {'stroke-dashoffset': L}}, {attr: {'stroke-dashoffset': 0}, duration: 3.0, ease: 'none'}, FL + 0.5);
+  // ghi chú: việc website làm khi bạn không ở đó (minh họa)
+  const N = [['23:40', 'Tisch für 2 · reserviert ✓', 330], ['07:15', 'Gutschein 50 € · gekauft ✓', 120], ['15:20', 'Speisekarte · PDF geöffnet', 220]];
+  N.forEach((n, i) => {
+    const a = n[2] / 360 * Math.PI * 2 - Math.PI / 2, x = CX + Math.cos(a) * (R + 10), y = CY + Math.sin(a) * (R + 10);
+    const e = K.el('div', 'nt', '<b>' + n[0] + '</b>' + n[1], stage);
+    e.style.left = K.clamp(x - (x < CX ? 330 : 30), P ? 40 : 880, S.w - 400) + 'px'; e.style.top = (y - 28) + 'px';
+    S.arrive(tl, e, FL + 0.9 + i * 0.45, {dist: 14});
+  });
+  K.say(tl, '#head', K.b(1.8), {stagger: 0.06});
+  const mh = K.el('div', 'note', 'MINH HỌA', stage); mh.style.left = (CX + R - 60) + 'px'; mh.style.top = (CY - R - 10) + 'px'; S.arrive(tl, mh, FL + 1, {dist: 8});
+</script>
+</body></html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css"><link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css"><link rel="stylesheet" href="_fonts/playfair-display/600-italic.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css"><link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S08 · 03 Nút Reservieren cố định: trang cuộn dưới ngón cái, nút đứng yên ở đáy; chạm → form đặt bàn. */
+  .sc { position: absolute; inset: 0; border-radius: 30px; overflow: hidden; background: var(--cream); }
+  .col { position: absolute; left: 0; right: 0; top: 0; }
+  .col .hero2 { height: 330px; background: linear-gradient(170deg, #2C3E5C, #23324A); position: relative; overflow: hidden; color: var(--cream); }
+  .col .hero2 .n { position: absolute; left: 26px; top: 26px; display: flex; align-items: center; gap: 8px; font-family: "Playfair Display"; font-weight: 700; font-size: 24px; }
+  .col .hero2 .n svg { width: 34px; height: 23px; }
+  .col .hero2 h3 { position: absolute; left: 26px; top: 82px; margin: 0; font-family: "Playfair Display"; font-weight: 700; font-size: 44px; line-height: 1.1; }
+  .col .hero2 h3 i { color: var(--pink); font-weight: 600; }
+  .col .hero2 .bw { position: absolute; right: -50px; bottom: -60px; width: 250px; height: 250px; }
+  .col .blk { margin: 18px 20px; border-radius: 16px; background: #fff; padding: 16px; box-shadow: 0 4px 12px rgba(28,36,51,.06); }
+  .col .blk b { font-family: "Playfair Display"; font-size: 26px; display: block; margin-bottom: 8px; }
+  .col .r2 { display: flex; align-items: center; gap: 12px; padding: 8px 0; font-weight: 700; font-size: 19px; }
+  .col .r2 .ic { width: 46px; height: 46px; flex: none; } .col .r2 span { flex: 1; } .col .r2 em { font-style: normal; font-family: "Playfair Display"; }
+  .col .ln2 { height: 12px; border-radius: 9px; background: #E6E0D5; margin: 10px 0; }
+  .col .gift2 { margin: 18px 20px; height: 90px; border-radius: 16px; background: linear-gradient(110deg, #D9774B, #B85B3A); color: #fff; display: flex; align-items: center; padding: 0 20px; font-family: "Playfair Display"; font-weight: 700; font-size: 24px; }
+  .stk2 { position: absolute; left: 18px; right: 18px; bottom: 22px; height: 70px; border-radius: 99px; background: var(--slate); color: var(--cream); display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 800; font-size: 24px; box-shadow: 0 14px 30px rgba(28,36,51,.35); z-index: 5; }
+  .stk2 i { width: 24px; height: 24px; border-radius: 5px; box-shadow: inset 0 0 0 3px var(--cream); position: relative; }
+  .stk2 i:after { content: ""; position: absolute; left: 4px; right: 4px; top: 7px; height: 3px; background: var(--cream); }
+  .sbar2 { position: absolute; right: 6px; top: 20px; width: 6px; height: 120px; border-radius: 9px; background: rgba(28,36,51,.25); z-index: 4; }
+  .dim { position: absolute; left: 50%; bottom: 0; width: 2px; height: 22px; background: var(--acc); z-index: 6; }
+  .dim:before, .dim:after { content: ""; position: absolute; left: -9px; width: 20px; height: 2px; background: var(--acc); }
+  .dim:before { top: 0; } .dim:after { bottom: 0; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 330px; border-radius: 26px 26px 0 0; background: #fff; box-shadow: 0 -10px 30px rgba(0,0,0,.25); z-index: 8; padding: 24px; box-sizing: border-box; }
+  .sheet b { font-size: 26px; font-weight: 800; display: block; margin-bottom: 14px; }
+  .sheet .f { display: flex; gap: 10px; margin-bottom: 12px; }
+  .sheet .f span { flex: 1; padding: 14px 12px; border-radius: 12px; box-shadow: inset 0 0 0 2px #E2DCD2; font-size: 18px; font-weight: 700; }
+  .sheet .f span small { display: block; font-size: 13px; color: #8B8F99; font-weight: 600; margin-bottom: 4px; }
+  .sheet .go { height: 62px; border-radius: 99px; background: var(--terra); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; margin-top: 6px; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S08"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K;
+  K.item({n: 3, key: 'S08', pw: 400, ph: 720, focus: 0.9, dy: -4, plateCss: 'border-radius:30px;box-shadow:0 0 0 10px #0B0B12,0 0 0 12px #2B2A3C,0 50px 100px rgba(0,0,0,.6)',
+    build: function (pl, c) {
+      const tl = c.tl;
+      let rows = ''; K.MENU.forEach((m) => rows += '<div class="r2"><div class="ic">' + K.bowl(m[0]) + '</div><span>' + m[1].replace(' [V]', '') + '</span><em>' + m[3] + '</em></div>');
+      pl.innerHTML = '<div class="sc"><div class="col" id="col"><div class="hero2"><div class="n">' + K.cloudSvg + 'Quán Mây</div><h3>Frisch gekocht.<br><i>Jeden Tag.</i></h3><div class="bw">' + K.bowl('pho') + '</div></div>' +
+        '<div class="gift2">Gutschein verschenken</div><div class="blk"><b>Speisekarte</b>' + rows + '</div>' +
+        '<div class="blk"><b>Über uns</b><div class="ln2"></div><div class="ln2" style="width:80%"></div><div class="ln2" style="width:90%"></div></div>' +
+        '<div class="blk"><b>Öffnungszeiten</b><div class="r2"><span>Di – So</span><em>11:30 – 22:00</em></div><div class="r2"><span>Montag</span><em>Ruhetag</em></div></div>' +
+        '<div class="blk" style="height:120px"><b>Kontakt</b><div class="ln2" style="width:60%"></div></div></div>' +
+        '<div class="sbar2" id="sb"></div><div class="stk2" id="stk"><i></i>Jetzt reservieren</div><div class="dim" id="dim"></div>' +
+        '<div class="sheet" id="sh"><b>Tisch reservieren</b><div class="f"><span><small>Datum</small>Sa, 24.10.</span><span><small>Uhrzeit</small>19:30</span></div><div class="f"><span><small>Personen</small>4 Personen</span><span><small>Name</small>Weber</span></div><div class="go">Weiter</div></div></div>';
+      const col = K.$('#col', pl), sb = K.$('#sb', pl);
+      // cuộn: hàm tất định của thời gian (lướt xuống, kéo lên, lướt xuống)
+      const keys = [[0, 0], [K.b(2.2), 0], [K.b(4.4), -760], [K.b(5.6), -760], [K.b(6.8), -300], [K.b(7.4), -300], [K.b(8.6), -640]];
+      K.tick(tl, (t) => {
+        let y = 0;
+        for (let i = 1; i < keys.length; i++) { if (t >= keys[i - 1][0]) y = K.lerp(keys[i - 1][1], keys[i][1], K.ramp(t, keys[i - 1][0], keys[i][0])); }
+        col.style.transform = 'translateY(' + y + 'px)'; sb.style.transform = 'translateY(' + (-y / 760 * 480) + 'px)';
+      });
+      tl.fromTo('#stk', {y: 120}, {y: 0, duration: 0.7}, 0.8);
+      tl.fromTo('#dim', {opacity: 0, scaleY: 0}, {opacity: 1, scaleY: 1, duration: 0.4}, K.b(3.6));
+      // ngón cái vuốt rồi chạm
+      const th = K.el('i', 'touch', null, c.stage), tx = c.px(250), tap = K.b(9.6);
+      const sw = (a, b, ya, yb) => { tl.fromTo(th, {x: tx, y: ya, opacity: 0}, {opacity: 0.9, duration: 0.12, immediateRender: false}, a); tl.to(th, {y: yb, duration: b - a - 0.1, ease: S.EASE}, a + 0.05); tl.to(th, {opacity: 0, duration: 0.12}, b - 0.05); };
+      sw(K.b(2.2), K.b(4.2), c.py(560), c.py(240)); sw(K.b(5.6), K.b(6.6), c.py(260), c.py(500)); sw(K.b(7.4), K.b(8.4), c.py(540), c.py(300));
+      const bx = c.px(200), by = c.py(720 - 22 - 35);
+      tl.fromTo(th, {x: bx, y: by, opacity: 0, scale: 1.3}, {opacity: 1, scale: 0.85, duration: 0.2, immediateRender: false}, tap - 0.1);
+      tl.to(th, {opacity: 0, duration: 0.2}, tap + 0.2);
+      K.ring(tl, c.stage, bx, by, tap);
+      tl.fromTo('#sh', {y: 340}, {y: 0, duration: 0.6}, tap + 0.15);
+    },
+    labels: [{key: 'S08_c1', sp: 'position: sticky', anc: (c) => K.$('#dim', c.plate), at: K.b(4.0), pos: {P: {x: 52, y: 1250}, L: {x: 905, y: 940}}},
+             {key: 'S08_c2', sp: 'Jetzt reservieren → Formular', anc: (c) => K.$('#stk i', c.plate), at: K.b(5.6), pos: {P: {x: 1028, y: 470, align: 'right'}, L: {x: 1800, y: 300, align: 'right'}}}]
+  });
+</script>
+</body></html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css"><link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css"><link rel="stylesheet" href="_fonts/playfair-display/600-italic.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css"><link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S05 · 06 Gutschein: thẻ quà lật mặt, chọn mệnh giá, tem 3 năm, gửi qua e-mail. */
+  .gs { position: absolute; inset: 0; padding: 34px 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; }
+  .gs .t { display: flex; align-items: baseline; justify-content: space-between; font-weight: 800; font-size: 30px; }
+  .gs .t small { font-size: 19px; font-weight: 600; color: #8B8F99; }
+  .gc { position: relative; height: 236px; border-radius: 24px; background: linear-gradient(120deg, #E08A5C, #C4643E 55%, #8C3F25); color: #fff; overflow: hidden; box-shadow: 0 18px 36px rgba(140,63,37,.35); }
+  .gc:before { content: ""; position: absolute; right: -60px; top: -80px; width: 280px; height: 280px; border-radius: 50%; background: rgba(255,255,255,.08); }
+  .gc .lg { position: absolute; left: 30px; top: 26px; display: flex; align-items: center; gap: 10px; font-family: "Playfair Display"; font-weight: 700; font-size: 26px; }
+  .gc .lg svg { width: 40px; height: 27px; } .gc .lg svg path { stroke: #fff; }
+  .gc .nm { position: absolute; left: 30px; top: 92px; font-family: "Playfair Display"; font-weight: 700; font-size: 52px; }
+  .gc .cd { position: absolute; left: 30px; bottom: 26px; font-family: "JetBrains Mono"; font-weight: 600; font-size: 18px; letter-spacing: .1em; opacity: .85; }
+  .gc .v { position: absolute; right: 34px; top: 30px; font-family: "Playfair Display"; font-weight: 700; font-size: 84px; line-height: 1; }
+  .stamp { position: absolute; right: 30px; bottom: 12px; width: 100px; height: 100px; border-radius: 50%; border: 3px dashed rgba(255,255,255,.9); display: flex; align-items: center; justify-content: center; text-align: center; font-family: "JetBrains Mono"; font-weight: 600; font-size: 16px; line-height: 1.25; letter-spacing: .06em; transform: rotate(-14deg); background: rgba(12,6,40,.25); }
+  .chips { display: flex; gap: 12px; }
+  .chips span { flex: 1; text-align: center; padding: 14px 0; border-radius: 99px; font-weight: 700; font-size: 23px; box-shadow: inset 0 0 0 2px #D8D3CA; color: var(--pgink); }
+  .chips span.on { background: var(--slate); color: #fff; box-shadow: none; }
+  .go { position: relative; height: 70px; border-radius: 99px; background: var(--terra); color: #fff; font-weight: 800; font-size: 26px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .go .b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 12px; background: #0E3B33; color: var(--acc); opacity: 0; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S05"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K;
+  K.item({n: 6, key: 'S05', pw: 680, ph: 560, focus: 0.5,
+    build: function (pl, c) {
+      const tl = c.tl;
+      pl.innerHTML = '<div class="gs"><div class="t">Gutschein verschenken<small>Quán Mây · Leipzig</small></div>' +
+        '<div class="gc" id="gc"><div class="lg">' + K.cloudSvg + 'Quán Mây</div><div class="nm">Gutschein</div><div class="cd">CODE · QM-7K2P-50</div><div class="v" id="val">25 €</div><div class="stamp" id="stamp">3 JAHRE<br>GÜLTIG</div></div>' +
+        '<div class="chips" id="chips"><span>25 €</span><span>50 €</span><span>100 €</span><span>150 €</span><span>200 €</span></div>' +
+        '<div class="go" id="go">Jetzt verschenken<div class="b">✓ Per E-Mail versendet</div></div></div>';
+      const ch = K.$$('#chips span', pl), val = K.$('#val', pl), gc = K.$('#gc', pl);
+      S.arrive(tl, K.$$('.gs > *', pl), 0.5, {dist: 18, blur: 6, stagger: 0.08});
+      tl.fromTo(gc, {rotationY: -160, transformPerspective: 1400}, {rotationY: 0, duration: 1.1}, 0.55);
+      const pick = K.b(5.6), send = K.b(9.4);
+      // trạng thái chip + giá trị theo thời gian
+      K.tick(tl, (t) => {
+        const s = t < pick ? 0 : 1;
+        ch.forEach((e, i) => e.classList.toggle('on', i === s));
+        const p = K.clamp((t - pick) / 0.35, 0, 1);
+        val.textContent = p <= 0 ? '25 €' : p >= 1 ? '50 €' : K.scramble('25 €', '50 €', p, 11);
+      });
+      tl.fromTo('#stamp', {opacity: 0, scale: 1.8}, {opacity: 1, scale: 1, duration: 0.35, ease: 'power3.in'}, K.b(7.2));
+      tl.fromTo(gc, {x: 0}, {x: 6, duration: 0.05, yoyo: true, repeat: 3}, K.b(7.2) + 0.33);
+      const cur = K.cursor(c.stage);
+      const cx = c.px(40 + 600 / 5 * 1.5 + 6), cy = c.py(34 + 40 + 20 + 236 + 20 + 30);
+      const gx = c.px(340), gy = c.py(560 - 34 - 35);
+      K.path(tl, cur, [{x: c.px(700), y: c.py(600), t: 0}, {x: cx + 40, y: cy + 60, t: K.b(4.4)}, {x: cx, y: cy, t: pick, click: true}, {x: gx + 30, y: gy, t: send, click: true}],
+        (p) => K.ring(tl, c.stage, p.x, p.y, p.t));
+      tl.fromTo(cur, {opacity: 0}, {opacity: 1, duration: 0.3}, K.b(4));
+      tl.to(cur, {opacity: 0, duration: 0.3}, send + 0.5);
+      tl.to('#go .b', {opacity: 1, duration: 0.3}, send + 0.12);
+    },
+    labels: [{key: 'S05_c1', sp: '25 · 50 · 100 · 150 · 200 €', anc: (c) => K.$('#chips span:nth-child(1)', c.plate), at: K.b(4.0)},
+             {key: 'S05_c2', sp: 'Abholen oder per E-Mail', anc: (c) => K.$('#stamp', c.plate), at: K.b(7.6)}]
+  });
+</script>
+</body></html>

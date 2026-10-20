@@ -1,0 +1,71 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css"><link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css"><link rel="stylesheet" href="_fonts/playfair-display/600-italic.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css"><link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S09 · 02 Đẹp trên điện thoại: một khung thiết bị co từ desktop → tablet → điện thoại, bố cục chảy lại 3 → 2 → 1 cột, đường kích thước đo bề rộng. */
+  .bp { position: absolute; inset: 0; border-radius: 30px; overflow: hidden; background: #F3F0EA; background-image: linear-gradient(rgba(35,50,74,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(35,50,74,.06) 1px, transparent 1px); background-size: 28px 28px; }
+  .fr { position: absolute; border-radius: 16px; background: #fff; box-shadow: 0 0 0 3px #1C2433, 0 24px 50px rgba(28,36,51,.25); overflow: hidden; }
+  .fr .chr { position: absolute; left: 0; right: 0; top: 0; height: 22px; background: #E9E4DB; }
+  .fr .chr i { position: absolute; top: 7px; width: 8px; height: 8px; border-radius: 50%; background: #C9C2B6; }
+  .bk { position: absolute; border-radius: 8px; overflow: hidden; }
+  .bk.h { background: linear-gradient(160deg, #2C3E5C, #23324A); }
+  .bk.h b { position: absolute; left: 12px; top: 14px; font-family: "Playfair Display"; font-weight: 700; font-size: 20px; color: var(--cream); white-space: nowrap; }
+  .bk.h .bw { position: absolute; right: -16px; bottom: -22px; width: 110px; height: 110px; }
+  .bk.c { background: #F4EFE6; box-shadow: inset 0 0 0 1px #E6DFD3; }
+  .bk.c .ic { position: absolute; left: 8px; top: 8px; width: 44px; height: 44px; }
+  .bk.c i { position: absolute; left: 60px; right: 10px; height: 8px; border-radius: 9px; background: #D9D1C3; }
+  .bk.n { background: transparent; }
+  .bk.n b { font-family: "Playfair Display"; font-weight: 700; font-size: 15px; color: var(--pgink); white-space: nowrap; position: absolute; left: 0; top: 2px; }
+  .bk.r { background: var(--terra); border-radius: 99px; color: #fff; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+  .dl { position: absolute; height: 2px; background: var(--slate); }
+  .dl:before, .dl:after { content: ""; position: absolute; top: -8px; width: 2px; height: 18px; background: var(--slate); }
+  .dl:before { left: 0; } .dl:after { right: 0; }
+  .dl span { position: absolute; left: 50%; top: -44px; transform: translateX(-50%); font-family: "JetBrains Mono"; font-weight: 600; font-size: 26px; color: var(--pgink); background: #08DDA4; padding: 4px 14px; border-radius: 8px; white-space: nowrap; }
+  .dev { position: absolute; bottom: 22px; left: 0; right: 0; display: flex; justify-content: center; gap: 34px; font-family: "JetBrains Mono"; font-weight: 600; font-size: 19px; color: #9096A3; }
+  .dev span.on { color: var(--pgink); }
+</style></head>
+<body>
+<div id="root" data-composition-id="S09"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K;
+  const PW = 760, PH = 600;
+  K.item({n: 2, key: 'S09', pw: PW, ph: PH, focus: 0.3,
+    build: function (pl, c) {
+      const tl = c.tl;
+      pl.innerHTML = '<div class="bp"><div class="fr" id="fr"><div class="chr"><i style="left:10px"></i><i style="left:24px"></i><i style="left:38px"></i></div></div><div class="dl" id="dl"><span id="dt">1440 px</span></div><div class="dev"><span>Desktop</span><span>Tablet</span><span>Smartphone</span></div></div>';
+      const fr = K.$('#fr', pl), dl = K.$('#dl', pl), dt = K.$('#dt', pl), dv = K.$$('.dev span', pl);
+      const B = [];
+      const mk = (cls, html) => { const e = K.el('div', 'bk ' + cls, html || '', fr); B.push(e); return e; };
+      mk('n', '<b>Quán Mây</b>'); mk('r', 'Reservieren'); mk('h', '<b>Frisch gekocht.</b><div class="bw">' + K.bowl('pho') + '</div>');
+      ['bun', 'roll', 'curry'].forEach((k) => mk('c', '<div class="ic">' + K.bowl(k) + '</div><i style="top:14px"></i><i style="top:32px;right:40px"></i>'));
+      // bố cục theo số cột
+      const lay = (W, Hf, cols) => {
+        const p = 14, r = [];
+        r.push([p, 30, 120, 22]);
+        r.push(cols === 1 ? [p, Hf - 44, W - 2 * p, 32] : [W - p - 96, 30, 96, 24]);
+        const hh = cols === 3 ? 150 : cols === 2 ? 170 : 130;
+        r.push([p, 62, W - 2 * p, hh]);
+        const cw = (W - 2 * p - (cols - 1) * 10) / cols, chh = cols === 1 ? 66 : 110, y0 = 62 + hh + 12;
+        for (let i = 0; i < 3; i++) { const cx = i % cols, cy = Math.floor(i / cols); r.push([p + cx * (cw + 10), y0 + cy * (chh + 10), cw, chh]); }
+        return r;
+      };
+      const ST = [{W: 680, H: 420, c: 3, px: '1440 px'}, {W: 420, H: 480, c: 2, px: '768 px'}, {W: 240, H: 470, c: 1, px: '390 px'}].map((s) => Object.assign(s, {L: lay(s.W, s.H, s.c)}));
+      const t1 = K.b(4.2), t2 = K.b(7.6), D = 0.7;
+      K.tick(tl, (t) => {
+        const i = t < t1 + D ? 0 : 1, a = ST[i], b = ST[i + 1], p = K.ramp(t, i ? t2 : t1, (i ? t2 : t1) + D);
+        const W = K.lerp(a.W, b.W, p), Hf = K.lerp(a.H, b.H, p), x = (PW - W) / 2, y = 70;
+        fr.style.left = x + 'px'; fr.style.top = y + 'px'; fr.style.width = W + 'px'; fr.style.height = Hf + 'px';
+        B.forEach((e, k) => { const ra = a.L[k], rb = b.L[k]; e.style.left = K.lerp(ra[0], rb[0], p) + 'px'; e.style.top = K.lerp(ra[1], rb[1], p) + 'px'; e.style.width = K.lerp(ra[2], rb[2], p) + 'px'; e.style.height = K.lerp(ra[3], rb[3], p) + 'px'; });
+        dl.style.left = x + 'px'; dl.style.width = W + 'px'; dl.style.top = (y - 22) + 'px';
+        dt.textContent = (p > 0 && p < 1) ? K.scramble(a.px, b.px, p, 5 + i) : (p >= 1 ? b.px : a.px);
+        dv.forEach((d, k) => d.classList.toggle('on', k === (p >= 0.5 ? i + 1 : i)));
+      });
+      S.arrive(tl, K.$$('.bp > *', pl), 0.55, {dist: 16, blur: 6, stagger: 0.08});
+    }
+  });
+</script>
+</body></html>

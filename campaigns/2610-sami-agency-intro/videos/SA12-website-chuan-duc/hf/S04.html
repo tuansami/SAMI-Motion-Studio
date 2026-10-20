@@ -1,0 +1,60 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/600.css"><link rel="stylesheet" href="_fonts/inter/700.css"><link rel="stylesheet" href="_fonts/inter/800.css">
+<link rel="stylesheet" href="_fonts/playfair-display/700.css"><link rel="stylesheet" href="_fonts/playfair-display/600-italic.css"><link rel="stylesheet" href="_fonts/jetbrains-mono/600.css"><link rel="stylesheet" href="_fonts/anton/400.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S04 · 07 Cookie + Datenschutz: hộp đồng ý cookie lớn, công tắc tắt sẵn (hỏi trước khi đo), chọn „Nur notwendige" → đã lưu. */
+  .ck { position: absolute; inset: 0; padding: 40px 44px; box-sizing: border-box; }
+  .ck .t { display: flex; align-items: center; gap: 16px; font-weight: 800; font-size: 34px; }
+  .ck .t svg { width: 42px; height: 42px; flex: none; }
+  .ck p { margin: 14px 0 10px; font-size: 22px; line-height: 1.45; color: #5B6170; font-weight: 500; }
+  .ck .tg { display: flex; align-items: center; justify-content: space-between; font-size: 26px; font-weight: 600; padding: 15px 0; border-bottom: 1.5px solid #EEE9E1; }
+  .ck .tg small { font-size: 18px; color: #8B8F99; font-weight: 600; margin-left: 12px; }
+  .ck .sw { width: 66px; height: 36px; border-radius: 99px; background: #D5D1CA; position: relative; flex: none; }
+  .ck .sw i { position: absolute; left: 4px; top: 4px; width: 28px; height: 28px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.2); }
+  .ck .sw.on { background: var(--slate); } .ck .sw.on i { left: 34px; }
+  .ck .bt { display: flex; gap: 16px; margin-top: 24px; font-size: 24px; font-weight: 700; }
+  .ck .bt span { flex: 1; text-align: center; padding: 18px 0; border-radius: 99px; box-shadow: inset 0 0 0 2.5px var(--slate); color: var(--slate); }
+  .ck .bt span.f { background: var(--slate); color: #fff; }
+  .ck .lk { margin-top: 18px; text-align: center; font-size: 20px; color: #5B6170; font-weight: 600; }
+  .ck .lk u { text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .ok { position: absolute; left: 50%; top: -34px; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; padding: 16px 28px 16px 18px; border-radius: 99px; background: #0E3B33; color: #fff; box-shadow: 0 20px 40px rgba(0,0,0,.45), inset 0 0 0 2px var(--acc); white-space: nowrap; opacity: 0; z-index: 5; }
+  .ok .b { width: 44px; height: 44px; border-radius: 50%; background: var(--acc); display: flex; align-items: center; justify-content: center; }
+  .ok .b svg { width: 28px; height: 28px; }
+  .ok b { font-size: 26px; font-weight: 800; } .ok span { font-family: "JetBrains Mono"; font-weight: 600; font-size: 18px; color: var(--acc); letter-spacing: .06em; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S04"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K;
+  const shield = '<svg viewBox="0 0 24 24"><path d="M12 2 L20 5 V11 C20 16.5 16.5 20.5 12 22 C7.5 20.5 4 16.5 4 11 V5 Z" fill="#23324A"/><path d="M8.5 12 L11 14.5 L15.8 9.6" stroke="#08DDA4" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  K.item({n: 7, key: 'S04', pw: 680, ph: 560, focus: 0.78,
+    build: function (pl, c) {
+      const tl = c.tl;
+      pl.innerHTML = '<div class="ck"><div class="t">' + shield + 'Wir verwenden Cookies</div><p>Damit unsere Website zuverlässig funktioniert. Sie entscheiden selbst, was wir messen dürfen.</p>' +
+        '<div class="tg">Notwendig<small>immer aktiv</small><span style="flex:1"></span><span class="sw on"><i></i></span></div>' +
+        '<div class="tg" id="t2">Statistik<span style="flex:1"></span><span class="sw"><i></i></span></div>' +
+        '<div class="tg" id="t3">Marketing<span style="flex:1"></span><span class="sw"><i></i></span></div>' +
+        '<div class="bt"><span id="nur">Nur notwendige</span><span class="f">Alle akzeptieren</span></div><div class="lk" id="lk"><u>Datenschutz</u> · <u>Impressum</u></div></div>' +
+        '<div class="ok"><div class="b"><svg viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19 7.5" stroke="#0C0628" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><b>Einwilligung gespeichert</b><span>DSGVO ✓</span></div>';
+      S.arrive(tl, K.$$('.ck > *', pl), 0.55, {dist: 18, blur: 6, stagger: 0.07});
+      // hai công tắc đang TẮT: nhịp sáng nhẹ khi nhãn "Hỏi trước khi đo" chỉ vào
+      tl.fromTo('#t2 .sw, #t3 .sw', {boxShadow: '0 0 0 0 rgba(8,221,164,0)'}, {boxShadow: '0 0 0 6px rgba(8,221,164,.45)', duration: 0.3, yoyo: true, repeat: 1}, K.b(5));
+      const cur = K.cursor(c.stage), btn = K.$('#nur', pl);
+      const bx = c.px(44 + 140), by = c.py(400);
+      const tap = K.b(8.6);
+      K.path(tl, cur, [{x: c.px(620), y: c.py(640), t: 0}, {x: c.px(560), y: c.py(600), t: K.b(6.4)}, {x: bx, y: by + 10, t: tap, click: true}], () => K.ring(tl, c.stage, bx, by + 10, tap));
+      tl.fromTo(cur, {opacity: 0}, {opacity: 1, duration: 0.3}, K.b(6.2));
+      tl.to(btn, {backgroundColor: '#23324A', color: '#fff', duration: 0.15}, tap);
+      tl.to(K.$$('.ck .t, .ck p, .ck .bt', pl), {opacity: 0.35, duration: 0.35}, tap + 0.25);
+      tl.fromTo(K.$('.ok', pl), {opacity: 0, y: 24}, {opacity: 1, y: 0, duration: 0.5}, tap + 0.3);
+      tl.to(cur, {opacity: 0, duration: 0.3}, tap + 0.5);
+    },
+    labels: [{key: 'S04_c1', sp: 'Statistik · Marketing: aus', anc: (c) => K.$('#t2 .sw', c.plate), at: K.b(4.2)},
+             {key: 'S04_c2', sp: 'DSGVO · Complianz', anc: (c) => K.$('#lk', c.plate), at: K.b(5.4)}]
+  });
+</script>
+</body></html>
