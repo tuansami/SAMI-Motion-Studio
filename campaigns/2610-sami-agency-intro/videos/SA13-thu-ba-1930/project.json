@@ -1,0 +1,297 @@
+{
+ "name": "SA13-cau-chuyen-thu-ba-1930",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "mint": "#08DDA4",
+   "purple": "#7667FE",
+   "navy": "#0C0628"
+  }
+ },
+ "look": {
+  "grain": 0.05,
+  "vignette": 0.45
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook – giọt mưa thành kim phút, 19:30",
+   "start": 0,
+   "end": 180,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Toàn cảnh quán Phở Lan – 12 bàn trống",
+   "start": 180,
+   "end": 435,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Cận tay lau bàn đã sạch",
+   "start": 435,
+   "end": 675,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Bên kia đường xếp hàng dưới mưa",
+   "start": 675,
+   "end": 915,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Điện thoại khách – quán chị không tồn tại",
+   "start": 915,
+   "end": 1215,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "Tối hôm đó, chị nhắn SAMI",
+   "start": 1215,
+   "end": 1335,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "SAMI: phân tích miễn phí, 3 bước",
+   "start": 1335,
+   "end": 1725,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "Chữ ký – lịch xé, ghế có người",
+   "start": 1725,
+   "end": 2085,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "Món ngon xứng đáng được tìm thấy",
+   "start": 2085,
+   "end": 2280,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "CTA – nhắn cho SAMI",
+   "start": 2280,
+   "end": 2460,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "End card SAMI + WhatsApp",
+   "start": 2460,
+   "end": 2685,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  }
+ ],
+ "copy": {
+  "S01_time": {
+   "label": "Tiêu đề giờ",
+   "scene": "S01",
+   "value": "Thứ Ba, / *19 giờ 30.*"
+  },
+  "S01_sub": {
+   "label": "Dòng phụ",
+   "scene": "S01",
+   "value": "Giờ cơm tối, lúc lẽ ra quán / đang rộn tiếng bát đũa."
+  },
+  "S02_sign": {
+   "label": "Biển quán (tưởng tượng)",
+   "scene": "S02",
+   "value": "PHỞ LAN"
+  },
+  "S02_l1": {
+   "label": "Dòng 1",
+   "scene": "S02",
+   "value": "Bếp vẫn nóng. Nồi nước dùng / đã ninh từ sáu giờ sáng."
+  },
+  "S02_l2": {
+   "label": "Dòng 2",
+   "scene": "S02",
+   "value": "Mười hai chiếc bàn, / *chưa một vị khách.*"
+  },
+  "S03_l1": {
+   "label": "Độc thoại 1",
+   "scene": "S03",
+   "value": "Chị Lan lau lại chiếc bàn đã sạch, / lần thứ ba trong tối nay."
+  },
+  "S03_l2": {
+   "label": "Độc thoại 2",
+   "scene": "S03",
+   "value": "Vì nếu đứng yên, / *chị sẽ phải nghĩ.*"
+  },
+  "S04_l1": {
+   "label": "Dòng 1",
+   "scene": "S04",
+   "value": "Bên kia đường, / người ta xếp hàng dưới mưa."
+  },
+  "S04_l2": {
+   "label": "Dòng 2",
+   "scene": "S04",
+   "value": "Chị biết mình nấu ngon hơn. / *Nhưng khách đâu có biết.*"
+  },
+  "S04_other": {
+   "label": "Biển quán đối diện (tưởng tượng)",
+   "scene": "S04",
+   "value": "NUDELHAUS"
+  },
+  "S05_query": {
+   "label": "Ô tìm kiếm (tiếng Đức)",
+   "scene": "S05",
+   "value": "Pho in der Nähe"
+  },
+  "S05_l1": {
+   "label": "Dòng 1",
+   "scene": "S05",
+   "value": "Cách quán chị năm mươi mét, / một người đang gõ đúng món chị nấu."
+  },
+  "S05_l2": {
+   "label": "Dòng 2",
+   "scene": "S05",
+   "value": "Nhưng trên màn hình của họ, / *quán chị không tồn tại.*"
+  },
+  "S06_msg": {
+   "label": "Tin nhắn của chị Lan",
+   "scene": "S06",
+   "value": "Chào SAMI, em là Lan, quán phở ở Leipzig. Tối nào quán cũng vắng…"
+  },
+  "S06_l1": {
+   "label": "Tiêu đề",
+   "scene": "S06",
+   "value": "Tối hôm đó, / *chị nhắn cho SAMI.*"
+  },
+  "S07_head": {
+   "label": "Tiêu đề",
+   "scene": "S07",
+   "value": "SAMI bắt đầu bằng / *một buổi phân tích miễn phí.*"
+  },
+  "S07_s1t": {
+   "label": "Bước 1 – tên",
+   "scene": "S07",
+   "value": "Phân tích"
+  },
+  "S07_s1": {
+   "label": "Bước 1 – mô tả",
+   "scene": "S07",
+   "value": "Vì sao khách ở ngay gần mà không thấy quán."
+  },
+  "S07_s2t": {
+   "label": "Bước 2 – tên",
+   "scene": "S07",
+   "value": "Chiến lược"
+  },
+  "S07_s2": {
+   "label": "Bước 2 – mô tả",
+   "scene": "S07",
+   "value": "Hồ sơ Google, quảng cáo Maps, website đặt bàn."
+  },
+  "S07_s3t": {
+   "label": "Bước 3 – tên",
+   "scene": "S07",
+   "value": "Triển khai"
+  },
+  "S07_s3": {
+   "label": "Bước 3 – mô tả",
+   "scene": "S07",
+   "value": "Để quán hiện ra đúng lúc khách đang tìm."
+  },
+  "S08_l1": {
+   "label": "Dòng 1",
+   "scene": "S08",
+   "value": "Vẫn là thứ Ba. / Vẫn 19 giờ 30."
+  },
+  "S08_l2": {
+   "label": "Dòng 2",
+   "scene": "S08",
+   "value": "*Nhưng ghế đã không còn trống.*"
+  },
+  "S09_l1": {
+   "label": "Câu chốt cảm xúc",
+   "scene": "S09",
+   "value": "Món ngon / *xứng đáng được tìm thấy.*"
+  },
+  "S10_l1": {
+   "label": "CTA",
+   "scene": "S10",
+   "value": "Nếu quán bạn cũng có / những tối thứ Ba như thế,"
+  },
+  "S10_l2": {
+   "label": "CTA nhấn",
+   "scene": "S10",
+   "value": "*hãy nhắn cho SAMI.*"
+  },
+  "S11_cta": {
+   "label": "Bong bóng – lời mời",
+   "scene": "S11",
+   "value": "Nhắn WhatsApp cho SAMI"
+  },
+  "S11_phone": {
+   "label": "Số WhatsApp",
+   "scene": "S11",
+   "value": "+49 155 60456888"
+  },
+  "S11_offer": {
+   "label": "Ưu đãi",
+   "scene": "S11",
+   "value": "Phân tích marketing miễn phí, không ràng buộc. / Phản hồi trong 24 giờ."
+  },
+  "S11_claim": {
+   "label": "Câu chốt",
+   "scene": "S11",
+   "value": "Thêm khách. Thêm doanh thu. Thêm thời gian."
+  },
+  "S11_tagline": {
+   "label": "Tagline",
+   "scene": "S11",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S11_web": {
+   "label": "Website",
+   "scene": "S11",
+   "value": "sami-agency.de"
+  }
+ },
+ "status": "draft",
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": []
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 1.5
+  },
+  "cues": []
+ }
+}
