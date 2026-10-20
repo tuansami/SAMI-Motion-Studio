@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/300.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/dr.css">
+<style>
+  /* S08 · hồ sơ hoàn chỉnh: ngón tay dừng lại, Anrufen / Route / Reservieren sáng lần lượt, chạm đặt bàn → xác nhận */
+  #ph { transform-origin: 0 0; }
+  #glow { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255, 214, 150, .35), rgba(255, 214, 150, 0) 65%); pointer-events: none; }
+  #finger { position: absolute; z-index: 12; width: 130px; height: 170px; border-radius: 65px 65px 54px 54px; background: radial-gradient(ellipse at 40% 30%, rgba(236, 196, 170, .97), rgba(190, 140, 112, .95)); box-shadow: 0 20px 50px rgba(0, 0, 0, .45); }
+  #toast { position: absolute; z-index: 7; left: 24px; right: 24px; bottom: 40px; padding: 22px 24px; border-radius: 22px; background: #202124; color: #fff; display: flex; gap: 16px; align-items: center; font-size: 23px; box-shadow: 0 20px 40px rgba(0, 0, 0, .35); }
+  #toast i { flex: none; width: 46px; height: 46px; border-radius: 50%; background: #08B888; display: flex; align-items: center; justify-content: center; }
+  #toast i svg { width: 28px; height: 28px; }
+  .ring { position: absolute; border-radius: 50%; border: 4px solid #1A73E8; pointer-events: none; }
+  .tag-demo { right: 72px; top: 690px; }
+  .stack { top: 236px; }
+  [data-ratio="16x9"] .tag-demo { right: 90px; top: 60px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S08">
+  <div class="room"></div>
+  <div id="glow"></div>
+  <div class="phone" id="ph"><div class="scr" id="scr"><div id="toast"><i></i><span id="tt"></span></div></div><div class="notch"></div><div class="glare"></div></div>
+  <div id="finger"></div>
+  <div class="tag-demo">Minh họa</div>
+  <div class="stack">
+    <div class="hd" id="h" data-copy="S08_h"></div>
+    <div class="sub" id="s" data-copy="S08_s"></div>
+  </div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/dr.js"></script>
+<script>
+  const S = window.SAMI; S.bindCopy();
+  const tl = S.timeline(), $ = (x) => document.querySelector(x), P = S.portrait;
+  const ph = $('#ph'), sc = P ? 0.84 : 0.8, PX = P ? 540 - 300 * sc : 1400 - 300 * sc, PY = P ? 700 : 60;
+  ph.style.left = PX + 'px'; ph.style.top = PY + 'px';
+  const g = DR.gbp($('#scr'), 'new'); $('#scr').insertBefore(g, $('#toast'));
+  ['<div class="ic">☰</div><div>Speisekarte<small>Sommerrollen · Pho Bo · Bun Cha</small></div>', '<div class="ic">✎</div><div>Neuer Beitrag<small>Ab Dienstag: neues Mittagsmenü</small></div>', '<div class="ic">?</div><div>Fragen &amp; Antworten<small>„Gibt es vegane Gerichte?“ · Ja</small></div>'].forEach((h) => DR.div('row', g, h));
+  $('#toast i').innerHTML = DR.ico.check; $('#tt').textContent = S.text('S08_toast');
+  const gl = $('#glow'); Object.assign(gl.style, {left: (PX + 300 * sc - 700) + 'px', top: (PY + 610 * sc - 700) + 'px', width: '1400px', height: '1400px'});
+  // vị trí 3 nút (toạ độ khung, đo trước biến đổi rồi quy đổi theo scale)
+  const pr = ph.getBoundingClientRect(), k = pr.width / ph.offsetWidth;
+  const B = ['.b1', '.b2', '.b3'].map((c) => { const r = g.querySelector(c + ' i').getBoundingClientRect(); return {x: PX + (r.left - pr.left + r.width / 2) / k * sc, y: PY + (r.top - pr.top + r.height / 2) / k * sc, r: r.width / k * sc / 2}; });
+  ph.style.transform = 'scale(' + sc + ')';
+  const rings = B.map((b) => { const d = DR.div('ring', $('#root')); d.style.zIndex = 8; return d; });
+  const icons = ['.b1', '.b2', '.b3'].map((c) => g.querySelector(c + ' i'));
+  const TB = [1.5, 2.3, 3.1], fg = $('#finger');
+  DR.clock(tl, (t) => {
+    // nút sáng lần lượt
+    icons.forEach((ic, i) => {
+      const on = DR.E(t, TB[i], TB[i] + 0.3);
+      ic.style.background = on > 0.5 ? '#E8F0FE' : '#fff';
+      ic.style.boxShadow = '0 0 0 ' + (6 * on).toFixed(1) + 'px rgba(26,115,232,' + (0.25 * on).toFixed(3) + ')';
+      const rk = DR.L(t, TB[i], TB[i] + 0.9), b = B[i], rr = b.r * (1 + 1.4 * rk);
+      Object.assign(rings[i].style, {left: (b.x - rr) + 'px', top: (b.y - rr) + 'px', width: 2 * rr + 'px', height: 2 * rr + 'px', opacity: rk > 0 && rk < 1 ? (1 - rk) : 0});
+    });
+    // ngón tay: vào giữa màn hình, dừng (đối xứng S01), rồi chạm "Reservieren" ở 4,2
+    const b = B[2], fin = DR.E(t, 0.6, 1.3), mv = DR.E(t, 3.5, 4.1), out = DR.E(t, 4.6, 5.2);
+    const fx = DR.mix(PX + 300 * sc, b.x, mv) - 40, fy = DR.mix(PY + 1100 * sc, b.y + 10, mv) + 500 * (1 - fin) + 600 * out;
+    const press = DR.L(t, 4.1, 4.2) * (1 - DR.L(t, 4.3, 4.5));
+    fg.style.transform = 'translate(' + fx.toFixed(1) + 'px,' + fy.toFixed(1) + 'px) scale(' + (1 - 0.06 * press).toFixed(3) + ')';
+    fg.style.opacity = fin * (1 - out);
+    $('#toast').style.transform = 'translateY(' + (180 * (1 - DR.E(t, 4.3, 4.9))).toFixed(1) + 'px)';
+    $('#toast').style.opacity = DR.L(t, 4.3, 4.6);
+    gl.style.opacity = (0.5 + 0.5 * DR.E(t, 4.2, 5.2)).toFixed(3);
+  });
+  tl.fromTo('#ph', {opacity: 0, y: 80}, {opacity: 1, y: 0, duration: 0.9}, 0.1);
+  S.arrive(tl, S.words($('#h')), 0.5, {stagger: 0.08, dist: 22});
+  S.arrive(tl, '#s', 3.4, {dist: 18, dur: 0.8});
+</script>
+</body>
+</html>

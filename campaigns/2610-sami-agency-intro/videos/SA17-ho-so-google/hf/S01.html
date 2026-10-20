@@ -67,7 +67,7 @@
   DR.clock(tl, (t) => {
     // cực cận → lùi nhanh (0,25 → 1,5 s)
     const z = DR.E(t, 0.65, 1.75);
-    const s0 = P ? 19 : 11;
+    const s0 = P ? 19 : 16;
     const zs = DR.mix(s0, 1, z), cx = DR.mix(S.w / 2, ox, z), cy = DR.mix(S.h / 2, oy, z);
     cam.style.transform = 'translate(' + (cx - zs * ox).toFixed(1) + 'px,' + (cy - zs * oy).toFixed(1) + 'px) scale(' + zs.toFixed(4) + ')';
     // gõ tìm kiếm (đã gõ sẵn một phần khi lùi ra)

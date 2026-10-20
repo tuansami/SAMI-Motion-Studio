@@ -149,9 +149,10 @@
     lb1.style.opacity = L(t, 0.7, 1.1) * (1 - L(t, 2.4, 2.7));
     lb1.style.transform = 'translate(' + (x - tw / 2 + pad).toFixed(1) + 'px,' + (y - th / 2 - 62).toFixed(1) + 'px)';
     lb2.style.opacity = L(t, 7.0, 7.4) * (1 - L(t, 10.7, 11.0));
-    lb2.style.transform = 'translate(' + (x - tw / 2).toFixed(1) + 'px,' + (y + th / 2 + 26).toFixed(1) + 'px)';
+    const lx = P ? x - tw / 2 : x - tw / 2 - 430, ly = P ? y + th / 2 + 26 : y + th / 2 - 110;
+    lb2.style.transform = 'translate(' + lx.toFixed(1) + 'px,' + ly.toFixed(1) + 'px)';
     lbS.style.opacity = L(t, 7.4, 7.8) * (1 - L(t, 10.7, 11.0));
-    lbS.style.transform = 'translate(' + (x - tw / 2).toFixed(1) + 'px,' + (y + th / 2 + 90).toFixed(1) + 'px)';
+    lbS.style.transform = 'translate(' + lx.toFixed(1) + 'px,' + (ly + 64).toFixed(1) + 'px)';
     $('#sl').style.opacity = (0.8 + 0.2 * Math.sin(t * 1.6)).toFixed(3);
   });
   $('#scrim').style.display = P ? '' : 'none';

@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/dr.css">
+<style>
+  /* S06 · bàn đèn: 6 mảnh hồ sơ được đặt xuống lần lượt, khớp lưới, dấu tích mint, đồng hồ tua nhanh */
+  #lt { left: -40px; right: -40px; top: 560px; bottom: -60px; }
+  .tile { position: absolute; z-index: 5; display: flex; flex-direction: column; gap: 14px; }
+  .tile .ui { position: relative; flex: 1; border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 18px 40px rgba(90, 50, 20, .28); font-family: "Be Vietnam Pro", sans-serif; color: #202124; padding: 18px 20px; font-size: 21px; line-height: 1.4; }
+  .tile .ui b { display: block; font-weight: 600; font-size: 22px; margin-bottom: 6px; }
+  .tile .ui small { display: block; color: #5F6368; font-size: 18px; }
+  .tile .ui .bl { color: #1A73E8; }
+  .tile .cap { min-height: 70px; font: 600 28px/1.25 "Be Vietnam Pro", sans-serif; color: #2A1A12; display: flex; align-items: center; gap: 12px; }
+  .tile .ck { flex: none; width: 40px; height: 40px; border-radius: 50%; background: #08B888; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(8, 160, 120, .4); }
+  .tile .ck svg { width: 26px; height: 26px; }
+  .tile .num { font: 500 18px/1 "IBM Plex Mono", monospace; letter-spacing: .14em; color: #9A6A42; }
+  #ff { position: absolute; z-index: 22; right: 72px; top: 600px; font: 500 22px/1 "IBM Plex Mono", monospace; letter-spacing: .16em; color: #fff; padding: 12px 16px; border-radius: 8px; background: #2A1A12; display: flex; gap: 16px; align-items: center; }
+  #ff i { display: inline-block; width: 160px; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .2); overflow: hidden; }
+  #ff i b { display: block; height: 100%; background: #08DDA4; }
+  .stack { top: 236px; }
+  .stack .hd { font-size: 86px; }
+  [data-ratio="16x9"] #lt { left: 880px; right: -40px; top: -40px; bottom: -40px; }
+  [data-ratio="16x9"] #ff { right: auto; left: 110px; top: auto; bottom: 120px; }
+  [data-ratio="16x9"] .stack { width: 720px; }
+  [data-ratio="16x9"] .stack .hd { font-size: 76px; }
+  [data-ratio="16x9"] .tile .cap { font-size: 25px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S06">
+  <div class="room"></div>
+  <div class="lighttable abs" id="lt"></div>
+  <div id="tiles"></div>
+  <div id="ff"><span>TUA NHANH ×8</span><i><b id="bar"></b></i><span id="pct">0%</span></div>
+  <div class="stack"><div class="hd" id="h" data-copy="S06_h"></div></div>
+  <div class="vign" style="opacity:.6"></div>
+</div>
+<script src="hf/parts/dr.js"></script>
+<script>
+  const S = window.SAMI; S.bindCopy();
+  const tl = S.timeline(), $ = (x) => document.querySelector(x), P = S.portrait;
+  const UI = [
+    '<img src="public/img/after-1.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 55%"><small style="position:absolute;right:12px;bottom:10px;color:#fff;background:rgba(0,0,0,.55);padding:4px 10px;border-radius:10px">Titelbild</small>',
+    '<b>Öffnungszeiten</b>Di–Fr 11:30–22:00<br>Sa–So 12:00–22:30<br><small>Mo Ruhetag · Feiertage ✓</small>',
+    '<b>Speisekarte</b>Sommerrollen<br>Pho Bo · Bun Cha<br><small>Allergene gekennzeichnet</small>',
+    '<b>Neuer Beitrag</b>Ab Dienstag: neues Mittagsmenü<br><small class="bl">Mehr erfahren</small>',
+    '<b>Fragen &amp; Antworten</b>„Gibt es vegane Gerichte?“<br><small>Inhaber: „Ja, viele Gerichte gibt es auch vegan.“</small>',
+    '<b><span style="color:#F9AB00">★★★★★</span></b>„Sehr lecker, sehr freundlich!“<br><small class="bl">Antwort vom Inhaber</small>'];
+  const cols = P ? 2 : 3, tw = P ? 440 : 300, th = P ? 300 : 380, gx = P ? 40 : 24, gy = P ? 40 : 40;
+  const x0 = P ? (1080 - (2 * tw + gx)) / 2 : 950, y0 = P ? 690 : 130;
+  const tiles = [];
+  UI.forEach((u, i) => {
+    const d = DR.div('tile', $('#tiles'));
+    const c = i % cols, r = Math.floor(i / cols);
+    d.style.left = (x0 + c * (tw + gx)) + 'px'; d.style.top = (y0 + r * (th + gy)) + 'px'; d.style.width = tw + 'px'; d.style.height = th + 'px';
+    d.innerHTML = '<div class="ui">' + u + '</div><div class="cap"><span class="ck">' + DR.ico.check + '</span><span data-copy="S06_t' + (i + 1) + '"></span></div>';
+    tiles.push(d);
+  });
+  S.bindCopy($('#tiles'));
+  const T0 = 1.6, DT = 1.2;
+  tiles.forEach((d, i) => {
+    const t = T0 + i * DT;
+    tl.fromTo(d, {opacity: 0, y: -90, scale: 1.18, rotation: (i % 2 ? 4 : -4)}, {opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.55}, t);
+    tl.fromTo(d.querySelector('.ck'), {scale: 0}, {scale: 1, duration: 0.35, ease: 'back.out(3)'}, t + 0.45);
+  });
+  const tEnd = T0 + 5 * DT + 0.6;
+  DR.clock(tl, (t) => {
+    const k = DR.L(t, T0 - 0.2, tEnd);
+    $('#bar').style.width = (k * 100).toFixed(1) + '%';
+    $('#pct').textContent = Math.round(k * 100) + '%';
+  });
+  S.arrive(tl, '#ff', 0.9, {dist: 12, blur: 4});
+  S.arrive(tl, S.words($('#h')), 0.4, {stagger: 0.08, dist: 22});
+</script>
+</body>
+</html>

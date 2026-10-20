@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/300.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="hf/parts/dr.css">
+<style>
+  /* S09 · nhịp thở: quán tắt đèn đóng cửa, màn hình hồ sơ vẫn sáng → mặt tiền thứ hai */
+  #street { position: absolute; inset: 0; }
+  #ph { transform-origin: 50% 0; z-index: 6; }
+  #pglow { position: absolute; z-index: 5; border-radius: 50%; background: radial-gradient(circle, rgba(255, 236, 200, .32), rgba(255, 220, 170, 0) 62%); pointer-events: none; }
+  .stack { top: 236px; }
+  #h { font-size: 96px; }
+  [data-ratio="16x9"] #h { font-size: 82px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S09">
+  <div class="room" style="background:linear-gradient(180deg,#0B0706 0%,#140C0A 60%,#0A0605 100%)"></div>
+  <svg id="street"></svg>
+  <div id="pglow"></div>
+  <div class="phone" id="ph"><div class="scr" id="scr"></div><div class="notch"></div><div class="glare"></div></div>
+  <div class="scrim-top" id="scrim" style="height:900px;opacity:.8"></div>
+  <div class="stack">
+    <div class="hd" id="h" data-copy="S09_h"></div>
+    <div class="sub" id="s" data-copy="S09_s"></div>
+  </div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/dr.js"></script>
+<script>
+  const S = window.SAMI; S.bindCopy();
+  const tl = S.timeline(), $ = (x) => document.querySelector(x), P = S.portrait, el = DR.el, W = S.w, H = S.h;
+  // mặt tiền quán (vẽ code)
+  const sv = $('#street'); sv.setAttribute('viewBox', '0 0 ' + W + ' ' + H); sv.setAttribute('width', W); sv.setAttribute('height', H);
+  const F = P ? {x: 90, y: 760, w: 900, h: 900} : {x: 980, y: 150, w: 860, h: 800};
+  sv.innerHTML = '<defs><radialGradient id="win" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#FFD9A0"/><stop offset="1" stop-color="#B8642C"/></radialGradient></defs>';
+  el('rect', {x: F.x, y: F.y, width: F.w, height: F.h, fill: '#1E1411'}, sv);
+  el('rect', {x: F.x - 20, y: F.y - 20, width: F.w + 40, height: 26, fill: '#2A1C17'}, sv);
+  const lit = el('g', {}, sv), dw = F.w * 0.26, dh = F.h * 0.62;
+  const doorX = F.x + F.w / 2 - dw / 2, doorY = F.y + F.h - dh;
+  const winW = F.w * 0.27, winH = F.h * 0.42, winY = F.y + F.h * 0.36;
+  const shapes = [
+    ['path', {d: 'M' + doorX + ' ' + (doorY + dw / 2) + ' A' + dw / 2 + ' ' + dw / 2 + ' 0 0 1 ' + (doorX + dw) + ' ' + (doorY + dw / 2) + ' L' + (doorX + dw) + ' ' + (F.y + F.h) + ' L' + doorX + ' ' + (F.y + F.h) + ' Z'}],
+    ['rect', {x: F.x + F.w * 0.06, y: winY, width: winW, height: winH, rx: 8}],
+    ['rect', {x: F.x + F.w * 0.67, y: winY, width: winW, height: winH, rx: 8}]];
+  const dark = [];
+  shapes.forEach((s) => { el(s[0], Object.assign({fill: '#120B09', stroke: '#3A2620', 'stroke-width': 6}, s[1]), sv); dark.push(el(s[0], Object.assign({fill: 'url(#win)'}, s[1]), lit)); });
+  sv.appendChild(lit);
+  const sign = el('text', {x: F.x + F.w / 2, y: F.y + F.h * 0.2, 'text-anchor': 'middle', 'font-family': 'Fraunces', 'font-weight': 400, 'font-size': P ? 92 : 84, 'letter-spacing': 10, fill: '#FFC27A'}, sv);
+  sign.textContent = 'HIÊN NHÀ';
+  const closed = el('text', {x: F.x + F.w / 2, y: doorY + dh * 0.55, 'text-anchor': 'middle', 'font-family': 'Be Vietnam Pro', 'font-weight': 600, 'font-size': 30, 'letter-spacing': 4, fill: '#8A6A5A'}, sv);
+  closed.textContent = 'GESCHLOSSEN';
+  el('rect', {x: 0, y: F.y + F.h, width: W, height: H - F.y - F.h, fill: '#0A0605'}, sv);
+  // điện thoại phía trước, màn hình vẫn sáng
+  const ph = $('#ph'), sc = P ? 0.6 : 0.62, PX = P ? 540 - 300 : 1440 - 300, PY = P ? 1010 : 335;
+  ph.style.left = PX + 'px'; ph.style.top = PY + 'px';
+  const g = DR.gbp($('#scr'), 'new');
+  g.querySelector('.op').innerHTML = '<span class="r">Geschlossen</span> · Öffnet Di 11:30';
+  ['<div class="ic">☰</div><div>Speisekarte<small>Sommerrollen · Pho Bo · Bun Cha</small></div>', '<div class="ic">✎</div><div>Neuer Beitrag<small>Ab Dienstag: neues Mittagsmenü</small></div>'].forEach((h) => DR.div('row', g, h));
+  const pg = $('#pglow'); Object.assign(pg.style, {left: (PX + 300 - 650) + 'px', top: (PY + 300 - 650) + 'px', width: '1300px', height: '1300px'});
+  DR.clock(tl, (t) => {
+    const off = DR.E(t, 0.5, 1.4);                                    // quán tắt đèn
+    lit.setAttribute('opacity', (1 - off).toFixed(3));
+    sign.setAttribute('fill-opacity', (1 - 0.82 * off).toFixed(3));
+    sign.setAttribute('filter', '');
+    closed.setAttribute('opacity', (0.2 + 0.8 * off).toFixed(3));
+    const yb = 6 * Math.sin(t * 0.9);
+    ph.style.transform = 'translateY(' + yb.toFixed(2) + 'px) scale(' + (sc * (1 + 0.01 * DR.L(t, 0, 8))).toFixed(4) + ') rotate(-2deg)';
+    pg.style.opacity = (0.55 + 0.45 * off).toFixed(3);
+  });
+  $('#scrim').style.display = P ? '' : 'none';
+  S.arrive(tl, S.words($('#h')), 1.3, {stagger: 0.09, dist: 24, dur: 0.8});
+  S.arrive(tl, '#s', 3.2, {dist: 18, dur: 0.9});
+</script>
+</body>
+</html>

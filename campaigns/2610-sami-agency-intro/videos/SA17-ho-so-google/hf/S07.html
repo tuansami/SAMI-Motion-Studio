@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/300.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/dr.css">
+<style>
+  /* S07 · review 1 sao (minh họa) → câu trả lời của chủ quán gõ dần → gửi */
+  #card { position: absolute; z-index: 6; left: 90px; right: 90px; top: 800px; border-radius: 28px; background: #fff; padding: 40px 44px 36px; box-shadow: 0 40px 90px rgba(0, 0, 0, .55); font-family: "Be Vietnam Pro", sans-serif; color: #202124; }
+  .who { display: flex; align-items: center; gap: 20px; }
+  .av { width: 72px; height: 72px; border-radius: 50%; background: #7B5EA7; color: #fff; font: 600 34px/72px "Be Vietnam Pro"; text-align: center; }
+  .nm { font-size: 30px; font-weight: 600; } .nm small { display: block; font-weight: 400; font-size: 22px; color: #5F6368; }
+  .st { margin-top: 22px; font-size: 32px; letter-spacing: 3px; color: #F9AB00; } .st b { color: #DADCE0; font-weight: 400; }
+  .rv { margin-top: 10px; font-size: 32px; line-height: 1.4; }
+  #rep { margin-top: 30px; padding: 26px 28px; border-radius: 18px; background: #F1F3F4; border-left: 6px solid #1A73E8; }
+  #rep .ttl { font-size: 22px; font-weight: 600; color: #1A73E8; }
+  #typed { margin-top: 8px; font-size: 27px; line-height: 1.45; min-height: 160px; }
+  #cur { display: inline-block; width: 3px; height: 30px; margin-left: 2px; background: #1A73E8; vertical-align: -5px; }
+  #act { margin-top: 24px; display: flex; justify-content: flex-end; align-items: center; gap: 18px; }
+  #send { padding: 16px 34px; border-radius: 30px; background: #1A73E8; color: #fff; font-size: 24px; font-weight: 600; }
+  #ok { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 600; color: #0B8F6A; }
+  #ok i { width: 38px; height: 38px; border-radius: 50%; background: #08B888; display: flex; align-items: center; justify-content: center; }
+  #ok i svg { width: 24px; height: 24px; }
+  #ptr { position: absolute; z-index: 9; width: 40px; height: 54px; }
+  .tag-demo { left: 90px; top: 744px; }
+  .stack { top: 236px; }
+  [data-ratio="16x9"] #card { left: 1000px; right: 90px; top: 190px; padding: 34px 38px 30px; }
+  [data-ratio="16x9"] .rv { font-size: 29px; }
+  [data-ratio="16x9"] #typed { font-size: 25px; min-height: 148px; }
+  [data-ratio="16x9"] .tag-demo { left: 1000px; top: 130px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S07">
+  <div class="room"></div>
+  <div class="safelight" style="left:200px;top:-700px;width:1600px;height:1600px;opacity:.6"></div>
+  <div class="tag-demo">Minh họa</div>
+  <div id="card">
+    <div class="who"><div class="av">M</div><div class="nm">Markus K.<small>vor 2 Wochen</small></div></div>
+    <div class="st">★<b>★★★★</b></div>
+    <div class="rv" id="rv"></div>
+    <div id="rep"><div class="ttl">Antwort vom Inhaber</div><div id="typed"><span id="tx"></span><span id="cur"></span></div></div>
+    <div id="act"><div id="ok"><i></i>Antwort veröffentlicht</div><div id="send">Antworten</div></div>
+  </div>
+  <svg id="ptr" viewBox="0 0 30 40"><path d="M2 2 L2 32 L10 25 L16 38 L21 36 L15 23 L26 23 Z" fill="#fff" stroke="#111" stroke-width="2"/></svg>
+  <div class="stack">
+    <div class="hd" id="h" data-copy="S07_h"></div>
+    <div class="sub" id="s" data-copy="S07_s"></div>
+  </div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/dr.js"></script>
+<script>
+  const S = window.SAMI; S.bindCopy();
+  const tl = S.timeline(), $ = (x) => document.querySelector(x), P = S.portrait;
+  $('#rv').textContent = '„' + S.text('S07_rev') + '“';
+  $('#ok i').innerHTML = DR.ico.check;
+  const rep = S.text('S07_reply'), card = $('#card'), send = $('#send'), ptr = $('#ptr');
+  const T1 = 1.4, T2 = 5.6;                       // gõ 1,4 → 5,6
+  DR.clock(tl, (t) => {
+    const n = Math.round(rep.length * DR.L(t, T1, T2));
+    $('#tx').textContent = rep.slice(0, n);
+    $('#cur').style.opacity = t < T1 - 0.2 || t > 6.2 ? 0 : (Math.floor(t * 3) % 2 ? 0.2 : 1);
+    // con trỏ tới nút gửi
+    const r = send.getBoundingClientRect(), k = DR.E(t, 5.7, 6.3);
+    const tx = r.left + r.width * 0.6, ty = r.top + r.height * 0.5;
+    ptr.style.transform = 'translate(' + DR.mix(tx + 260, tx, k).toFixed(1) + 'px,' + DR.mix(ty + 220, ty, k).toFixed(1) + 'px)';
+    ptr.style.opacity = DR.L(t, 5.6, 5.8) * (1 - DR.L(t, 7.4, 7.7));
+    const press = DR.L(t, 6.35, 6.45) * (1 - DR.L(t, 6.45, 6.6));
+    send.style.transform = 'scale(' + (1 - 0.08 * press).toFixed(3) + ')';
+    send.style.opacity = t < 6.5 ? 1 : 0.0;
+    $('#ok').style.opacity = DR.E(t, 6.5, 6.9);
+    $('#rep').style.borderLeftColor = t > 6.5 ? '#08B888' : '#1A73E8';
+  });
+  tl.fromTo('#card', {opacity: 0, y: 60}, {opacity: 1, y: 0, duration: 0.8}, 0.2);
+  S.arrive(tl, S.words($('#h')), 0.5, {stagger: 0.08, dist: 22});
+  S.arrive(tl, '#s', 3.0, {dist: 18, dur: 0.8});
+</script>
+</body>
+</html>
