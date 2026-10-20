@@ -82,7 +82,7 @@
     });
     // bộ đếm: đứng ở 0 → bắt đầu quay khi khách đầu tiên ngồi
     const st = T0 + 0.9, v = t < st ? 0 : (t - st) * 3.2 + (t - st) * (t - st) * 0.4;
-    num(v % 8.9, t < st ? [0, 0] : [0.5, Math.min(5, 1.5 + (t - st) * 3)]);
+    num(v % 8.9, t < st ? [0, 0] : [2.2, Math.min(6, 3 + (t - st) * 3)]);
   });
   PG.head(tl, $('#hd'), 0.35, {stagger: 0.08});
   S.arrive(tl, '#ctr', 0.6, {dist: 30, blur: 4});

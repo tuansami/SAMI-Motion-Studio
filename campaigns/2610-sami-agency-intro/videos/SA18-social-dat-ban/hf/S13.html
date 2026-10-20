@@ -21,6 +21,9 @@
   #offer { margin-top: 72px; font: 700 38px/1.4 var(--f-pg); color: #E3E4F7; }
   #logoc { margin-top: 84px; width: 560px; height: 150px; overflow: hidden; }
   #logo { width: 560px; display: block; }
+  #logoc { position: relative; height: auto !important; }
+  #logo { clip-path: polygon(0 0, 100% 0, 100% 50%, 41% 50%, 41% 100%, 0 100%); }
+  #lmask { display: none; }
   #tag { margin-top: 22px; font: 500 24px/1.4 var(--f-ui); letter-spacing: .05em; color: #A8A3C9; }
   #web { margin-top: 12px; font: 700 42px/1.2 var(--f-ui); color: var(--mint); }
   .conf { position: absolute; z-index: 4; width: 40px; height: 40px; }
@@ -49,7 +52,7 @@
       <div id="offer" data-copy="S13_offer"></div>
     </div>
     <div id="colB">
-      <div id="logoc"><img id="logo" src="public/img/logo-white.svg"></div>
+      <div id="logoc"><img id="logo" src="public/img/logo-white.svg"><div id="lmask"></div></div>
       <div id="tag" data-copy="S13_tagline"></div>
       <div id="web" data-copy="S13_web"></div>
     </div>

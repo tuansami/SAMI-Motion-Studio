@@ -9,22 +9,22 @@
 <style>
   /* S03 · điện thoại rung liên tục vì thông báo, sổ đặt bàn mở ra vẫn trắng, ghế xếp gọn dưới bàn */
   #hd { top: 236px; text-align: center; }
-  #book { position: absolute; z-index: 4; left: 150px; top: 760px; width: 560px; height: 560px; background: #fff; border-radius: 30px; color: var(--navy); overflow: hidden; box-shadow: 0 26px 0 rgba(0, 0, 0, .25); }
+  #book { position: absolute; z-index: 4; left: 110px; top: 800px; width: 560px; height: 540px; background: #fff; border-radius: 30px; color: var(--navy); overflow: hidden; box-shadow: 0 26px 0 rgba(0, 0, 0, .25); }
   #book .top { height: 118px; background: var(--lav); padding: 22px 34px 0; }
   #book .t1 { font: 700 36px/1.1 var(--f-ui); }
   #book .t2 { font: 500 24px/1.3 var(--f-ui); color: #6E6893; margin-top: 6px; }
   #rows { padding: 16px 34px 0; }
-  .row { display: flex; align-items: center; height: 68px; border-bottom: 3px dashed #DAD8EE; font: 700 28px/1 var(--f-ui); color: #A8A3C9; }
+  .row { display: flex; align-items: center; height: 62px; border-bottom: 3px dashed #DAD8EE; font: 700 28px/1 var(--f-ui); color: #A8A3C9; }
   .row span { width: 110px; }
   #pen { position: absolute; z-index: 5; width: 26px; height: 170px; border-radius: 13px 13px 4px 4px; background: var(--amber); transform-origin: 50% 100%; }
   #pen:after { content: ""; position: absolute; left: 3px; bottom: -22px; border: 10px solid transparent; border-top: 24px solid #0C0628; }
-  #phone { left: 760px; top: 800px; width: 190px; height: 330px; border-radius: 34px; border-width: 7px; z-index: 6; }
+  #phone { left: 760px; top: 880px; width: 190px; height: 330px; border-radius: 34px; border-width: 7px; z-index: 6; }
   #phone .scr { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
   #phone .scr svg { width: 90px; height: 90px; }
   .nt { position: absolute; z-index: 7; display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; background: #fff; }
   .nt svg { width: 34px; height: 34px; }
   .nt i { display: block; width: 70px; height: 10px; border-radius: 5px; background: #D6D4EE; }
-  #tables { position: absolute; z-index: 3; left: 70px; right: 70px; top: 1370px; height: 170px; display: flex; justify-content: space-around; }
+  #tables { position: absolute; z-index: 3; left: 70px; right: 70px; top: 1380px; height: 160px; display: flex; justify-content: space-around; }
   .tb { position: relative; width: 300px; height: 170px; }
   .tb .t { position: absolute; left: 70px; width: 160px; height: 160px; top: 10px; }
   .tb .c1, .tb .c2 { position: absolute; width: 104px; height: 104px; top: 66px; }
@@ -69,7 +69,7 @@
       const live = t > 0.3 ? 1 : 0;
       const side = S.landscape ? 1 : -1;
       n.style.left = (px + (S.landscape ? 30 : -60) + side * 40 * S.EASE(ph0) + (S.rnd(i) - 0.5) * 60) + 'px';
-      n.style.top = (py - 20 - ph0 * 260) + 'px';
+      n.style.top = (py + 40 - ph0 * 150) + 'px';
       n.style.opacity = live * Math.sin(Math.PI * ph0).toFixed(3);
       n.style.transform = 'scale(' + (0.7 + 0.3 * S.EASE(Math.min(1, ph0 * 4))).toFixed(3) + ')';
     });

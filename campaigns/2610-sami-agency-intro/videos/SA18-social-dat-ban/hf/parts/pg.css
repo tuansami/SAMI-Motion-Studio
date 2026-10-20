@@ -17,7 +17,7 @@
 /* chữ */
 .hd { position: absolute; z-index: 10; font-weight: 900; letter-spacing: -.015em; line-height: 1.2; color: var(--ink); text-wrap: balance; }
 [data-ratio="9x16"] .hd { left: var(--safe-side); right: var(--safe-side); font-size: 88px; }
-[data-ratio="16x9"] .hd { font-size: 84px; }
+[data-ratio="16x9"] .hd { font-size: 80px; max-width: 880px; }
 .sub { position: absolute; z-index: 10; font-weight: 700; line-height: 1.38; color: var(--ink); opacity: .92; }
 [data-ratio="9x16"] .sub { left: var(--safe-side); right: var(--safe-side); font-size: 44px; }
 [data-ratio="16x9"] .sub { font-size: 40px; }

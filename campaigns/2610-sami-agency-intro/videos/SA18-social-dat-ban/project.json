@@ -170,7 +170,7 @@
   "S04_headline": {
    "label": "Câu đinh",
    "scene": "S04",
-   "value": "Lượt xem / *không trả tiền thuê nhà.*"
+   "value": "Lượt xem / *không trả tiền* / *thuê nhà.*"
   },
   "S04_sub": {
    "label": "Dòng phụ",

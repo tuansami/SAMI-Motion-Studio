@@ -41,6 +41,7 @@
     sofa: '<rect x="2" y="30" width="96" height="40" rx="16"/><rect x="0" y="54" width="100" height="28" rx="12"/><rect x="8" y="80" width="10" height="16" rx="4"/><rect x="82" y="80" width="10" height="16" rx="4"/>',
     pan: '<ellipse cx="40" cy="62" rx="36" ry="12"/><rect x="70" y="56" width="30" height="10" rx="5"/>',
     cal: '<rect x="6" y="14" width="88" height="80" rx="12"/><rect x="24" y="4" width="12" height="20" rx="5"/><rect x="64" y="4" width="12" height="20" rx="5"/><rect x="14" y="34" width="72" height="52" rx="6" fill="var(--cut,#0C0628)"/>',
+    dine: '<rect x="24" y="40" width="52" height="9" rx="4"/><rect x="45" y="44" width="10" height="42" rx="4"/><rect x="6" y="24" width="8" height="62" rx="4"/><rect x="6" y="56" width="24" height="8" rx="4"/><rect x="22" y="60" width="7" height="26" rx="3"/><rect x="86" y="24" width="8" height="62" rx="4"/><rect x="70" y="56" width="24" height="8" rx="4"/><rect x="71" y="60" width="7" height="26" rx="3"/>',
     star: '<path d="M50 4 L62 36 L96 38 L70 60 L80 94 L50 74 L20 94 L30 60 L4 38 L38 36Z"/>',
   };
   PG.icon = (name, color, cls, cut) => `<svg viewBox="0 0 100 100" class="pg ${cls || ''}" style="color:${color || 'currentColor'};fill:${color || 'currentColor'};${cut ? '--cut:' + cut : ''}">${P[name]}</svg>`;
@@ -161,7 +162,7 @@
   /** tô vệt bút cho mọi em.hl trong el, quét trong [a, a+d] */
   PG.marker = (tl, el, a, d) => { el.querySelectorAll('em.hl').forEach((m, i) => { tl.fromTo(m, {'--hk': '0%'}, {'--hk': '100%', duration: d || 0.5, ease: S.EASE}, a + i * 0.25); }); };
   /** tiêu đề vào theo từng từ + vệt bút */
-  PG.head = (tl, el, a, o) => { o = o || {}; const w = S.words(el); S.arrive(tl, w, a, {dist: o.dist || 34, blur: 8, dur: 0.55, stagger: o.stagger || 0.06}); PG.marker(tl, el, a + w.length * (o.stagger || 0.06) + 0.1, 0.5); return w; };
+  PG.head = (tl, el, a, o) => { o = o || {}; if (S.landscape) el.innerHTML = el.innerHTML.replace(/<br\s*\/?>/g, ' '); const w = S.words(el); S.arrive(tl, w, a, {dist: o.dist || 34, blur: 8, dur: 0.55, stagger: o.stagger || 0.06}); PG.marker(tl, el, a + w.length * (o.stagger || 0.06) + 0.1, 0.5); return w; };
   /** lưới chấm trôi */
   PG.drift = (el, t, vx, vy) => { el.style.transform = 'translate(' + ((t * (vx || 0)) % 60).toFixed(2) + 'px,' + ((t * (vy == null ? 14 : vy)) % 60).toFixed(2) + 'px)'; };
 })();

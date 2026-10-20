@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="hf/parts/pg.css">
 <style>
   /* S06 · CHỮ KÝ 1: dải feed cuộn vô tận bị uốn cong thành cái phễu; tim rơi vào miệng phễu, ống đáy dẫn tới một bàn ăn đang chờ */
-  #hd { top: 236px; text-align: center; }
+  #hd { top: 236px; text-align: center; font-size: 80px; }
   #cv { position: absolute; inset: 0; z-index: 4; }
   #table { position: absolute; z-index: 5; }
   #table .t { position: absolute; left: 25%; width: 50%; height: 100%; top: 0; }
@@ -28,7 +28,7 @@
 <script>
   const S = window.SAMI, tl = S.timeline(), $ = PG.$;
   const ctx = PG.canvas($('#cv'));
-  const L = S.pick({'9:16': {cx: 540, top: 640, H: 690, W0: 260, W1: 600, spout: 110, tbl: 170}, '16:9': {cx: 1400, top: 130, H: 620, W0: 260, W1: 560, spout: 110, tbl: 160}});
+  const L = S.pick({'9:16': {cx: 540, top: 720, H: 620, W0: 260, W1: 600, spout: 110, tbl: 170}, '16:9': {cx: 1400, top: 130, H: 620, W0: 260, W1: 560, spout: 110, tbl: 160}});
   $('#tt').innerHTML = PG.icon('table', '#E3E4F7'); $('#c1').innerHTML = PG.icon('chair', '#757AD6'); $('#c2').innerHTML = PG.icon('chair', '#757AD6');
   const tb = $('#table'), neckY = L.top + L.H, tY = neckY + L.spout - 10;
   tb.style.width = L.tbl * 1.6 + 'px'; tb.style.height = L.tbl + 'px'; tb.style.left = (L.cx - L.tbl * 0.8) + 'px'; tb.style.top = tY + 'px';
