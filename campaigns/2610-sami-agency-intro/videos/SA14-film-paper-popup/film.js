@@ -227,7 +227,7 @@ const SHOTS_V = [
 // 16:9: góc dọc ≈ góc ngang của bản dọc (chủ thể chiếm khung tương đương), khung cuối: bìa trái, thẻ CTA phải
 const hf = v => 2 * Math.atan(Math.tan(v * Math.PI / 360) * .5625) * 180 / Math.PI;
 const SHOTS_W = SHOTS_V.map(([a, b, keys]) => [a, b, keys.map(([t, p, q, fov, ap, f]) => {
-  if (t >= 83) return [t, [.15, .60, .1400001 + .0], [.15, 0, .14], 46, ap, f];
+  if (t >= 83) return [t, [.2, .62, .1400001], [.2, 0, .14], 46, ap, f];
   return [t, p, q, hf(fov) * 1.12, ap, f]; })]);
 let TRK = null;
 function camAt(t) {
@@ -450,7 +450,7 @@ function drawBubbles(t) {
 }
 function minhHoa(xr, y, a) { const x = gO; x.save(); x.globalAlpha = clamp(a); x.font = `700 ${tall ? 30 : 26}px "Nunito"`; x.textAlign = 'right'; x.lineJoin = 'round'; x.lineWidth = 6; x.strokeStyle = 'rgba(40,25,15,.8)'; x.strokeText('Minh họa', xr, y); x.fillStyle = '#fff6e6'; x.fillText('Minh họa', xr, y); x.restore(); }
 function ctaGeom() { const c = C.ticket, s = tall ? 1 : .9, w = c.width * s, h = c.height * s;
-  const cx = tall ? W / 2 : W * .73, cy = tall ? H * .8 : H * .52; return { c, w, h, x: cx - w / 2, y: cy - h / 2 }; }
+  const cx = tall ? W / 2 : W * .775, cy = tall ? H * .8 : H * .52; return { c, w, h, x: cx - w / 2, y: cy - h / 2 }; }
 function drawCTA(t) {
   if (t < CTA) return; const G = ctaGeom(), a = back(seg(t, CTA, CTA + .5), 1.5), x = gO;
   x.save(); x.translate(0, (1 - a) * 420); x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 30; x.shadowOffsetY = 12; x.drawImage(G.c, G.x, G.y, G.w, G.h); x.restore();

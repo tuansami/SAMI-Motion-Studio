@@ -8,8 +8,8 @@ Cập nhật: 19.10.2026
 - Nhạc + foley: out/mix.wav (tạo lại bằng build.sh).
 
 ## Còn lại
-- [ ] 9:16: render (đang chạy, ~1,6 s/khung SwiftShader) → kiểm khung MP4 → SendUserFile (mp4 + contact sheet)
-- [ ] 16:9: render → kiểm → gửi
+- [x] 9:16: đã render (90 s, 30 fps, −13,9 LUFS, không khung đen), kiểm 18 khung từ MP4, đã gửi (out/SAMI_SA14_paper-popup_v1_9x16.mp4 + _contact.jpg)
+- [ ] 16:9: khung cuối đã chỉnh (bìa trái, thẻ CTA phải), readcheck đạt → render (~60 phút) → kiểm → gửi
 - [ ] Báo phiên điều phối session_01ENDrWfgWowxtPX9WgXNUEt
 
 ## Cách chạy lại
