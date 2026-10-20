@@ -8,8 +8,11 @@ Phiên: session_01WXiyJR1mMCdfsks5RaG5J1 · nhánh `claude/gifted-albattani-m5dp
 - [x] Nhạc `audio_src/score.py` → `public/audio/music.mp3` (−14 LUFS) + SFX khớp hình
 - [x] QA ảnh tĩnh 9:16 + 16:9 (2 vòng), `cli-validate` 0 ✗
 - [x] Xuất 9:16 → SendUserFile (20.10, 12 phút 26 giây CPU, −14,0 LUFS) + contact sheet `brief/SA18_contact_9x16.jpg`
-- [ ] Xuất 16:9 → SendUserFile
-- [ ] Báo phiên điều phối
+- [x] Xuất 16:9 → SendUserFile (11 phút 22 giây CPU, −14,0 LUFS) + `brief/SA18_contact_16x9.jpg`
+- [x] Báo phiên điều phối
+
+## Tiếp theo
+XONG v1 cả 2 tỉ lệ. Chờ góp ý của Tuấn. Tuỳ chọn: thu VO theo VOICE_OVER.md.
 
 ## Đã chốt
 89,7 s · 13 cảnh · xưng "bạn" · look "Pictogram Motion" (người que có khớp, mảng màu đặc navy/tím/mint/lavender, chuyển cảnh bằng khối màu: đẩy xuyên màn hình, tim phình, nút „Jetzt reservieren" phình…) · chữ Nunito 900 + vệt bút dạ quét (em.hl) · Space Grotesk cho UI.
