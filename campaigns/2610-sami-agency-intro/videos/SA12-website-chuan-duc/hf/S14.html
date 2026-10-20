@@ -40,7 +40,7 @@
 <script>
   const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
   K.bg(tl, stage, {seed: 71});
-  const CH = P ? {x: 110, y: 470, w: 860, h: 640} : {x: 1060, y: 110, w: 760, h: 860};
+  const CH = P ? {x: 110, y: 470, w: 860, h: 640} : {x: 1060, y: 210, w: 760, h: 640};
   const ch = K.el('div', 'chat', '<div class="top"><i>S</i><div>SAMI Marketing Agency<small>WhatsApp · online</small></div></div>', stage);
   ch.style.cssText += 'left:' + CH.x + 'px;top:' + CH.y + 'px;width:' + CH.w + 'px;height:' + CH.h + 'px';
   const b1 = K.el('div', 'bb me', 'Chào SAMI, đây là website quán mình, nhờ xem giúp nhé!<div class="lnk"><div class="th"><div>' + K.bowl('pho') + '</div></div><div><b>Quán Mây · Leipzig</b><small>quan-may.de</small></div></div><span class="tm">19:02 ✓✓</span>', ch);

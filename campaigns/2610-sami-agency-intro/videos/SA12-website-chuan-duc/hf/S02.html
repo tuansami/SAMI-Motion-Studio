@@ -48,7 +48,7 @@
   const ph = K.el('div', 'ph2', '<div class="scr"><div class="bro"><span class="bk">←</span><span class="url">asia-restaurant-leipzig.de</span></div><div class="ld2"></div><div class="old" id="old">' +
     '<div class="hb">★ ASIA RESTAURANT ★</div><div class="mq">+++ Herzlich Willkommen auf unserer Homepage +++ Neu: Mittagsmenü +++</div><div class="bx">[ Bild wird geladen … ]</div>' +
     '<p>Wir bieten Ihnen eine große Auswahl an asiatischen Spezialitäten. Öffnungszeiten siehe unten. Speisekarte als Download (PDF, 14 MB).</p>' +
-    '<div class="tb"><div>Mo–So 11–22 Uhr</div><div>Reservierung nur telefonisch!</div><div>© 2014</div></div></div><div class="spin" id="spin"></div></div>', stage);
+    '<div class="tb"><div>Mo–So 11–22 Uhr</div><div>Reservierung nur telefonisch!</div><div>© 2014</div></div></div><div class="spin" id="spin"></div><div id="gs" style="position:absolute;left:0;right:0;top:92px;bottom:0;background:#fff;opacity:0;font-family:Inter"><div style="margin:40px 24px 0;height:58px;border-radius:99px;box-shadow:0 2px 10px rgba(0,0,0,.15);display:flex;align-items:center;padding:0 22px;font-size:21px;color:#333">Restaurant in der Nähe</div><div style="margin:30px 24px;height:14px;border-radius:9px;background:#E6E6EA;width:60%"></div><div style="margin:0 24px 30px;height:14px;border-radius:9px;background:#EEE;width:80%"></div><div style="margin:0 24px 30px;height:14px;border-radius:9px;background:#E6E6EA;width:55%"></div><div style="margin:0 24px;height:14px;border-radius:9px;background:#EEE;width:75%"></div></div></div>', stage);
   const PX = P ? 72 : 1000, PY = P ? 250 : 105;
   ph.style.left = PX + 'px'; ph.style.top = PY + 'px'; if (!P) ph.style.transform = 'scale(.97)';
   K.$('#old').style.transform = 'scale(.6)';
@@ -79,6 +79,7 @@
   tl.to(th, {opacity: 0, duration: 0.2}, back + 0.15);
   K.ring(tl, stage, bxx, byy, back, '#FF5468');
   tl.to(['#old', '.ld2'], {x: 420, opacity: 0, duration: 0.45, ease: 'power2.in'}, back + 0.1);
+  tl.fromTo('#gs', {opacity: 0, x: -60}, {opacity: 1, x: 0, duration: 0.45}, back + 0.35);
   K.say(tl, '#head', K.b(0.6));
   K.say(tl, '#sub', K.b(4.4), {stagger: 0.05});
 </script>
