@@ -1,0 +1,348 @@
+{
+ "name": "SA18-social-media-dat-ban-nghin-luot-xem",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "mint": "#08DDA4",
+   "purple": "#7667FE",
+   "navy": "#0C0628"
+  }
+ },
+ "look": {
+  "grain": 0.03,
+  "vignette": 0.2
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook – feed cuộn, bộ đếm đặt bàn đứng ở 0",
+   "start": 0,
+   "end": 171,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Thả tim rồi đi ăn quán khác",
+   "start": 171,
+   "end": 366,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Điện thoại rung, sổ đặt bàn trắng",
+   "start": 366,
+   "end": 561,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Lượt xem không trả tiền thuê nhà",
+   "start": 561,
+   "end": 801,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Bài đăng không dẫn tới đâu",
+   "start": 801,
+   "end": 996,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "Chữ ký 1 – feed uốn thành phễu",
+   "start": 996,
+   "end": 1206,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "01 · Lịch nội dung (tua nhanh)",
+   "start": 1206,
+   "end": 1446,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "02 · Mỗi bài có một đích đến",
+   "start": 1446,
+   "end": 1686,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "03 · Google Maps + website hứng khách",
+   "start": 1686,
+   "end": 1896,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "04 · KPI mỗi tuần",
+   "start": 1896,
+   "end": 2121,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "Chữ ký 2 – tim thành ghế, bộ đếm chạy",
+   "start": 2121,
+   "end": 2376,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  },
+  {
+   "id": "S12",
+   "label": "Nhịp thở",
+   "start": 2376,
+   "end": 2511,
+   "engine": "hyperframes",
+   "src": "hf/S12.html"
+  },
+  {
+   "id": "S13",
+   "label": "End card SAMI + WhatsApp",
+   "start": 2511,
+   "end": 2691,
+   "engine": "hyperframes",
+   "src": "hf/S13.html"
+  }
+ ],
+ "copy": {
+  "S01_views": {
+   "label": "Nhãn bộ đếm 1",
+   "scene": "S01",
+   "value": "Lượt xem"
+  },
+  "S01_book": {
+   "label": "Nhãn bộ đếm 2",
+   "scene": "S01",
+   "value": "Bàn đặt"
+  },
+  "S01_headline": {
+   "label": "Tiêu đề hook",
+   "scene": "S01",
+   "value": "Nghìn lượt xem, / *không một bàn đặt?*"
+  },
+  "S01_demo": {
+   "label": "Tag minh hoạ",
+   "scene": "S01",
+   "value": "Minh họa"
+  },
+  "S02_headline": {
+   "label": "Tiêu đề",
+   "scene": "S02",
+   "value": "Họ thả tim món của bạn, / lướt tiếp, / rồi *đi ăn ở quán khác.*"
+  },
+  "S03_headline": {
+   "label": "Tiêu đề",
+   "scene": "S03",
+   "value": "Điện thoại rung cả tối / vì thông báo. / Còn sổ đặt bàn / *vẫn trắng tinh.*"
+  },
+  "S03_book": {
+   "label": "Tên sổ (tiếng Đức)",
+   "scene": "S03",
+   "value": "Reservierungen"
+  },
+  "S03_brand": {
+   "label": "Tên quán minh hoạ",
+   "scene": "S03",
+   "value": "Quán Mây · Leipzig"
+  },
+  "S04_headline": {
+   "label": "Câu đinh",
+   "scene": "S04",
+   "value": "Lượt xem / *không trả tiền thuê nhà.*"
+  },
+  "S04_sub": {
+   "label": "Dòng phụ",
+   "scene": "S04",
+   "value": "Tiền nhà, lương bếp, nguyên liệu / đều cần *khách thật ngồi vào bàn.*"
+  },
+  "S04_env": {
+   "label": "Chữ trên phong bì (tiếng Đức)",
+   "scene": "S04",
+   "value": "Miete"
+  },
+  "S05_eyebrow": {
+   "label": "Eyebrow",
+   "scene": "S05",
+   "value": "Luôn có lý do cụ thể"
+  },
+  "S05_headline": {
+   "label": "Tiêu đề",
+   "scene": "S05",
+   "value": "Món không dở. / Chỉ là mỗi bài đăng / *chẳng dẫn tới đâu cả.*"
+  },
+  "S06_headline": {
+   "label": "Tiêu đề bước ngoặt",
+   "scene": "S06",
+   "value": "SAMI uốn feed của bạn / thành *một con đường* / *dẫn thẳng tới bàn ăn.*"
+  },
+  "S07_tag": {
+   "label": "Tag bước",
+   "scene": "S07",
+   "value": "01 · Nội dung có chiến lược"
+  },
+  "S07_headline": {
+   "label": "Tiêu đề",
+   "scene": "S07",
+   "value": "Một lịch đăng rõ ràng: / ảnh món, video ngắn, story, / *đều đặn mỗi tuần.*"
+  },
+  "S07_steps": {
+   "label": "Các bước (ngăn bằng |)",
+   "scene": "S07",
+   "value": "Lên ý tưởng|Chụp món|Dựng video|Lên lịch"
+  },
+  "S08_tag": {
+   "label": "Tag bước",
+   "scene": "S08",
+   "value": "02 · Mỗi bài có một đích đến"
+  },
+  "S08_headline": {
+   "label": "Tiêu đề",
+   "scene": "S08",
+   "value": "Không đăng cho đẹp. / Mỗi bài dẫn khách tới / *một hành động thật.*"
+  },
+  "S08_b1": {
+   "label": "Nút 1 (tiếng Đức)",
+   "scene": "S08",
+   "value": "Jetzt reservieren"
+  },
+  "S08_b2": {
+   "label": "Nút 2 (tiếng Đức)",
+   "scene": "S08",
+   "value": "Speisekarte"
+  },
+  "S08_b3": {
+   "label": "Nút 3 (tiếng Đức)",
+   "scene": "S08",
+   "value": "Gutschein"
+  },
+  "S09_tag": {
+   "label": "Tag bước",
+   "scene": "S09",
+   "value": "03 · Google Maps + website hứng khách"
+  },
+  "S09_headline": {
+   "label": "Tiêu đề",
+   "scene": "S09",
+   "value": "Khách bấm là tới: / Google Maps chỉ đường, / *website nhận đặt bàn.*"
+  },
+  "S10_tag": {
+   "label": "Tag bước",
+   "scene": "S10",
+   "value": "04 · Đo KPI mỗi tuần"
+  },
+  "S10_headline": {
+   "label": "Tiêu đề",
+   "scene": "S10",
+   "value": "Mỗi tuần, SAMI báo rõ / bài nào *đưa khách tới bàn*, / để tuần sau làm tốt hơn."
+  },
+  "S10_k1": {
+   "label": "Cột 1",
+   "scene": "S10",
+   "value": "Lượt xem"
+  },
+  "S10_k2": {
+   "label": "Cột 2",
+   "scene": "S10",
+   "value": "Lượt bấm"
+  },
+  "S10_k3": {
+   "label": "Cột 3",
+   "scene": "S10",
+   "value": "Đặt bàn"
+  },
+  "S10_demo": {
+   "label": "Tag minh hoạ",
+   "scene": "S10",
+   "value": "Minh họa"
+  },
+  "S11_headline": {
+   "label": "Tiêu đề",
+   "scene": "S11",
+   "value": "Và bộ đếm / đứng yên bấy lâu / *bắt đầu chạy.*"
+  },
+  "S11_book": {
+   "label": "Nhãn bộ đếm",
+   "scene": "S11",
+   "value": "Bàn đặt"
+  },
+  "S11_demo": {
+   "label": "Tag minh hoạ",
+   "scene": "S11",
+   "value": "Minh họa"
+  },
+  "S12_headline": {
+   "label": "Câu nhịp thở",
+   "scene": "S12",
+   "value": "Đừng chỉ để được xem. / *Hãy để được đặt bàn.*"
+  },
+  "S13_cta": {
+   "label": "CTA",
+   "scene": "S13",
+   "value": "Nhắn WhatsApp cho SAMI"
+  },
+  "S13_phone": {
+   "label": "Số WhatsApp",
+   "scene": "S13",
+   "value": "+49 155 60456888"
+  },
+  "S13_offer": {
+   "label": "Ưu đãi",
+   "scene": "S13",
+   "value": "Phân tích marketing miễn phí, không ràng buộc. / Phản hồi trong 24 giờ."
+  },
+  "S13_claim": {
+   "label": "Câu chốt",
+   "scene": "S13",
+   "value": "Thêm khách. Thêm doanh thu. Thêm thời gian."
+  },
+  "S13_tagline": {
+   "label": "Tagline",
+   "scene": "S13",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S13_web": {
+   "label": "Website",
+   "scene": "S13",
+   "value": "sami-agency.de"
+  }
+ },
+ "status": "draft",
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": []
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 1.2
+  },
+  "cues": []
+ }
+}
