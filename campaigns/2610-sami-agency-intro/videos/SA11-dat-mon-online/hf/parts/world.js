@@ -76,7 +76,7 @@
   };
 
   /** camera toàn cảnh bàn (9:16 / 16:9) */
-  W.FULL = function (dk) { dk = dk || 0; return S.landscape ? {x: 0, y: 0, z: 0.64, k: 31 + dk, cx: 1290, cy: 560} : {x: 0, y: 0, z: 0.64, k: 28 + dk, cx: 540, cy: 1150}; };
+  W.FULL = function (dk) { dk = dk || 0; return S.landscape ? {x: 0, y: 0, z: 0.64, k: 31 + dk, cx: 1350, cy: 560} : {x: 0, y: 0, z: 0.64, k: 28 + dk, cx: 540, cy: 1150}; };
   // ── kích thước bàn diorama
   W.B = {x0: -10.5, x1: 11, y0: -9, y1: 9.2};
   /** bàn diorama: bóng mềm + 3 lớp địa tầng ở mặt cắt */

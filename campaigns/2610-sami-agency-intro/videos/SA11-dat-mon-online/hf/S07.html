@@ -9,12 +9,12 @@
 <link rel="stylesheet" href="hf/parts/ik.css">
 <style>
   /* S07 · BẾP: khối đơn chạy trên băng chuyền mint vào bếp cắt lớp, máy in nhả phiếu, chuông quầy rung, đầu bếp quay sang */
-  #hd { left: var(--safe-side); right: var(--safe-side); top: 240px; }
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 240px; font-size: 72px; }
   #tk { width: 420px; padding: 18px 24px 20px; font: 500 29px/1.5 "JetBrains Mono", monospace; transform-origin: 50% 100%;
     background: repeating-linear-gradient(0deg, #FFFDF8 0 34px, #FBF5E8 34px 35px); }
   #tk b { display: block; font: 600 26px/1.3 "JetBrains Mono", monospace; letter-spacing: .1em; color: #fff; background: var(--ink); margin: -18px -22px 12px; padding: 12px 22px; border-radius: 15px 15px 0 0; }
   #tk .tm { color: #0A9E77; font-weight: 600; }
-  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 720px; top: 340px; font-size: 70px; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 600px; top: 340px; font-size: 62px; }
 </style>
 </head>
 <body>
@@ -27,7 +27,7 @@
 <script>
   const S = window.SAMI, I = window.ISO, tl = S.timeline(), root = W.$('#root'), L16 = S.landscape;
   const iso = W.setup(root);
-  const C0 = L16 ? {x: 4.2, y: -4.4, z: 1.2, k: 58, cx: 1330, cy: 600} : {x: 4.6, y: -4.4, z: 1.2, k: 60, cx: 560, cy: 1160};
+  const C0 = L16 ? {x: 4.2, y: -4.4, z: 1.2, k: 58, cx: 1430, cy: 620} : {x: 4.6, y: -4.4, z: 1.2, k: 60, cx: 560, cy: 1160};
   const C1 = Object.assign({}, C0, {x: 5.6, k: C0.k * 1.12});
   const tk = W.$('#tk');
   const T_IN = 1.5, T_PRINT = 1.7, T_BELL = 2.9;

@@ -33,7 +33,7 @@
   #order i { width: 22px; height: 22px; background: #0C0628; transform: rotate(45deg) scaleY(.82); border-radius: 3px; }
   #flash { position: absolute; z-index: 30; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px; border-radius: 50%; background: #08DDA4; }
   #demo { left: 290px; top: 1630px; }
-  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 820px; top: 330px; font-size: 66px; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 790px; top: 330px; font-size: 62px; }
   [data-ratio="16x9"] #demo { left: 1640px; top: 120px; }
 </style>
 </head>
@@ -92,7 +92,7 @@
     // thẻ quán trượt lên
     sheet.style.transform = 'translateY(' + (110 * (1 - W.E(t, 2.3, 2.9))).toFixed(1) + '%)';
     // con trỏ chạm nút
-    const ta = W.L(t, 3.3, 3.6) * (1 - W.L(t, 4.6, 4.8));
+    const ta = W.L(t, 3.3, 3.6) * (1 - W.L(t, 4.8, 5.0));
     tap.style.left = W.mix(SW * 0.8, BTN[0], W.E(t, 3.3, 3.95)) + 'px'; tap.style.top = W.mix(SH * 0.62, BTN[1], W.E(t, 3.3, 3.95)) + 'px';
     tap.style.opacity = ta; tap.style.transform = 'scale(' + (t > T_TAP && t < T_TAP + 0.2 ? 0.8 : 1) + ')';
     const ru = W.L(t, T_TAP, T_TAP + 0.6);
@@ -100,7 +100,7 @@
     ob.style.transform = 'scale(' + (t > T_TAP && t < T_TAP + 0.25 ? 0.96 : 1) + ')';
     ob.style.boxShadow = t > T_TAP ? '0 0 0 ' + (6 * (1 - ru)).toFixed(1) + 'px rgba(8,221,164,.35), 0 8px 18px rgba(8,221,164,.4)' : '';
     // loang mint từ nút → nối sang S06
-    const fu = W.E(t, 4.7, 5.6);
+    const fu = W.E(t, 5.4, 6.2);
     flash.style.left = BTN[0] + 'px'; flash.style.top = BTN[1] + 'px'; flash.style.transform = 'scale(' + (fu * 260).toFixed(1) + ')'; flash.style.opacity = fu > 0 ? 1 : 0;
   });
   W.words(tl, '#hd', 0.5, {stagger: 0.05});

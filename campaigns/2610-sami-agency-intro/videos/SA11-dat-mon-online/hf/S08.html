@@ -17,7 +17,7 @@
   #sg .nm { font: 700 30px/1 "Be Vietnam Pro", sans-serif; letter-spacing: .08em; text-transform: uppercase; }
   #sg .cb { width: 36px; height: 36px; transform: rotate(45deg) scaleY(.82); border-radius: 4px; background: #E3DED3; }
   #sg .cb.on { background: var(--order); }
-  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 780px; top: 300px; font-size: 62px; }
+  [data-ratio="16x9"] #hd { left: 110px; right: auto; width: 780px; top: 300px; font-size: 56px; }
 </style>
 </head>
 <body>
@@ -60,7 +60,7 @@
     I.ring(iso.g, sc[0], sc[1], 70, W.E(t, T_GIVE - 0.2, T_GIVE + 0.3) * (1 - W.L(t, 3.4, 3.8)), t, null, {color: '#08DDA4', lw: 3.5});
     // Gutschein bật ra từ điện thoại
     const sp = iso.P(-7.6, -5.0, 5.9), a = I.back(W.L(t, T_GS, T_GS + 0.45), 1.6);
-    gs.style.left = (sp[0] + 30) + 'px'; gs.style.top = (sp[1] - 260) + 'px'; gs.style.transform = 'scale(' + Math.max(0, a).toFixed(3) + ') rotate(' + (-4 * (1 - W.L(t, T_GS, T_GS + 0.6))).toFixed(2) + 'deg)'; gs.style.opacity = t > T_GS ? 1 : 0;
+    gs.style.left = (sp[0] + 30) + 'px'; gs.style.top = Math.max(L16 ? 40 : 600, sp[1] - 260) + 'px'; if (L16) gs.style.left = (sp[0] + 90) + 'px'; gs.style.transform = 'scale(' + Math.max(0, a).toFixed(3) + ') rotate(' + (-4 * (1 - W.L(t, T_GS, T_GS + 0.6))).toFixed(2) + 'deg)'; gs.style.opacity = t > T_GS ? 1 : 0;
     // hàng Stammgast
     const sb = iso.P(6, 8.4, 0);
     sg.style.left = (L16 ? sb[0] - 140 : 540 - 290) + 'px'; sg.style.top = (L16 ? 900 : sb[1] + 70) + 'px';
