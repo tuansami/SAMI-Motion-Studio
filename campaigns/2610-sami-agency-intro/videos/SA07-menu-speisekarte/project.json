@@ -1,0 +1,300 @@
+{
+ "name": "SA07-menu-speisekarte-ban-hang-thay-ban",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "mint": "#08DDA4",
+   "purple": "#7667FE",
+   "navy": "#0C0628"
+  }
+ },
+ "look": {
+  "grain": 0.03,
+  "vignette": 0.1
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook – menu Word 80 món tuôn không dứt",
+   "start": 0,
+   "end": 210,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Kính lúp soi lỗi + tem mực",
+   "start": 210,
+   "end": 420,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Cái giá – khách hỏi, món lời nhất chìm",
+   "start": 420,
+   "end": 630,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "★ Chữ ký – nghiền menu, nam châm lưới 6 nhóm",
+   "start": 630,
+   "end": 885,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Bàn thiết kế ×16 – lưới, cặp chữ, khoảng thở",
+   "start": 885,
+   "end": 1110,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "Điểm vàng – món chủ lực",
+   "start": 1110,
+   "end": 1320,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "Allergene A–N, [V], DE/EN",
+   "start": 1320,
+   "end": 1560,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "Phối 3 bộ màu in",
+   "start": 1560,
+   "end": 1770,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "Một thiết kế – mọi nơi (in, PDF, web, Maps, QR)",
+   "start": 1770,
+   "end": 2025,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "4 lợi ích",
+   "start": 2025,
+   "end": 2280,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "Thông điệp + nhịp thở",
+   "start": 2280,
+   "end": 2445,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  },
+  {
+   "id": "S12",
+   "label": "End card SAMI + WhatsApp",
+   "start": 2445,
+   "end": 2685,
+   "engine": "hyperframes",
+   "src": "hf/S12.html"
+  }
+ ],
+ "copy": {
+  "S01_t1": {
+   "label": "Câu hook",
+   "scene": "S01",
+   "value": "Tám mươi món ngon, / chen chúc trên *một tờ giấy đen trắng.*"
+  },
+  "S01_stamp": {
+   "label": "Tem đếm món",
+   "scene": "S01",
+   "value": "80 MÓN"
+  },
+  "S02_t1": {
+   "label": "Câu soi lỗi",
+   "scene": "S02",
+   "value": "Soi kỹ mới thấy: thiếu ký hiệu dị ứng, / giá khó tìm, *không một tấm ảnh.*"
+  },
+  "S02_stamps": {
+   "label": "4 tem lỗi (cách nhau bằng |)",
+   "scene": "S02",
+   "value": "THIẾU DỊ ỨNG|GIÁ Ở ĐÂU?|KHÔNG ẢNH|SAI CHÍNH TẢ"
+  },
+  "S03_t1": {
+   "label": "Câu cái giá",
+   "scene": "S03",
+   "value": "Khách hỏi đi hỏi lại. Nhân viên rối. / Còn *món lời nhất* chìm ở trang ba."
+  },
+  "S03_qs": {
+   "label": "Bong bóng câu hỏi của khách (tiếng Đức, cách |)",
+   "scene": "S03",
+   "value": "Ist da Erdnuss drin?|Ist das vegan?|Was ist Nr. 47?|Ohne Gluten möglich?|Ist das scharf?"
+  },
+  "S04_tag": {
+   "label": "Nhãn bước",
+   "scene": "S04",
+   "value": "Bước 1 · Cấu trúc: 80 món → 6 nhóm"
+  },
+  "S04_t1": {
+   "label": "Câu chữ ký",
+   "scene": "S04",
+   "value": "Vì vậy SAMI không vá tờ menu cũ. / Chúng tôi *dựng lại từ đầu.*"
+  },
+  "S04_groups": {
+   "label": "6 nhóm món (cách |)",
+   "scene": "S04",
+   "value": "Vorspeisen|Suppen|Phở & Nudeln|Hauptgerichte|Dessert|Getränke"
+  },
+  "S05_tag": {
+   "label": "Nhãn quy trình",
+   "scene": "S05",
+   "value": "Tái hiện quy trình · tua nhanh ×16"
+  },
+  "S05_t1": {
+   "label": "Câu bàn thiết kế",
+   "scene": "S05",
+   "value": "Bàn thiết kế, tua nhanh ×16: / lưới trang, cặp chữ, / *khoảng thở cho từng món.*"
+  },
+  "S06_t1": {
+   "label": "Câu điểm vàng",
+   "scene": "S06",
+   "value": "Món chủ lực vào *điểm vàng* của trang, / nơi mắt khách thường dừng lại trước tiên."
+  },
+  "S06_dish": {
+   "label": "Món chủ lực (trên menu)",
+   "scene": "S06",
+   "value": "Phở Sen Spezial"
+  },
+  "S06_dishsub": {
+   "label": "Mô tả món chủ lực",
+   "scene": "S06",
+   "value": "Rinderbrühe, 12 Stunden gekocht"
+  },
+  "S07_t1": {
+   "label": "Câu dị ứng / song ngữ",
+   "scene": "S07",
+   "value": "Ký hiệu dị ứng từ A đến N, nhãn chay [V], / và *song ngữ Đức, Anh* cho mọi món."
+  },
+  "S08_t1": {
+   "label": "Câu phối màu",
+   "scene": "S08",
+   "value": "Phối thử ba bộ màu in, / để bạn *chọn bằng mắt* / chứ không phải đoán."
+  },
+  "S08_names": {
+   "label": "Tên 3 bộ màu (cách |)",
+   "scene": "S08",
+   "value": "Sen hồng|Lá xanh|Nghệ vàng"
+  },
+  "S08_pick": {
+   "label": "Tem chọn",
+   "scene": "S08",
+   "value": "CHỌN"
+  },
+  "S09_t1": {
+   "label": "Câu mọi nơi",
+   "scene": "S09",
+   "value": "Một thiết kế cho mọi nơi khách gặp: / bản in, PDF, website, Google Maps / và *mã QR ngay trên bàn.*"
+  },
+  "S09_labels": {
+   "label": "Nhãn 5 thẻ (cách |)",
+   "scene": "S09",
+   "value": "Bản in|PDF|Website|Google Maps|QR trên bàn"
+  },
+  "S10_kicker": {
+   "label": "Dòng dẫn",
+   "scene": "S10",
+   "value": "Với một Speisekarte rõ ràng:"
+  },
+  "S10_b1": {
+   "label": "Lợi ích 1",
+   "scene": "S10",
+   "value": "Khách chọn món nhanh hơn"
+  },
+  "S10_b2": {
+   "label": "Lợi ích 2",
+   "scene": "S10",
+   "value": "Món chủ lực được thấy trước"
+  },
+  "S10_b3": {
+   "label": "Lợi ích 3",
+   "scene": "S10",
+   "value": "Bớt hỏi đi hỏi lại"
+  },
+  "S10_b4": {
+   "label": "Lợi ích 4",
+   "scene": "S10",
+   "value": "Đúng quy định dị ứng"
+  },
+  "S11_t1": {
+   "label": "Câu thông điệp",
+   "scene": "S11",
+   "value": "Bếp đã đủ ngon. / *Giờ để menu bán hàng thay bạn.*"
+  },
+  "S12_cta": {
+   "label": "Nút CTA",
+   "scene": "S12",
+   "value": "Nhắn WhatsApp cho SAMI"
+  },
+  "S12_phone": {
+   "label": "Số WhatsApp",
+   "scene": "S12",
+   "value": "+49 155 60456888"
+  },
+  "S12_offer": {
+   "label": "Ưu đãi",
+   "scene": "S12",
+   "value": "Phân tích marketing miễn phí cho quán. / Không ràng buộc, phản hồi trong 24 giờ."
+  },
+  "S12_tagline": {
+   "label": "Tagline",
+   "scene": "S12",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S12_web": {
+   "label": "Website",
+   "scene": "S12",
+   "value": "sami-agency.de"
+  },
+  "S01_demo": {
+   "label": "Nhãn nhà hàng minh họa (mọi cảnh menu)",
+   "scene": "S01",
+   "value": "Nhà hàng minh họa · Bếp Sen, Dresden"
+  }
+ },
+ "status": "draft",
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": []
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 1.5
+  },
+  "cues": []
+ }
+}

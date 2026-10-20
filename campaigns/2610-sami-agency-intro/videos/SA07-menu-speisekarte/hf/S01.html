@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="_fonts/lora/400.css">
+<link rel="stylesheet" href="_fonts/lora/700.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S01 · HOOK: dải menu Word đen trắng tuôn xuống không dứt, phanh gấp ở món 80, tem "80 MÓN" */
+  #win { position: absolute; z-index: 8; left: 150px; width: 780px; top: 600px; height: 1000px; overflow: hidden; }
+  #strip { left: 0; width: 780px; top: 0; padding: 34px 40px 60px; box-sizing: border-box; font-size: 21px; }
+  #cnt { position: absolute; z-index: 12; right: 40px; top: 560px; font: 800 150px/1 "Bricolage Grotesque", sans-serif; color: var(--ink); text-shadow: 6px 5px 0 rgba(255, 79, 154, .6); }
+  #st { left: 610px; top: 1330px; font-size: 64px; }
+  [data-ratio="16x9"] #win { left: 990px; width: 760px; top: 0; height: 1080px; }
+  [data-ratio="16x9"] #strip { width: 760px; }
+  [data-ratio="16x9"] #cnt { right: auto; left: 110px; top: 640px; font-size: 140px; }
+  [data-ratio="16x9"] #st { left: 1450px; top: 820px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S01">
+  <div id="win"><div class="old" id="strip"></div></div>
+  <div id="cnt">1</div>
+  <div class="stamp" id="st" data-copy="S01_stamp"></div>
+  <div class="hd top" id="hd" data-copy="S01_t1"></div>
+  <div class="demo demopos" id="demo" data-copy="S01_demo"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'));
+  const rows = R.oldRows(80);
+  $('#strip').innerHTML = '<h1>SPEISEKARTE</h1><div class="sub">Restaurant Bếp Sen · Alle Preise in Euro inkl. MwSt.</div>' + rows.map(R.oldRow).join('') + '<div class="row" style="margin-top:14px">Guten Apetit!!!</div>';
+  const win = $('#win'), strip = $('#strip');
+  const H = strip.offsetHeight, WH = win.offsetHeight, rowEls = strip.querySelectorAll('.row');
+  const yEnd = -(H - WH); // dừng khi chân dải chạm đáy khung
+  const tStop = 1.75;
+  function y(t) { const u = t < 1.55 ? 0.88 * R.L(t, 0.05, 1.55) : 0.88 + 0.12 * R.E(t, 1.55, tStop + 0.2); return R.mix(WH * 0.9, yEnd, u); }
+  R.clock(tl, (t) => {
+    bg(t);
+    const yy = y(t), v = Math.abs(y(t + 1 / 30) - yy);
+    strip.style.transform = 'translateY(' + yy.toFixed(1) + 'px) rotate(' + (R.wob(t, tStop, 1.2, 26)).toFixed(3) + 'deg)';
+    strip.style.filter = 'blur(' + Math.min(9, v / 14).toFixed(2) + 'px)';
+    // món nào đang ở giữa khung → bộ đếm
+    let n = 1;
+    for (let i = 0; i < rowEls.length - 1; i++) if (rowEls[i].offsetTop + yy < WH * 0.75) n = Math.min(80, i + 1);
+    $('#cnt').textContent = n;
+    $('#cnt').style.opacity = (R.L(t, 0.1, 0.3) * (1 - R.E(t, 2.0, 2.4))).toFixed(3);
+    $('#cnt').style.transform = 'scale(' + (1 + R.wob(t, tStop, 0.1, 30)).toFixed(4) + ')';
+    R.stampAt($('#st'), t, 1.95, -9);
+    win.style.transform = 'translateY(' + (R.wob(t, 1.95, 10, 40)).toFixed(2) + 'px)';
+  });
+  R.rise(tl, S.words($('#hd')), 1.5, {stagger: 0.08, dur: 0.6});
+  R.rise(tl, '#demo', 2.4, {dy: 10});
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+/* SA07 · "Risograph Print": giấy kem, hạt in, 2 lớp mực lệch (hồng sen + xanh đậm), chồng màu multiply, tem đóng dấu */
+:root {
+  --paper: #F2EBDC; --paper2: #FBF6EA; --ink: #2E3B8F; --pink: #FF4F9A; --teal: #00A3A0; --yel: #FFD23F; --red: #E8412F;
+  --old: #161616; --ui: #FFFDF7; --uil: #1B1B1B; --uit: #5A5560;
+  --ia: var(--pink); --ib: var(--ink); /* mực của trang menu (đổi theo bộ màu) */
+}
+[data-composition-id] { background: var(--paper); overflow: hidden; }
+
+/* nền giấy + hạt in (noise SVG tất định) + chấm halftone thưa */
+.paper { position: absolute; inset: -200px; z-index: 0; background-color: var(--paper); will-change: transform;
+  background-image: radial-gradient(rgba(46, 59, 143, .07) 1.6px, transparent 1.9px); background-size: 18px 18px; }
+.grain { position: absolute; inset: 0; z-index: 28; pointer-events: none; mix-blend-mode: multiply; opacity: .55;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='360'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='7' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .18  0 0 0 0 .16  0 0 0 0 .2  0 0 0 .42 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+.vig { position: absolute; inset: 0; z-index: 29; pointer-events: none; background: radial-gradient(130% 95% at 50% 45%, rgba(0, 0, 0, 0) 60%, rgba(60, 40, 20, .16) 100%); }
+/* vệt mực lớn mờ ở nền (lớp chậm) */
+.blob { position: absolute; z-index: 1; border-radius: 50%; mix-blend-mode: multiply; pointer-events: none; }
+
+/* tiêu đề: Bricolage đậm, mực xanh + bóng hồng lệch như in 2 lần */
+.hd { position: absolute; z-index: 20; font: 800 68px/1.2 "Bricolage Grotesque", sans-serif; letter-spacing: -.02em; color: var(--ink); text-wrap: balance;
+  text-shadow: 5px 4px 0 rgba(255, 79, 154, .55); }
+.hd .w { padding-bottom: .06em; }
+.hd em.hl, .hd em.hl .w { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--pink); font-style: normal; text-shadow: 4px 3px 0 rgba(46, 59, 143, .35); }
+.hd em.hl .w { background: linear-gradient(transparent 62%, rgba(255, 210, 63, .85) 62%, rgba(255, 210, 63, .85) 92%, transparent 92%) !important; }
+.lbl { position: absolute; z-index: 21; white-space: nowrap; font: 600 24px/1 "IBM Plex Mono", monospace; letter-spacing: .06em; color: var(--ink);
+  padding: 11px 16px; border: 2.5px solid var(--ink); border-radius: 4px; background: rgba(255, 253, 247, .85); box-shadow: 4px 4px 0 var(--pink); }
+.demo { position: absolute; z-index: 21; white-space: nowrap; font: 500 22px/1 "IBM Plex Mono", monospace; letter-spacing: .04em; color: rgba(46, 59, 143, .75); }
+
+/* vị trí chuẩn theo tỉ lệ */
+.top { left: 76px; right: 76px; top: 248px; }
+.tagpos { left: 76px; top: 176px; }
+.demopos { left: 76px; bottom: 300px; }
+[data-ratio="16x9"] .top { left: 110px; right: auto; width: 720px; top: 300px; }
+[data-ratio="16x9"] .tagpos { left: 110px; top: 214px; }
+[data-ratio="16x9"] .demopos { left: 110px; bottom: 70px; }
+[data-ratio="16x9"] .hd { font-size: 64px; }
+
+/* tem đóng dấu */
+.stamp { position: absolute; z-index: 22; white-space: nowrap; font: 800 40px/1 "Bricolage Grotesque", sans-serif; letter-spacing: .02em; color: var(--pink);
+  padding: 14px 22px 16px; border: 5px solid var(--pink); border-radius: 8px; mix-blend-mode: multiply;
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.9'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.9'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+.stamp.blue { color: var(--ink); border-color: var(--ink); }
+
+/* ── menu cũ (Word, đen trắng) ── */
+.old { position: absolute; background: #fff; color: var(--old); font: 400 17px/1.32 "Lora", serif; box-shadow: 0 30px 60px rgba(40, 30, 20, .25); overflow: hidden; }
+.old h1 { margin: 0 0 6px; font: 700 34px/1.1 "Lora", serif; text-align: center; text-decoration: underline; }
+.old .sub { text-align: center; font-style: italic; margin-bottom: 14px; }
+.old .row { white-space: nowrap; overflow: hidden; }
+.old .row b { font-weight: 700; }
+
+/* ── trang menu Bếp Sen (logic 620×880, scale bằng transform) ── */
+.pg { position: absolute; width: 620px; height: 880px; background: var(--paper2); color: var(--ib); box-shadow: 0 34px 70px rgba(60, 40, 20, .22), 0 0 0 1px rgba(46, 59, 143, .08);
+  transform-origin: 0 0; overflow: hidden; }
+.pg .ia { mix-blend-mode: multiply; }
+.pg .hdr { position: absolute; left: 40px; right: 40px; top: 34px; height: 96px; display: flex; align-items: center; gap: 16px; border-bottom: 3px solid var(--ib); }
+.pg .hdr svg { width: 78px; height: 78px; flex: none; overflow: visible; }
+.pg .brand { font: 700 46px/1 "Fraunces", serif; letter-spacing: -.01em; }
+.pg .brand small { display: block; margin-top: 6px; font: 500 13px/1 "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--ib); opacity: .8; }
+.pg .col { position: absolute; top: 150px; width: 258px; }
+.pg .c1 { left: 40px; } .pg .c2 { left: 322px; }
+.pg .grp { margin-bottom: 14px; }
+.pg .gh { display: inline-block; font: 800 17px/1 "Bricolage Grotesque", sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--paper2);
+  background: var(--ia); padding: 6px 9px 7px; margin-bottom: 7px; }
+.pg .it { position: relative; padding: 4px 0 5px; border-bottom: 1px dotted rgba(46, 59, 143, .35); }
+.pg .nm { display: block; padding-right: 50px; font: 600 15.5px/1.2 "Fraunces", serif; }
+.pg .nm sup { font: 600 9.5px/1 "IBM Plex Mono", monospace; letter-spacing: .04em; color: var(--ia); margin-left: 3px; }
+.pg .v { display: inline-block; font: 700 9.5px/1 "IBM Plex Mono", monospace; color: var(--paper2); background: var(--teal); border-radius: 3px; padding: 2px 3px; margin-left: 4px; vertical-align: 2px; }
+.pg .en { display: block; font: italic 400 11.5px/1.25 "Fraunces", serif; opacity: .78; }
+.pg .pr { position: absolute; right: 0; top: 4px; font: 600 15px/1.2 "IBM Plex Mono", monospace; }
+.pg .hero { position: relative; height: 214px; margin-bottom: 14px; border: 3px solid var(--ib); background: var(--paper2); }
+.pg .hero svg { position: absolute; left: 8px; top: 8px; width: 150px; height: 128px; overflow: visible; }
+.pg .hero .ht { position: absolute; left: 12px; right: 10px; bottom: 12px; }
+.pg .hero .ht b { display: block; font: 700 22px/1.08 "Fraunces", serif; }
+.pg .hero .ht i { display: block; margin-top: 4px; font: italic 400 12px/1.2 "Fraunces", serif; }
+.pg .hero .ht .pr { top: auto; bottom: 2px; font-size: 18px; }
+.pg .hero .star { position: absolute; right: 12px; top: 12px; width: 76px; height: 76px; }
+.pg .leg { position: absolute; left: 40px; right: 40px; bottom: 26px; padding-top: 8px; border-top: 2px solid var(--ib); font: 500 9px/1.45 "IBM Plex Mono", monospace; letter-spacing: .02em; }
+.pg .leg b { color: var(--ia); }
+.pg .qr { position: absolute; right: 40px; bottom: 74px; width: 54px; height: 54px; }
+
+/* ── công cụ thiết kế (giao diện giấy sáng, không nhãn hiệu) ── */
+.tool { position: absolute; z-index: 10; background: var(--ui); border: 3px solid var(--uil); border-radius: 14px; overflow: hidden; box-shadow: 10px 10px 0 rgba(46, 59, 143, .9); }
+.tool .bar { position: absolute; left: 0; right: 0; top: 0; height: 56px; display: flex; align-items: center; gap: 14px; padding: 0 18px; box-sizing: border-box;
+  border-bottom: 3px solid var(--uil); background: #F6EFDF; font: 600 18px/1 "IBM Plex Mono", monospace; color: var(--uil); }
+.tool .dots { display: flex; gap: 8px; } .tool .dots i { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid var(--uil); display: block; box-sizing: border-box; }
+.tool .dots i:first-child { background: var(--pink); } .tool .dots i:nth-child(2) { background: var(--yel); } .tool .dots i:nth-child(3) { background: var(--teal); }
+.tool .file { flex: 1; text-align: center; white-space: nowrap; overflow: hidden; }
+.tool .ff { display: flex; align-items: center; gap: 8px; color: #fff; background: var(--pink); border: 2.5px solid var(--uil); border-radius: 6px; padding: 6px 10px; font-weight: 700; white-space: nowrap; }
+.tool .ff .tc { font-weight: 600; }
+.tool .side { position: absolute; left: 0; top: 56px; bottom: 0; width: 64px; border-right: 3px solid var(--uil); background: #F6EFDF; display: flex; flex-direction: column; align-items: center; padding-top: 12px; gap: 6px; box-sizing: border-box; }
+.tool .side svg { width: 44px; height: 44px; padding: 7px; box-sizing: border-box; border-radius: 7px; }
+.tool .side svg.on { background: var(--yel); outline: 2.5px solid var(--uil); }
+.tool .cv { position: absolute; left: 64px; top: 56px; right: 0; bottom: 0; overflow: hidden; background: #E7E0CF;
+  background-image: radial-gradient(rgba(27, 27, 27, .12) 1.2px, transparent 1.5px); background-size: 22px 22px; }
+.tool .panel { position: absolute; right: 0; top: 56px; bottom: 0; width: 270px; border-left: 3px solid var(--uil); background: #F6EFDF; padding: 16px; box-sizing: border-box;
+  font: 500 16px/1.2 "IBM Plex Mono", monospace; color: var(--uil); display: none; }
+.tool .panel h6 { margin: 4px 0 10px; font: 700 14px/1 "IBM Plex Mono", monospace; letter-spacing: .14em; color: var(--uit); }
+.tool .panel .f { display: flex; justify-content: space-between; padding: 8px 10px; margin-bottom: 6px; border: 2px solid var(--uil); border-radius: 5px; background: var(--ui); white-space: nowrap; }
+.tool .panel .f b { font-weight: 700; }
+.tool .props { position: absolute; left: 64px; right: 0; bottom: 0; height: 60px; border-top: 3px solid var(--uil); background: #F6EFDF; display: flex; align-items: center; gap: 24px; padding: 0 20px;
+  box-sizing: border-box; font: 500 18px/1 "IBM Plex Mono", monospace; color: var(--uit); white-space: nowrap; }
+.tool .props b { color: var(--uil); font-weight: 700; }
+[data-ratio="16x9"] .tool .panel { display: block; }
+[data-ratio="16x9"] .tool .cv, [data-ratio="16x9"] .tool .props { right: 270px; }
+.tool.std { left: 56px; right: 56px; top: 640px; height: 900px; }
+[data-ratio="16x9"] .tool.std { left: 860px; right: 70px; top: 90px; height: 900px; }
+
+/* khung chọn + con trỏ */
+.selb { position: absolute; border: 2.5px solid var(--pink); pointer-events: none; z-index: 6; }
+.selb i { position: absolute; width: 12px; height: 12px; background: #fff; border: 2.5px solid var(--pink); box-sizing: border-box; }
+.selb i:nth-child(1) { left: -7px; top: -7px; } .selb i:nth-child(2) { right: -7px; top: -7px; }
+.selb i:nth-child(3) { left: -7px; bottom: -7px; } .selb i:nth-child(4) { right: -7px; bottom: -7px; }
+.cursor { position: absolute; z-index: 40; width: 44px; height: 44px; pointer-events: none; will-change: transform; }
+.mono { font-family: "IBM Plex Mono", monospace; }
