@@ -7,7 +7,7 @@ Phiên: session_01WXiyJR1mMCdfsks5RaG5J1 · nhánh `claude/gifted-albattani-m5dp
 - [x] Dựng 13 cảnh Hyperframes viết tay 9:16 + 16:9 (`hf/S01–S13.html`, kit chung `hf/parts/pg.css|pg.js`)
 - [x] Nhạc `audio_src/score.py` → `public/audio/music.mp3` (−14 LUFS) + SFX khớp hình
 - [x] QA ảnh tĩnh 9:16 + 16:9 (2 vòng), `cli-validate` 0 ✗
-- [ ] Xuất 9:16 → SendUserFile (đang chạy)
+- [x] Xuất 9:16 → SendUserFile (20.10, 12 phút 26 giây CPU, −14,0 LUFS) + contact sheet `brief/SA18_contact_9x16.jpg`
 - [ ] Xuất 16:9 → SendUserFile
 - [ ] Báo phiên điều phối
 
