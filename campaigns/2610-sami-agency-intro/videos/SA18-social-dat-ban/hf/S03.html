@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/nunito/900.css">
+<link rel="stylesheet" href="_fonts/nunito/700.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/500.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/700.css">
+<link rel="stylesheet" href="hf/parts/pg.css">
+<style>
+  /* S03 · điện thoại rung liên tục vì thông báo, sổ đặt bàn mở ra vẫn trắng, ghế xếp gọn dưới bàn */
+  #hd { top: 236px; text-align: center; }
+  #book { position: absolute; z-index: 4; left: 150px; top: 760px; width: 560px; height: 560px; background: #fff; border-radius: 30px; color: var(--navy); overflow: hidden; box-shadow: 0 26px 0 rgba(0, 0, 0, .25); }
+  #book .top { height: 118px; background: var(--lav); padding: 22px 34px 0; }
+  #book .t1 { font: 700 36px/1.1 var(--f-ui); }
+  #book .t2 { font: 500 24px/1.3 var(--f-ui); color: #6E6893; margin-top: 6px; }
+  #rows { padding: 16px 34px 0; }
+  .row { display: flex; align-items: center; height: 68px; border-bottom: 3px dashed #DAD8EE; font: 700 28px/1 var(--f-ui); color: #A8A3C9; }
+  .row span { width: 110px; }
+  #pen { position: absolute; z-index: 5; width: 26px; height: 170px; border-radius: 13px 13px 4px 4px; background: var(--amber); transform-origin: 50% 100%; }
+  #pen:after { content: ""; position: absolute; left: 3px; bottom: -22px; border: 10px solid transparent; border-top: 24px solid #0C0628; }
+  #phone { left: 760px; top: 800px; width: 190px; height: 330px; border-radius: 34px; border-width: 7px; z-index: 6; }
+  #phone .scr { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  #phone .scr svg { width: 90px; height: 90px; }
+  .nt { position: absolute; z-index: 7; display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; background: #fff; }
+  .nt svg { width: 34px; height: 34px; }
+  .nt i { display: block; width: 70px; height: 10px; border-radius: 5px; background: #D6D4EE; }
+  #tables { position: absolute; z-index: 3; left: 70px; right: 70px; top: 1370px; height: 170px; display: flex; justify-content: space-around; }
+  .tb { position: relative; width: 300px; height: 170px; }
+  .tb .t { position: absolute; left: 70px; width: 160px; height: 160px; top: 10px; }
+  .tb .c1, .tb .c2 { position: absolute; width: 104px; height: 104px; top: 66px; }
+  .tb .c1 { left: 40px; } .tb .c2 { left: 156px; transform: scaleX(-1); }
+  #wipe { width: 260px; height: 260px; }
+  [data-ratio="16x9"] #hd { left: 120px; width: 820px; top: 270px; text-align: left; }
+  [data-ratio="16x9"] #book { left: 1040px; top: 130px; width: 520px; height: 540px; }
+  [data-ratio="16x9"] #phone { left: 1610px; top: 170px; }
+  [data-ratio="16x9"] #tables { left: 980px; right: 60px; top: 760px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S03" class="bg-navy">
+  <div class="dots" id="dots"></div>
+  <div class="hd" id="hd" data-copy="S03_headline"></div>
+  <div id="book"><div class="top"><div class="t1" data-copy="S03_book"></div><div class="t2" data-copy="S03_brand"></div></div><div id="rows"></div></div>
+  <div id="pen"></div>
+  <div class="phone" id="phone"><div class="notch" style="width:60px;height:14px;margin-left:-30px;top:10px"></div><div class="scr" id="scr"></div></div>
+  <div id="nts"></div>
+  <div id="tables"></div>
+  <div class="wipe" id="wipe"></div>
+</div>
+<script src="hf/parts/pg.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), $ = PG.$;
+  $('#rows').innerHTML = ['18:00', '18:30', '19:00', '19:30', '20:00', '20:30'].map((h) => `<div class="row"><span>${h}</span></div>`).join('');
+  $('#scr').innerHTML = PG.icon('bell', '#08DDA4');
+  $('#tables').innerHTML = [0, 1].map(() => `<div class="tb"><div class="c1">${PG.icon('chair', '#757AD6')}</div><div class="c2">${PG.icon('chair', '#757AD6')}</div><div class="t">${PG.icon('table', '#E3E4F7')}</div></div>`).join('');
+  const NT = 9, nts = $('#nts');
+  for (let i = 0; i < NT; i++) { const d = document.createElement('div'); d.className = 'nt'; d.innerHTML = PG.icon(i % 3 === 1 ? 'bell' : 'heart', i % 3 === 1 ? '#7667FE' : '#FF6B6B') + '<i></i>'; nts.appendChild(d); }
+  const nl = PG.$$('.nt');
+  const wp = $('#wipe'); wp.innerHTML = PG.icon('heart', '#08DDA4');
+  PG.clock(tl, (t) => {
+    PG.drift($('#dots'), t);
+    const ph = $('#phone'), px = ph.offsetLeft, py = ph.offsetTop;
+    // rung theo từng đợt
+    const buzz = Math.max(0, Math.sin(t * 5.2)) ** 2;
+    ph.style.transform = 'rotate(' + (Math.sin(t * 70) * 5 * buzz).toFixed(2) + 'deg) translateX(' + (Math.sin(t * 90) * 5 * buzz).toFixed(1) + 'px)';
+    // thông báo bay ra liên tục (lặp)
+    nl.forEach((n, i) => {
+      const per = 2.2, ph0 = ((t - 0.3 + i * per / NT) % per + per) % per / per;
+      const live = t > 0.3 ? 1 : 0;
+      const side = S.landscape ? 1 : -1;
+      n.style.left = (px + (S.landscape ? 30 : -60) + side * 40 * S.EASE(ph0) + (S.rnd(i) - 0.5) * 60) + 'px';
+      n.style.top = (py - 20 - ph0 * 260) + 'px';
+      n.style.opacity = live * Math.sin(Math.PI * ph0).toFixed(3);
+      n.style.transform = 'scale(' + (0.7 + 0.3 * S.EASE(Math.min(1, ph0 * 4))).toFixed(3) + ')';
+    });
+    // bút lơ lửng trên sổ, chờ mà không có gì để ghi
+    const bk = $('#book');
+    const pen = $('#pen'); pen.style.left = (bk.offsetLeft + bk.clientWidth * 0.62) + 'px'; pen.style.top = (bk.offsetTop + 150 + Math.sin(t * 1.6) * 14) + 'px';
+    pen.style.transform = 'rotate(' + (24 + Math.sin(t * 1.1) * 4).toFixed(2) + 'deg)';
+    // tim to rơi xuống rồi phình phủ khung (sang S04 nền mint)
+    const a = PG.OUT - 0.9, k = PG.E(t, a, a + 0.35);
+    wp.style.left = (S.w / 2) + 'px'; wp.style.top = PG.mix(-200, S.h * 0.55, k) + 'px';
+    const g = PG.E(t, a + 0.3, PG.OUT - 0.15);
+    wp.style.transform = 'translate(-50%,-50%) scale(' + (t < a ? 0 : 1 + g * 16).toFixed(3) + ')';
+    wp.style.opacity = t < a ? 0 : 1;
+  });
+  PG.head(tl, $('#hd'), 0.35, {stagger: 0.06});
+  S.arrive(tl, '#book', 0.2, {dist: 60, blur: 0, dur: 0.7});
+  S.arrive(tl, '#tables', 0.5, {dist: 30, blur: 0, dur: 0.6});
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/nunito/900.css">
+<link rel="stylesheet" href="_fonts/nunito/700.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/700.css">
+<link rel="stylesheet" href="hf/parts/pg.css">
+<style>
+  /* S02 · người que trên sofa thả tim, tim vỡ thành bụi; đứng dậy đi sang "quán khác" */
+  #hd { top: 236px; text-align: center; }
+  #floor { position: absolute; z-index: 2; height: 10px; border-radius: 5px; background: rgba(255, 255, 255, .35); }
+  #sofa, #bld, #sign, #ph { position: absolute; z-index: 3; }
+  #ph { z-index: 5; width: 34px; height: 54px; border-radius: 8px; background: #0C0628; border: 4px solid #fff; }
+  #me { z-index: 4; }
+  .ht { position: absolute; z-index: 6; width: 70px; height: 70px; margin: -35px 0 0 -35px; }
+  .dust { position: absolute; z-index: 6; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #FF6B6B; }
+  #glow { position: absolute; z-index: 2; border-radius: 50%; background: radial-gradient(rgba(245, 158, 11, .55), rgba(245, 158, 11, 0) 70%); }
+  #wipe { width: 300px; height: 300px; border-radius: 50%; background: var(--navy); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02" class="bg-purple">
+  <div class="dots" id="dots"></div>
+  <div class="hd" id="hd" data-copy="S02_headline"></div>
+  <div id="floor"></div>
+  <div id="glow"></div>
+  <div id="sofa"></div>
+  <div id="bld"></div>
+  <div id="sign"></div>
+  <svg class="fig" id="me"></svg>
+  <div id="ph"></div>
+  <div id="hearts"></div>
+  <div class="wipe" id="wipe"></div>
+</div>
+<script src="hf/parts/pg.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), $ = PG.$;
+  const L = S.pick({'9:16': {floor: 1390, sofa: [90, 340], bld: [700, 330], sit: [250, 1262], hd: null, walkTo: 820, size: 330},
+                    '16:9': {floor: 930, sofa: [1010, 300], bld: [1520, 300], sit: [1150, 815], hd: 1, walkTo: 1630, size: 300}});
+  if (S.landscape) { const h = $('#hd'); h.style.left = '120px'; h.style.width = '820px'; h.style.top = '300px'; h.style.textAlign = 'left'; }
+  const fl = $('#floor'); fl.style.left = (S.landscape ? 960 : 50) + 'px'; fl.style.right = '50px'; fl.style.top = L.floor + 'px';
+  // sofa
+  const so = $('#sofa'); so.innerHTML = PG.icon('sofa', '#5B4FE0'); so.style.left = L.sofa[0] + 'px'; so.style.width = L.sofa[1] + 'px'; so.style.height = L.sofa[1] + 'px'; so.style.top = (L.floor - L.sofa[1] * 0.96) + 'px';
+  // quán khác: toà nhà sáng đèn, biển dĩa
+  const b = $('#bld'); b.innerHTML = PG.icon('building', '#FFFFFF', '', '#F59E0B'); b.style.left = L.bld[0] + 'px'; b.style.width = L.bld[1] + 'px'; b.style.height = L.bld[1] + 'px'; b.style.top = (L.floor - L.bld[1] * 0.98) + 'px';
+  const sg = $('#sign'); sg.innerHTML = PG.icon('fork', '#F59E0B'); const ss = L.bld[1] * 0.3; sg.style.width = ss + 'px'; sg.style.height = ss + 'px'; sg.style.left = (L.bld[0] + L.bld[1] * 0.35) + 'px'; sg.style.top = (L.floor - L.bld[1] * 1.32) + 'px';
+  const gw = $('#glow'), gs = L.bld[1] * 1.8; gw.style.width = gs + 'px'; gw.style.height = gs + 'px'; gw.style.left = (L.bld[0] + L.bld[1] / 2 - gs / 2) + 'px'; gw.style.top = (L.floor - L.bld[1] / 2 - gs / 2) + 'px';
+  const door = [L.bld[0] + L.bld[1] * 0.5, L.floor - L.bld[1] * 0.2];
+  // tim
+  const HT = [0.55, 0.95, 1.35, 1.75, 2.15, 2.5], hz = $('#hearts');
+  HT.forEach((a, i) => { const d = document.createElement('div'); d.className = 'ht'; d.innerHTML = PG.icon('heart', '#FF6B6B'); hz.appendChild(d); for (let j = 0; j < 6; j++) { const p = document.createElement('div'); p.className = 'dust'; p.dataset.i = i; p.dataset.j = j; hz.appendChild(p); } });
+  const hts = PG.$$('.ht'), dust = PG.$$('.dust');
+  const me = $('#me'), ph = $('#ph');
+  PG.clock(tl, (t) => {
+    PG.drift($('#dots'), t);
+    const sc = L.size / 130;
+    // ngồi lướt → đứng dậy (2.9–3.3) → đi (3.3–5.4) → vào cửa
+    const up = PG.E(t, 2.9, 3.35), w0 = 3.3, w1 = 5.5, kw = PG.L(t, w0, w1);
+    const sitPose = PG.sit(PG.phonePose({lR: [90, 4], lL: [84, 0]}));
+    const stand = PG.walk(0, {aR: [26, 150]});
+    let pose = PG.lerpPose(sitPose, stand, up);
+    let x = L.sit[0], y = PG.mix(L.sit[1], L.floor - 46 * sc, up);
+    if (t > w0) { pose = PG.walk((t - w0) * 9.5, {aR: [30, 140]}); x = PG.mix(L.sit[0] + 40, L.walkTo, kw); y = L.floor - 46 * sc - Math.abs(Math.sin((t - w0) * 9.5)) * 6; }
+    PG.place(me, x, y, L.size, pose);
+    me.style.opacity = 1 - PG.L(t, w1 - 0.15, w1 + 0.15);
+    // điện thoại trong tay (gần đầu)
+    const hand = [x + 18 * sc + 10, y - 48 * sc];
+    ph.style.left = (hand[0] - 17) + 'px'; ph.style.top = (hand[1] - 27) + 'px'; ph.style.opacity = me.style.opacity;
+    // tim: bay lên khỏi điện thoại rồi vỡ thành bụi
+    HT.forEach((a, i) => {
+      const k = PG.L(t, a, a + 0.75), burst = PG.L(t, a + 0.75, a + 1.2);
+      const hx = hand[0] + (i % 2 ? 40 : -30), hy = hand[1] - 40 - 210 * S.EASE(k);
+      const h = hts[i]; h.style.left = hx + 'px'; h.style.top = hy + 'px';
+      h.style.opacity = k > 0 && burst < 0.2 ? 1 - burst * 5 : 0;
+      h.style.transform = 'scale(' + (0.4 + 0.6 * S.EASE(k) + burst * 0.8).toFixed(3) + ')';
+      for (let j = 0; j < 6; j++) { const d = dust[i * 6 + j], an = j / 6 * Math.PI * 2 + i; const r = 20 + 110 * S.EASE(burst);
+        d.style.left = (hx + Math.cos(an) * r) + 'px'; d.style.top = (hy + Math.sin(an) * r + 60 * burst * burst) + 'px'; d.style.opacity = burst > 0 ? (1 - burst) : 0; }
+    });
+    // cửa sáng khi khách tới; khối tròn navy phủ từ cửa
+    $('#glow').style.opacity = 0.5 + 0.5 * PG.E(t, 4.6, 5.4);
+    const wp = $('#wipe'); wp.style.left = door[0] + 'px'; wp.style.top = door[1] + 'px';
+    PG.wipe(wp, t, PG.OUT - 0.7, PG.OUT - 0.18, 16);
+  });
+  PG.head(tl, $('#hd'), 0.35, {stagger: 0.07});
+</script>
+</body>
+</html>

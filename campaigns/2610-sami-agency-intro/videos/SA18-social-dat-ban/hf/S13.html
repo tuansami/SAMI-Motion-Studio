@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/nunito/900.css">
+<link rel="stylesheet" href="_fonts/nunito/700.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/500.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/700.css">
+<link rel="stylesheet" href="hf/parts/pg.css">
+<style>
+  /* S13 · end card SAMI: bong bóng chat xanh (vẽ code) bật ra, số WhatsApp, ưu đãi, logo + tagline */
+  #glow { position: absolute; inset: 0; background: radial-gradient(circle at 50% 36%, rgba(118, 103, 254, .32), rgba(12, 6, 40, 0) 55%), radial-gradient(circle at 50% 82%, rgba(8, 221, 164, .14), rgba(12, 6, 40, 0) 50%); }
+  #wrap { position: absolute; z-index: 5; left: var(--safe-side); right: var(--safe-side); top: 300px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #claim { font: 900 52px/1.25 var(--f-pg); color: #fff; margin-bottom: 70px; }
+  #claim em { font-style: normal; color: var(--mint); }
+  #bubble { position: relative; padding: 40px 56px 44px; border-radius: 52px 52px 52px 14px; background: var(--mint); color: var(--navy); box-shadow: 0 22px 0 rgba(8, 221, 164, .25); }
+  #bubble:after { content: ""; position: absolute; left: 0; bottom: -28px; width: 54px; height: 42px; background: var(--mint); clip-path: polygon(0 0, 100% 0, 0 100%); }
+  #bubble .ic { position: absolute; left: -36px; top: -36px; width: 82px; height: 82px; border-radius: 50%; background: var(--navy); border: 4px solid var(--mint); display: flex; align-items: center; justify-content: center; }
+  #bubble .ic svg { width: 42px; height: 42px; }
+  #cta { font: 900 50px/1.2 var(--f-pg); }
+  #phone { font: 700 76px/1.15 var(--f-ui); letter-spacing: -.01em; margin-top: 8px; white-space: nowrap; }
+  #offer { margin-top: 72px; font: 700 38px/1.4 var(--f-pg); color: #E3E4F7; }
+  #logoc { margin-top: 84px; width: 560px; height: 150px; overflow: hidden; }
+  #logo { width: 560px; display: block; }
+  #tag { margin-top: 22px; font: 500 24px/1.4 var(--f-ui); letter-spacing: .05em; color: #A8A3C9; }
+  #web { margin-top: 12px; font: 700 42px/1.2 var(--f-ui); color: var(--mint); }
+  .conf { position: absolute; z-index: 4; width: 40px; height: 40px; }
+  [data-ratio="16x9"] #wrap { left: 0; right: 0; top: 0; bottom: 0; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; justify-items: center; padding: 0 120px; gap: 70px; }
+  [data-ratio="16x9"] #colA { align-items: flex-start; text-align: left; }
+  [data-ratio="16x9"] #claim { margin-bottom: 60px; font-size: 48px; }
+  [data-ratio="16x9"] #offer { margin-top: 64px; font-size: 36px; }
+  [data-ratio="16x9"] #logoc { margin-top: 0; width: 600px; height: 160px; }
+  [data-ratio="16x9"] #logo { width: 600px; }
+  [data-ratio="16x9"] #tag { white-space: nowrap; font-size: 21px; }
+  #colA, #colB { display: flex; flex-direction: column; align-items: center; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S13" class="bg-navy">
+  <div id="glow"></div>
+  <div id="confs"></div>
+  <div id="wrap">
+    <div id="colA">
+      <div id="claim"></div>
+      <div id="bubble">
+        <div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#08DDA4" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30 L10 23 A12 12 0 1 1 16 30 Z"/></svg></div>
+        <div id="cta" data-copy="S13_cta"></div>
+        <div id="phone" data-copy="S13_phone"></div>
+      </div>
+      <div id="offer" data-copy="S13_offer"></div>
+    </div>
+    <div id="colB">
+      <div id="logoc"><img id="logo" src="public/img/logo-white.svg"></div>
+      <div id="tag" data-copy="S13_tagline"></div>
+      <div id="web" data-copy="S13_web"></div>
+    </div>
+  </div>
+</div>
+<script src="hf/parts/pg.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), $ = PG.$;
+  // câu chốt: 3 vế, vế cuối tô mint
+  const parts = S.text('S13_claim').split('. ').map((p) => p.replace(/\.$/, '') + '.');
+  $('#claim').innerHTML = parts.map((p, i) => `<span class="cl" style="display:inline-block">${i === parts.length - 1 ? '<em>' + p + '</em>' : p}</span>`).join(' ');
+  // hoa giấy pictogram (tim, ghế, sao) bung ra từ bong bóng
+  const IC = ['heart', 'chair', 'star', 'heart', 'cal', 'star'], COL = ['#FF6B6B', '#08DDA4', '#F59E0B', '#7667FE'];
+  for (let i = 0; i < 16; i++) { const d = document.createElement('div'); d.className = 'conf'; d.innerHTML = PG.icon(IC[i % 6], COL[i % 4], '', '#0C0628'); $('#confs').appendChild(d); }
+  const cf = PG.$$('.conf');
+  PG.clock(tl, (t) => {
+    const b = $('#bubble'); let x = 0, y = 0, e = b; while (e && e.id !== 'root') { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; }
+    const cx = x + b.offsetWidth / 2, cy = y + b.offsetHeight / 2;
+    cf.forEach((c, i) => { const k = PG.E(t, 0.45, 1.6), an = i / 16 * Math.PI * 2 + 0.3, r = (260 + 200 * S.rnd(i)) * k;
+      c.style.left = (cx + Math.cos(an) * r * 1.3 - 20) + 'px'; c.style.top = (cy + Math.sin(an) * r + 120 * k * k - 20) + 'px';
+      c.style.opacity = k > 0 ? (1 - PG.L(t, 1.4, 2.2)) : 0; c.style.transform = 'rotate(' + (k * 200 * (i % 2 ? 1 : -1)).toFixed(1) + 'deg)'; });
+  });
+  S.arrive(tl, '.cl', 0.2, {dist: 20, blur: 6, stagger: 0.2});
+  tl.fromTo('#bubble', {opacity: 0, scale: 0.4, y: 40}, {opacity: 1, scale: 1, y: 0, duration: 0.7}, 0.45);
+  S.arrive(tl, '#offer', 1.1);
+  S.arrive(tl, '#logoc', 1.6, {dist: 30});
+  S.arrive(tl, '#tag', 2.0, {dist: 20, blur: 6});
+  S.arrive(tl, '#web', 2.2, {dist: 20, blur: 6});
+</script>
+</body>
+</html>

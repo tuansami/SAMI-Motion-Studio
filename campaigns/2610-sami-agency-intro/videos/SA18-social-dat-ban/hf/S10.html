@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/nunito/900.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/500.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/700.css">
+<link rel="stylesheet" href="hf/parts/pg.css">
+<style>
+  /* S10 · 04 KPI mỗi tuần: báo cáo KW 43, chuỗi lượt xem → lượt bấm → đặt bàn (không số), bài tốt được ✓, bài kém bị gạch */
+  #tag { left: 72px; top: 236px; }
+  #hd { top: 330px; text-align: left; }
+  #rep { position: absolute; z-index: 4; left: 72px; top: 730px; width: 936px; height: 720px; background: #fff; border-radius: 34px; color: var(--navy); box-shadow: 0 22px 0 rgba(12, 6, 40, .12); font-family: var(--f-ui); }
+  #rep .h { position: absolute; left: 36px; top: 30px; font: 700 32px/1 var(--f-ui); }
+  #rep .h small { font: 500 24px/1 var(--f-ui); color: #6E6893; margin-left: 12px; }
+  #cols { position: absolute; left: 36px; right: 36px; top: 96px; height: 300px; display: flex; gap: 26px; align-items: flex-end; }
+  .col { flex: 1; position: relative; height: 100%; }
+  .col .bar { position: absolute; left: 0; right: 0; bottom: 52px; border-radius: 18px 18px 8px 8px; transform-origin: 50% 100%; }
+  .col .ic { position: absolute; left: 50%; width: 70px; height: 70px; margin-left: -35px; }
+  .col .lb { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; font: 700 26px/40px var(--f-ui); }
+  .ar { position: absolute; z-index: 2; top: 210px; width: 34px; height: 34px; }
+  #posts { position: absolute; left: 36px; right: 36px; top: 430px; }
+  .pr { position: relative; display: flex; align-items: center; gap: 18px; height: 80px; border-top: 3px solid #EEEDF8; }
+  .pr .th { width: 58px; height: 58px; border-radius: 14px; }
+  .pr .l { height: 14px; border-radius: 7px; background: #D6D4EE; }
+  .pr .st { position: absolute; right: 0; width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .pr .st svg { width: 30px; height: 30px; }
+  .pr .strike { position: absolute; left: 70px; right: 80px; top: 38px; height: 6px; border-radius: 3px; background: var(--coral); transform-origin: 0 50%; }
+  #demo { right: 36px; top: 26px; color: var(--navy); }
+  #wipe { width: 200px; height: 200px; border-radius: 50%; background: var(--navy); }
+  [data-ratio="16x9"] #tag { left: 120px; top: 260px; }
+  [data-ratio="16x9"] #hd { left: 120px; width: 800px; top: 350px; font-size: 78px; }
+  [data-ratio="16x9"] #rep { left: 960px; top: 110px; width: 860px; height: 860px; }
+  [data-ratio="16x9"] #cols { height: 360px; }
+  [data-ratio="16x9"] #posts { top: 500px; }
+  [data-ratio="16x9"] .pr { height: 86px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S10" class="bg-lav">
+  <div class="dots" id="dots"></div>
+  <div class="tag" id="tag"></div>
+  <div class="hd" id="hd" data-copy="S10_headline"></div>
+  <div id="rep"><div class="h">Wochenreport<small>KW 43</small></div><div class="demo" id="demo" data-copy="S10_demo"></div><div id="cols"></div><div id="posts"></div></div>
+  <div class="wipe" id="wipe"></div>
+</div>
+<script src="hf/parts/pg.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), $ = PG.$;
+  const tg = S.text('S10_tag').split(' · '); $('#tag').innerHTML = '<b>' + tg[0] + '</b>' + (tg[1] || '');
+  const C = [{k: 'S10_k1', ic: 'eye', c: '#C9C4FF', h: 0.92}, {k: 'S10_k2', ic: 'tap', c: '#9D93FF', h: 0.6}, {k: 'S10_k3', ic: 'chair', c: '#08DDA4', h: 0.4}];
+  $('#cols').innerHTML = C.map((c) => `<div class="col"><div class="bar" style="background:${c.c}"></div><div class="ic">${PG.icon(c.ic, '#0C0628', '', c.c)}</div><div class="lb">${S.text(c.k)}</div></div>`).join('');
+  const P = [['#FFB547', 1], ['#7667FE', 1], ['#FF8FA3', 0], ['#08DDA4', 1]];
+  $('#posts').innerHTML = P.map((p) => `<div class="pr"><div class="th" style="background:${p[0]}"></div><div><div class="l" style="width:${p[1] ? 300 : 240}px"></div><div class="l" style="width:180px;margin-top:10px;opacity:.6"></div></div>` +
+    `<div class="st" style="background:${p[1] ? '#08DDA4' : '#FFE1E1'}">${p[1] ? PG.icon('check', '#0C0628') : '<span style="font:900 34px/1 Nunito;color:#FF6B6B">×</span>'}</div>${p[1] ? '' : '<div class="strike"></div>'}</div>`).join('');
+  const bars = PG.$$('.col .bar'), ics = PG.$$('.col .ic'), cols = PG.$$('.col'), sts = PG.$$('.pr .st'), strike = $('.strike');
+  const abs = (el) => { let x = 0, y = 0, e = el; while (e && e.id !== 'root') { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return {x: x + el.offsetWidth / 2, y: y + el.offsetHeight / 2}; };
+  PG.clock(tl, (t) => {
+    PG.drift($('#dots'), t);
+    const H = cols[0].clientHeight - 52 - 80;
+    bars.forEach((b, i) => { const k = PG.E(t, 1.2 + i * 0.35, 2.0 + i * 0.35); const h = H * C[i].h * k; b.style.height = h + 'px'; ics[i].style.bottom = (52 + h + 8) + 'px'; ics[i].style.opacity = PG.L(t, 1.2 + i * 0.35, 1.4 + i * 0.35); });
+    sts.forEach((s, i) => { const a = 2.8 + i * 0.45, k = PG.E(t, a, a + 0.35); s.style.transform = `scale(${(k + 0.2 * Math.sin(Math.PI * k)).toFixed(3)})`; s.style.opacity = k > 0 ? 1 : 0; });
+    strike.style.transform = `scaleX(${PG.E(t, 3.85, 4.3).toFixed(3)})`;
+    // khối navy mở từ biểu tượng ghế của cột "Đặt bàn"
+    const wp = $('#wipe'), c = abs(ics[2]); wp.style.left = c.x + 'px'; wp.style.top = (c.y) + 'px';
+    PG.wipe(wp, t, PG.OUT - 0.6, PG.OUT - 0.15, 24);
+  });
+  S.arrive(tl, '#tag', 0.3, {dist: 20, blur: 4});
+  PG.head(tl, $('#hd'), 0.5, {stagger: 0.06});
+  S.arrive(tl, '#rep', 0.3, {dist: 60, blur: 0, dur: 0.6});
+</script>
+</body>
+</html>

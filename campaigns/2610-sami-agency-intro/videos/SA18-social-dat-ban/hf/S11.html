@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/nunito/900.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/500.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/700.css">
+<link rel="stylesheet" href="hf/parts/pg.css">
+<style>
+  /* S11 · CHỮ KÝ 2: tim rơi qua phễu, ra đáy biến thành ghế được kéo ra bàn, người que ngồi xuống; bộ đếm bàn đặt bắt đầu quay */
+  #hd { top: 236px; text-align: center; }
+  #cv { position: absolute; inset: 0; z-index: 3; }
+  .tbl { position: absolute; z-index: 4; }
+  .chair { position: absolute; z-index: 5; }
+  .guest { position: absolute; z-index: 6; }
+  .tbl, .chair { width: 10px; height: 10px; }
+  #fx { position: absolute; inset: 0; z-index: 7; }
+  #ctr { position: absolute; z-index: 8; left: 270px; top: 1420px; width: 540px; display: flex; align-items: center; gap: 20px; padding: 18px 28px; border-radius: 30px; background: var(--mint); color: var(--navy); }
+  #ctr .ic { width: 64px; height: 64px; }
+  #ctr .lb { font: 700 30px/1 var(--f-ui); flex: 1; }
+  #num { font-size: 70px; }
+  #demo { left: 72px; top: 1450px; }
+  [data-ratio="16x9"] #hd { left: 120px; width: 760px; top: 300px; text-align: left; font-size: 92px; }
+  [data-ratio="16x9"] #ctr { left: 120px; top: 760px; width: 520px; }
+  [data-ratio="16x9"] #demo { left: 120px; top: 900px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S11" class="bg-navy">
+  <div class="dots" id="dots"></div>
+  <canvas id="cv"></canvas>
+  <div id="room"></div>
+  <canvas id="fx"></canvas>
+  <div class="hd" id="hd" data-copy="S11_headline"></div>
+  <div id="ctr"><div class="ic" id="cic"></div><div class="lb" data-copy="S11_book"></div><div id="num"></div></div>
+  <div class="demo" id="demo" data-copy="S11_demo"></div>
+</div>
+<script src="hf/parts/pg.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), $ = PG.$;
+  const ctx = PG.canvas($('#cv')), fx = PG.canvas($('#fx'));
+  const L = S.pick({'9:16': {cx: 540, top: 650, H: 400, W: 560, spout: 60, tx: [200, 540, 880], ty: 1170, ts: 170, cs: 118, gs: 190},
+                    '16:9': {cx: 1380, top: 110, H: 360, W: 520, spout: 60, tx: [1080, 1380, 1680], ty: 610, ts: 160, cs: 112, gs: 180}});
+  $('#cic').innerHTML = PG.icon('cal', '#0C0628', '', '#08DDA4');
+  const room = $('#room'), seats = [];
+  L.tx.forEach((x, i) => {
+    const t = document.createElement('div'); t.className = 'tbl'; t.innerHTML = PG.icon('table', '#E3E4F7'); Object.assign(t.style, {left: (x - L.ts / 2) + 'px', top: L.ty + 'px', width: L.ts + 'px', height: L.ts + 'px'}); room.appendChild(t);
+    [-1, 1].forEach((side) => {
+      const c = document.createElement('div'); c.className = 'chair'; c.innerHTML = PG.icon('chair', '#757AD6'); room.appendChild(c);
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); g.setAttribute('class', 'fig guest'); room.appendChild(g);
+      seats.push({x, side, c, g, i});
+    });
+  });
+  // thứ tự khách tới (xen kẽ các bàn)
+  const ORDER = [2, 3, 0, 5, 1, 4], T0 = 1.4, GAP = 0.82;
+  seats.forEach((s, j) => { s.a = T0 + ORDER.indexOf(j) * GAP; });
+  const num = PG.odo($('#num'), 2, false);
+  PG.clock(tl, (t) => {
+    PG.drift($('#dots'), t);
+    ctx.clearRect(0, 0, S.w, S.h); fx.clearRect(0, 0, S.w, S.h);
+    const f = PG.funnel(ctx, {cx: L.cx, top: L.top, H: L.H, W: L.W, k: 1, scroll: 260 * t, cardH: 300, gap: 20, colors: PG.FEED, wall: '#08DDA4', spout: L.spout});
+    const sy = f.neckY + L.spout;
+    // tim liên tục rơi vào phễu
+    for (let i = 0; i < 30; i++) { const d = t - i * 0.24; if (d < 0) continue; const dur = 0.9, u = d / dur; if (u > 1) continue; const x0 = (S.rnd(i + 3) - 0.5) * 1.5;
+      PG.heartPath(fx, L.cx + x0 * 0.8 * f.hw(u), f.Y(u), 24 * (0.6 + 0.4 * (1 - u))); fx.fillStyle = i % 4 ? '#FF6B6B' : '#08DDA4'; fx.fill(); }
+    seats.forEach((s) => {
+      const tuck = L.ts * 0.18, out = L.ts * 0.42;
+      const k = PG.E(t, s.a + 0.55, s.a + 0.95);           // ghế được kéo ra
+      const cx = s.x + s.side * (L.ts * 0.2 + PG.mix(tuck, out, k));
+      const cy = L.ty + L.ts - L.cs + 4;
+      s.c.style.left = (cx - L.cs / 2) + 'px'; s.c.style.top = cy + 'px'; s.c.style.width = L.cs + 'px'; s.c.style.height = L.cs + 'px';
+      s.c.style.transform = s.side > 0 ? 'scaleX(-1)' : ''; s.c.style.color = k > 0 ? '#08DDA4' : '#757AD6'; s.c.querySelector('svg').style.fill = k > 0 ? '#08DDA4' : '#757AD6';
+      // tim bay từ đáy ống tới ghế, chạm là thành ghế
+      const kh = PG.L(t, s.a, s.a + 0.6);
+      if (kh > 0 && kh < 1) { const e = S.EASE(kh); const hx = PG.mix(L.cx, cx, e), hy = PG.mix(sy, cy + L.cs * 0.4, e) - Math.sin(Math.PI * kh) * 160; PG.heartPath(fx, hx, hy, 30 * (1 - 0.4 * kh)); fx.fillStyle = '#FF6B6B'; fx.fill(); }
+      const pop = PG.L(t, s.a + 0.55, s.a + 0.85);
+      if (pop > 0 && pop < 1) { fx.globalAlpha = 1 - pop; fx.strokeStyle = '#08DDA4'; fx.lineWidth = 6; fx.beginPath(); fx.arc(cx, cy + L.cs * 0.5, 30 + pop * 70, 0, Math.PI * 2); fx.stroke(); fx.globalAlpha = 1; }
+      // khách ngồi xuống
+      const kg = PG.E(t, s.a + 0.8, s.a + 1.2);
+      const hipX = cx - s.side * L.cs * 0.12, hipY = cy + L.cs * 0.5;
+      PG.place(s.g, hipX, hipY - (1 - kg) * 30, L.gs, PG.sit({aR: [40, 95], aL: [30, 90]}), s.side > 0);
+      s.g.style.opacity = kg;
+    });
+    // bộ đếm: đứng ở 0 → bắt đầu quay khi khách đầu tiên ngồi
+    const st = T0 + 0.9, v = t < st ? 0 : (t - st) * 3.2 + (t - st) * (t - st) * 0.4;
+    num(v % 8.9, t < st ? [0, 0] : [0.5, Math.min(5, 1.5 + (t - st) * 3)]);
+  });
+  PG.head(tl, $('#hd'), 0.35, {stagger: 0.08});
+  S.arrive(tl, '#ctr', 0.6, {dist: 30, blur: 4});
+  S.arrive(tl, '#demo', 1.0, {dist: 10, blur: 4});
+</script>
+</body>
+</html>

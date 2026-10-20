@@ -1,0 +1,60 @@
+/* SA18 · "Pictogram Motion" — kiểu chung cho mọi cảnh */
+:root {
+  --navy: #0C0628; --navy2: #1A1730; --purple: #7667FE; --violet: #757AD6; --mint: #08DDA4; --lav: #E3E4F7; --amber: #F59E0B; --coral: #FF6B6B; --white: #FFFFFF;
+  --f-pg: "Nunito", "Be Vietnam Pro", sans-serif; --f-ui: "Space Grotesk", "Be Vietnam Pro", sans-serif;
+  --ink: #fff; --hlbg: var(--mint); --hlink: var(--navy);
+}
+[data-composition-id] { font-family: var(--f-pg); color: var(--ink); }
+.bg-navy { background: var(--navy); --ink: #fff; --hlbg: var(--mint); --hlink: var(--navy); }
+.bg-purple { background: var(--purple); --ink: #fff; --hlbg: var(--navy); --hlink: var(--mint); }
+.bg-mint { background: var(--mint); --ink: var(--navy); --hlbg: var(--navy); --hlink: var(--mint); }
+.bg-lav { background: var(--lav); --ink: var(--navy); --hlbg: var(--purple); --hlink: #fff; }
+
+/* lớp xa: lưới chấm trôi chậm */
+.dots { position: absolute; inset: -120px; z-index: 0; pointer-events: none; opacity: .16;
+  background-image: radial-gradient(circle, currentColor 3px, transparent 3.5px); background-size: 60px 60px; color: var(--ink); }
+
+/* chữ */
+.hd { position: absolute; z-index: 10; font-weight: 900; letter-spacing: -.015em; line-height: 1.2; color: var(--ink); text-wrap: balance; }
+[data-ratio="9x16"] .hd { left: var(--safe-side); right: var(--safe-side); font-size: 88px; }
+[data-ratio="16x9"] .hd { font-size: 84px; }
+.sub { position: absolute; z-index: 10; font-weight: 700; line-height: 1.38; color: var(--ink); opacity: .92; }
+[data-ratio="9x16"] .sub { left: var(--safe-side); right: var(--safe-side); font-size: 44px; }
+[data-ratio="16x9"] .sub { font-size: 40px; }
+/* chữ tô: vệt bút dạ phẳng quét ngang (background-size do timeline điều khiển qua --hk) */
+em.hl, em.hl .w { font-style: normal; color: var(--hlink); -webkit-text-fill-color: var(--hlink); background: none; }
+em.hl { background-image: linear-gradient(var(--hlbg), var(--hlbg)); background-repeat: no-repeat; background-size: var(--hk, 100%) 100%; background-position: 0 50%;
+  padding: 0 .14em; margin: 0 -.06em; border-radius: .12em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.tag { position: absolute; z-index: 11; display: inline-flex; align-items: center; gap: 14px; font: 700 30px/1 var(--f-ui); letter-spacing: .02em; color: var(--ink);
+  padding: 14px 24px; border-radius: 999px; border: 3px solid currentColor; }
+.tag b { display: inline-flex; align-items: center; justify-content: center; min-width: 46px; height: 46px; margin: -8px 0 -8px -12px; border-radius: 999px; background: var(--ink); color: var(--navy); font-weight: 700; }
+.bg-purple .tag b, .bg-navy .tag b { color: var(--purple); }
+.demo { position: absolute; z-index: 12; font: 500 22px/1 var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); opacity: .7;
+  padding: 9px 14px; border-radius: 10px; border: 2px solid currentColor; }
+.ui { font-family: var(--f-ui); }
+
+/* pictogram */
+.pg { display: block; width: 100%; height: 100%; overflow: visible; }
+.pg * { vector-effect: non-scaling-stroke; }
+svg.fig { overflow: visible; }
+
+/* điện thoại pictogram */
+.phone { position: absolute; border-radius: 64px; background: var(--navy2); border: 10px solid #fff; overflow: hidden; box-shadow: 0 40px 0 rgba(0, 0, 0, .18); }
+.phone .notch { position: absolute; left: 50%; top: 16px; width: 120px; height: 26px; margin-left: -60px; border-radius: 20px; background: #fff; z-index: 3; }
+.card { position: absolute; border-radius: 26px; overflow: hidden; }
+
+/* nút pill */
+.pill { display: inline-flex; align-items: center; gap: 12px; font: 700 32px/1 var(--f-ui); padding: 18px 28px; border-radius: 999px; background: var(--mint); color: var(--navy); white-space: nowrap; }
+
+/* khối màu chuyển cảnh */
+.wipe { position: absolute; z-index: 50; left: 50%; top: 50%; pointer-events: none; transform: scale(0); }
+
+/* hạt tiền cảnh */
+.fx { position: absolute; inset: 0; z-index: 30; pointer-events: none; }
+
+/* bộ đếm trống số */
+.odo { display: inline-flex; align-items: flex-start; font-family: var(--f-ui); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+.odc { display: inline-block; height: 1em; overflow: hidden; width: .64em; text-align: center; }
+.ods { display: block; will-change: transform; }
+.ods i { display: block; height: 1em; font-style: normal; }
+.odsep { display: inline-block; width: .28em; text-align: center; }

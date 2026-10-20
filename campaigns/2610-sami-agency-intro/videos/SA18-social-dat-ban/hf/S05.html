@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/nunito/900.css">
+<link rel="stylesheet" href="_fonts/nunito/700.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/700.css">
+<link rel="stylesheet" href="hf/parts/pg.css">
+<style>
+  /* S05 · lý do: mỗi bài đăng bắn ra một mũi tên, vòng vèo rồi đâm vào tường cụt; cuối cảnh các thẻ dồn thành dải feed (nền navy) */
+  #tag { left: 72px; top: 236px; }
+  #hd { top: 330px; text-align: left; }
+  .pc { position: absolute; z-index: 5; width: 260px; height: 300px; border-radius: 26px; background: #fff; box-shadow: 0 16px 0 rgba(12, 6, 40, .12); overflow: hidden; }
+  .pc .ph { position: absolute; left: 14px; right: 14px; top: 14px; height: 190px; border-radius: 18px; }
+  .pc .pl { position: absolute; left: 50%; top: 50%; width: 110px; height: 110px; margin: -55px 0 0 -55px; border-radius: 50%; }
+  .pc .hr { position: absolute; left: 18px; bottom: 22px; width: 50px; height: 50px; }
+  .pc .ln { position: absolute; left: 82px; bottom: 40px; width: 140px; height: 14px; border-radius: 7px; background: #D6D4EE; }
+  #arrows { position: absolute; inset: 0; z-index: 4; overflow: visible; }
+  #arrows path.a { fill: none; stroke: var(--purple); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 22 18; }
+  #wall { position: absolute; z-index: 3; left: 40px; right: 40px; height: 120px; }
+  .q { position: absolute; z-index: 6; width: 86px; height: 86px; margin: -43px 0 0 -43px; border-radius: 50%; background: var(--coral); color: #fff; font: 900 60px/86px var(--f-pg); text-align: center; }
+  #navy { position: absolute; z-index: 40; background: var(--navy); opacity: 0; }
+  [data-ratio="16x9"] #tag { left: 120px; top: 230px; }
+  [data-ratio="16x9"] #hd { left: 120px; width: 820px; top: 320px; }
+  [data-ratio="16x9"] #wall { left: 1000px; right: 60px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S05" class="bg-lav">
+  <div class="dots" id="dots"></div>
+  <div class="tag" id="tag" data-copy="S05_eyebrow"></div>
+  <div class="hd" id="hd" data-copy="S05_headline"></div>
+  <div id="wall"></div>
+  <svg id="arrows"></svg>
+  <div id="cards"></div>
+  <div id="qs"></div>
+  <div id="navy"></div>
+</div>
+<script src="hf/parts/pg.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), $ = PG.$;
+  const L = S.pick({'9:16': {xs: [70, 410, 750], y: 800, wall: 1400, sc: 1}, '16:9': {xs: [1030, 1320, 1610], y: 150, wall: 830, sc: 0.95}});
+  const cards = $('#cards');
+  L.xs.forEach((x, i) => { const c = PG.FEED[i + 1], d = document.createElement('div'); d.className = 'pc'; d.style.left = x + 'px'; d.style.top = L.y + 'px';
+    d.innerHTML = `<div class="ph" style="background:${c.photo}"><div class="pl" style="background:${c.plate}"></div></div><div class="hr">${PG.icon('heart', '#FF6B6B')}</div><div class="ln"></div>`; cards.appendChild(d); });
+  const pcs = PG.$$('.pc');
+  const wall = $('#wall'); wall.style.top = L.wall + 'px';
+  wall.innerHTML = '<svg viewBox="0 0 1000 120" preserveAspectRatio="none" style="width:100%;height:100%">' + [0, 1, 2].map((r) => Array.from({length: 9}, (_, j) => `<rect x="${(j * 120 - (r % 2) * 60)}" y="${r * 40 + 2}" width="112" height="34" rx="8" fill="#0C0628" opacity="${0.75 + 0.25 * S.rnd(r * 9 + j)}"/>`).join('')).join('') + '</svg>';
+  // mũi tên vòng vèo
+  const svg = $('#arrows'); svg.setAttribute('viewBox', `0 0 ${S.w} ${S.h}`);
+  const ends = [];
+  L.xs.forEach((x, i) => {
+    const cx = x + 130, cy = L.y + 300 + 10, ex = cx + [60, -40, 30][i], ey = L.wall - 18;
+    const mid = (cy + ey) / 2, sw = [150, -170, 140][i];
+    const d = `M${cx} ${cy} C${cx + sw} ${cy + 80}, ${cx + sw} ${mid - 60}, ${cx} ${mid} S${cx - sw * 0.8} ${mid + 90}, ${ex} ${ey}`;
+    svg.insertAdjacentHTML('beforeend', `<path class="a" d="${d}"/><path class="hd2" d="M-20 -22 L0 6 L20 -22" fill="none" stroke="#7667FE" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>`);
+    ends.push([ex, ey]);
+    const q = document.createElement('div'); q.className = 'q'; q.textContent = '?'; q.style.left = ex + 'px'; q.style.top = (ey - 70) + 'px'; $('#qs').appendChild(q);
+  });
+  const paths = PG.$$('#arrows path.a'), heads = PG.$$('#arrows path.hd2'), qs = PG.$$('.q');
+  const lens = paths.map((p) => p.getTotalLength());
+  PG.clock(tl, (t) => {
+    PG.drift($('#dots'), t);
+    paths.forEach((p, i) => {
+      const a = 1.0 + i * 0.35, k = PG.E(t, a, a + 1.3), len = lens[i];
+      // mũi tên đi tới đâu, nét đứt hiện tới đó
+      p.style.strokeDashoffset = (-t * 40).toFixed(1);
+      p.style.clipPath = 'none';
+      const pt = p.getPointAtLength(len * k), pt2 = p.getPointAtLength(Math.max(0, len * k - 4));
+      const ang = Math.atan2(pt.y - pt2.y, pt.x - pt2.x) * 180 / Math.PI - 90;
+      heads[i].setAttribute('transform', `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${ang.toFixed(1)})`);
+      heads[i].style.opacity = k > 0.01 ? 1 : 0;
+      p.setAttribute('stroke-dasharray', `22 18`);
+      p.style.opacity = k > 0.01 ? 1 : 0;
+      p.style.strokeDasharray = `${(len * k).toFixed(1)} ${len + 10}`;
+      // đâm tường → dấu "?" bật ra, mũi tên rung
+      const hit = a + 1.3, kq = PG.E(t, hit - 0.1, hit + 0.3);
+      qs[i].style.opacity = kq; qs[i].style.transform = 'scale(' + (0.3 + 0.7 * kq + 0.12 * Math.sin(Math.max(0, t - hit) * 6) * Math.exp(-Math.max(0, t - hit) * 3)).toFixed(3) + ')';
+    });
+    // cuối cảnh: mũi tên + ? biến mất, thẻ dồn về giữa thành cột feed, nền navy mở từ cột đó
+    const a = PG.OUT - 1.0, k = PG.E(t, a, a + 0.55);
+    $('#arrows').style.opacity = 1 - k; $('#qs').style.opacity = 1 - k; $('#wall').style.opacity = 1 - k;
+    pcs.forEach((c, i) => { const x0 = L.xs[i], cxT = S.w / 2 - 130; const yT = S.portrait ? 640 + i * 320 : 120 + i * 0;
+      const dx = (cxT - x0) * k, dy = (S.portrait ? (yT - L.y) * k : 0); const sx = S.landscape ? 1 - 0.0 * k : 1;
+      const ka = PG.E(t, 0.4 + i * 0.12, 0.95 + i * 0.12);
+      c.style.transform = `translate(${dx.toFixed(1)}px, ${(dy + (1 - ka) * 60).toFixed(1)}px) scale(${sx})`; c.style.zIndex = k > 0 ? 41 + i : 5; c.style.opacity = Math.min(PG.L(t, 0.4 + i * 0.12, 0.6 + i * 0.12), 1 - PG.L(t, PG.OUT - 0.3, PG.OUT - 0.15)); });
+    const nv = $('#navy'), kn = PG.E(t, a + 0.35, PG.OUT - 0.15);
+    const w0 = 280, w = PG.mix(w0, S.w * 1.02, kn);
+    nv.style.left = (S.w / 2 - w / 2) + 'px'; nv.style.width = w + 'px'; nv.style.top = '0px'; nv.style.height = S.h + 'px'; nv.style.opacity = PG.L(t, a + 0.3, a + 0.45);
+  });
+  S.arrive(tl, '#tag', 0.3, {dist: 20, blur: 4});
+  PG.head(tl, $('#hd'), 0.5, {stagger: 0.07});
+</script>
+</body>
+</html>

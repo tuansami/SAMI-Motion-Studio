@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/nunito/900.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/500.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/700.css">
+<link rel="stylesheet" href="hf/parts/pg.css">
+<style>
+  /* S09 · 03 Google Maps + website hứng khách: bản đồ → chạm „Tisch reservieren" → form đặt bàn → „Bestätigt" */
+  #tag { left: 72px; top: 236px; }
+  #hd { top: 330px; text-align: left; }
+  #phone { left: 290px; top: 720px; width: 500px; height: 790px; border-color: var(--navy); background: #F6F5FD; }
+  .scr { position: absolute; inset: 0; overflow: hidden; color: var(--navy); font-family: var(--f-ui); }
+  #map { background: #EAF7F1; }
+  #map svg.roads { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #search { position: absolute; left: 24px; right: 24px; top: 58px; height: 64px; border-radius: 32px; background: #fff; box-shadow: 0 6px 0 rgba(12, 6, 40, .08); font: 500 23px/64px var(--f-ui); padding-left: 28px; color: #4A4570; white-space: nowrap; overflow: hidden; }
+  #gm { position: absolute; left: 30px; top: 136px; font: 700 18px/1 var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: #4A4570; }
+  #mpin { position: absolute; width: 84px; height: 84px; }
+  #me { position: absolute; width: 30px; height: 30px; border-radius: 50%; background: var(--purple); border: 6px solid #fff; box-shadow: 0 0 0 10px rgba(118, 103, 254, .25); }
+  #sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 250px; background: #fff; border-radius: 34px 34px 0 0; padding: 26px 28px; box-shadow: 0 -8px 0 rgba(12, 6, 40, .06); }
+  #sheet .nm { font: 700 32px/1.1 var(--f-ui); }
+  #sheet .ad { font: 500 21px/1.3 var(--f-ui); color: #6E6893; margin-top: 6px; }
+  #sheet .bt { display: flex; gap: 12px; margin-top: 22px; }
+  .b { padding: 16px 20px; border-radius: 999px; font: 700 22px/1 var(--f-ui); white-space: nowrap; }
+  .b.o { border: 3px solid var(--navy); }
+  .b.f { background: var(--navy); color: var(--mint); }
+  #web { background: #fff; }
+  #web .top { height: 150px; background: var(--navy); color: #fff; padding: 64px 28px 0; font: 700 30px/1 var(--f-ui); }
+  #web .top small { display: block; font: 500 19px/1.4 var(--f-ui); color: var(--mint); margin-top: 8px; }
+  #web h3 { margin: 30px 28px 18px; font: 700 36px/1.1 var(--f-ui); }
+  .fld { margin: 0 28px 16px; height: 74px; border-radius: 18px; border: 3px solid #DAD8EE; display: flex; align-items: center; gap: 16px; padding: 0 20px; font: 700 26px/1 var(--f-ui); }
+  .fld svg { width: 34px; height: 34px; }
+  .fld.on { border-color: var(--purple); }
+  #go { margin: 26px 28px 0; height: 84px; border-radius: 22px; background: var(--mint); font: 700 28px/84px var(--f-ui); text-align: center; }
+  #ok { background: var(--navy); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #okc { width: 190px; height: 190px; border-radius: 50%; background: var(--mint); display: flex; align-items: center; justify-content: center; }
+  #okc svg { width: 110px; height: 110px; }
+  #ok .t1 { font: 700 44px/1.1 var(--f-ui); margin-top: 36px; }
+  #ok .t2 { font: 500 26px/1.4 var(--f-ui); color: #C9C6E8; margin-top: 12px; }
+  #tap { position: absolute; z-index: 9; width: 110px; height: 110px; }
+  #ring { position: absolute; z-index: 8; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; border: 6px solid var(--purple); }
+  #wipe { width: 200px; height: 200px; border-radius: 50%; background: var(--lav); }
+  [data-ratio="16x9"] #tag { left: 120px; top: 280px; }
+  [data-ratio="16x9"] #hd { left: 120px; width: 900px; top: 370px; }
+  [data-ratio="16x9"] #phone { left: 1220px; top: 100px; width: 500px; height: 880px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S09" class="bg-mint">
+  <div class="dots" id="dots"></div>
+  <div class="tag" id="tag"></div>
+  <div class="hd" id="hd" data-copy="S09_headline"></div>
+  <div class="phone" id="phone"><div class="notch" style="background:var(--navy)"></div>
+    <div class="scr" id="map">
+      <svg class="roads" id="roads"></svg>
+      <div id="search">Vietnamesisch in der Nähe</div><div id="gm">Google Maps</div>
+      <div id="me"></div><div id="mpin"></div>
+      <div id="sheet"><div class="nm">Quán Mây</div><div class="ad">Vietnamesisch · Leipzig · Geöffnet</div><div class="bt"><span class="b o">Route</span><span class="b f" id="rb">Tisch reservieren</span></div></div>
+    </div>
+    <div class="scr" id="web"><div class="top">Quán Mây<small>Vietnamesische Küche · Leipzig</small></div><h3>Tisch reservieren</h3>
+      <div class="fld" id="f1"><span id="i1"></span>2 Personen</div><div class="fld" id="f2"><span id="i2"></span>Dienstag · 19:30</div><div id="go">Jetzt reservieren</div></div>
+    <div class="scr" id="ok"><div id="okc"></div><div class="t1">Bestätigt</div><div class="t2">Tisch für 2 · 19:30<br>Quán Mây, Leipzig</div></div>
+  </div>
+  <div id="ring"></div>
+  <div id="tap"></div>
+  <div class="wipe" id="wipe"></div>
+</div>
+<script src="hf/parts/pg.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), $ = PG.$;
+  const tg = S.text('S09_tag').split(' · '); $('#tag').innerHTML = '<b>' + tg[0] + '</b>' + (tg[1] || '');
+  $('#mpin').innerHTML = PG.icon('pin', '#FF6B6B', '', '#fff');
+  $('#okc').innerHTML = PG.icon('check', '#0C0628');
+  $('#tap').innerHTML = PG.icon('tap', '#0C0628');
+  $('#i1').innerHTML = PG.icon('chair', '#7667FE'); $('#i2').innerHTML = PG.icon('cal', '#7667FE', '', '#fff');
+  const ph = $('#phone'), PW = ph.clientWidth, PHh = ph.clientHeight;
+  // bản đồ: đường phố + tuyến chấm từ "bạn" tới quán
+  const rd = $('#roads'); rd.setAttribute('viewBox', `0 0 ${PW} ${PHh}`);
+  const roads = [[0, 300, PW, 260], [0, 520, PW, 600], [120, 0, 170, PHh], [360, 0, 320, PHh], [0, 420, PW, 400]];
+  rd.innerHTML = roads.map((r) => `<line x1="${r[0]}" y1="${r[1]}" x2="${r[2]}" y2="${r[3]}" stroke="#fff" stroke-width="26" stroke-linecap="round"/>`).join('') +
+    `<rect x="200" y="320" width="100" height="70" rx="10" fill="#CFEFE2"/><rect x="40" y="160" width="60" height="110" rx="10" fill="#CFEFE2"/>` +
+    `<path id="route" d="M150 ${PHh - 300} L163 455 L330 405 L342 300" fill="none" stroke="#7667FE" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 22"/>`;
+  const route = $('#route'), rl = route.getTotalLength();
+  const pinAt = route.getPointAtLength(rl);
+  const mp = $('#mpin'); mp.style.left = (pinAt.x - 42) + 'px'; mp.style.top = (pinAt.y - 84) + 'px';
+  const abs = (el) => { let x = 0, y = 0, e = el; while (e && e.id !== 'root') { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return {x: x + el.offsetWidth / 2, y: y + el.offsetHeight / 2}; };
+  const T1 = 2.9, T2 = 4.6; // chạm nút đặt bàn, chạm xác nhận
+  PG.clock(tl, (t) => {
+    PG.drift($('#dots'), t);
+    // tuyến đường vẽ dần, chấm "bạn" đi theo
+    const kr = PG.E(t, 0.9, 2.6); route.style.strokeDasharray = `2 22`; route.style.clipPath = 'none';
+    route.setAttribute('stroke-dasharray', '2 22'); route.style.strokeDashoffset = (-t * 40).toFixed(1); route.style.opacity = kr > 0 ? 1 : 0;
+    const pt = route.getPointAtLength(rl * kr); const me = $('#me'); me.style.left = (pt.x - 21) + 'px'; me.style.top = (pt.y - 21) + 'px';
+    mp.style.transform = 'translateY(' + (-Math.abs(Math.sin(t * 4)) * 14 * (1 - PG.L(t, 2.4, 2.8))).toFixed(1) + 'px)';
+    // màn trượt
+    const s1 = PG.E(t, T1 + 0.15, T1 + 0.55), s2 = PG.E(t, T2 + 0.15, T2 + 0.55);
+    $('#map').style.transform = `translateX(${(-s1 * 100).toFixed(2)}%)`;
+    $('#web').style.transform = `translateX(${((1 - s1) * 100 - s2 * 100).toFixed(2)}%)`;
+    $('#ok').style.transform = `translateX(${((1 - s2) * 100).toFixed(2)}%)`;
+    $('#f1').classList.toggle('on', t > T1 + 0.8); $('#f2').classList.toggle('on', t > T1 + 1.2);
+    const kc = PG.E(t, T2 + 0.5, T2 + 0.9); $('#okc').style.transform = `scale(${(0.3 + 0.7 * kc + 0.15 * Math.sin(Math.PI * kc)).toFixed(3)})`;
+    // ngón tay chạm
+    const A = abs($('#rb')), B = abs($('#go'));
+    const tp = $('#tap'); let x, y, op = 0;
+    if (t < T1 + 0.4) { const k = PG.E(t, T1 - 0.6, T1); x = PG.mix(A.x + 160, A.x, k); y = PG.mix(A.y + 260, A.y, k); op = PG.L(t, T1 - 0.7, T1 - 0.5); }
+    else { const k = PG.E(t, T2 - 0.7, T2); x = PG.mix(A.x - 100, B.x, k); y = PG.mix(A.y + 160, B.y, k); op = Math.max(PG.L(t, T2 - 0.8, T2 - 0.6), 0) * (1 - PG.L(t, T2 + 0.5, T2 + 0.7)); }
+    const press = Math.max(1 - Math.abs(t - T1) / 0.12, 1 - Math.abs(t - T2) / 0.12, 0);
+    tp.style.left = (x - 40) + 'px'; tp.style.top = (y - 6) + 'px'; tp.style.opacity = op; tp.style.transform = `scale(${(1 - 0.12 * press).toFixed(3)})`;
+    const rg = $('#ring'), dT = t - T1 < 0.6 && t > T1 ? t - T1 : t - T2;
+    const kk = dT > 0 && dT < 0.6 ? dT / 0.6 : -1;
+    const RC = t < T2 - 0.1 ? A : B;
+    rg.style.left = RC.x + 'px'; rg.style.top = RC.y + 'px'; rg.style.opacity = kk >= 0 ? 1 - kk : 0; rg.style.transform = `scale(${(0.5 + kk * 1.6).toFixed(3)})`;
+    // khối lavender mở từ dấu ✓
+    const wp = $('#wipe'), C = abs($('#okc')); wp.style.left = C.x + 'px'; wp.style.top = C.y + 'px';
+    PG.wipe(wp, t, PG.OUT - 0.6, PG.OUT - 0.15, 22);
+  });
+  S.arrive(tl, '#tag', 0.3, {dist: 20, blur: 4});
+  PG.head(tl, $('#hd'), 0.5, {stagger: 0.06});
+</script>
+</body>
+</html>

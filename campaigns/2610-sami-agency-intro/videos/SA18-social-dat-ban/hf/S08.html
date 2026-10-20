@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/nunito/900.css">
+<link rel="stylesheet" href="_fonts/space-grotesk/700.css">
+<link rel="stylesheet" href="hf/parts/pg.css">
+<style>
+  /* S08 · 02 mỗi bài có một đích đến: thẻ bài → nút hành động (tiếng Đức) → đường nối → bàn / thực đơn / thiệp quà */
+  #tag { left: 72px; top: 236px; }
+  #hd { top: 330px; text-align: left; }
+  .row { position: absolute; z-index: 5; left: 0; width: 100%; height: 230px; }
+  .pc { position: absolute; left: 72px; top: 0; width: 196px; height: 226px; border-radius: 24px; background: #fff; overflow: hidden; }
+  .pc .ph { position: absolute; left: 12px; right: 12px; top: 12px; height: 140px; border-radius: 16px; display: flex; align-items: center; justify-content: center; }
+  .pc .ph svg { width: 76px; height: 76px; }
+  .pc .hr { position: absolute; left: 16px; bottom: 18px; width: 40px; height: 40px; }
+  .pc .ln { position: absolute; left: 66px; bottom: 32px; width: 100px; height: 12px; border-radius: 6px; background: #D6D4EE; }
+  .row .pill { position: absolute; left: 236px; top: 140px; font-size: 30px; padding: 16px 24px; box-shadow: 0 10px 0 rgba(0, 0, 0, .25); }
+  .row .pill svg { width: 30px; height: 30px; }
+  .dest { position: absolute; right: 72px; top: 30px; width: 170px; height: 170px; border-radius: 50%; background: #1E1650; border: 5px solid var(--mint); display: flex; align-items: center; justify-content: center; }
+  .dest svg { width: 92px; height: 92px; }
+  #lines { position: absolute; inset: 0; z-index: 4; }
+  #lines path { fill: none; stroke: var(--mint); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 4 18; }
+  #grow { position: absolute; z-index: 40; background: var(--mint); border-radius: 999px; opacity: 0; }
+  [data-ratio="16x9"] #tag { left: 120px; top: 270px; }
+  [data-ratio="16x9"] #hd { left: 120px; width: 780px; top: 360px; }
+  [data-ratio="16x9"] .row { left: 940px; width: 900px; }
+  [data-ratio="16x9"] .pc { left: 0; }
+  [data-ratio="16x9"] .row .pill { left: 170px; }
+  [data-ratio="16x9"] .dest { right: 0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S08" class="bg-navy">
+  <div class="dots" id="dots"></div>
+  <div class="tag" id="tag"></div>
+  <div class="hd" id="hd" data-copy="S08_headline"></div>
+  <svg id="lines"></svg>
+  <div id="rows"></div>
+  <div id="grow"></div>
+</div>
+<script src="hf/parts/pg.js"></script>
+<script>
+  const S = window.SAMI, tl = S.timeline(), $ = PG.$;
+  const tg = S.text('S08_tag').split(' · '); $('#tag').innerHTML = '<b>' + tg[0] + '</b>' + (tg[1] || '');
+  const ys = S.pick({'9:16': [740, 1000, 1260], '16:9': [130, 400, 670]});
+  const R = [
+    {ph: '#FFB547', ic: ['camera', '#fff'], btn: 'S08_b1', bi: 'cal', dest: 'table', dc: '#08DDA4'},
+    {ph: '#7667FE', ic: ['play', '#fff'], btn: 'S08_b2', bi: 'menu', dest: 'menu', dc: '#08DDA4'},
+    {ph: '#FF8FA3', ic: ['gift', '#fff'], btn: 'S08_b3', bi: 'gift', dest: 'gift', dc: '#08DDA4'},
+  ];
+  R.forEach((r, i) => $('#rows').insertAdjacentHTML('beforeend', `<div class="row" style="top:${ys[i]}px"><div class="pc"><div class="ph" style="background:${r.ph}">${PG.icon(r.ic[0], r.ic[1], '', r.ph)}</div><div class="hr">${PG.icon('heart', '#FF6B6B')}</div><div class="ln"></div></div>` +
+    `<div class="pill">${PG.icon(r.bi, '#0C0628', '', '#08DDA4')}<span>${S.text(r.btn)}</span></div><div class="dest">${PG.icon(r.dest, r.dc, '', '#1E1650')}</div></div>`));
+  const rows = PG.$$('.row'), pills = PG.$$('.row .pill'), dests = PG.$$('.dest'), cards = PG.$$('.pc');
+  const svg = $('#lines'); svg.setAttribute('viewBox', `0 0 ${S.w} ${S.h}`);
+  const abs = (el) => { let x = 0, y = 0, e = el; while (e && e.id !== 'root') { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return {x, y, w: el.offsetWidth, h: el.offsetHeight}; };
+  const paths = rows.map((r, i) => { const p = abs(pills[i]), d = abs(dests[i]); const x0 = p.x + p.w + 8, y0 = p.y + p.h / 2, x1 = d.x - 10, y1 = d.y + d.h / 2;
+    svg.insertAdjacentHTML('beforeend', `<path d="M${x0} ${y0} C${x0 + 60} ${y0}, ${x1 - 80} ${y1}, ${x1} ${y1}"/>`); return svg.lastChild; });
+  const lens = paths.map((p) => p.getTotalLength());
+  const T = (i) => 1.6 + i * 1.0;
+  PG.clock(tl, (t) => {
+    PG.drift($('#dots'), t);
+    rows.forEach((r, i) => {
+      const a = T(i);
+      const kc = PG.E(t, a - 0.9, a - 0.4); cards[i].style.opacity = PG.L(t, a - 0.9, a - 0.75); cards[i].style.transform = `translateY(${((1 - kc) * 50).toFixed(1)}px)`;
+      const kp = PG.E(t, a - 0.3, a + 0.15); pills[i].style.opacity = kp > 0 ? 1 : 0; pills[i].style.transform = `scale(${(0.4 + 0.6 * kp + 0.12 * Math.sin(Math.PI * kp)).toFixed(3)})`; pills[i].style.transformOrigin = '0 50%';
+      const kl = PG.E(t, a + 0.1, a + 0.7); paths[i].style.strokeDasharray = `4 18`; paths[i].style.strokeDashoffset = (-t * 60).toFixed(1);
+      paths[i].style.clipPath = `inset(0 ${((1 - kl) * 100).toFixed(1)}% 0 0)`; paths[i].style.opacity = kl > 0 ? 1 : 0;
+      const kd = PG.E(t, a + 0.55, a + 0.95); dests[i].style.opacity = kd > 0 ? 1 : 0; dests[i].style.transform = `scale(${(0.5 + 0.5 * kd + 0.15 * Math.sin(Math.PI * kd)).toFixed(3)})`;
+    });
+    // nút „Jetzt reservieren" phình ra phủ khung (sang nền mint của S09)
+    const a = PG.OUT - 0.7, k = PG.E(t, a, PG.OUT - 0.15), p = abs(pills[0]);
+    const g = $('#grow'), w = PG.mix(p.w, S.w * 1.6, k), h = PG.mix(p.h, S.h * 1.6, k);
+    g.style.opacity = t > a ? 1 : 0; g.style.left = (PG.mix(p.x + p.w / 2, S.w / 2, k) - w / 2) + 'px'; g.style.top = (PG.mix(p.y + p.h / 2, S.h / 2, k) - h / 2) + 'px'; g.style.width = w + 'px'; g.style.height = h + 'px';
+  });
+  S.arrive(tl, '#tag', 0.3, {dist: 20, blur: 4});
+  PG.head(tl, $('#hd'), 0.5, {stagger: 0.06});
+</script>
+</body>
+</html>
