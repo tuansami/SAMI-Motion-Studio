@@ -1,0 +1,255 @@
+{
+ "name": "SA11-dat-mon-online",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "mint": "#08DDA4",
+   "purple": "#7667FE",
+   "navy": "#0C0628"
+  }
+ },
+ "look": {
+  "grain": 0.02,
+  "vignette": 0.15
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook – đơn hàng bị hút vào đường vòng",
+   "start": 0,
+   "end": 193,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Rò rỉ – tiền rỉ từng giọt",
+   "start": 193,
+   "end": 386,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Khách không phải của bạn",
+   "start": 386,
+   "end": 643,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Chữ ký – cắt ống, hàn đường thẳng",
+   "start": 643,
+   "end": 900,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Google Maps → Online bestellen",
+   "start": 900,
+   "end": 1093,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "SAMI dựng shop (tua nhanh) + giỏ hàng",
+   "start": 1093,
+   "end": 1350,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "Đơn báo thẳng về bếp",
+   "start": 1350,
+   "end": 1543,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "Khách quay lại – Gutschein",
+   "start": 1543,
+   "end": 1800,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "Ba lợi ích",
+   "start": 1800,
+   "end": 2057,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "Bằng chứng: Mizuki + +84 Kitchen",
+   "start": 2057,
+   "end": 2250,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "Nhịp thở",
+   "start": 2250,
+   "end": 2443,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  },
+  {
+   "id": "S12",
+   "label": "End card SAMI + WhatsApp",
+   "start": 2443,
+   "end": 2700,
+   "engine": "hyperframes",
+   "src": "hf/S12.html"
+  }
+ ],
+ "copy": {
+  "S01_ui": {
+   "label": "Thông báo (UI)",
+   "scene": "S01",
+   "value": "Neue Bestellung"
+  },
+  "S01_headline": {
+   "label": "Tiêu đề hook",
+   "scene": "S01",
+   "value": "Đơn hàng này là của quán bạn. / Vậy mà nó *đi đường vòng.*"
+  },
+  "S02_pin": {
+   "label": "Pin trung gian",
+   "scene": "S02",
+   "value": "TRUNG GIAN"
+  },
+  "S02_headline": {
+   "label": "Tiêu đề rò rỉ",
+   "scene": "S02",
+   "value": "Qua mỗi khúc quanh, / *tiền của bạn rỉ ra từng giọt.*"
+  },
+  "S03_headline": {
+   "label": "Tiêu đề khách",
+   "scene": "S03",
+   "value": "Món do bạn nấu, nhưng khách lại là / *khách của trung gian.*"
+  },
+  "S03_sub": {
+   "label": "Dòng phụ",
+   "scene": "S03",
+   "value": "Bạn không biết tên họ, cũng không có cách mời họ quay lại."
+  },
+  "S04_headline": {
+   "label": "Tiêu đề chữ ký",
+   "scene": "S04",
+   "value": "SAMI cắt bỏ đường vòng. / *Đơn hàng về thẳng bếp của bạn.*"
+  },
+  "S05_search": {
+   "label": "Ô tìm kiếm Maps (UI)",
+   "scene": "S05",
+   "value": "Pho bestellen Hannover"
+  },
+  "S05_headline": {
+   "label": "Tiêu đề Maps",
+   "scene": "S05",
+   "value": "Khách tìm thấy quán trên Google Maps, / bấm *„Online bestellen“* là vào thẳng website."
+  },
+  "S06_headline": {
+   "label": "Tiêu đề shop",
+   "scene": "S06",
+   "value": "SAMI dựng shop ngay trên website của quán: / menu có giá và *Allergene*, giỏ hàng, thanh toán."
+  },
+  "S07_headline": {
+   "label": "Tiêu đề bếp",
+   "scene": "S07",
+   "value": "Đơn mới *báo thẳng về bếp*: / rõ món, rõ giờ lấy, không qua tay ai."
+  },
+  "S08_headline": {
+   "label": "Tiêu đề quay lại",
+   "scene": "S08",
+   "value": "Khách nhận món. Và lần sau, / *họ đặt thẳng với quán bạn*, / nhờ Gutschein và ưu đãi khi đặt trực tiếp."
+  },
+  "S09_headline": {
+   "label": "Tiêu đề lợi ích",
+   "scene": "S09",
+   "value": "Đơn đặt thẳng mang về ba thứ / *mà trung gian không trả lại.*"
+  },
+  "S09_a": {
+   "label": "Cột 1",
+   "scene": "S09",
+   "value": "Giữ biên lợi nhuận"
+  },
+  "S09_b": {
+   "label": "Cột 2",
+   "scene": "S09",
+   "value": "Sở hữu khách hàng"
+  },
+  "S09_c": {
+   "label": "Cột 3",
+   "scene": "S09",
+   "value": "Thương hiệu riêng"
+  },
+  "S10_headline": {
+   "label": "Tiêu đề bằng chứng",
+   "scene": "S10",
+   "value": "Đặt món online do SAMI dựng / đã chạy tại *Mizuki* và *+84 Kitchen.*"
+  },
+  "S11_headline": {
+   "label": "Nhịp thở",
+   "scene": "S11",
+   "value": "Món ngon là của bạn. / *Đơn hàng cũng nên là của bạn.*"
+  },
+  "S12_cta": {
+   "label": "CTA",
+   "scene": "S12",
+   "value": "Nhắn WhatsApp cho SAMI"
+  },
+  "S12_phone": {
+   "label": "Số WhatsApp",
+   "scene": "S12",
+   "value": "+49 155 60456888"
+  },
+  "S12_offer": {
+   "label": "Ưu đãi",
+   "scene": "S12",
+   "value": "Phân tích marketing miễn phí: / từ Maps, website tới đặt món online. / Không ràng buộc, phản hồi trong 24 giờ."
+  },
+  "S12_tagline": {
+   "label": "Tagline",
+   "scene": "S12",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S12_web": {
+   "label": "Web",
+   "scene": "S12",
+   "value": "sami-agency.de"
+  }
+ },
+ "status": "draft",
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": []
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 1.5
+  },
+  "cues": []
+ }
+}
