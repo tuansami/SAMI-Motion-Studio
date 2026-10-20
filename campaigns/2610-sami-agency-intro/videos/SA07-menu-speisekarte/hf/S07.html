@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/fraunces/400-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/600.css">
+<link rel="stylesheet" href="_fonts/fraunces/700.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S07 · ký hiệu dị ứng A–N bật vào từng món, nhãn [V], công tắc DE/EN lật tên món */
+  #win { position: absolute; z-index: 6; left: 70px; right: 70px; top: 610px; height: 940px; overflow: hidden; border: 3.5px solid var(--uil); border-radius: 14px; background: var(--paper2); box-shadow: 10px 10px 0 rgba(46, 59, 143, .9); }
+  #leg { position: absolute; z-index: 9; left: 0; right: 0; bottom: 0; padding: 18px 20px 20px; background: #F6EFDF; border-top: 3.5px solid var(--uil); display: flex; flex-wrap: wrap; gap: 9px; }
+  #leg h6 { width: 100%; margin: 6px 0 10px; font: 700 18px/1 "IBM Plex Mono", monospace; letter-spacing: .12em; color: var(--uit); }
+  .ch { display: flex; align-items: center; gap: 7px; padding: 6px 10px; border: 2.5px solid var(--uil); border-radius: 6px; background: var(--ui); font: 500 19px/1 "IBM Plex Mono", monospace; color: var(--uil); white-space: nowrap; }
+  .ch b { font: 700 19px/1 "IBM Plex Mono", monospace; color: #fff; background: var(--pink); border-radius: 4px; padding: 3px 6px; }
+  .ch.vg b { background: var(--teal); }
+  #sw { position: absolute; z-index: 10; right: 20px; top: 10px; display: flex; border: 3px solid var(--uil); border-radius: 40px; overflow: hidden; background: var(--ui); box-shadow: 4px 4px 0 var(--pink);
+    font: 700 26px/1 "IBM Plex Mono", monospace; }
+  #sw span { position: relative; z-index: 1; padding: 12px 20px; color: var(--uil); }
+  #knob { position: absolute; top: 0; bottom: 0; width: 50%; background: var(--yel); }
+  [data-ratio="16x9"] #win { left: 900px; right: 70px; top: 90px; height: 900px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S07">
+  <div id="win">
+    <div id="leg"><h6>ALLERGENE · KENNZEICHNUNG</h6><div id="sw"><div id="knob"></div><span>DE</span><span>EN</span></div></div>
+  </div>
+  <div class="hd top" id="hd" data-copy="S07_t1"></div>
+  <div class="demo demopos" id="demo" data-copy="S01_demo"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'), {seed: 50});
+  const win = $('#win');
+  const P = R.page(win, {hero: false, legend: false, qr: false});
+  const k = (win.clientWidth - 30) / 620;
+  P.el.style.boxShadow = 'none';
+  $('#leg').insertAdjacentHTML('beforeend', R.ALLERG.map((a) => '<div class="ch"><b>' + a[0] + '</b>' + a[1] + '</div>').join('') + '<div class="ch vg"><b>V</b>vegan</div>');
+  const chips = win.querySelectorAll('.ch'), legH = $('#leg').offsetHeight;
+  // tên món: bản Đức / Anh để lật
+  const nms = P.items.map((it) => { const n = it.querySelector('.nm'); return {tn: n.firstChild, de: n.firstChild.nodeValue, en: it.querySelector('.en').textContent, enEl: it.querySelector('.en'), nm: n}; });
+  const tSw = 4.3, tBack = 6.6;
+  R.clock(tl, (t) => {
+    bg(t);
+    // trang trôi chậm lên (camera)
+    const oy = R.mix(-60, -60 - 150 * k, R.E(t, 0.3, 7.5));
+    P.place(15, oy, k);
+    $('#leg').style.transform = 'translateY(' + (legH * (1 - R.E(t, 0.3, 0.9))).toFixed(1) + 'px)';
+    // ký hiệu dị ứng bật lần lượt
+    P.sups.forEach((s, i) => {
+      const t1 = 1.0 + i * 0.11;
+      s.style.display = 'inline-block';
+      s.style.opacity = R.L(t, t1, t1 + 0.06);
+      s.style.transform = 'scale(' + (R.E(t, t1, t1 + 0.2) * 1 + R.wob(t, t1 + 0.2, 0.4, 30)).toFixed(3) + ')';
+      s.style.background = 'rgba(255,210,63,' + (0.9 * R.io(t, t1, t1 + 0.1, t1 + 0.35, t1 + 0.7)).toFixed(2) + ')';
+    });
+    // chip chú giải sáng lên theo chữ vừa dùng
+    chips.forEach((c, i) => { c.style.transform = 'translateY(' + (-6 * R.io(t, 1.0 + i * 0.12, 1.15 + i * 0.12, 1.4 + i * 0.12, 1.7 + i * 0.12)).toFixed(1) + 'px)'; });
+    // nhãn V dập
+    P.vs.forEach((v, i) => {
+      const t1 = 2.9 + i * 0.16;
+      v.style.opacity = R.L(t, t1, t1 + 0.05);
+      v.style.transform = 'scale(' + (2.2 - 1.2 * R.E(t, t1, t1 + 0.18) + R.wob(t, t1 + 0.18, 0.2, 30)).toFixed(3) + ')';
+    });
+    // công tắc DE/EN
+    const sw = R.E(t, tSw, tSw + 0.3) * (1 - R.E(t, tBack, tBack + 0.3));
+    $('#knob').style.left = (50 * sw).toFixed(1) + '%';
+    $('#sw').style.opacity = R.L(t, 3.8, 4.0);
+    nms.forEach((m, i) => {
+      const a = tSw + 0.1 + (i % 9) * 0.04, b = tBack + 0.1 + (i % 9) * 0.04;
+      const f1 = R.L(t, a, a + 0.25), f2 = R.L(t, b, b + 0.25);
+      const en = (f1 >= 0.5) && !(f2 >= 0.5);
+      m.tn.nodeValue = en ? m.en : m.de; m.enEl.textContent = en ? m.de : m.en;
+      const flip = Math.abs(Math.cos(Math.PI * f1)) * Math.abs(Math.cos(Math.PI * f2));
+      m.nm.style.transform = 'scaleY(' + flip.toFixed(3) + ')';
+      m.nm.style.color = en ? 'var(--pink)' : '';
+    });
+  });
+  R.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.06, dur: 0.6});
+  tl.fromTo(win, {y: 120, opacity: 0}, {y: 0, opacity: 1, duration: 0.6}, 0.1);
+</script>
+</body>
+</html>

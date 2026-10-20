@@ -71,9 +71,9 @@
 .pg .hero svg { position: absolute; left: 8px; top: 8px; width: 150px; height: 128px; overflow: visible; }
 .pg .hero .ht { position: absolute; left: 12px; right: 10px; bottom: 12px; }
 .pg .hero .ht b { display: block; font: 700 22px/1.08 "Fraunces", serif; }
-.pg .hero .ht i { display: block; margin-top: 4px; font: italic 400 12px/1.2 "Fraunces", serif; }
+.pg .hero .ht i { display: block; margin-top: 4px; padding-right: 62px; font: italic 400 12px/1.2 "Fraunces", serif; }
 .pg .hero .ht .pr { top: auto; bottom: 2px; font-size: 18px; }
-.pg .hero .star { position: absolute; right: 12px; top: 12px; width: 76px; height: 76px; }
+.pg .hero .star { position: absolute; left: auto; right: 12px; top: 12px; width: 76px; height: 76px; }
 .pg .leg { position: absolute; left: 40px; right: 40px; bottom: 26px; padding-top: 8px; border-top: 2px solid var(--ib); font: 500 9px/1.45 "IBM Plex Mono", monospace; letter-spacing: .02em; }
 .pg .leg b { color: var(--ia); }
 .pg .qr { position: absolute; right: 40px; bottom: 74px; width: 54px; height: 54px; }

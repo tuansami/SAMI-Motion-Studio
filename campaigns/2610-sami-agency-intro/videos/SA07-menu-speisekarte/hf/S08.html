@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/fraunces/400-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/600.css">
+<link rel="stylesheet" href="_fonts/fraunces/700.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S08 · phối 3 bộ mực: mỗi bản in 2 lượt (mực nền rồi mực nhấn, lệch rồi khớp), chọn 1 */
+  .slot { position: absolute; z-index: 6; }
+  .slot .pg.k2, .slot .pg.k2 .hero { background: transparent; box-shadow: none; }
+  .nmc { position: absolute; z-index: 7; white-space: nowrap; display: flex; align-items: center; gap: 10px; font: 800 34px/1 "Bricolage Grotesque", sans-serif; color: var(--ink); }
+  .nmc i { width: 26px; height: 26px; border-radius: 50%; display: block; mix-blend-mode: multiply; }
+  .nmc i + i { margin-left: -16px; }
+  #pick { font-size: 46px; }
+  #roll { position: absolute; z-index: 9; height: 26px; border-radius: 13px; background: linear-gradient(#6A6F86, #2B2F44); box-shadow: 0 6px 12px rgba(0, 0, 0, .25); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S08">
+  <div id="slots"></div>
+  <div id="roll"></div>
+  <div class="stamp" id="pick" data-copy="S08_pick"></div>
+  <div class="hd top" id="hd" data-copy="S08_t1"></div>
+  <div class="demo demopos" id="demo" data-copy="S01_demo"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'), {seed: 60});
+  const INKS = [['#FF4F9A', '#2E3B8F'], ['#00A95C', '#1F4E5A'], ['#FFA41B', '#A0322E']];
+  const names = R.list('S08_names');
+  const L = S.pick({'16:9': {k: 0.5, x: 870, y: 250, gap: 30}, default: {k: 0.56, x: 60, y: 740, gap: -41}});
+  const W = 620 * L.k, H = 880 * L.k;
+  const slots = INKS.map((ink, i) => {
+    const sl = document.createElement('div'); sl.className = 'slot'; $('#slots').appendChild(sl);
+    const x = L.x + i * (W + L.gap); sl.style.left = x + 'px'; sl.style.top = L.y + 'px'; sl.style.width = W + 'px'; sl.style.height = H + 'px';
+    const base = document.createElement('div'); base.className = 'pg'; base.style.left = '0px'; base.style.top = '0px'; base.style.transform = 'scale(' + L.k + ')'; base.innerHTML = ''; sl.appendChild(base);
+    const A = R.page(sl, {}), B = R.page(sl, {});
+    A.place(0, 0, L.k); B.place(0, 0, L.k); B.el.classList.add('k2');
+    A.setInk('transparent', ink[1]); B.setInk(ink[0], 'transparent');
+    A.el.style.background = 'transparent'; A.el.style.boxShadow = 'none';
+    const nm = document.createElement('div'); nm.className = 'nmc'; nm.innerHTML = '<i style="background:' + ink[0] + '"></i><i style="background:' + ink[1] + '"></i>' + names[i];
+    nm.style.left = x + 'px'; nm.style.top = (L.y + H + 34) + 'px'; $('#root').appendChild(nm);
+    return {sl: sl, A: A, B: B, x: x, nm: nm, t1: 0.5 + i * 0.35, t2: 1.55 + i * 0.35};
+  });
+  const cur = R.cursor($('#root'));
+  const tPick = 4.3;
+  R.clock(tl, (t) => {
+    bg(t);
+    let roll = null;
+    slots.forEach((s, i) => {
+      const u1 = R.E(t, s.t1, s.t1 + 0.55), u2 = R.E(t, s.t2, s.t2 + 0.55);
+      s.A.el.style.clipPath = 'inset(0 0 ' + (100 * (1 - u1)).toFixed(2) + '% 0)';
+      s.B.el.style.clipPath = 'inset(0 0 ' + (100 * (1 - u2)).toFixed(2) + '% 0)';
+      const m = 1 - R.E(t, s.t2 + 0.3, s.t2 + 1.1);
+      s.B.el.style.transform = 'translate(' + (30 * m).toFixed(1) + 'px,' + (-22 * m).toFixed(1) + 'px) scale(' + L.k + ')';
+      if (t > s.t1 && t < s.t1 + 0.6) roll = [s, u1]; if (t > s.t2 && t < s.t2 + 0.6) roll = [s, u2];
+      // chọn: bản 1 nổi lên, 2 bản còn lại lùi
+      const p = R.E(t, tPick, tPick + 0.4);
+      const sc = i === 0 ? 1 + 0.06 * p : 1 - 0.05 * p;
+      s.sl.style.transform = 'scale(' + sc.toFixed(4) + ') rotate(' + ((i - 1) * 1.5 * (1 - p)).toFixed(2) + 'deg)';
+      s.sl.style.zIndex = i === 0 && p > 0 ? 8 : 6;
+      s.sl.style.opacity = i === 0 ? 1 : (1 - 0.5 * p).toFixed(3);
+      s.nm.style.opacity = (R.L(t, s.t2 + 0.4, s.t2 + 0.6) * (i === 0 ? 1 : 1 - 0.5 * p)).toFixed(3);
+    });
+    const rl = $('#roll');
+    if (roll) { rl.style.opacity = 1; rl.style.left = (roll[0].x - 10) + 'px'; rl.style.width = (W + 20) + 'px'; rl.style.top = (L.y + H * roll[1] - 13) + 'px'; } else rl.style.opacity = 0;
+    // con trỏ chọn bản 1 + tem
+    const ck = [[3.3, slots[2].x + W, L.y + H + 120], [tPick - 0.1, slots[0].x + W * 0.55, L.y + H * 0.5]];
+    const [cx, cy] = R.keys(t, ck);
+    cur.at(cx, cy, t > tPick - 0.1 && t < tPick + 0.05); cur.style.opacity = R.io(t, 3.2, 3.4, 5.4, 5.7);
+    const pk = $('#pick'); pk.style.left = (slots[0].x + W * 0.18) + 'px'; pk.style.top = (L.y + H * 0.36) + 'px';
+    R.stampAt(pk, t, tPick + 0.1, -12);
+  });
+  R.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.07, dur: 0.6});
+</script>
+</body>
+</html>

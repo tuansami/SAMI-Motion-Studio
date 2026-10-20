@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/fraunces/400-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/600.css">
+<link rel="stylesheet" href="_fonts/fraunces/700.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S06 · điểm vàng: đường mắt khách, quầng nóng góc trên phải, kéo món chủ lực vào đúng chỗ */
+  #eye { position: absolute; left: 0; top: 0; width: 620px; height: 880px; z-index: 8; overflow: visible; pointer-events: none; }
+  #heat { position: absolute; z-index: 1; width: 520px; height: 520px; margin: -260px 0 0 -260px; border-radius: 50%; mix-blend-mode: multiply; pointer-events: none;
+    background: radial-gradient(circle, rgba(255, 79, 154, .55) 0%, rgba(255, 210, 63, .55) 32%, rgba(255, 210, 63, 0) 68%); }
+  #ph { position: absolute; z-index: 2; border: 3px dashed var(--pink); box-sizing: border-box; display: flex; align-items: center; justify-content: center;
+    font: 800 30px/1.1 "Bricolage Grotesque", sans-serif; color: var(--pink); text-align: center; }
+  #gl { position: absolute; z-index: 22; white-space: nowrap; font: 800 34px/1 "Bricolage Grotesque", sans-serif; color: #fff; background: var(--pink); padding: 10px 16px 12px; border-radius: 6px; box-shadow: 5px 5px 0 var(--ink); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S06">
+  <div id="stage"></div>
+  <div id="gl">★ điểm vàng</div>
+  <div class="hd top" id="hd" data-copy="S06_t1"></div>
+  <div class="demo demopos" id="demo" data-copy="S01_demo"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'), {seed: 40});
+  const P = R.page($('#stage'), {al: false, v: false, legend: false, qr: false});
+  const k = S.pick({'16:9': 1.04, default: 1.04}), X = S.pick({'16:9': 1040, default: 218}), Y = S.pick({'16:9': 92, default: 600});
+  P.place(X, Y, k); P.el.style.overflow = 'visible'; P.el.style.zIndex = 5;
+  const hero = P.hero, hx = hero.offsetLeft + 322, hy = hero.offsetTop + 150, hw = hero.offsetWidth, hh = hero.offsetHeight;
+  const heat = document.createElement('div'); heat.id = 'heat'; P.el.insertBefore(heat, P.el.firstChild);
+  const ph = document.createElement('div'); ph.id = 'ph'; ph.innerHTML = '?'; R.box(ph, hx, hy, hw, hh); P.el.appendChild(ph);
+  // đường mắt: vào → góc trên phải (dừng lâu) → giữa → trên trái → về lại góc trên phải
+  const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg'); svg.id = 'eye'; P.el.appendChild(svg);
+  const C = [hx + hw / 2, hy + hh / 2];
+  const pts = [[310, 600], C, [300, 470], [150, 260], C];
+  const ets = [0.5, 1.0, 1.9, 2.3, 2.7];
+  svg.innerHTML = '<polyline id="pl" fill="none" stroke="#2E3B8F" stroke-width="4" stroke-dasharray="2 12" stroke-linecap="round" points="' + pts.map((p) => p.join(',')).join(' ') + '"/>' +
+    pts.map((p, i) => '<circle class="fx" cx="' + p[0] + '" cy="' + p[1] + '" r="' + (i === 1 || i === 4 ? 30 : 16) + '" fill="rgba(46,59,143,.15)" stroke="#2E3B8F" stroke-width="3"/>').join('') +
+    '<circle id="dot" r="14" fill="#FF4F9A" stroke="#fff" stroke-width="4"/>';
+  const fx = svg.querySelectorAll('.fx'), dot = svg.querySelector('#dot');
+  const eks = pts.map((p, i) => [ets[i], p[0], p[1]]);
+  const tD = 3.1, tDrop = 4.0; // kéo món vào · thả
+  const heroIn = [[tD, 380, -60], [tDrop, 0, 0]];
+  const cur = R.cursor($('#root')), sb = R.selb(P.el);
+  R.clock(tl, (t) => {
+    bg(t);
+    const [ex, ey] = R.keys(t, eks);
+    dot.setAttribute('cx', ex.toFixed(1)); dot.setAttribute('cy', ey.toFixed(1));
+    dot.style.opacity = R.io(t, 0.4, 0.55, 2.9, 3.2);
+    fx.forEach((f, i) => { f.style.opacity = R.io(t, ets[i], ets[i] + 0.15, 2.9, 3.3); f.setAttribute('r', ((i === 1 || i === 4 ? 30 : 16) * R.E(t, ets[i], ets[i] + 0.3)).toFixed(1)); });
+    svg.querySelector('#pl').style.opacity = (R.L(t, 0.5, 0.8) * (1 - R.E(t, 2.9, 3.3))).toFixed(3);
+    const hs = 0.35 + 0.65 * R.E(t, 1.0, 2.9);
+    heat.style.left = C[0] + 'px'; heat.style.top = C[1] + 'px';
+    heat.style.transform = 'scale(' + hs.toFixed(3) + ')';
+    heat.style.opacity = (R.L(t, 0.9, 1.3) * (1 - 0.6 * R.E(t, 4.3, 5.3))).toFixed(3);
+    ph.style.opacity = (R.L(t, 1.0, 1.3) * (1 - R.L(t, tDrop - 0.1, tDrop))).toFixed(3);
+    // nhãn điểm vàng (toạ độ khung)
+    const gl = $('#gl'); gl.style.left = (X + (hx - 20) * k) + 'px'; gl.style.top = (Y + (hy - 64) * k) + 'px';
+    gl.style.opacity = R.L(t, 2.4, 2.6); gl.style.transform = 'scale(' + (1 + R.wob(t, 2.5, 0.1, 30)).toFixed(4) + ')';
+    // món chủ lực được kéo vào
+    const [dx, dy] = R.keys(t, heroIn);
+    hero.style.opacity = R.L(t, tD - 0.2, tD);
+    hero.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) rotate(' + (4 * (1 - R.E(t, tD, tDrop))).toFixed(2) + 'deg) scale(' + (1 + R.wob(t, tDrop, 0.05, 30)).toFixed(4) + ')';
+    hero.style.boxShadow = '0 ' + (20 * (1 - R.E(t, tDrop, tDrop + 0.3))).toFixed(1) + 'px 30px rgba(46,59,143,' + (0.3 * (1 - R.E(t, tDrop, tDrop + 0.3))).toFixed(2) + '), 6px 6px 0 var(--ia)';
+    R.box(sb, hx + dx - 6, hy + dy - 6, hw + 12, hh + 12);
+    sb.style.opacity = R.io(t, tD - 0.1, tD, tDrop + 0.5, tDrop + 0.8);
+    const st = hero.querySelector('.star'); st.style.transform = 'scale(' + (R.E(t, tDrop + 0.2, tDrop + 0.5) + R.wob(t, tDrop + 0.5, 0.15, 30)).toFixed(3) + ') rotate(' + (t * 20).toFixed(1) + 'deg)';
+    const cx = X + (hx + dx + hw * 0.6) * k, cy = Y + (hy + dy + hh * 0.45) * k;
+    cur.at(cx, cy, t > tD - 0.1 && t < tDrop);
+    cur.style.opacity = R.io(t, tD - 0.4, tD - 0.2, tDrop + 0.6, tDrop + 0.9);
+    P.el.style.transform = 'scale(' + k + ') rotate(' + (-1 + 0.5 * Math.sin(t * 0.6)).toFixed(2) + 'deg)';
+  });
+  R.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.07, dur: 0.6});
+</script>
+</body>
+</html>
