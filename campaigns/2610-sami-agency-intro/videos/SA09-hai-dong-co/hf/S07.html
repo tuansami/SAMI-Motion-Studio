@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="hf/parts/dk.css">
+<style>
+  /* S07 · LỊCH TUẦN (Minh họa): nền mint (SEO) mọc đều mỗi ngày, khối đỏ (Ads) lấp vào ngày vắng, Mo = Ruhetag tắt ads */
+  .blk { position: absolute; z-index: 20; left: var(--safe-side); right: var(--safe-side); }
+  .blk .hd { position: static; font-size: 72px; }
+  .blk .sub { position: static; margin-top: 14px; }
+  #ba { top: 250px; } #bb { top: 560px; }
+  #panel { z-index: 10; }
+  #panel .lg { position: absolute; left: 34px; top: 30px; display: flex; gap: 14px; }
+  #panel .demo { right: 30px; top: 30px; }
+  .col { position: absolute; bottom: 0; }
+  .col .s, .col .a { position: absolute; left: 0; right: 0; border-radius: 10px; }
+  .col .s { bottom: 0; background: linear-gradient(180deg, #08DDA4, rgba(8, 221, 164, .35)); box-shadow: 0 0 22px rgba(8, 221, 164, .35); }
+  .col .a { background: linear-gradient(180deg, #FF4D5E, rgba(255, 77, 94, .55)); box-shadow: 0 0 22px rgba(255, 77, 94, .45); }
+  .col .rest { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 10px; border: 2px dashed rgba(227, 228, 247, .25);
+    background: repeating-linear-gradient(135deg, rgba(227, 228, 247, .06) 0 10px, rgba(0, 0, 0, 0) 10px 20px); }
+  .col .rest span { position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%) rotate(-90deg); transform-origin: 50% 50%; white-space: nowrap;
+    font: 600 20px/1 "JetBrains Mono", monospace; letter-spacing: .16em; color: var(--dim); }
+  .day { position: absolute; font: 600 24px/1 "JetBrains Mono", monospace; letter-spacing: .08em; color: #EDEBFF; text-align: center; }
+  #goal { position: absolute; height: 0; border-top: 3px dashed rgba(255, 255, 255, .55); }
+  #goal span { position: absolute; right: 0; top: -34px; font: 600 20px/1 "JetBrains Mono", monospace; letter-spacing: .14em; color: #fff; text-transform: uppercase; }
+  [data-ratio="16x9"] .blk { left: 120px; right: auto; width: 760px; }
+  [data-ratio="16x9"] .blk .hd { font-size: 66px; }
+  [data-ratio="16x9"] #ba { top: 190px; } [data-ratio="16x9"] #bb { top: 560px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S07">
+  <div class="blk" id="ba"><div class="hd red" id="ha"></div><div class="sub" id="sa"></div></div>
+  <div class="blk" id="bb"><div class="hd mint" id="hb"></div><div class="sub" id="sb"></div></div>
+  <div class="glass" id="panel">
+    <div class="lg"><span class="chip ads"><i></i>Google Ads</span><span class="chip seo"><i></i>Local SEO</span></div>
+    <div class="demo">Minh họa</div>
+    <div id="plot"></div>
+  </div>
+</div>
+<script src="hf/parts/dk.js"></script>
+<script>
+  const S = window.SAMI, D = window.DK, tl = S.timeline(), root = D.$('#root'), L16 = S.landscape;
+  // câu "Tiêu đề: / chi tiết" → tiêu đề lớn + dòng phụ
+  [['S07_a', 'ha', 'sa'], ['S07_b', 'hb', 'sb']].forEach(([k, h, s]) => {
+    const parts = String(S.copy[k] || '').split(/\s+\/\s+/);
+    S.copy[k + '_h'] = parts[0]; S.copy[k + '_s'] = parts.slice(1).join(' ');
+    D.$('#' + h).innerHTML = S.html(k + '_h'); D.$('#' + s).textContent = S.text(k + '_s');
+  });
+  const st = D.stage(root, {horizon: L16 ? 960 : 1600, beamX: L16 ? 0.72 : 0.5});
+  const PN = L16 ? {x: 940, y: 170, w: 880, h: 740} : {x: 72, y: 880, w: 936, h: 660};
+  const pn = D.$('#panel'); Object.assign(pn.style, {left: PN.x + 'px', top: PN.y + 'px', width: PN.w + 'px', height: PN.h + 'px'});
+  const plot = D.$('#plot'), B = {l: 50, r: 40, t: 150, b: 86}, W = PN.w - B.l - B.r, H = PN.h - B.t - B.b;
+  Object.assign(plot.style, {position: 'absolute', left: B.l + 'px', top: B.t + 'px', width: W + 'px', height: H + 'px'});
+  // dữ liệu minh họa: nền SEO theo ngày, ads lấp đến mức "voll"
+  const DAYS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  const SEO = [0, 0.40, 0.42, 0.50, 0.70, 0.80, 0.64], ADS = [0, 0.38, 0.36, 0.28, 0.10, 0, 0.14], GOAL = 0.82;
+  const cw = W / 7, bw = cw * 0.62, cols = [];
+  DAYS.forEach((d, i) => {
+    const c = D.el('div', 'col', plot); c.style.left = (i * cw + (cw - bw) / 2) + 'px'; c.style.width = bw + 'px'; c.style.height = H + 'px';
+    const o = {c, i};
+    if (i === 0) { o.rest = D.el('div', 'rest', c, '<span>Ruhetag</span>'); o.rest.style.height = (H * 0.86) + 'px'; }
+    else { o.s = D.el('div', 's', c); o.a = D.el('div', 'a', c); }
+    const lab = D.el('div', 'day', plot, d); lab.style.left = (i * cw) + 'px'; lab.style.width = cw + 'px'; lab.style.top = (H + 26) + 'px';
+    cols.push(o);
+  });
+  const goal = D.el('div', '', plot); goal.id = 'goal'; goal.style.left = '0'; goal.style.right = '0'; goal.style.top = (H * (1 - GOAL)) + 'px'; goal.innerHTML = '<span>voll</span>';
+  const T_S = 1.0, T_A = 3.6;
+  D.clock(tl, (t) => {
+    st.update(t, {light: 0.8, speed: 18});
+    cols.forEach((o) => {
+      if (o.rest) { o.rest.style.opacity = D.L(t, 0.8, 1.2); return; }
+      const us = D.E(t, T_S + o.i * 0.12, T_S + o.i * 0.12 + 0.8), ua = D.E(t, T_A + o.i * 0.16, T_A + o.i * 0.16 + 0.7);
+      const hs = SEO[o.i] * H * us + Math.sin(t * 2 + o.i) * 2 * us;
+      o.s.style.height = Math.max(0, hs).toFixed(1) + 'px';
+      o.a.style.bottom = (hs + 6).toFixed(1) + 'px'; o.a.style.height = Math.max(0, ADS[o.i] * H * ua - 6).toFixed(1) + 'px';
+      o.a.style.opacity = ADS[o.i] > 0 && ua > 0 ? 1 : 0;
+    });
+    goal.style.opacity = D.L(t, 5.0, 5.5);
+    pn.style.transform = 'translateY(' + (Math.sin(t * 0.9) * 4).toFixed(1) + 'px)';
+  });
+  D.fadeIn(tl, '#panel', 0.15, {dist: 40});
+  D.words(tl, '#ha', 0.4, {stagger: 0.06}); D.fadeIn(tl, '#sa', 1.1);
+  D.words(tl, '#hb', 3.4, {stagger: 0.06}); D.fadeIn(tl, '#sb', 4.0);
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/800.css">
+<link rel="stylesheet" href="hf/parts/dk.css">
+<style>
+  /* S02 · SEO CHỜ: tờ lịch 3D lật Okt → Nov → Dez, thanh tiến trình "Seite 1" bò chậm */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 250px; font-size: 80px; }
+  .cal { position: absolute; inset: 0; perspective: 1200px; }
+  .cal .hdr { position: absolute; left: 0; right: 0; top: 0; height: 76px; background: linear-gradient(90deg, #07B98A, #08DDA4); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; }
+  .cal .hdr i { width: 22px; height: 22px; border-radius: 50%; background: #0C0628; box-shadow: inset 0 3px 4px rgba(0, 0, 0, .6); }
+  .pg { position: absolute; left: 0; right: 0; top: 76px; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; transform-origin: 50% 0;
+    background: linear-gradient(170deg, #2A2163, #140D3E); backface-visibility: hidden; }
+  .pg b { font: 800 150px/1 "JetBrains Mono", monospace; color: #fff; letter-spacing: -.02em; }
+  .pg span { margin-top: 18px; font: 500 24px/1 "JetBrains Mono", monospace; letter-spacing: .2em; color: var(--dim); text-transform: uppercase; }
+  #track { position: absolute; z-index: 10; }
+  #track .lab { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  #track .bar { position: relative; height: 22px; border-radius: 11px; background: rgba(255, 255, 255, .07); border: 1px solid var(--edge); }
+  #track .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 11px; background: linear-gradient(90deg, #07B98A, #5EF0C8); box-shadow: 0 0 22px rgba(8, 221, 164, .6); }
+  #track .flag { position: absolute; right: -6px; top: -62px; font: 600 20px/1 "JetBrains Mono", monospace; letter-spacing: .12em; color: #fff; padding: 9px 12px; border-radius: 8px; background: rgba(8, 221, 164, .16); border: 1px solid rgba(8, 221, 164, .6); }
+  #track .flag:after { content: ""; position: absolute; right: 18px; bottom: -22px; width: 2px; height: 22px; background: rgba(8, 221, 164, .6); }
+  #track .pct { font: 600 22px/1 "JetBrains Mono", monospace; color: var(--seo); letter-spacing: .1em; }
+  [data-ratio="16x9"] #hd { left: 120px; right: auto; width: 940px; top: 250px; font-size: 76px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02">
+  <div class="hd mint" id="hd" data-copy="S02_headline"></div>
+  <div id="track"><div class="lab"><span class="chip seo"><i></i>Local SEO · läuft</span></div><div class="bar"><div class="fill" id="fill"></div><div class="flag">Seite 1</div></div></div>
+</div>
+<script src="hf/parts/dk.js"></script>
+<script>
+  const S = window.SAMI, D = window.DK, tl = S.timeline(), root = D.$('#root'), L16 = S.landscape;
+  const st = D.stage(root, {horizon: L16 ? 800 : 1460, beamX: L16 ? 0.72 : 0.5});
+  const C = L16 ? {x: 1250, y: 190, w: 440, h: 440} : {x: 350, y: 880, w: 380, h: 380};
+  const bx = D.box(root, {x: C.x, y: C.y, w: C.w, h: C.h, d: 46, cls: 'seo', rx: -12, ry: L16 ? -18 : -14});
+  bx.wrap.style.zIndex = 8;
+  const M = ['Okt', 'Nov', 'Dez'];
+  bx.f.innerHTML = '<div class="cal"><div class="hdr"><i></i><i></i></div>' + M.map((m, i) => '<div class="pg" id="pg' + i + '" style="z-index:' + (10 - i) + '"><b>' + m + '</b><span>Monat ' + (i + 1) + '</span></div>').join('') + '</div>';
+  const pool = D.el('div', 'pool seo', root); pool.style.cssText += ';left:' + (C.x - 60) + 'px;top:' + (C.y + C.h - 20) + 'px;width:' + (C.w + 120) + 'px;height:120px;z-index:3';
+  const TR = L16 ? {x: 1080, y: 820, w: 760} : {x: 120, y: 1420, w: 840};
+  const tr = D.$('#track'); tr.style.left = TR.x + 'px'; tr.style.top = TR.y + 'px'; tr.style.width = TR.w + 'px';
+  const FLIPS = [2.1, 4.4];
+  D.clock(tl, (t) => {
+    st.update(t, {light: 0.8, speed: 14, glowB: {x: C.x + C.w / 2, y: C.y + C.h / 2, a: 0.45}});
+    bx.pose(0, Math.sin(t * 1.1) * 6, Math.sin(t * 0.5) * 3);
+    FLIPS.forEach((f, i) => {
+      const u = D.E(t, f, f + 0.55);
+      const pg = D.$('#pg' + i);
+      pg.style.transform = 'rotateX(' + (u * 105).toFixed(1) + 'deg)';
+      pg.style.opacity = u > 0.98 ? 0 : 1;
+      pg.style.filter = 'brightness(' + (1 - 0.5 * u).toFixed(2) + ')';
+    });
+    D.$('#fill').style.width = (D.mix(3, 34, D.L(t, 0.6, S.dur)) + 0.6 * Math.sin(t * 3)).toFixed(2) + '%';
+  });
+  D.words(tl, '#hd', 0.45, {stagger: 0.05});
+  D.fadeIn(tl, '#track', 1.2);
+</script>
+</body>
+</html>

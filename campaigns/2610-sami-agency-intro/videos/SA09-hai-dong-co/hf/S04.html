@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/800.css">
+<link rel="stylesheet" href="hf/parts/dk.css">
+<style>
+  /* S04 · HAI ĐỘNG CƠ: hai khối của S03 trượt về thành hai module động cơ trên bệ; thông số hiện như slide keynote */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 250px; font-size: 76px; }
+  .eng { position: absolute; inset: 0; padding: 40px 44px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+  .eng .top { display: flex; align-items: center; justify-content: space-between; }
+  .eng .no { font: 600 22px/1 "JetBrains Mono", monospace; letter-spacing: .2em; color: var(--dim); }
+  .eng .nm { margin-top: 16px; font: 800 52px/1.1 "JetBrains Mono", monospace; letter-spacing: .01em; color: #fff; white-space: nowrap; }
+  .eng .ds { font: 600 42px/1.32 "Be Vietnam Pro", sans-serif; color: #EDEBFF; }
+  .eng svg { width: 120px; height: 120px; flex: none; overflow: visible; }
+  .eng.ads .nm { text-shadow: 0 0 26px rgba(255, 77, 94, .55); }
+  .eng.seo .nm { text-shadow: 0 0 26px rgba(8, 221, 164, .5); }
+  [data-ratio="16x9"] #hd { left: 120px; right: 120px; top: 110px; font-size: 74px; }
+  [data-ratio="16x9"] .eng .ds { font-size: 40px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S04">
+  <div class="hd" id="hd" data-copy="S04_headline"></div>
+</div>
+<script src="hf/parts/dk.js"></script>
+<script>
+  const S = window.SAMI, D = window.DK, tl = S.timeline(), root = D.$('#root'), L16 = S.landscape;
+  const st = D.stage(root, {horizon: L16 ? 900 : 1500, beamX: 0.5});
+  // vị trí đầu = vị trí cuối S03 (match-cut), vị trí đích = module động cơ
+  const FROM = L16 ? {a: [1010, 320, 360, 360], b: [1450, 320, 360, 360]} : {a: [150, 700, 340, 340], b: [590, 700, 340, 340]};
+  const TO = L16 ? {a: [120, 420, 800, 400], b: [1000, 420, 800, 400]} : {a: [72, 700, 936, 380], b: [72, 1150, 936, 380]};
+  const GP = D.gearPath(10, 46, {holes: 4, hub: 11});
+  function card(k, no, nm, ds) {
+    return '<div class="eng ' + k + '"><div class="top"><div><div class="no">' + no + '</div><div class="nm">' + nm + '</div></div>' +
+      '<svg viewBox="-60 -60 120 120"><path id="g' + k + '" d="' + GP + '" fill-rule="evenodd" fill="' + (k === 'ads' ? '#FF4D5E' : '#08DDA4') + '" opacity=".95"/></svg></div>' +
+      '<div class="ds" id="ds' + k + '">' + ds + '</div></div>';
+  }
+  const A = D.box(root, {x: 0, y: 0, w: 10, h: 10, d: 60, cls: 'ads', rx: -10, ry: L16 ? 10 : 0, left: true});
+  const B = D.box(root, {x: 0, y: 0, w: 10, h: 10, d: 60, cls: 'seo', rx: -10, ry: L16 ? -10 : 0});
+  A.wrap.style.zIndex = 8; B.wrap.style.zIndex = 8;
+  A.f.innerHTML = card('ads', 'ĐỘNG CƠ 1', S.text('S04_a_name'), S.html('S04_a_desc'));
+  B.f.innerHTML = card('seo', 'ĐỘNG CƠ 2', S.text('S04_b_name'), S.html('S04_b_desc'));
+  const pa = D.el('div', 'pool ads', root), pb = D.el('div', 'pool seo', root);
+  const T_A = 3.4, T_B = 6.6;
+  function place(bx, pool, f, to, u) {
+    const r = [0, 1, 2, 3].map((i) => D.mix(f[i], to[i], u));
+    bx.wrap.style.left = r[0] + 'px'; bx.wrap.style.top = r[1] + 'px'; bx.wrap.style.width = r[2] + 'px'; bx.wrap.style.height = r[3] + 'px';
+    bx.box.style.width = r[2] + 'px'; bx.box.style.height = r[3] + 'px';
+    pool.style.cssText = 'left:' + (r[0] - 40) + 'px;top:' + (r[1] + r[3] - 30) + 'px;width:' + (r[2] + 80) + 'px;height:110px;z-index:3';
+  }
+  D.clock(tl, (t) => {
+    const u = D.E(t, 0.05, 1.1);
+    place(A, pa, FROM.a, TO.a, u); place(B, pb, FROM.b, TO.b, D.E(t, 0.12, 1.2));
+    const onA = D.E(t, T_A, T_A + 0.8), onB = D.E(t, T_B, T_B + 0.8);
+    st.update(t, {light: 0.75 + 0.25 * Math.max(onA, onB), speed: 30, glowA: {x: TO.a[0] + TO.a[2] / 2, y: TO.a[1] + TO.a[3] / 2, a: 0.25 + 0.4 * onA}, glowB: {x: TO.b[0] + TO.b[2] / 2, y: TO.b[1] + TO.b[3] / 2, a: 0.25 + 0.4 * onB}});
+    A.pose(0, Math.sin(t * 1.1) * 4, 0); B.pose(0, Math.sin(t * 1.1 + 1.6) * 4, 0);
+    pa.style.opacity = (0.35 + 0.65 * onA).toFixed(3); pb.style.opacity = (0.35 + 0.65 * onB).toFixed(3);
+    // bánh răng nhỏ: đứng yên tới khi động cơ được giới thiệu, rồi quay nhanh dần
+    const spin = (t0, t1) => (t < t0 ? 0 : 140 * (t - t0) * D.L(t, t0, t0 + 1.2) + 0) * 1;
+    D.$('#gads').setAttribute('transform', 'rotate(' + spin(T_A).toFixed(1) + ')');
+    D.$('#gseo').setAttribute('transform', 'rotate(' + (-spin(T_B)).toFixed(1) + ')');
+    D.$('#gads').style.opacity = 0.35 + 0.6 * onA; D.$('#gseo').style.opacity = 0.35 + 0.6 * onB;
+  });
+  if (L16) { let i = 0; D.$('#hd').innerHTML = S.html('S04_headline').replace(/<br>/g, () => (i++ % 2 === 0 ? ' ' : '<br>')); }
+  D.words(tl, '#hd', 0.3, {stagger: 0.05});
+  D.fadeIn(tl, '.eng .top', 1.0, {stagger: 0.12});
+  D.fadeIn(tl, '#dsads', T_A);
+  D.fadeIn(tl, '#dsseo', T_B);
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="hf/parts/dk.css">
+<style>
+  /* S01 · HOOK: công tắc "GOOGLE ADS" đang ON, dòng khách chảy vào 12 bàn → 1,6 s gạt OFF, dòng đứt, đèn bàn tắt dần */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 262px; font-size: 90px; }
+  .sw { display: flex; flex-direction: column; justify-content: space-between; padding: 30px 34px; box-sizing: border-box; height: 100%; }
+  .sw .nm { font: 600 30px/1 "JetBrains Mono", monospace; letter-spacing: .16em; color: #fff; }
+  .sw .row { display: flex; align-items: center; justify-content: space-between; }
+  .led { display: flex; align-items: center; gap: 14px; font: 600 34px/1 "JetBrains Mono", monospace; letter-spacing: .12em; }
+  .led i { width: 22px; height: 22px; border-radius: 50%; }
+  .trk { position: relative; width: 190px; height: 92px; border-radius: 46px; background: #07041C; border: 2px solid rgba(255, 255, 255, .14); box-shadow: inset 0 6px 16px rgba(0, 0, 0, .7); }
+  .knob { position: absolute; top: 7px; left: 7px; width: 74px; height: 74px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #C9C6E6 55%, #8E8AB3); box-shadow: 0 6px 14px rgba(0, 0, 0, .6); }
+  .tab { position: absolute; width: 90px; height: 90px; margin: -45px; }
+  .tab .tb { position: absolute; left: 20px; top: 20px; width: 50px; height: 50px; border-radius: 50%; background: #1F1858; border: 2px solid rgba(255, 255, 255, .18); }
+  .tab .ch { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #2B2370; }
+  .tab .lamp { position: absolute; left: -30px; top: -30px; width: 150px; height: 150px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 196, 110, .75), rgba(255, 150, 80, .25) 55%, rgba(0, 0, 0, 0)); }
+  .tab .core { position: absolute; left: 35px; top: 35px; width: 20px; height: 20px; border-radius: 50%; background: #FFD79A; box-shadow: 0 0 16px #FFC46E; }
+  #cable { position: absolute; left: 0; top: 0; z-index: 4; overflow: visible; }
+  .spark { position: absolute; z-index: 9; width: 4px; height: 34px; margin-left: -2px; background: linear-gradient(#fff, rgba(255, 138, 92, 0)); transform-origin: 50% 0; border-radius: 2px; }
+  #kick { position: absolute; z-index: 20; left: var(--safe-side); top: 212px; }
+  [data-ratio="16x9"] #hd { left: 120px; right: auto; width: 900px; top: 380px; font-size: 86px; }
+  [data-ratio="16x9"] #kick { left: 124px; top: 320px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S01">
+  <svg id="cable" width="1920" height="1920"><path id="cab" fill="none" stroke-width="6" stroke-linecap="round"/></svg>
+  <div class="kick" id="kick">Thứ Ba · 19:00</div>
+  <div class="hd red" id="hd" data-copy="S01_headline"></div>
+</div>
+<script src="hf/parts/dk.js"></script>
+<script>
+  const S = window.SAMI, D = window.DK, tl = S.timeline(), root = D.$('#root'), L16 = S.landscape;
+  const T_OFF = 1.6;
+  const st = D.stage(root, {horizon: L16 ? 770 : 1230, beamX: L16 ? 0.7 : 0.5});
+  // ── công tắc (khối 3D)
+  const SW = L16 ? {x: 1190, y: 215, w: 460, h: 260} : {x: 300, y: 690, w: 480, h: 280};
+  const bx = D.box(root, {x: SW.x, y: SW.y, w: SW.w, h: SW.h, d: 56, cls: 'ads', rx: -14, ry: L16 ? -16 : -10});
+  bx.wrap.style.zIndex = 8;
+  bx.f.innerHTML = '<div class="sw"><div class="nm">' + S.text('S01_switch') + '</div><div class="row"><div class="led"><i id="ledi"></i><span id="ledt">ON</span></div><div class="trk" id="trk"><div class="knob" id="knob"></div></div></div></div>';
+  const pool = D.el('div', 'pool ads', root); pool.style.cssText += ';left:' + (SW.x - 60) + 'px;top:' + (SW.y + SW.h - 10) + 'px;width:' + (SW.w + 120) + 'px;height:120px;z-index:3';
+  // ── 12 bàn
+  const G = L16 ? {x0: 1080, y0: 610, dx: 190, dy: 150, cols: 4} : {x0: 230, y0: 1150, dx: 207, dy: 175, cols: 4};
+  const tabs = [];
+  for (let i = 0; i < 12; i++) {
+    const c = i % G.cols, r = Math.floor(i / G.cols), e = D.el('div', 'tab', root);
+    e.style.left = (G.x0 + c * G.dx + (r % 2) * (L16 ? 0 : 0)) + 'px'; e.style.top = (G.y0 + r * G.dy) + 'px'; e.style.zIndex = 5;
+    e.innerHTML = '<div class="lamp"></div><div class="ch" style="left:36px;top:2px"></div><div class="ch" style="left:36px;top:70px"></div><div class="ch" style="left:2px;top:36px"></div><div class="ch" style="left:70px;top:36px"></div><div class="tb"></div><div class="core"></div>';
+    tabs.push({el: e, lamp: e.querySelector('.lamp'), core: e.querySelector('.core'), off: T_OFF + 0.35 + S.rnd(i * 4.4 + 1) * 1.6});
+  }
+  // ── dây cáp + dòng khách: từ mép trái → công tắc → xuống lưới bàn
+  const cx = SW.x + SW.w / 2, cyB = SW.y + SW.h;
+  const gx = G.x0 + G.dx * 1.5, gy = G.y0 + G.dy;
+  const P = L16 ? [[cx, -40], [cx, SW.y + SW.h / 2], [SW.x + SW.w, SW.y + SW.h / 2], [SW.x + SW.w + 120, SW.y + SW.h / 2], [SW.x + SW.w + 120, G.y0 - 70], [gx, G.y0 - 70]]
+                : [[-40, SW.y + SW.h / 2], [SW.x, SW.y + SW.h / 2], [cx, SW.y + SW.h / 2], [cx, cyB + 40], [cx, G.y0 - 95], [gx, G.y0 - 95]];
+  const bus = D.el('div', '', root); bus.style.cssText = 'position:absolute;z-index:4;height:6px;border-radius:3px;left:' + (G.x0 - 40) + 'px;width:' + (G.dx * 3 + 80) + 'px;top:' + ((L16 ? G.y0 - 70 : G.y0 - 95) - 3) + 'px';
+  D.$('#cab').setAttribute('d', 'M' + P.map((p) => p.join(' ')).join(' L'));
+  const flow = D.flow(root, P, {n: 16, color: '#FFB27A', size: 14, z: 7});
+  // tia lửa lúc gạt
+  const sparks = [];
+  for (let i = 0; i < 9; i++) { const s = D.el('div', 'spark', root); s.style.zIndex = 9; sparks.push({el: s, a: -150 + i * 32 + S.rnd(i) * 14, v: 120 + S.rnd(i * 3) * 120}); }
+  D.clock(tl, (t) => {
+    const flip = D.E(t, T_OFF, T_OFF + 0.22), on = t < T_OFF;
+    const flick = t > T_OFF && t < T_OFF + 0.6 ? (Math.sin(t * 90) > 0 ? 0.55 : 0.35) : 1;
+    const light = on ? 1 : D.mix(1, 0.42, D.E(t, T_OFF, T_OFF + 1.2)) * flick;
+    st.update(t, {light: light, speed: on ? 50 : 50 * (1 - D.E(t, T_OFF, T_OFF + 1.5)), glowA: {x: cx, y: SW.y + SW.h / 2, a: on ? 0.75 : 0.75 * (1 - D.E(t, T_OFF, T_OFF + 0.5))}});
+    // công tắc: núm trượt phải→trái, khối giật nhẹ
+    const kick = t > T_OFF ? Math.exp(-(t - T_OFF) * 9) * Math.sin((t - T_OFF) * 40) : 0;
+    D.$('#knob').style.transform = 'translateX(' + D.mix(102, 0, flip).toFixed(1) + 'px)';
+    D.$('#trk').style.background = on ? 'linear-gradient(90deg,#7A1E33,#FF4D5E)' : '#07041C';
+    D.$('#trk').style.boxShadow = on ? '0 0 26px rgba(255,77,94,.7), inset 0 4px 10px rgba(0,0,0,.4)' : 'inset 0 6px 16px rgba(0,0,0,.7)';
+    D.$('#ledi').style.background = on ? '#FF4D5E' : '#3A3360'; D.$('#ledi').style.boxShadow = on ? '0 0 16px #FF4D5E' : 'none';
+    D.$('#ledt').textContent = on ? 'ON' : 'OFF'; D.$('#ledt').style.color = on ? '#FF8A8F' : '#6E6893';
+    bx.pose(0, kick * 10, Math.sin(t * 0.6) * 1.5, 1 + kick * 0.02);
+    pool.style.opacity = on ? 1 : (1 - D.E(t, T_OFF, T_OFF + 0.4)) * 0.9 + 0.1;
+    // dây cáp sáng khi ON
+    const cab = D.$('#cab');
+    cab.setAttribute('stroke', on ? 'rgba(255,138,92,.55)' : 'rgba(110,104,147,' + (0.55 - 0.3 * D.E(t, T_OFF, T_OFF + 0.6)).toFixed(2) + ')');
+    bus.style.background = cab.getAttribute('stroke'); bus.style.boxShadow = on ? '0 0 12px rgba(255,120,90,.8)' : 'none';
+    cab.style.filter = on ? 'drop-shadow(0 0 8px rgba(255,120,90,.8))' : 'none';
+    flow(t + 2.4, T_OFF + 2.4, 1.9);
+    // đèn bàn
+    tabs.forEach((b, i) => {
+      const k = t < b.off ? 1 : (t < b.off + 0.18 ? (Math.sin((t - b.off) * 120) > 0 ? 0.6 : 0.15) : 0.06);
+      const breath = 0.88 + 0.12 * Math.sin(t * 2 + i);
+      b.lamp.style.opacity = (k * breath).toFixed(3); b.core.style.opacity = Math.max(0.25, k).toFixed(3);
+      b.core.style.background = k > 0.5 ? '#FFD79A' : '#3A3360'; b.core.style.boxShadow = k > 0.5 ? '0 0 16px #FFC46E' : 'none';
+    });
+    sparks.forEach((s) => {
+      const u = D.L(t, T_OFF, T_OFF + 0.45), a = s.a * Math.PI / 180;
+      const kx = SW.x + SW.w - 34 - 95 + 40, ky = SW.y + SW.h - 30 - 46;
+      s.el.style.left = (kx + Math.cos(a) * s.v * u).toFixed(1) + 'px'; s.el.style.top = (ky + Math.sin(a) * s.v * u).toFixed(1) + 'px';
+      s.el.style.transform = 'rotate(' + (s.a + 90) + 'deg) scaleY(' + (1 - u).toFixed(2) + ')';
+      s.el.style.opacity = u > 0 && u < 1 ? (1 - u).toFixed(2) : 0;
+    });
+  });
+  D.fadeIn(tl, '#kick', 0.2);
+  D.words(tl, '#hd', 2.45, {stagger: 0.08});
+</script>
+</body>
+</html>

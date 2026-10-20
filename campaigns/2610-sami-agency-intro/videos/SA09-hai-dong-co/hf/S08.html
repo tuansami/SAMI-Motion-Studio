@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="hf/parts/dk.css">
+<style>
+  /* S08 · MỘT BẢNG: hai dòng chảy đỏ + mint đổ vào một bảng "Wochenbericht", thanh xếp chồng hai màu mọc lên (không số) */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 250px; font-size: 74px; }
+  #sub { left: var(--safe-side); right: var(--safe-side); top: 470px; }
+  #panel { z-index: 10; padding: 40px 44px; box-sizing: border-box; }
+  #panel .tt { display: flex; justify-content: space-between; align-items: center; }
+  #panel .tt b { font: 600 30px/1 "JetBrains Mono", monospace; letter-spacing: .06em; color: #fff; }
+  #panel .demo { position: static; }
+  .mrow { margin-top: 54px; }
+  .mrow .ml { display: flex; justify-content: space-between; font: 600 24px/1 "JetBrains Mono", monospace; letter-spacing: .1em; color: #EDEBFF; margin-bottom: 16px; }
+  .mrow .ml span { color: var(--dim); }
+  .mrow .bar { position: relative; height: 40px; border-radius: 12px; background: rgba(255, 255, 255, .05); border: 1px solid var(--edge); overflow: hidden; }
+  .mrow .bs, .mrow .ba { position: absolute; top: 0; bottom: 0; }
+  .mrow .bs { left: 0; background: linear-gradient(90deg, rgba(8, 221, 164, .6), #08DDA4); }
+  .mrow .ba { background: linear-gradient(90deg, #FF4D5E, #FF8A5C); }
+  .lgd { position: absolute; left: 44px; bottom: 36px; display: flex; gap: 14px; }
+  [data-ratio="16x9"] #hd { left: 120px; right: auto; width: 830px; top: 300px; font-size: 62px; }
+  [data-ratio="16x9"] #sub { left: 120px; right: auto; width: 760px; top: 540px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S08">
+  <div class="hd" id="hd" data-copy="S08_headline"></div>
+  <div class="sub" id="sub" data-copy="S08_sub"></div>
+  <div class="glass" id="panel">
+    <div class="tt"><b>Wochenbericht</b><div class="demo">Minh họa</div></div>
+    <div class="mrow"><div class="ml">Anrufe<span>Ads + Maps</span></div><div class="bar"><div class="bs"></div><div class="ba"></div></div></div>
+    <div class="mrow"><div class="ml">Routen<span>Ads + Maps</span></div><div class="bar"><div class="bs"></div><div class="ba"></div></div></div>
+    <div class="mrow"><div class="ml">Reservierungen<span>Ads + Maps</span></div><div class="bar"><div class="bs"></div><div class="ba"></div></div></div>
+    <div class="lgd"><span class="chip ads"><i></i>Google Ads</span><span class="chip seo"><i></i>Maps organisch</span></div>
+  </div>
+</div>
+<script src="hf/parts/dk.js"></script>
+<script>
+  const S = window.SAMI, D = window.DK, tl = S.timeline(), root = D.$('#root'), L16 = S.landscape;
+  const st = D.stage(root, {horizon: L16 ? 960 : 1600, beamX: L16 ? 0.72 : 0.5});
+  const PN = L16 ? {x: 960, y: 250, w: 840, h: 660} : {x: 72, y: 760, w: 936, h: 700};
+  const pn = D.$('#panel'); Object.assign(pn.style, {left: PN.x + 'px', top: PN.y + 'px', width: PN.w + 'px', height: PN.h + 'px'});
+  // hai dòng chảy đổ vào mép trên bảng
+  const cx = PN.x + PN.w / 2, ty = PN.y - 6, y0 = L16 ? PN.y - 200 : PN.y - 90;
+  const fa = D.flow(root, [[-30, y0], [PN.x + 60, y0], [cx - 60, ty - 40], [cx - 20, ty]], {n: 10, color: '#FF4D5E', size: 13, z: 9});
+  const fb = D.flow(root, [[S.w + 30, y0], [PN.x + PN.w - 60, y0], [cx + 60, ty - 40], [cx + 20, ty]], {n: 10, color: '#08DDA4', size: 13, z: 9});
+  const VAL = [[0.46, 0.24], [0.40, 0.26], [0.36, 0.30]];
+  const rows = Array.from(document.querySelectorAll('.mrow'));
+  D.clock(tl, (t) => {
+    st.update(t, {light: 0.85, speed: 18, glowA: {x: PN.x, y: PN.y, a: 0.25}, glowB: {x: PN.x + PN.w, y: PN.y, a: 0.25}});
+    fa(t + 1.5, 99, 1.5); fb(t + 2.2, 99, 1.5);
+    rows.forEach((r, i) => {
+      const u = D.E(t, 1.4 + i * 0.35, 2.6 + i * 0.35), [s, a] = VAL[i];
+      const w = s * u * 100, wa = a * D.E(t, 1.9 + i * 0.35, 3.0 + i * 0.35) * 100;
+      r.querySelector('.bs').style.width = w.toFixed(2) + '%';
+      const ba = r.querySelector('.ba'); ba.style.left = w.toFixed(2) + '%'; ba.style.width = wa.toFixed(2) + '%';
+    });
+    pn.style.transform = 'translateY(' + (Math.sin(t * 0.9) * 4).toFixed(1) + 'px)';
+  });
+  D.fadeIn(tl, '#panel', 0.15, {dist: 40});
+  D.words(tl, '#hd', 0.4, {stagger: 0.06});
+  D.fadeIn(tl, '#sub', 2.0);
+</script>
+</body>
+</html>

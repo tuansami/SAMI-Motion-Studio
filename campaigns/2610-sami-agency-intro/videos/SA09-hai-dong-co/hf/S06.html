@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/800.css">
+<link rel="stylesheet" href="hf/parts/dk.css">
+<style>
+  /* S06 · CHỮ KÝ: bánh răng ADS khởi động → bánh SEO khởi động → bánh SAMI hạ xuống khớp răng → cả bộ quay đồng bộ, kim UMSATZ lên vùng xanh */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 250px; font-size: 84px; }
+  #rig { position: absolute; left: 0; top: 0; z-index: 8; overflow: visible; }
+  .gl { font: 800 30px/1 "JetBrains Mono", monospace; letter-spacing: .12em; }
+  .gk { font: 600 20px/1 "JetBrains Mono", monospace; letter-spacing: .22em; fill: #9A95C4; }
+  .chipw { position: absolute; z-index: 9; transform: translateX(-50%); }
+  #demo { left: auto; right: var(--safe-side); top: 560px; }
+  [data-ratio="16x9"] #hd { left: 120px; right: auto; width: 830px; top: 420px; font-size: 74px; }
+  [data-ratio="16x9"] #demo { right: 96px; top: 150px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S06">
+  <div class="hd" id="hd" data-copy="S06_headline"></div>
+  <svg id="rig" width="1920" height="1920"></svg>
+  <div class="chipw" id="ca"><span class="chip ads"><i></i>Google Ads</span></div>
+  <div class="chipw" id="cb"><span class="chip seo"><i></i>Local SEO</span></div>
+  <div class="demo" id="demo">Minh họa</div>
+</div>
+<script src="hf/parts/dk.js"></script>
+<script>
+  const S = window.SAMI, D = window.DK, tl = S.timeline(), root = D.$('#root'), L16 = S.landscape;
+  const st = D.stage(root, {horizon: L16 ? 960 : 1560, beamX: L16 ? 0.7 : 0.5});
+  const NA = 20, NS = 12, RA = 170, RS = 102;
+  const G = L16 ? {a: [1100, 700], b: [1600, 700], gauge: [1350, 400], gr: 205} : {a: [285, 1270], b: [795, 1270], gauge: [540, 900], gr: 270};
+  const dx = (G.b[0] - G.a[0]) / 2, dyS = Math.sqrt((RA + RS) ** 2 - dx * dx);
+  const CS = [G.a[0] + dx, G.a[1] - dyS];
+  const svg = D.$('#rig'), NSV = 'http://www.w3.org/2000/svg';
+  const mk = (tag, at, par) => { const e = document.createElementNS(NSV, tag); Object.keys(at).forEach((k) => e.setAttribute(k, at[k])); (par || svg).appendChild(e); return e; };
+  const defs = mk('defs', {});
+  defs.innerHTML = '<linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3082"/><stop offset=".55" stop-color="#1C1550"/><stop offset="1" stop-color="#0E0832"/></linearGradient>' +
+    '<linearGradient id="samig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#08DDA4"/><stop offset="1" stop-color="#7667FE"/></linearGradient>' +
+    '<filter id="gw" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  // ── đồng hồ UMSATZ (nửa vòng trên), vùng đỏ → vàng → xanh
+  const gC = G.gauge, gR = G.gr, A2 = (deg, r) => [gC[0] + r * Math.sin(deg * Math.PI / 180), gC[1] - r * Math.cos(deg * Math.PI / 180)];
+  const arc = (a0, a1, r) => { const p0 = A2(a0, r), p1 = A2(a1, r); return 'M' + p0[0].toFixed(1) + ' ' + p0[1].toFixed(1) + ' A' + r + ' ' + r + ' 0 0 1 ' + p1[0].toFixed(1) + ' ' + p1[1].toFixed(1); };
+  const gauge = mk('g', {});
+  mk('path', {d: arc(-92, 92, gR), stroke: 'rgba(227,228,247,.08)', 'stroke-width': 46, fill: 'none'}, gauge);
+  const zones = [[-90, -32, '#FF4D5E'], [-30, 18, '#F59E0B'], [20, 90, '#08DDA4']].map(([a, b, c]) => mk('path', {d: arc(a, b, gR), stroke: c, 'stroke-width': 30, fill: 'none', opacity: 0.35}, gauge));
+  for (let a = -90; a <= 90; a += 10) { const p0 = A2(a, gR - 34), p1 = A2(a, gR - (a % 30 === 0 ? 58 : 46)); mk('line', {x1: p0[0], y1: p0[1], x2: p1[0], y2: p1[1], stroke: 'rgba(227,228,247,.4)', 'stroke-width': a % 30 === 0 ? 4 : 2}, gauge); }
+  const gtx = mk('text', {class: 'gk', x: gC[0], y: gC[1] + 52, 'text-anchor': 'middle'}, gauge); gtx.textContent = 'UMSATZ';
+  const needle = mk('g', {filter: 'url(#gw)'}, gauge);
+  mk('path', {d: 'M-9 0 L0 ' + (-(gR - 62)) + ' L9 0 Z', fill: '#fff'}, needle);
+  mk('circle', {cx: gC[0], cy: gC[1], r: 20, fill: '#fff'}, gauge);
+  // trục nối bánh SAMI → kim
+  const shaft = mk('line', {x1: gC[0], y1: gC[1] + 20, x2: CS[0], y2: CS[1], stroke: 'url(#samig)', 'stroke-width': 8, 'stroke-linecap': 'round', filter: 'url(#gw)'});
+  // ── bánh răng
+  function gear(N, r, c, fill, label, lc) {
+    const g = mk('g', {});
+    const rot = mk('g', {}, g);
+    mk('path', {d: D.gearPath(N, r, {holes: N > 14 ? 6 : 0, hub: r * 0.3}), 'fill-rule': 'evenodd', fill: fill, stroke: c, 'stroke-width': 3}, rot);
+    mk('circle', {cx: 0, cy: 0, r: r * 0.78, fill: 'none', stroke: c, 'stroke-width': 2, opacity: 0.35}, rot);
+    const tx = mk('text', {class: 'gl', x: 0, y: 11, 'text-anchor': 'middle', fill: lc}, g); tx.textContent = label;
+    return {g, rot};
+  }
+  const glA = mk('circle', {r: RA + 40, fill: 'none', stroke: '#FF4D5E', 'stroke-width': 2, opacity: 0}), glB = mk('circle', {r: RA + 40, fill: 'none', stroke: '#08DDA4', 'stroke-width': 2, opacity: 0});
+  const GA = gear(NA, RA, '#FF4D5E', 'url(#metal)', 'ADS', '#FF8A8F'), GB = gear(NA, RA, '#08DDA4', 'url(#metal)', 'SEO', '#5EF0C8'), GS = gear(NS, RS, '#FFFFFF', 'url(#samig)', 'SAMI', '#0C0628');
+  // tốc độ (độ/giây) + tích phân số (tất định)
+  const W = 110, T_A = 0.4, T_B = 1.8, T_S = 3.0, T_N = [3.4, 6.0];
+  const wA = (t) => W * D.E(t, T_A, T_A + 1.1), wB = (t) => W * D.E(t, T_B, T_B + 1.1);
+  const integ = (w, t) => { let s = 0; const n = Math.max(1, Math.ceil(t * 60)), h = t / n; for (let i = 0; i < n; i++) s += w((i + 0.5) * h) * h; return s; };
+  const phiA = (t) => integ(wA, t);
+  // pha ban đầu của SEO sao cho từ lúc khớp răng (T_S) góc trùng với góc truyền qua bánh SAMI
+  const meshB = (t) => { const pS = D.meshAngle(G.a, NA, phiA(t), CS, NS); return D.meshAngle(CS, NS, pS, G.b, NA); };
+  const PB0 = meshB(T_S) - integ(wB, T_S);
+  const phiB = (t) => (t >= T_S ? meshB(t) : PB0 + integ(wB, t));
+  const ca = D.$('#ca'), cb = D.$('#cb');
+  ca.style.left = G.a[0] + 'px'; ca.style.top = (G.a[1] + RA + 36) + 'px'; cb.style.left = G.b[0] + 'px'; cb.style.top = (G.b[1] + RA + 36) + 'px';
+  D.clock(tl, (t) => {
+    const onA = D.E(t, T_A, T_A + 0.6), onB = D.E(t, T_B, T_B + 0.6), land = D.E(t, T_S - 0.5, T_S), green = D.E(t, 5.4, 6.4);
+    st.update(t, {light: 0.7 + 0.3 * green, speed: 20 + 60 * green, glowA: {x: G.a[0], y: G.a[1], a: 0.15 + 0.5 * onA}, glowB: {x: G.b[0], y: G.b[1], a: 0.15 + 0.5 * onB}});
+    const pa = phiA(t), pb = phiB(t), ps = D.meshAngle(G.a, NA, pa, CS, NS);
+    // giật nhẹ khi khởi động / khớp
+    const jolt = (t0) => (t > t0 ? Math.exp(-(t - t0) * 10) * Math.sin((t - t0) * 50) * 6 : 0);
+    GA.g.setAttribute('transform', 'translate(' + G.a[0] + ',' + (G.a[1] + jolt(T_A)) + ')'); GA.rot.setAttribute('transform', 'rotate(' + pa.toFixed(2) + ')');
+    GB.g.setAttribute('transform', 'translate(' + G.b[0] + ',' + (G.b[1] + jolt(T_B)) + ')'); GB.rot.setAttribute('transform', 'rotate(' + pb.toFixed(2) + ')');
+    const sy = CS[1] - 520 * (1 - land) + jolt(T_S);
+    GS.g.setAttribute('transform', 'translate(' + CS[0] + ',' + sy.toFixed(1) + ')'); GS.rot.setAttribute('transform', 'rotate(' + ps.toFixed(2) + ')');
+    GS.g.style.opacity = D.L(t, T_S - 0.6, T_S - 0.3);
+    GA.g.style.filter = onA > 0 ? 'drop-shadow(0 0 ' + (8 + 16 * onA).toFixed(0) + 'px rgba(255,77,94,.7))' : 'none';
+    GB.g.style.filter = onB > 0 ? 'drop-shadow(0 0 ' + (8 + 16 * onB).toFixed(0) + 'px rgba(8,221,164,.7))' : 'none';
+    GS.g.style.filter = 'drop-shadow(0 0 ' + (10 + 18 * land).toFixed(0) + 'px rgba(118,103,254,.8))';
+    [[glA, G.a, T_A], [glB, G.b, T_B]].forEach(([c, p, t0]) => { const u = D.L(t, t0, t0 + 0.9); c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', RA + 20 + u * 140); c.setAttribute('opacity', (u > 0 && u < 1 ? (1 - u) * 0.8 : 0).toFixed(2)); });
+    shaft.style.opacity = D.L(t, T_S, T_S + 0.3);
+    // kim: nằm ở vùng đỏ → khi bộ khớp thì lên vùng xanh (vượt nhẹ rồi về), rung nhỏ khi máy chạy
+    const u = D.E(t, T_N[0], T_N[1]), over = t > T_N[1] - 0.6 ? Math.exp(-(t - T_N[1] + 0.6) * 4) * Math.sin((t - T_N[1] + 0.6) * 9) * 5 : 0;
+    const ang = D.mix(-78, 58, u) + over + Math.sin(t * 23) * 0.8 * D.L(t, T_A, T_A + 1);
+    needle.setAttribute('transform', 'translate(' + gC[0] + ',' + gC[1] + ') rotate(' + ang.toFixed(2) + ')');
+    zones[0].setAttribute('opacity', (0.35 + 0.5 * (1 - u) * D.L(t, 0.2, 0.8)).toFixed(2));
+    zones[2].setAttribute('opacity', (0.35 + 0.65 * green).toFixed(2));
+    gauge.style.opacity = D.L(t, 0.1, 0.6);
+  });
+  D.fadeIn(tl, '#ca', T_A, {dist: 14}); D.fadeIn(tl, '#cb', T_B, {dist: 14});
+  D.fadeIn(tl, '#demo', 0.5, {dist: 0});
+  D.words(tl, '#hd', 5.6, {stagger: 0.07});
+</script>
+</body>
+</html>

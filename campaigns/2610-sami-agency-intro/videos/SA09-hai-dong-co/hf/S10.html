@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="hf/parts/dk.css">
+<style>
+  /* S10 · END CARD SAMI: bong bóng chat (vẽ code) viền sáng mint, số WhatsApp, ưu đãi, logo nổi trên sàn */
+  #wrap { position: absolute; z-index: 10; left: var(--safe-side); right: var(--safe-side); top: 300px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #colA, #colB { display: flex; flex-direction: column; align-items: center; }
+  #bubble { position: relative; padding: 42px 56px 46px; border-radius: 48px 48px 48px 14px; color: #0C0628;
+    background: linear-gradient(135deg, #5EF0C8, #08DDA4 60%, #06B88A); box-shadow: 0 0 0 2px rgba(255, 255, 255, .3), 0 0 70px rgba(8, 221, 164, .55), 0 30px 70px rgba(0, 0, 0, .55); }
+  #bubble:after { content: ""; position: absolute; left: 0; bottom: -34px; width: 50px; height: 36px; background: #06B88A; clip-path: polygon(0 0, 100% 0, 0 100%); }
+  #bubble .ic { position: absolute; left: -30px; top: -30px; width: 76px; height: 76px; border-radius: 50%; background: #0C0628; border: 2px solid rgba(8, 221, 164, .8); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 24px rgba(8, 221, 164, .6); }
+  #bubble .ic svg { width: 40px; height: 40px; }
+  #cta { font: 800 50px/1.2 "Be Vietnam Pro", sans-serif; }
+  #phone { font: 800 80px/1.15 "Be Vietnam Pro", sans-serif; letter-spacing: -.01em; margin-top: 8px; white-space: nowrap; }
+  #offer { margin-top: 76px; font: 500 38px/1.42 "Be Vietnam Pro", sans-serif; color: #E3E4F7; }
+  #lw { margin-top: 90px; width: 560px; overflow: hidden; }
+  #logo { width: 100%; display: block; clip-path: polygon(0 0, 100% 0, 100% 58%, 39% 58%, 39% 100%, 0 100%); }
+  #tag { margin-top: 18px; font: 500 23px/1.4 "JetBrains Mono", monospace; letter-spacing: .05em; color: #A8A3C9; white-space: nowrap; }
+  #web { margin-top: 14px; font: 800 42px/1.2 "Be Vietnam Pro", sans-serif; color: var(--seo); }
+  [data-ratio="16x9"] #wrap { left: 0; right: 0; top: 0; bottom: 0; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; justify-items: center; padding: 0 120px; gap: 70px; }
+  [data-ratio="16x9"] #colA { align-items: flex-start; text-align: left; }
+  [data-ratio="16x9"] #offer { margin-top: 70px; font-size: 34px; }
+  [data-ratio="16x9"] #lw { margin-top: 0; width: 600px; }
+  [data-ratio="16x9"] #tag { font-size: 20px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S10">
+  <div id="wrap">
+    <div id="colA">
+      <div id="bubble">
+        <div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#08DDA4" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30 L10 23 A12 12 0 1 1 16 30 Z"/></svg></div>
+        <div id="cta" data-copy="S10_cta"></div>
+        <div id="phone" data-copy="S10_phone"></div>
+      </div>
+      <div id="offer" data-copy="S10_offer"></div>
+    </div>
+    <div id="colB">
+      <div id="lw"><img id="logo" src="public/img/logo-white.svg"></div>
+      <div id="tag" data-copy="S10_tagline"></div>
+      <div id="web" data-copy="S10_web"></div>
+    </div>
+  </div>
+</div>
+<script src="hf/parts/dk.js"></script>
+<script>
+  const S = window.SAMI, D = window.DK, tl = S.timeline(), root = D.$('#root'), L16 = S.landscape;
+  const st = D.stage(root, {horizon: L16 ? 880 : 1560, beamX: 0.5});
+  const pool = D.el('div', 'pool sami', root); pool.style.cssText += L16 ? ';left:1080px;top:600px;width:700px;height:160px;z-index:3' : ';left:200px;top:1330px;width:680px;height:160px;z-index:3';
+  D.clock(tl, (t) => {
+    st.update(t, {light: 0.9, speed: 16, glowB: {x: L16 ? 560 : 540, y: L16 ? 420 : 420, a: 0.35}});
+    const u = D.E(t, 0.1, 0.7);
+    D.$('#bubble').style.transform = 'translateY(' + D.mix(60, 0, u).toFixed(1) + 'px) scale(' + D.mix(0.86, 1, u).toFixed(3) + ')';
+    D.$('#bubble').style.opacity = u;
+    pool.style.opacity = D.L(t, 1.6, 2.4) * (0.75 + 0.25 * Math.sin(t * 1.8));
+  });
+  D.fadeIn(tl, '#offer', 1.0);
+  D.fadeIn(tl, '#lw', 1.7, {dist: 30, blur: 14});
+  D.fadeIn(tl, '#tag', 2.1, {dist: 12}); D.fadeIn(tl, '#web', 2.3, {dist: 12});
+</script>
+</body>
+</html>

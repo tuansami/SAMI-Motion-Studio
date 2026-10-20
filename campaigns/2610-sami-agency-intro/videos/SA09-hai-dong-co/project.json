@@ -136,7 +136,7 @@
   "S04_headline": {
    "label": "Tiêu đề hai động cơ",
    "scene": "S04",
-   "value": "Quán luôn kín bàn không chọn. / *Nó chạy bằng hai động cơ.*"
+   "value": "Quán luôn kín bàn / không chọn. / *Nó chạy bằng / hai động cơ.*"
   },
   "S04_a_name": {
    "label": "Động cơ 1 – tên",
@@ -186,7 +186,7 @@
   "S07_b": {
    "label": "Câu B (SEO giữ nền)",
    "scene": "S07",
-   "value": "SEO *giữ nền*: hồ sơ Google, / review, từ khóa món ăn bằng tiếng Đức."
+   "value": "SEO *giữ nền*: / hồ sơ Google, review, từ khóa món ăn bằng tiếng Đức."
   },
   "S08_headline": {
    "label": "Tiêu đề báo cáo",

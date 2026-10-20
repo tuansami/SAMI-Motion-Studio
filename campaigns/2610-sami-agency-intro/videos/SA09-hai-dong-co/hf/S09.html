@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="hf/parts/dk.css">
+<style>
+  /* S09 · NHỊP THỞ: sân khấu tối, hai đốm đỏ + mint thở, hội về giữa thành một; chữ vào sau 1,2 s */
+  #hd { left: var(--safe-side); right: var(--safe-side); top: 1080px; font-size: 96px; text-align: center; }
+  .orb { position: absolute; z-index: 8; width: 80px; height: 80px; margin: -40px; border-radius: 50%; }
+  #oa { background: radial-gradient(circle at 40% 35%, #FFB0B6, #FF4D5E 55%, rgba(255, 77, 94, 0) 72%); box-shadow: 0 0 60px 10px rgba(255, 77, 94, .45); }
+  #ob { background: radial-gradient(circle at 40% 35%, #B8FFE9, #08DDA4 55%, rgba(8, 221, 164, 0) 72%); box-shadow: 0 0 60px 10px rgba(8, 221, 164, .4); }
+  #om { width: 150px; height: 150px; margin: -75px; background: radial-gradient(circle at 40% 35%, #fff, #7667FE 50%, rgba(118, 103, 254, 0) 72%); box-shadow: 0 0 110px 26px rgba(118, 103, 254, .45), 0 0 50px 6px rgba(8, 221, 164, .35); }
+  [data-ratio="16x9"] #hd { top: 600px; font-size: 92px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S09">
+  <div class="orb" id="oa"></div><div class="orb" id="ob"></div><div class="orb" id="om"></div>
+  <div class="hd" id="hd" data-copy="S09_headline"></div>
+</div>
+<script src="hf/parts/dk.js"></script>
+<script>
+  const S = window.SAMI, D = window.DK, tl = S.timeline(), root = D.$('#root'), L16 = S.landscape;
+  const st = D.stage(root, {horizon: L16 ? 900 : 1560, dust: 22});
+  const C = L16 ? [960, 380] : [540, 820], SP = L16 ? 300 : 260;
+  D.clock(tl, (t) => {
+    st.update(t, {light: 0.45, speed: 8});
+    const m = D.E(t, 1.4, 2.6), br = 1 + 0.08 * Math.sin(t * 2.6);
+    const ang = t * 0.9;
+    const ra = SP * (1 - m);
+    D.$('#oa').style.transform = 'translate(' + (C[0] - ra * Math.cos(ang)).toFixed(1) + 'px,' + (C[1] - ra * 0.3 * Math.sin(ang)).toFixed(1) + 'px) scale(' + br.toFixed(3) + ')';
+    D.$('#ob').style.transform = 'translate(' + (C[0] + ra * Math.cos(ang)).toFixed(1) + 'px,' + (C[1] + ra * 0.3 * Math.sin(ang)).toFixed(1) + 'px) scale(' + br.toFixed(3) + ')';
+    D.$('#oa').style.opacity = D.L(t, 0.1, 0.6) * (1 - D.L(t, 2.4, 2.7)); D.$('#ob').style.opacity = D.$('#oa').style.opacity;
+    const k = D.E(t, 2.35, 2.9);
+    D.$('#om').style.transform = 'translate(' + C[0] + 'px,' + C[1] + 'px) scale(' + (k * (1 + 0.06 * Math.sin(t * 2.2))).toFixed(3) + ')';
+    D.$('#om').style.opacity = k;
+  });
+  D.words(tl, '#hd', 1.2, {stagger: 0.09});
+</script>
+</body>
+</html>

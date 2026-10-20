@@ -1,0 +1,69 @@
+/* SA09 · "Dark Tech Keynote" — sân khấu tối, đèn rọi, viền sáng, linh kiện 3D giả lập bằng CSS */
+:root {
+  --ads: #FF4D5E; --ads2: #FF8A5C; --seo: #08DDA4; --seo2: #5EF0C8; --sami: #7667FE; --lav: #E3E4F7; --dim: #9A95C4; --ink: #0C0628;
+  --glass: rgba(26, 20, 72, .62); --edge: rgba(227, 228, 247, .16);
+}
+[data-composition-id] { background: #05021A; }
+
+/* ── sân khấu (lớp xa): nền, đèn rọi, sàn lưới phối cảnh, hạt bụi */
+.stage, .stage > * { position: absolute; pointer-events: none; }
+.stage { inset: 0; z-index: 0; overflow: hidden; }
+.stage .bg { inset: 0; background: radial-gradient(ellipse 90% 60% at 50% 34%, #1B1452 0%, #0E0838 42%, #05021A 100%); }
+.stage .beam { left: 50%; top: -12%; width: 140%; height: 120%; margin-left: -70%; transform-origin: 50% 0;
+  background: conic-gradient(from 166deg at 50% 0, rgba(0, 0, 0, 0) 0deg, rgba(190, 180, 255, .10) 14deg, rgba(227, 228, 247, .16) 28deg, rgba(190, 180, 255, .10) 42deg, rgba(0, 0, 0, 0) 56deg);
+  filter: blur(18px); mix-blend-mode: screen; }
+.stage .floorwrap { left: 0; right: 0; bottom: 0; perspective: 700px; perspective-origin: 50% 0; overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 30%, #000 100%); mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 30%, #000 100%); }
+.stage .floor { left: -60%; right: -60%; top: 0; height: 260%; transform-origin: 50% 0; transform: rotateX(74deg);
+  background-image: linear-gradient(rgba(118, 103, 254, .30) 2px, rgba(0, 0, 0, 0) 2px), linear-gradient(90deg, rgba(118, 103, 254, .30) 2px, rgba(0, 0, 0, 0) 2px);
+  background-size: 120px 120px; }
+.stage .horizon { left: 0; right: 0; height: 2px; background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(160, 150, 255, .55), rgba(0, 0, 0, 0)); box-shadow: 0 0 30px 6px rgba(118, 103, 254, .25); }
+.stage .dust { inset: 0; }
+.stage .dust i { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px rgba(227, 228, 247, .9); }
+.stage .glowA, .stage .glowB { width: 900px; height: 900px; border-radius: 50%; filter: blur(80px); opacity: 0; }
+.stage .glowA { background: radial-gradient(circle, rgba(255, 77, 94, .55), rgba(0, 0, 0, 0) 65%); }
+.stage .glowB { background: radial-gradient(circle, rgba(8, 221, 164, .5), rgba(0, 0, 0, 0) 65%); }
+
+/* ── chữ */
+.hd { position: absolute; z-index: 20; font: 800 84px/1.2 "Be Vietnam Pro", sans-serif; letter-spacing: -.025em; color: #fff; text-wrap: balance;
+  text-shadow: 0 6px 40px rgba(5, 2, 26, .9); }
+.hd .w { padding-bottom: .05em; }
+.hd.red em.hl, .hd.red em.hl .w, em.hl.red, em.hl.red .w { background: linear-gradient(100deg, var(--ads), var(--ads2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hd.mint em.hl, .hd.mint em.hl .w, em.hl.mint, em.hl.mint .w { background: linear-gradient(100deg, var(--seo), var(--seo2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sub { position: absolute; z-index: 20; font: 500 40px/1.4 "Be Vietnam Pro", sans-serif; color: #D9D7F2; text-shadow: 0 4px 24px rgba(5, 2, 26, .95); }
+.kick { font: 600 22px/1.2 "JetBrains Mono", monospace; letter-spacing: .18em; text-transform: uppercase; color: var(--dim); }
+.demo { position: absolute; z-index: 30; font: 500 20px/1 "JetBrains Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: rgba(227, 228, 247, .7);
+  padding: 9px 13px; border: 1px solid rgba(227, 228, 247, .28); border-radius: 8px; background: rgba(5, 2, 26, .6); }
+
+/* ── kính (panel UI keynote) */
+.glass { position: absolute; background: linear-gradient(165deg, rgba(36, 28, 92, .78), rgba(14, 9, 46, .86)); border: 1px solid var(--edge); border-radius: 30px;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .10); }
+.rim-ads { box-shadow: 0 0 0 1px rgba(255, 77, 94, .55), 0 0 46px rgba(255, 77, 94, .35), 0 40px 90px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .12); }
+.rim-seo { box-shadow: 0 0 0 1px rgba(8, 221, 164, .55), 0 0 46px rgba(8, 221, 164, .30), 0 40px 90px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .12); }
+.chip { display: inline-flex; align-items: center; gap: 12px; font: 600 22px/1 "JetBrains Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: #fff;
+  padding: 11px 16px; border-radius: 10px; background: rgba(255, 255, 255, .06); border: 1px solid var(--edge); white-space: nowrap; }
+.chip i { width: 14px; height: 14px; border-radius: 50%; flex: none; }
+.chip.ads i { background: var(--ads); box-shadow: 0 0 12px var(--ads); }
+.chip.seo i { background: var(--seo); box-shadow: 0 0 12px var(--seo); }
+
+/* ── khối 3D (DK.box): mặt trước / trên / cạnh */
+.persp { position: absolute; perspective: 1700px; }
+.b3 { position: absolute; transform-style: preserve-3d; }
+.b3 > .f, .b3 > .t, .b3 > .s { position: absolute; box-sizing: border-box; }
+.b3 > .f { left: 0; top: 0; width: 100%; height: 100%; border-radius: 6px; overflow: hidden;
+  background: linear-gradient(170deg, #2A2163 0%, #160F42 55%, #0E0832 100%); border: 1px solid rgba(255, 255, 255, .14); }
+.b3 > .t { left: 0; top: 0; width: 100%; transform-origin: 50% 0; background: linear-gradient(180deg, #3A3082, #251C63); border: 1px solid rgba(255, 255, 255, .16); }
+.b3 > .s { right: 0; top: 0; height: 100%; transform-origin: 100% 50%; background: linear-gradient(90deg, #120B3A, #0A0628); border: 1px solid rgba(255, 255, 255, .08); }
+.b3.ads > .f { box-shadow: inset 0 0 0 2px rgba(255, 77, 94, .55), inset 0 0 60px rgba(255, 77, 94, .18); }
+.b3.ads > .t { background: linear-gradient(180deg, #5A2B5E, #3B1D4E); box-shadow: inset 0 0 0 2px rgba(255, 77, 94, .45); }
+.b3.seo > .f { box-shadow: inset 0 0 0 2px rgba(8, 221, 164, .55), inset 0 0 60px rgba(8, 221, 164, .16); }
+.b3.seo > .t { background: linear-gradient(180deg, #1E4D63, #163552); box-shadow: inset 0 0 0 2px rgba(8, 221, 164, .45); }
+.pool { position: absolute; border-radius: 50%; filter: blur(30px); pointer-events: none; }
+.pool.ads { background: radial-gradient(closest-side, rgba(255, 77, 94, .55), rgba(0, 0, 0, 0)); }
+.pool.seo { background: radial-gradient(closest-side, rgba(8, 221, 164, .5), rgba(0, 0, 0, 0)); }
+.pool.sami { background: radial-gradient(closest-side, rgba(118, 103, 254, .6), rgba(0, 0, 0, 0)); }
+
+/* ── bánh răng */
+svg.gear { position: absolute; overflow: visible; }
+/* gradient nhấn mặc định sáng hơn cho nền tối (tím #7667FE gốc quá chìm trên navy) */
+em.hl, em.hl .w { background: linear-gradient(100deg, #08DDA4 0%, #9F94FF 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }

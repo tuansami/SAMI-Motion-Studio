@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/500.css">
+<link rel="stylesheet" href="_fonts/jetbrains-mono/600.css">
+<link rel="stylesheet" href="hf/parts/dk.css">
+<style>
+  /* S05 · ĐƯỜNG CONG (Minh họa): bậc nhảy đỏ (Ads) + con dốc mint (SEO) → chồng lên nhau thành một đường doanh thu không rơi về 0 */
+  .hd { left: var(--safe-side); right: var(--safe-side); font-size: 62px; }
+  #ta { top: 250px; } #tb { top: 480px; } #tc { top: 300px; font-size: 84px; }
+  #panel { z-index: 10; }
+  #panel .lg { position: absolute; left: 34px; top: 30px; display: flex; gap: 14px; }
+  #panel .demo { right: 30px; top: 30px; }
+  #ch { position: absolute; left: 0; top: 0; overflow: visible; }
+  .ax { font: 500 20px/1 "JetBrains Mono", monospace; letter-spacing: .14em; fill: #9A95C4; text-transform: uppercase; }
+  .mk { font: 600 22px/1 "JetBrains Mono", monospace; letter-spacing: .1em; }
+  [data-ratio="16x9"] .hd { left: 120px; right: auto; width: 760px; font-size: 64px; }
+  [data-ratio="16x9"] #ta { top: 200px; } [data-ratio="16x9"] #tb { top: 520px; } [data-ratio="16x9"] #tc { top: 360px; font-size: 76px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S05">
+  <div class="hd red" id="ta" data-copy="S05_a"></div>
+  <div class="hd mint" id="tb" data-copy="S05_b"></div>
+  <div class="hd" id="tc" data-copy="S05_c"></div>
+  <div class="glass" id="panel">
+    <div class="lg"><span class="chip ads"><i></i>Google Ads</span><span class="chip seo"><i></i>Local SEO</span></div>
+    <div class="demo">Minh họa</div>
+    <svg id="ch"></svg>
+  </div>
+</div>
+<script src="hf/parts/dk.js"></script>
+<script>
+  const S = window.SAMI, D = window.DK, tl = S.timeline(), root = D.$('#root'), L16 = S.landscape;
+  const st = D.stage(root, {horizon: L16 ? 960 : 1600, beamX: L16 ? 0.72 : 0.5});
+  const PN = L16 ? {x: 940, y: 170, w: 880, h: 740} : {x: 72, y: 760, w: 936, h: 760};
+  const pn = D.$('#panel'); Object.assign(pn.style, {left: PN.x + 'px', top: PN.y + 'px', width: PN.w + 'px', height: PN.h + 'px'});
+  const svg = D.$('#ch'); svg.setAttribute('width', PN.w); svg.setAttribute('height', PN.h);
+  const B = {l: 92, r: 44, t: 128, b: 84}, W = PN.w - B.l - B.r, H = PN.h - B.t - B.b;
+  const X = (x) => B.l + x * W, Y = (y) => B.t + H - y * H;
+  const NS = 'http://www.w3.org/2000/svg';
+  const mk = (tag, at, par) => { const e = document.createElementNS(NS, tag); Object.keys(at).forEach((k) => e.setAttribute(k, at[k])); (par || svg).appendChild(e); return e; };
+  // defs: gradient vùng
+  const defs = mk('defs', {});
+  defs.innerHTML = '<linearGradient id="gS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#08DDA4" stop-opacity=".45"/><stop offset="1" stop-color="#08DDA4" stop-opacity=".04"/></linearGradient>' +
+    '<linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF4D5E" stop-opacity=".5"/><stop offset="1" stop-color="#FF4D5E" stop-opacity=".12"/></linearGradient>' +
+    '<filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  // lưới + trục (không có số)
+  for (let i = 1; i <= 4; i++) mk('line', {x1: X(0), x2: X(1), y1: Y(i / 4), y2: Y(i / 4), stroke: 'rgba(227,228,247,.07)', 'stroke-width': 2});
+  mk('line', {x1: X(0), x2: X(1), y1: Y(0), y2: Y(0), stroke: 'rgba(227,228,247,.35)', 'stroke-width': 2});
+  mk('line', {x1: X(0), x2: X(0), y1: Y(0), y2: Y(1), stroke: 'rgba(227,228,247,.35)', 'stroke-width': 2});
+  const ty = mk('text', {class: 'ax', x: X(0) - 18, y: Y(1) + 8, 'text-anchor': 'end', transform: 'rotate(-90 ' + (X(0) - 30) + ' ' + Y(1) + ')'}); ty.textContent = 'Umsatz';
+  const tx = mk('text', {class: 'ax', x: X(1), y: Y(0) + 46, 'text-anchor': 'end'}); tx.textContent = 'Zeit →';
+  // hàm dữ liệu minh họa
+  const ON = [[0.10, 0.42], [0.66, 1.01]], LV = 0.30;
+  const ads = (x) => { for (const [a, b] of ON) { if (x >= a && x < b) return LV * Math.min(1, (x - a) / 0.006, (b - x) / 0.006); } return 0; };
+  const seo = (x) => 0.52 * (1 - Math.exp(-2.4 * x)) / (1 - Math.exp(-2.4));
+  const aS = mk('path', {fill: 'url(#gS)'}), lS = mk('path', {fill: 'none', stroke: '#08DDA4', 'stroke-width': 6, 'stroke-linecap': 'round', filter: 'url(#glow)'});
+  const aA = mk('path', {fill: 'url(#gA)'}), lA = mk('path', {fill: 'none', stroke: '#FF4D5E', 'stroke-width': 6, 'stroke-linejoin': 'round', filter: 'url(#glow)'});
+  const lT = mk('path', {fill: 'none', stroke: '#FFFFFF', 'stroke-width': 7, 'stroke-linejoin': 'round', filter: 'url(#glow)'});
+  const marks = [[0.10, 'BẬT'], [0.42, 'TẮT'], [0.66, 'BẬT']].map(([x, s]) => { const e = mk('text', {class: 'mk', x: X(x), y: Y(LV) - 22, 'text-anchor': 'middle', fill: s === 'TẮT' ? '#9A95C4' : '#FF8A8F'}); e.textContent = s; return {x, e}; });
+  const head = mk('circle', {r: 9, fill: '#fff', filter: 'url(#glow)'});
+  const N = 220;
+  function line(f, p, base) { let d = ''; for (let i = 0; i <= N; i++) { const x = i / N; if (x > p) break; d += (i ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(f(x)).toFixed(1); } return d; }
+  function area(f, g, p) { // vùng giữa g (dưới) và f (trên) tới x = p
+    let up = '', dn = '', last = 0;
+    for (let i = 0; i <= N; i++) { const x = i / N; if (x > p) break; last = x; up += (i ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(f(x)).toFixed(1); }
+    for (let i = Math.floor(last * N); i >= 0; i--) { const x = i / N; dn += 'L' + X(x).toFixed(1) + ' ' + Y(g(x)).toFixed(1); }
+    return up ? up + dn + 'Z' : '';
+  }
+  const T_A = [1.3, 3.6], T_S = [4.7, 7.2], T_K = [9.4, 10.7], T_T = [10.2, 12.0];
+  D.clock(tl, (t) => {
+    st.update(t, {light: 0.8, speed: 18});
+    const pA = D.L(t, T_A[0], T_A[1]), pS = D.L(t, T_S[0], T_S[1]), k = D.E(t, T_K[0], T_K[1]), pT = D.E(t, T_T[0], T_T[1]);
+    const base = (x) => k * seo(x), top = (x) => ads(x) + k * seo(x);
+    lS.setAttribute('d', line(seo, pS)); aS.setAttribute('d', area(seo, () => 0, pS));
+    lA.setAttribute('d', line(top, pA)); aA.setAttribute('d', area(top, base, pA));
+    lA.style.opacity = (1 - 0.55 * D.L(t, T_T[0], T_T[1])).toFixed(2);
+    lT.setAttribute('d', line((x) => ads(x) + seo(x), pT)); lT.style.opacity = pT > 0 ? 1 : 0;
+    marks.forEach((m) => { m.e.style.opacity = (pA >= m.x ? 1 : 0) * (1 - k); });
+    // đầu bút sáng chạy theo nét đang vẽ
+    let hx = null, hy = null;
+    if (t > T_T[0] && pT < 1) { hx = pT; hy = ads(pT) + seo(pT); } else if (t > T_S[0] && pS < 1) { hx = pS; hy = seo(pS); } else if (t > T_A[0] && pA < 1) { hx = pA; hy = ads(pA); }
+    if (hx == null) head.style.opacity = 0; else { head.style.opacity = 1; head.setAttribute('cx', X(hx)); head.setAttribute('cy', Y(hy)); }
+    pn.style.transform = 'translateY(' + (Math.sin(t * 0.9) * 4).toFixed(1) + 'px)';
+  });
+  D.fadeIn(tl, '#panel', 0.15, {dist: 40});
+  D.words(tl, '#ta', 1.2, {stagger: 0.05});
+  D.words(tl, '#tb', 4.6, {stagger: 0.05});
+  D.fadeOut(tl, ['#ta', '#tb'], 9.3);
+  D.words(tl, '#tc', 9.8, {stagger: 0.07});
+</script>
+</body>
+</html>
