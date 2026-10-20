@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="_fonts/lora/400.css">
+<link rel="stylesheet" href="_fonts/lora/700.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S04 · ★ CHỮ KÝ: máy ép nghiền menu cũ → mưa chữ → lưới nam châm 6 ô hút chữ về đúng nhóm */
+  #pg { left: 190px; top: 700px; width: 700px; height: 820px; padding: 30px 36px; box-sizing: border-box; font-size: 18px; z-index: 6; transform-origin: 50% 50%; }
+  .plate { position: absolute; z-index: 9; left: 120px; width: 840px; height: 120px; background: var(--ink); border-radius: 10px; box-shadow: 8px 8px 0 var(--pink); }
+  .plate:after { content: ''; position: absolute; left: 50%; width: 80px; margin-left: -40px; height: 260px; background: repeating-linear-gradient(90deg, var(--ink) 0 10px, #3B4AA8 10px 20px); }
+  #pt:after { bottom: 100%; } #pb:after { top: 100%; }
+  #glyphs { position: absolute; inset: 0; z-index: 12; pointer-events: none; }
+  .g { position: absolute; left: 0; top: 0; font: 700 34px/1 "Lora", serif; color: var(--old); will-change: transform; }
+  .cell { position: absolute; z-index: 8; background: var(--paper2); border: 3.5px solid var(--ink); border-radius: 8px; box-shadow: 7px 7px 0 var(--pink); box-sizing: border-box; overflow: hidden; }
+  .cell .no { position: absolute; right: 16px; top: 14px; font: 600 20px/1 "IBM Plex Mono", monospace; color: var(--ink); opacity: .6; }
+  .cell .gh { position: absolute; left: 20px; top: 22px; white-space: nowrap; font: 800 34px/1 "Bricolage Grotesque", sans-serif; color: #fff; background: var(--pink); padding: 8px 12px 10px; mix-blend-mode: multiply; }
+  .cell .ln { position: absolute; left: 22px; height: 12px; border-radius: 6px; background: var(--ink); opacity: .85; }
+  .cell .pr { position: absolute; right: 22px; width: 54px; height: 12px; border-radius: 6px; background: var(--teal); }
+  .ring { position: absolute; z-index: 7; border: 3px solid var(--pink); border-radius: 50%; pointer-events: none; }
+  #tag { left: 76px; top: 1580px; }
+  [data-ratio="16x9"] #pg { left: 1030px; top: 130px; }
+  [data-ratio="16x9"] .plate { left: 960px; width: 840px; }
+  [data-ratio="16x9"] #tag { left: 110px; top: 760px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S04">
+  <div class="old" id="pg"></div>
+  <div class="plate" id="pt"></div><div class="plate" id="pb"></div>
+  <div id="cells"></div>
+  <div id="glyphs"></div>
+  <div class="hd top" id="hd" data-copy="S04_t1"></div>
+  <div class="lbl" id="tag" data-copy="S04_tag"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'), {seed: 21});
+  const pg = $('#pg');
+  pg.innerHTML = '<h1>SPEISEKARTE</h1><div class="sub">Restaurant Bếp Sen</div>' + R.oldRows(30).map(R.oldRow).join('');
+  const PX = pg.offsetLeft, PY = pg.offsetTop, PW = pg.offsetWidth, PH = pg.offsetHeight, CY = PY + PH / 2;
+  const tP = 0.8, tC = 1.05; // ép xuống · vỡ
+  // lưới 6 ô (9:16: 2×3 · 16:9: 3×2)
+  const G = S.pick({'16:9': {x: 900, y: 160, w: 300, h: 370, cols: 3, gx: 26, gy: 30}, default: {x: 76, y: 640, w: 450, h: 270, cols: 2, gx: 28, gy: 30}});
+  const groups = R.list('S04_groups'), cells = [], tSnap = [];
+  groups.forEach((n, i) => {
+    const c = document.createElement('div'); c.className = 'cell';
+    const x = G.x + (i % G.cols) * (G.w + G.gx), y = G.y + Math.floor(i / G.cols) * (G.h + G.gy);
+    R.box(c, x, y, G.w, G.h);
+    let lines = '';
+    for (let k = 0; k < 3; k++) lines += '<i class="ln" style="top:' + (100 + k * 50) + 'px;width:' + (G.w * (0.42 + 0.18 * S.rnd(i * 7 + k))).toFixed(0) + 'px"></i><i class="pr" style="top:' + (100 + k * 50) + 'px"></i>';
+    c.innerHTML = '<div class="no">0' + (i + 1) + '</div><div class="gh">' + n + '</div>' + lines;
+    $('#cells').appendChild(c); cells.push({el: c, x: x, y: y, gh: c.querySelector('.gh'), ln: c.querySelectorAll('.ln, .pr')});
+    tSnap.push(3.2 + i * 0.14);
+    const r = document.createElement('div'); r.className = 'ring'; $('#cells').appendChild(r); cells[i].ring = r;
+  });
+  // chữ rơi: lấy ký tự từ menu cũ
+  const src = R.oldRows(30).map((r) => r.nm).join('').replace(/\s+/g, '');
+  const NG = 190, gl = [];
+  for (let i = 0; i < NG; i++) {
+    const e = document.createElement('div'); e.className = 'g'; e.textContent = src[(i * 7) % src.length]; $('#glyphs').appendChild(e);
+    const a = S.rnd(i * 3.1 + 1), b = S.rnd(i * 5.7 + 2), c = S.rnd(i * 9.3 + 3);
+    const ci = i % 6, cell = cells[ci];
+    gl.push({e: e, x0: PX + PW * a, y0: CY + (b - 0.5) * 40, vx: (a - 0.5) * 900, vy: -300 - 700 * c, rot: (b - 0.5) * 720, s: 0.8 + 0.9 * c,
+      tA: 2.25 + (i % 25) * 0.035, tx: cell.x + 34 + (Math.floor(i / 6) % 10) * 22, ty: cell.y + 38, ci: ci});
+  }
+  R.clock(tl, (t) => {
+    bg(t);
+    // máy ép
+    const pr = R.E(t, tP - 0.35, tP + 0.12), back = R.E(t, tC + 0.15, tC + 0.7);
+    const gap = R.mix(PH / 2 + 260, 6, pr) + 500 * back;
+    $('#pt').style.top = (CY - gap - 120) + 'px'; $('#pb').style.top = (CY + gap) + 'px';
+    $('#pt').style.opacity = $('#pb').style.opacity = (R.L(t, 0, 0.15) * (1 - R.E(t, tC + 0.3, tC + 0.7))).toFixed(3);
+    const sq = R.E(t, tP - 0.2, tP + 0.15);
+    pg.style.transform = 'scale(' + (1 + 0.12 * sq) + ',' + (1 - 0.97 * sq) + ')';
+    pg.style.opacity = t < tC ? 1 : 0;
+    $('#root').style.transform = 'translate(' + R.wob(t, tP + 0.1, 14, 44).toFixed(2) + 'px,' + R.wob(t, tP + 0.1, 10, 38).toFixed(2) + 'px)';
+    // chữ
+    gl.forEach((g) => {
+      if (t < tC) { g.e.style.opacity = 0; return; }
+      const tf = Math.min(t, g.tA) - tC;
+      const fx = g.x0 + g.vx * tf, fy = g.y0 + g.vy * tf + 0.5 * 1500 * tf * tf;
+      const u = R.E(t, g.tA, g.tA + 0.75);
+      const x = R.mix(fx, g.tx, u), y = R.mix(fy, g.ty, u);
+      const snap = tSnap[g.ci];
+      g.e.style.opacity = (1 - R.L(t, snap - 0.05, snap + 0.1)).toFixed(3);
+      g.e.style.color = u > 0.5 ? '#2E3B8F' : '#161616';
+      g.e.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + (g.rot * tf * (1 - u)).toFixed(1) + 'deg) scale(' + R.mix(g.s, 0.8, u).toFixed(3) + ')';
+    });
+    // ô nam châm
+    cells.forEach((c, i) => {
+      const a = R.E(t, 1.9 + i * 0.06, 2.3 + i * 0.06);
+      c.el.style.opacity = R.L(t, 1.9 + i * 0.06, 2.05 + i * 0.06).toFixed(3);
+      c.el.style.transform = 'scale(' + (0.7 + 0.3 * a + R.wob(t, tSnap[i], 0.05, 30)).toFixed(4) + ')';
+      const rg = R.L(t, 2.15 + i * 0.05, 3.1 + i * 0.05), rs = 60 + 380 * rg;
+      R.box(c.ring, c.x + G.w / 2 - rs / 2, c.y + G.h / 2 - rs / 2, rs, rs);
+      c.ring.style.opacity = (rg > 0 && rg < 1 ? (1 - rg) * 0.8 : 0).toFixed(3);
+      c.gh.style.opacity = R.L(t, tSnap[i], tSnap[i] + 0.08).toFixed(3);
+      c.gh.style.transform = 'scale(' + (1 + R.wob(t, tSnap[i], 0.12, 34)).toFixed(4) + ')';
+      c.ln.forEach((l, k) => { l.style.opacity = R.L(t, tSnap[i] + 0.15 + (k >> 1) * 0.12, tSnap[i] + 0.3 + (k >> 1) * 0.12) * 0.9; });
+    });
+  });
+  R.rise(tl, S.words($('#hd')), 1.4, {stagger: 0.07, dur: 0.6});
+  R.rise(tl, '#tag', 4.2, {dy: 16});
+</script>
+</body>
+</html>

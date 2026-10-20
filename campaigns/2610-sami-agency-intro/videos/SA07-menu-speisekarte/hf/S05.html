@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/fraunces/400-italic.css">
+<link rel="stylesheet" href="_fonts/fraunces/600.css">
+<link rel="stylesheet" href="_fonts/fraunces/700.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="_fonts/lora/400.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S05 · bàn thiết kế ×16: lưới 12 cột, baseline, thử font món, giãn khoảng thở */
+  #gcols, #gbase { position: absolute; left: 0; top: 0; width: 620px; height: 880px; pointer-events: none; z-index: 5; }
+  .gc { position: absolute; top: 0; height: 880px; background: rgba(255, 79, 154, .08); border-left: 1px solid rgba(255, 79, 154, .5); border-right: 1px solid rgba(255, 79, 154, .5); transform-origin: 50% 0; }
+  .gb { position: absolute; left: 0; width: 620px; height: 1px; background: rgba(0, 163, 160, .45); transform-origin: 0 50%; }
+  .sp { position: absolute; z-index: 6; left: 6px; width: 22px; font: 700 9px/1 "IBM Plex Mono", monospace; color: var(--pink); text-align: center; }
+  .sp:before { content: ''; position: absolute; left: 10px; top: -2px; bottom: -2px; width: 2px; background: var(--pink); }
+  #tag { }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S05">
+  <div class="lbl tagpos" id="tag" data-copy="S05_tag"></div>
+  <div class="hd top" id="hd" data-copy="S05_t1"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'), {seed: 30});
+  const panel = '<h6>TYPE</h6><div class="f">Font <b id="pf">Lora</b></div><div class="f">Cỡ <b id="ps">12</b></div><div class="f">Dòng <b id="pl">1,0</b></div>' +
+    '<h6 style="margin-top:22px">LAYOUT</h6><div class="f">Lưới <b id="pg2">—</b></div><div class="f">Lề <b>40 px</b></div><div class="f">Baseline <b id="pb">—</b></div>';
+  const tool = R.tool($('#root'), {tool: 'grid', panel: panel, props: 'FONT <b id="xf">Lora</b> · CỠ <b id="xs">12</b> · DÒNG <b id="xl">1,0</b>'});
+  const cv = tool.cv, P = R.page(cv, {hero: false, al: false, v: false, legend: false, qr: false});
+  const k = Math.min(cv.offsetWidth / 620 * 0.82, cv.offsetHeight / 880 * 1.3), ox = (cv.offsetWidth - 620 * k) / 2, oyA = 24, oyB = 24 - 110 * k;
+  let oy = oyA;
+  // lưới 12 cột + baseline 8 px (trong toạ độ trang)
+  const gc = document.createElement('div'); gc.id = 'gcols'; P.el.appendChild(gc);
+  const gb = document.createElement('div'); gb.id = 'gbase'; P.el.appendChild(gb);
+  const cw = (540 - 11 * 12) / 12;
+  for (let i = 0; i < 12; i++) { const c = document.createElement('i'); c.className = 'gc'; c.style.left = (40 + i * (cw + 12)) + 'px'; c.style.width = cw + 'px'; gc.appendChild(c); }
+  for (let y = 150; y < 860; y += 16) { const b = document.createElement('i'); b.className = 'gb'; b.style.top = y + 'px'; gb.appendChild(b); }
+  // nhãn khoảng thở giữa các món
+  const sps = [];
+  P.items.slice(0, 8).forEach((it) => { const s = document.createElement('div'); s.className = 'sp'; s.textContent = ''; it.appendChild(s); sps.push(s); });
+  const FONTS = [['Lora', '400'], ['IBM Plex Mono', '600'], ['Bricolage Grotesque', '800'], ['Lora', '400'], ['Fraunces', '600'], ['IBM Plex Mono', '600'], ['Bricolage Grotesque', '800'], ['Fraunces', '600']];
+  const nms = P.el.querySelectorAll('.nm'), cur = R.cursor(cv), sb = R.selb(cv);
+  const tF0 = 1.7, tF1 = 3.7, tB = 4.0;
+  // điểm con trỏ (toạ độ canvas)
+  const pX = (x) => ox + x * k, pY = (y) => oy + y * k; // (con trỏ tính theo toạ độ trang)
+  const ck = [[0, 700, 500], [0.5, 60, 150], [1.3, 560, 150], [1.9, 150, 195], [3.6, 150, 195], [4.2, 90, 330], [6.5, 280, 620]];
+  R.clock(tl, (t) => {
+    bg(t);
+    tool.tick(t, 1820);
+    oy = R.mix(oyA, oyB, R.E(t, 2.2, 6.6)); P.place(ox, oy, k);
+    // lưới: cột kéo xuống, baseline quét ngang
+    gc.querySelectorAll('.gc').forEach((c, i) => { c.style.transform = 'scaleY(' + R.E(t, 0.5 + i * 0.05, 1.1 + i * 0.05).toFixed(3) + ')'; c.style.opacity = 1 - 0.6 * R.E(t, 5.6, 6.4); });
+    gb.querySelectorAll('.gb').forEach((b, i) => { b.style.transform = 'scaleX(' + R.E(t, 1.1 + i * 0.012, 1.6 + i * 0.012).toFixed(3) + ')'; b.style.opacity = 1 - R.E(t, 5.6, 6.4); });
+    $('#pg2').textContent = t > 0.6 ? '12 cột · 12 px' : '—'; $('#pb').textContent = t > 1.2 ? '8 px' : '—';
+    // thử font ×16
+    let fi = 0; if (t >= tF0) fi = Math.min(FONTS.length - 1, Math.floor((t - tF0) / ((tF1 - tF0) / FONTS.length)));
+    const F = t < tF0 ? ['Lora', '400'] : FONTS[fi];
+    nms.forEach((n) => { n.style.fontFamily = '"' + F[0] + '"'; n.style.fontWeight = F[1]; });
+    $('#pf').textContent = $('#xf').textContent = F[0] + (t >= tF1 ? ' + Be Vietnam Pro' : '');
+    $('#xf').textContent = F[0];
+    const sz = t < tF1 ? 12 : R.mix(12, 15.5, R.E(t, tF1, tF1 + 0.4));
+    nms.forEach((n) => { n.style.fontSize = sz.toFixed(2) + 'px'; });
+    $('#ps').textContent = $('#xs').textContent = sz.toFixed(1).replace('.', ',');
+    // khoảng thở: đệm món giãn ra
+    const br = R.E(t, tB, tB + 1.2), pad = R.mix(0, 5, br), gap = R.mix(2, 14, br);
+    P.items.forEach((it) => { it.style.paddingTop = pad.toFixed(2) + 'px'; it.style.paddingBottom = (pad + 1).toFixed(2) + 'px'; });
+    P.groups.forEach((g) => { g.style.marginBottom = gap.toFixed(2) + 'px'; });
+    P.ens.forEach((e) => { e.style.opacity = 0.2 + 0.8 * br; });
+    const ld = R.mix(1.0, 1.2, br); $('#pl').textContent = $('#xl').textContent = ld.toFixed(1).replace('.', ',');
+    sps.forEach((s, i) => { s.style.opacity = R.io(t, tB + 0.2 + i * 0.05, tB + 0.5 + i * 0.05, 5.4, 5.9); s.style.top = '0px'; s.style.height = '100%'; });
+    // con trỏ + khung chọn nhóm 1
+    const [cx, cy] = R.keys(t, ck);
+    cur.at(pX(cx), pY(cy), (t > 1.85 && t < 2.0) || (t > 4.15 && t < 4.3));
+    const g0 = P.groups[0];
+    R.box(sb, ox + (40 - 6) * k, oy + (150 + g0.offsetTop - 6) * k, (258 + 12) * k, (g0.offsetHeight + 12) * k);
+    sb.style.opacity = R.io(t, 4.15, 4.3, 5.6, 6.0);
+    tool.side(t < 1.6 ? 'grid' : t < 4.0 ? 'text' : 'move');
+  });
+  R.rise(tl, '#tag', 0.3, {dy: 14});
+  R.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.07, dur: 0.6});
+  tl.fromTo(tool.el, {y: 140, opacity: 0}, {y: 0, opacity: 1, duration: 0.6}, 0.1);
+</script>
+</body>
+</html>
