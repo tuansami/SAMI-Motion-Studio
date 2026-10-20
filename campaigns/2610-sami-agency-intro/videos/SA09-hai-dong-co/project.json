@@ -1,0 +1,249 @@
+{
+ "name": "SA09-ads-maps-local-seo-hai-dong-co",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "mint": "#08DDA4",
+   "purple": "#7667FE",
+   "navy": "#0C0628"
+  }
+ },
+ "look": {
+  "grain": 0.035,
+  "vignette": 0.4
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook – công tắc Ads gạt tắt, bàn tắt đèn",
+   "start": 0,
+   "end": 217,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Chỉ SEO – chờ 2 đến 3 tháng",
+   "start": 217,
+   "end": 433,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Bị buộc chọn một trong hai",
+   "start": 433,
+   "end": 577,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Hai động cơ: Ads + SEO",
+   "start": 577,
+   "end": 937,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Đường cong minh họa: bậc nhảy + con dốc → ghép",
+   "start": 937,
+   "end": 1369,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "Chữ ký – bánh răng khớp, kim Umsatz lên vùng xanh",
+   "start": 1369,
+   "end": 1729,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "Lịch tuần: Ads lấp chỗ trống, SEO giữ nền",
+   "start": 1729,
+   "end": 2017,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "Một bảng báo cáo chung",
+   "start": 2017,
+   "end": 2233,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "Nhịp thở – đừng chọn",
+   "start": 2233,
+   "end": 2377,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "End card SAMI + WhatsApp",
+   "start": 2377,
+   "end": 2665,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  }
+ ],
+ "copy": {
+  "S01_switch": {
+   "label": "Nhãn công tắc (UI)",
+   "scene": "S01",
+   "value": "GOOGLE ADS"
+  },
+  "S01_headline": {
+   "label": "Tiêu đề hook",
+   "scene": "S01",
+   "value": "Tắt quảng cáo, / *khách cũng tắt theo.*"
+  },
+  "S02_headline": {
+   "label": "Tiêu đề SEO chờ",
+   "scene": "S02",
+   "value": "Còn chỉ làm SEO? / Bạn thường phải / *chờ 2 đến 3 tháng* / mới lên được trang đầu."
+  },
+  "S03_headline": {
+   "label": "Tiêu đề phải chọn",
+   "scene": "S03",
+   "value": "Và bạn bị buộc / *chọn một trong hai.*"
+  },
+  "S03_a": {
+   "label": "Thẻ Ads",
+   "scene": "S03",
+   "value": "nhanh"
+  },
+  "S03_b": {
+   "label": "Thẻ SEO",
+   "scene": "S03",
+   "value": "bền"
+  },
+  "S04_headline": {
+   "label": "Tiêu đề hai động cơ",
+   "scene": "S04",
+   "value": "Quán luôn kín bàn không chọn. / *Nó chạy bằng hai động cơ.*"
+  },
+  "S04_a_name": {
+   "label": "Động cơ 1 – tên",
+   "scene": "S04",
+   "value": "GOOGLE ADS MAPS"
+  },
+  "S04_a_desc": {
+   "label": "Động cơ 1 – mô tả",
+   "scene": "S04",
+   "value": "Có khách ngay hôm nay, / trả tiền theo từng lượt bấm."
+  },
+  "S04_b_name": {
+   "label": "Động cơ 2 – tên",
+   "scene": "S04",
+   "value": "LOCAL SEO"
+  },
+  "S04_b_desc": {
+   "label": "Động cơ 2 – mô tả",
+   "scene": "S04",
+   "value": "Khách tìm thấy mỗi ngày, / không trả tiền cho mỗi lượt."
+  },
+  "S05_a": {
+   "label": "Câu A (bậc nhảy)",
+   "scene": "S05",
+   "value": "Quảng cáo là *một bậc nhảy*: / bật là có khách, tắt là mất."
+  },
+  "S05_b": {
+   "label": "Câu B (con dốc)",
+   "scene": "S05",
+   "value": "SEO là *một con dốc*: / đi chậm, nhưng không tụt lại."
+  },
+  "S05_c": {
+   "label": "Câu C (ghép)",
+   "scene": "S05",
+   "value": "Ghép lại, doanh thu / *không còn rơi tự do.*"
+  },
+  "S06_headline": {
+   "label": "Tiêu đề chữ ký",
+   "scene": "S06",
+   "value": "SAMI phối hai động cơ / *chạy cùng một nhịp.*"
+  },
+  "S07_a": {
+   "label": "Câu A (Ads lấp chỗ trống)",
+   "scene": "S07",
+   "value": "Quảng cáo *lấp chỗ trống*: / tối vắng, ngày thường, mùa thấp điểm."
+  },
+  "S07_b": {
+   "label": "Câu B (SEO giữ nền)",
+   "scene": "S07",
+   "value": "SEO *giữ nền*: hồ sơ Google, / review, từ khóa món ăn bằng tiếng Đức."
+  },
+  "S08_headline": {
+   "label": "Tiêu đề báo cáo",
+   "scene": "S08",
+   "value": "Cả hai động cơ báo về / *một bảng báo cáo chung.*"
+  },
+  "S08_sub": {
+   "label": "Dòng phụ báo cáo",
+   "scene": "S08",
+   "value": "Hằng tuần, hằng tháng. Không chi phí ẩn."
+  },
+  "S09_headline": {
+   "label": "Câu nhịp thở",
+   "scene": "S09",
+   "value": "Đừng chọn giữa *hôm nay* / và *lâu dài.*"
+  },
+  "S10_cta": {
+   "label": "Bong bóng chat – lời mời",
+   "scene": "S10",
+   "value": "Nhắn WhatsApp cho SAMI"
+  },
+  "S10_phone": {
+   "label": "Bong bóng chat – số WhatsApp",
+   "scene": "S10",
+   "value": "+49 155 60456888"
+  },
+  "S10_offer": {
+   "label": "Dòng ưu đãi",
+   "scene": "S10",
+   "value": "Phân tích marketing miễn phí: / cả quảng cáo Maps lẫn hồ sơ Google. / Không ràng buộc, phản hồi trong 24 giờ."
+  },
+  "S10_tagline": {
+   "label": "Tagline dưới logo",
+   "scene": "S10",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S10_web": {
+   "label": "Website",
+   "scene": "S10",
+   "value": "sami-agency.de"
+  }
+ },
+ "status": "draft",
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": []
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 1.5
+  },
+  "cues": []
+ }
+}
