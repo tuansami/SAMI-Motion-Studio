@@ -1,0 +1,314 @@
+{
+ "name": "SA17-ho-so-google-mat-tien-thu-hai",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "mint": "#08DDA4",
+   "purple": "#7667FE",
+   "navy": "#0C0628"
+  }
+ },
+ "look": {
+  "grain": 0.06,
+  "vignette": 0.4
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook – thẻ Maps bị lướt qua",
+   "start": 0,
+   "end": 240,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Soi lỗi hồ sơ cũ – bút sáp đỏ",
+   "start": 240,
+   "end": 495,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Câu chốt – hồ sơ thành khung cửa",
+   "start": 495,
+   "end": 720,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "Phòng tối SAMI bật đèn đỏ",
+   "start": 720,
+   "end": 870,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "Chữ ký – khay tráng: ảnh điện thoại → ảnh đẹp → hồ sơ",
+   "start": 870,
+   "end": 1320,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "Bàn đèn – dựng lại hồ sơ từng ô",
+   "start": 1320,
+   "end": 1695,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "Trả lời review tử tế",
+   "start": 1695,
+   "end": 1950,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "Lần này khách không lướt qua – Gọi/Route/Đặt bàn",
+   "start": 1950,
+   "end": 2190,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "Nhịp thở – mặt tiền thứ hai",
+   "start": 2190,
+   "end": 2430,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "End card SAMI + WhatsApp",
+   "start": 2430,
+   "end": 2670,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  }
+ ],
+ "copy": {
+  "S01_q": {
+   "label": "Ô tìm kiếm Google Maps (tiếng Đức)",
+   "scene": "S01",
+   "value": "Restaurant in der Nähe"
+  },
+  "S01_h": {
+   "label": "Tiêu đề",
+   "scene": "S01",
+   "value": "Khách lướt qua quán bạn / *chưa đầy hai giây.*"
+  },
+  "S01_s": {
+   "label": "Dòng phụ",
+   "scene": "S01",
+   "value": "Không phải vì món dở, / mà vì những gì họ thấy."
+  },
+  "S01_name": {
+   "label": "Tên quán hư cấu trên thẻ",
+   "scene": "S01",
+   "value": "Hiên Nhà"
+  },
+  "S02_l1": {
+   "label": "Dòng 1 (khoanh ảnh)",
+   "scene": "S02",
+   "value": "Ba tấm ảnh tối, chụp từ năm 2019."
+  },
+  "S02_l2": {
+   "label": "Dòng 2 (khoanh giờ)",
+   "scene": "S02",
+   "value": "Giờ mở cửa vẫn là giờ cũ."
+  },
+  "S02_l3": {
+   "label": "Dòng 3 (khoanh review)",
+   "scene": "S02",
+   "value": "Một lời chê, *chưa ai trả lời.*"
+  },
+  "S03_h": {
+   "label": "Câu chốt",
+   "scene": "S03",
+   "value": "Trước khi bước qua cửa quán, / khách đã bước qua / *hồ sơ Google của bạn.*"
+  },
+  "S04_h": {
+   "label": "Tiêu đề",
+   "scene": "S04",
+   "value": "Vì vậy, SAMI bắt đầu / *từ phòng tối.*"
+  },
+  "S04_tag": {
+   "label": "Nhãn mono",
+   "scene": "S04",
+   "value": "Phòng tráng ảnh · SAMI"
+  },
+  "S05_a": {
+   "label": "Chữ 1 (ảnh rơi vào khay)",
+   "scene": "S05",
+   "value": "Một tấm ảnh chụp vội bằng điện thoại, / gửi cho SAMI."
+  },
+  "S05_b": {
+   "label": "Chữ 2 (ảnh hiện hình)",
+   "scene": "S05",
+   "value": "Chỉnh chuyên nghiệp bằng AI, / *không làm giả món ăn.*"
+  },
+  "S05_c": {
+   "label": "Chữ 3 (ảnh bay vào điện thoại)",
+   "scene": "S05",
+   "value": "Rồi đặt thẳng vào / *hồ sơ Google của quán.*"
+  },
+  "S05_before": {
+   "label": "Nhãn ảnh trước",
+   "scene": "S05",
+   "value": "Trước · ảnh điện thoại"
+  },
+  "S05_after": {
+   "label": "Nhãn ảnh sau",
+   "scene": "S05",
+   "value": "Sau · đã chỉnh"
+  },
+  "S05_src": {
+   "label": "Ghi chú nguồn ảnh",
+   "scene": "S05",
+   "value": "Mẫu thật · ảnh trước / sau"
+  },
+  "S06_h": {
+   "label": "Tiêu đề",
+   "scene": "S06",
+   "value": "Rồi dựng lại cả hồ sơ, / *từng ô một.*"
+  },
+  "S06_t1": {
+   "label": "Ô 1",
+   "scene": "S06",
+   "value": "Ảnh bìa, ảnh món mới"
+  },
+  "S06_t2": {
+   "label": "Ô 2",
+   "scene": "S06",
+   "value": "Giờ mở cửa chính xác"
+  },
+  "S06_t3": {
+   "label": "Ô 3",
+   "scene": "S06",
+   "value": "Speisekarte trên Google"
+  },
+  "S06_t4": {
+   "label": "Ô 4",
+   "scene": "S06",
+   "value": "Google Posts đều đặn"
+  },
+  "S06_t5": {
+   "label": "Ô 5",
+   "scene": "S06",
+   "value": "Hỏi & đáp cho khách"
+  },
+  "S06_t6": {
+   "label": "Ô 6",
+   "scene": "S06",
+   "value": "Trả lời từng review"
+  },
+  "S07_h": {
+   "label": "Tiêu đề",
+   "scene": "S07",
+   "value": "Kể cả lời chê / cũng được đáp lại *tử tế.*"
+  },
+  "S07_s": {
+   "label": "Dòng phụ",
+   "scene": "S07",
+   "value": "Vì khách mới đọc cả / cách quán bạn trả lời."
+  },
+  "S07_rev": {
+   "label": "Review 1 sao (minh họa, tiếng Đức)",
+   "scene": "S07",
+   "value": "Das Essen war kalt und wir haben lange gewartet."
+  },
+  "S07_reply": {
+   "label": "Câu trả lời (tiếng Đức, gõ dần)",
+   "scene": "S07",
+   "value": "Danke für Ihr ehrliches Feedback. Das tut uns leid. Wir haben es im Team besprochen und würden uns freuen, Sie wieder bei uns zu begrüßen."
+  },
+  "S08_h": {
+   "label": "Tiêu đề",
+   "scene": "S08",
+   "value": "Và lần này, / *khách không lướt qua.*"
+  },
+  "S08_s": {
+   "label": "Dòng phụ",
+   "scene": "S08",
+   "value": "Họ gọi điện, hỏi đường, / rồi đặt bàn."
+  },
+  "S08_toast": {
+   "label": "Thông báo đặt bàn (minh họa)",
+   "scene": "S08",
+   "value": "Tisch reserviert · Fr 19:30 · 4 Personen"
+  },
+  "S09_h": {
+   "label": "Câu chốt",
+   "scene": "S09",
+   "value": "Hồ sơ Google là / *mặt tiền thứ hai* / của quán bạn."
+  },
+  "S09_s": {
+   "label": "Dòng phụ",
+   "scene": "S09",
+   "value": "Mặt tiền ấy vẫn sáng đèn, / cả khi quán đã đóng cửa."
+  },
+  "S10_cta": {
+   "label": "Bong bóng CTA",
+   "scene": "S10",
+   "value": "Nhắn WhatsApp cho SAMI"
+  },
+  "S10_phone": {
+   "label": "Số WhatsApp",
+   "scene": "S10",
+   "value": "+49 155 60456888"
+  },
+  "S10_offer": {
+   "label": "Ưu đãi",
+   "scene": "S10",
+   "value": "Phân tích marketing miễn phí, / gồm cả hồ sơ Google của quán. / Không ràng buộc, phản hồi trong 24 giờ."
+  },
+  "S10_claim": {
+   "label": "Câu chốt",
+   "scene": "S10",
+   "value": "Thêm khách. Thêm doanh thu. / Thêm thời gian."
+  },
+  "S10_tagline": {
+   "label": "Tagline",
+   "scene": "S10",
+   "value": "Strategy • Automation • Marketing • Intelligence"
+  },
+  "S10_web": {
+   "label": "Web",
+   "scene": "S10",
+   "value": "sami-agency.de"
+  }
+ },
+ "status": "draft",
+ "titles": [],
+ "subtitles": {
+  "enabled": false,
+  "items": []
+ },
+ "overlays": [],
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 1.5
+  },
+  "cues": []
+ }
+}
