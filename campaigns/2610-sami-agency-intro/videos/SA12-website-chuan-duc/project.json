@@ -1,0 +1,485 @@
+{
+ "name": "SA12-website-chuan-duc-v.1",
+ "client": "SAMI Marketing Agency",
+ "version": 1,
+ "schemaVersion": 2,
+ "type": "video",
+ "engine": "hyperframes",
+ "status": "draft",
+ "formats": [
+  "9:16",
+  "16:9"
+ ],
+ "brand": {
+  "colors": {
+   "navy": "#0C0628",
+   "mint": "#08DDA4",
+   "purple": "#7667FE"
+  }
+ },
+ "look": {
+  "grain": 0.035,
+  "vignette": 0.4,
+  "background": "#07060F"
+ },
+ "scenes": [
+  {
+   "id": "S01",
+   "label": "Hook: khách vào website trước khi vào quán",
+   "start": 0,
+   "end": 171,
+   "engine": "hyperframes",
+   "src": "hf/S01.html"
+  },
+  {
+   "id": "S02",
+   "label": "Nỗi đau: website làm cho có 0/7",
+   "start": 171,
+   "end": 357,
+   "engine": "hyperframes",
+   "src": "hf/S02.html"
+  },
+  {
+   "id": "S03",
+   "label": "Chữ ký: điện thoại nổ thành 7 lớp",
+   "start": 357,
+   "end": 543,
+   "engine": "hyperframes",
+   "src": "hf/S03.html"
+  },
+  {
+   "id": "S04",
+   "label": "07 · Cookie + Datenschutz",
+   "start": 543,
+   "end": 729,
+   "engine": "hyperframes",
+   "src": "hf/S04.html"
+  },
+  {
+   "id": "S05",
+   "label": "06 · Gutschein online",
+   "start": 729,
+   "end": 914,
+   "engine": "hyperframes",
+   "src": "hf/S05.html"
+  },
+  {
+   "id": "S06",
+   "label": "05 · Song ngữ DE/EN",
+   "start": 914,
+   "end": 1100,
+   "engine": "hyperframes",
+   "src": "hf/S06.html"
+  },
+  {
+   "id": "S07",
+   "label": "04 · Speisekarte + Allergene + PDF",
+   "start": 1100,
+   "end": 1286,
+   "engine": "hyperframes",
+   "src": "hf/S07.html"
+  },
+  {
+   "id": "S08",
+   "label": "03 · Nút Reservieren cố định",
+   "start": 1286,
+   "end": 1471,
+   "engine": "hyperframes",
+   "src": "hf/S08.html"
+  },
+  {
+   "id": "S09",
+   "label": "02 · Đẹp trên điện thoại",
+   "start": 1471,
+   "end": 1657,
+   "engine": "hyperframes",
+   "src": "hf/S09.html"
+  },
+  {
+   "id": "S10",
+   "label": "01 · Tải dưới 2 giây",
+   "start": 1657,
+   "end": 1843,
+   "engine": "hyperframes",
+   "src": "hf/S10.html"
+  },
+  {
+   "id": "S11",
+   "label": "Sập lại + nền móng SEO",
+   "start": 1843,
+   "end": 2014,
+   "engine": "hyperframes",
+   "src": "hf/S11.html"
+  },
+  {
+   "id": "S12",
+   "label": "Case thật tại Đức",
+   "start": 2014,
+   "end": 2200,
+   "engine": "hyperframes",
+   "src": "hf/S12.html"
+  },
+  {
+   "id": "S13",
+   "label": "Nhịp thở + câu chốt lễ tân 24 giờ",
+   "start": 2200,
+   "end": 2400,
+   "engine": "hyperframes",
+   "src": "hf/S13.html"
+  },
+  {
+   "id": "S14",
+   "label": "CTA WhatsApp",
+   "start": 2400,
+   "end": 2586,
+   "engine": "hyperframes",
+   "src": "hf/S14.html"
+  },
+  {
+   "id": "S15",
+   "label": "End card SAMI",
+   "start": 2586,
+   "end": 2700,
+   "engine": "hyperframes",
+   "src": "hf/S15.html"
+  }
+ ],
+ "copy": {
+  "S01_head": {
+   "label": "Câu hook dưới điện thoại (*…* tô màu, / xuống dòng)",
+   "scene": "S01",
+   "value": "Khách Đức vào *website* của bạn / trước khi vào quán.",
+   "multiline": false
+  },
+  "S01_hud": {
+   "label": "Nhãn khung ngắm kỹ thuật",
+   "scene": "S01",
+   "value": "PRÜFUNG 0/7",
+   "multiline": false
+  },
+  "S02_head": {
+   "label": "Câu 1 (trên)",
+   "scene": "S02",
+   "value": "Và họ kiểm tra rất kỹ.",
+   "multiline": false
+  },
+  "S02_sub": {
+   "label": "Câu 2 (dưới)",
+   "scene": "S02",
+   "value": "Website *làm cho có* mất khách / ngay từ ngoài cửa.",
+   "multiline": false
+  },
+  "S02_list": {
+   "label": "7 điểm kiểm tra, cách nhau bởi |",
+   "scene": "S02",
+   "value": "Tốc độ tải|Trên điện thoại|Nút đặt bàn|Thực đơn + dị ứng|Tiếng Đức / Anh|Gutschein|Cookie đúng luật",
+   "multiline": false
+  },
+  "S03_head": {
+   "label": "Câu dẫn vào cảnh tháo lớp",
+   "scene": "S03",
+   "value": "Hãy *tháo rời* một website chuẩn Đức / để xem khách kiểm tra những gì.",
+   "multiline": false
+  },
+  "L7": {
+   "label": "Tên lớp 07 (nhãn kỹ thuật)",
+   "scene": "S03",
+   "value": "Cookie + Datenschutz",
+   "multiline": false
+  },
+  "L6": {
+   "label": "Tên lớp 06",
+   "scene": "S03",
+   "value": "Gutschein online",
+   "multiline": false
+  },
+  "L5": {
+   "label": "Tên lớp 05",
+   "scene": "S03",
+   "value": "Song ngữ DE / EN",
+   "multiline": false
+  },
+  "L4": {
+   "label": "Tên lớp 04",
+   "scene": "S03",
+   "value": "Speisekarte + Allergene",
+   "multiline": false
+  },
+  "L3": {
+   "label": "Tên lớp 03",
+   "scene": "S03",
+   "value": "Nút Reservieren cố định",
+   "multiline": false
+  },
+  "L2": {
+   "label": "Tên lớp 02",
+   "scene": "S03",
+   "value": "Đẹp trên điện thoại",
+   "multiline": false
+  },
+  "L1": {
+   "label": "Tên lớp 01",
+   "scene": "S03",
+   "value": "Tải dưới 2 giây",
+   "multiline": false
+  },
+  "L0": {
+   "label": "Tên nền móng",
+   "scene": "S03",
+   "value": "Nền móng: cấu trúc SEO",
+   "multiline": false
+  },
+  "S04_head": {
+   "label": "07 · tiêu đề",
+   "scene": "S04",
+   "value": "Cookie và Datenschutz *đúng chuẩn.*",
+   "multiline": false
+  },
+  "S04_sub": {
+   "label": "07 · câu phụ",
+   "scene": "S04",
+   "value": "Khách Đức để ý điều này. Luật Đức cũng vậy.",
+   "multiline": false
+  },
+  "S04_c1": {
+   "label": "07 · nhãn kỹ thuật 1",
+   "scene": "S04",
+   "value": "Hỏi trước khi đo",
+   "multiline": false
+  },
+  "S04_c2": {
+   "label": "07 · nhãn kỹ thuật 2",
+   "scene": "S04",
+   "value": "Impressum + Datenschutz",
+   "multiline": false
+  },
+  "S05_head": {
+   "label": "06 · tiêu đề",
+   "scene": "S05",
+   "value": "Phiếu quà tặng, *mua ngay trên web.*",
+   "multiline": false
+  },
+  "S05_sub": {
+   "label": "06 · câu phụ",
+   "scene": "S05",
+   "value": "Quà tặng hôm nay, bàn đặt tháng sau.",
+   "multiline": false
+  },
+  "S05_c1": {
+   "label": "06 · nhãn 1",
+   "scene": "S05",
+   "value": "25 – 200 €",
+   "multiline": false
+  },
+  "S05_c2": {
+   "label": "06 · nhãn 2",
+   "scene": "S05",
+   "value": "Hiệu lực 3 năm",
+   "multiline": false
+  },
+  "S06_head": {
+   "label": "05 · tiêu đề",
+   "scene": "S06",
+   "value": "Tiếng Đức, tiếng Anh, *một chạm để đổi.*",
+   "multiline": false
+  },
+  "S06_sub": {
+   "label": "05 · câu phụ",
+   "scene": "S06",
+   "value": "Khách du lịch cũng đặt bàn được.",
+   "multiline": false
+  },
+  "S06_c1": {
+   "label": "05 · nhãn 1",
+   "scene": "S06",
+   "value": "DE / EN",
+   "multiline": false
+  },
+  "S06_c2": {
+   "label": "05 · nhãn 2",
+   "scene": "S06",
+   "value": "Cùng một trang",
+   "multiline": false
+  },
+  "S07_head": {
+   "label": "04 · tiêu đề",
+   "scene": "S07",
+   "value": "Thực đơn rõ giá, *ghi đủ Allergene.*",
+   "multiline": false
+  },
+  "S07_sub": {
+   "label": "04 · câu phụ",
+   "scene": "S07",
+   "value": "Có bản PDF, khách khỏi gọi điện hỏi.",
+   "multiline": false
+  },
+  "S07_c1": {
+   "label": "04 · nhãn 1",
+   "scene": "S07",
+   "value": "Mã dị ứng A – N",
+   "multiline": false
+  },
+  "S07_c2": {
+   "label": "04 · nhãn 2",
+   "scene": "S07",
+   "value": "[V] món chay",
+   "multiline": false
+  },
+  "S08_head": {
+   "label": "03 · tiêu đề",
+   "scene": "S08",
+   "value": "Nút „Reservieren“ *luôn trong tầm tay.*",
+   "multiline": false
+  },
+  "S08_sub": {
+   "label": "03 · câu phụ",
+   "scene": "S08",
+   "value": "Cuộn tới đâu, nút đặt bàn theo tới đó.",
+   "multiline": false
+  },
+  "S08_c1": {
+   "label": "03 · nhãn 1",
+   "scene": "S08",
+   "value": "Cố định đáy màn hình",
+   "multiline": false
+  },
+  "S08_c2": {
+   "label": "03 · nhãn 2",
+   "scene": "S08",
+   "value": "1 chạm tới form",
+   "multiline": false
+  },
+  "S09_head": {
+   "label": "02 · tiêu đề",
+   "scene": "S09",
+   "value": "Đẹp trọn vẹn *trên điện thoại.*",
+   "multiline": false
+  },
+  "S09_sub": {
+   "label": "02 · câu phụ",
+   "scene": "S09",
+   "value": "Vì khách tìm quán bằng chiếc máy trong túi.",
+   "multiline": false
+  },
+  "S10_head": {
+   "label": "01 · tiêu đề",
+   "scene": "S10",
+   "value": "Mở ra trong *chưa tới 2 giây.*",
+   "multiline": false
+  },
+  "S10_sub": {
+   "label": "01 · câu phụ",
+   "scene": "S10",
+   "value": "Website SAMI dựng tại Đức: 1,5 đến 1,8 giây.",
+   "multiline": false
+  },
+  "S11_head": {
+   "label": "Câu khi các lớp sập lại",
+   "scene": "S11",
+   "value": "Bảy lớp ghép lại thành một, / trên nền móng *cấu trúc SEO* từ ngày đầu.",
+   "multiline": false
+  },
+  "S12_head": {
+   "label": "Câu trên các thẻ case",
+   "scene": "S12",
+   "value": "Không phải lý thuyết. / Đây là những website *SAMI đã dựng* tại Đức.",
+   "multiline": false
+  },
+  "S12_k1": {
+   "label": "Thẻ Mizuki: thông số",
+   "scene": "S12",
+   "value": "1,6 s · DE / EN · đặt món online",
+   "multiline": false
+  },
+  "S12_k2": {
+   "label": "Thẻ Vị: thông số",
+   "scene": "S12",
+   "value": "DE / EN · 1 chạm tới đặt bàn · Gutschein",
+   "multiline": false
+  },
+  "S12_k3": {
+   "label": "Thẻ An Vegan: thông số",
+   "scene": "S12",
+   "value": "1,8 s · đặt bàn khoảng 30 giây",
+   "multiline": false
+  },
+  "S12_k4": {
+   "label": "Thẻ +84 Kitchen: thông số",
+   "scene": "S12",
+   "value": "1,5 s · đặt bàn + đặt món",
+   "multiline": false
+  },
+  "S13_head": {
+   "label": "Câu chốt",
+   "scene": "S13",
+   "value": "Website không phải tấm danh thiếp. / Nó là *nhân viên lễ tân* làm việc 24 giờ.",
+   "multiline": false
+  },
+  "S14_head": {
+   "label": "CTA câu 1",
+   "scene": "S14",
+   "value": "Gửi SAMI đường link website của quán.",
+   "multiline": false
+  },
+  "S14_sub": {
+   "label": "CTA câu 2",
+   "scene": "S14",
+   "value": "Nhận *phân tích marketing miễn phí,* / không ràng buộc.",
+   "multiline": false
+  },
+  "S14_wa": {
+   "label": "Số WhatsApp",
+   "scene": "S14",
+   "value": "+49 155 60456888",
+   "multiline": false
+  },
+  "S14_note": {
+   "label": "Ghi chú nhỏ dưới nút",
+   "scene": "S14",
+   "value": "Phản hồi trong 24 giờ",
+   "multiline": false
+  },
+  "S15_claim": {
+   "label": "Câu chốt end card",
+   "scene": "S15",
+   "value": "Thêm khách. Thêm doanh thu. / Thêm thời gian.",
+   "multiline": false
+  },
+  "S15_tag": {
+   "label": "Tagline",
+   "scene": "S15",
+   "value": "Strategy • Automation • Marketing • Intelligence",
+   "multiline": false
+  },
+  "S15_contact": {
+   "label": "WhatsApp end card",
+   "scene": "S15",
+   "value": "WhatsApp +49 155 60456888",
+   "multiline": false
+  },
+  "S15_url": {
+   "label": "URL",
+   "scene": "S15",
+   "value": "sami-agency.de",
+   "multiline": false
+  }
+ },
+ "titles": [],
+ "overlays": [],
+ "subtitles": {
+  "enabled": false,
+  "items": [],
+  "anim": "karaoke"
+ },
+ "audio": {
+  "mode": "layers",
+  "music": {
+   "src": "audio/music.mp3",
+   "gain": 0,
+   "edit": [],
+   "fadeOut": 0.5
+  },
+  "cues": [],
+  "voice": []
+ }
+}
