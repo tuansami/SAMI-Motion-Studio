@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/dr.css">
+<style>
+  /* S04 · công tắc: đèn an toàn đỏ bật, phim treo đung đưa, 3 khay tráng, giọt nước */
+  #dark { position: absolute; inset: 0; z-index: 28; background: #120403; }
+  #scene { position: absolute; inset: 0; }
+  #tag { position: relative; font-size: 24px; color: #F08A70; padding: 10px 16px; border: 1px solid rgba(240, 138, 112, .45); border-radius: 8px; }
+  .stack { top: 250px; }
+  [data-ratio="16x9"] .stack { top: 50%; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S04">
+  <div class="room" style="background:radial-gradient(ellipse 90% 70% at 70% 10%, #4A1410 0%, #200907 45%, #0B0504 100%)"></div>
+  <svg id="scene"></svg>
+  <div class="safelight" id="sl"></div>
+  <div class="stack">
+    <div class="mono" id="tag" data-copy="S04_tag"></div>
+    <div class="hd" id="h" data-copy="S04_h"></div>
+  </div>
+  <div class="vign"></div>
+  <div id="dark"></div>
+</div>
+<script src="hf/parts/dr.js"></script>
+<script>
+  const S = window.SAMI; S.bindCopy();
+  const tl = S.timeline(), $ = (x) => document.querySelector(x), P = S.portrait, el = DR.el, W = S.w, H = S.h;
+  const sv = $('#scene'); sv.setAttribute('viewBox', '0 0 ' + W + ' ' + H); sv.setAttribute('width', W); sv.setAttribute('height', H);
+  sv.innerHTML = '<defs><linearGradient id="liq" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A1A12"/><stop offset="1" stop-color="#1A0605"/></linearGradient>' +
+    '<linearGradient id="tray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A2624"/><stop offset="1" stop-color="#0E0C0B"/></linearGradient>' +
+    '<radialGradient id="bulb" r=".5"><stop offset="0" stop-color="#FFB49A"/><stop offset=".35" stop-color="#E0402A"/><stop offset="1" stop-color="#5A0E08"/></radialGradient></defs>';
+  // bố cục theo tỉ lệ
+  const wireY = P ? 720 : 140, wx0 = P ? 0 : 980, wx1 = W;
+  const counterY = P ? 1420 : 760;
+  const bulb = P ? {x: 900, y: 600} : {x: 1780, y: 90};
+  // dây phơi phim
+  el('path', {d: 'M' + wx0 + ' ' + wireY + ' Q' + ((wx0 + wx1) / 2) + ' ' + (wireY + 40) + ' ' + wx1 + ' ' + (wireY + 6), stroke: '#3A2A24', 'stroke-width': 3, fill: 'none'}, sv);
+  const strips = [], xs = P ? [150, 360, 600, 820] : [1080, 1280, 1480, 1680];
+  xs.forEach((x, i) => {
+    const g = el('g', {}, sv), y0 = wireY + 18 + 30 * Math.sin(Math.PI * (x - wx0) / (wx1 - wx0));
+    const len = (P ? 470 : 420) - (i % 2) * 70;
+    el('rect', {x: -60, y: 0, width: 120, height: len, rx: 4, fill: '#1A0F0C', stroke: '#3A2620', 'stroke-width': 2}, g);
+    for (let k = 0; k < len / 26 - 1; k++) { el('rect', {x: -52, y: 14 + k * 26, width: 10, height: 14, rx: 2, fill: '#5A1A12', opacity: .7}, g); el('rect', {x: 42, y: 14 + k * 26, width: 10, height: 14, rx: 2, fill: '#5A1A12', opacity: .7}, g); }
+    for (let k = 0; k < Math.floor((len - 30) / 130); k++) el('rect', {x: -36, y: 20 + k * 130, width: 72, height: 112, fill: ['#6A2A1A', '#7A3A22', '#4A1A12'][(i + k) % 3], opacity: .85}, g);
+    // kẹp gỗ
+    el('rect', {x: -14, y: -26, width: 28, height: 44, rx: 4, fill: '#B98A5A'}, g); el('rect', {x: -3, y: -26, width: 6, height: 44, fill: '#7A5432'}, g);
+    strips.push({g, x, y0, len, ph: i * 1.3});
+  });
+  // quầy + 3 khay
+  el('rect', {x: 0, y: counterY, width: W, height: H - counterY, fill: '#120807'}, sv);
+  el('rect', {x: 0, y: counterY, width: W, height: 8, fill: '#2A1612'}, sv);
+  const trays = [], tw = P ? 300 : 260, tx0 = P ? 60 : 1000, gap = P ? 30 : 40, labels = ['ENTWICKLER', 'STOPP', 'FIXIERER'];
+  for (let i = 0; i < 3; i++) {
+    const x = tx0 + i * (tw + gap), y = counterY + (P ? 90 : 70);
+    el('path', {d: 'M' + x + ' ' + y + ' L' + (x + tw) + ' ' + y + ' L' + (x + tw - 18) + ' ' + (y + 90) + ' L' + (x + 18) + ' ' + (y + 90) + ' Z', fill: 'url(#tray)', stroke: '#3A3230', 'stroke-width': 3}, sv);
+    el('ellipse', {cx: x + tw / 2, cy: y + 14, rx: tw / 2 - 14, ry: 16, fill: 'url(#liq)'}, sv);
+    const rp = el('ellipse', {cx: x + tw / 2, cy: y + 14, rx: 0, ry: 0, fill: 'none', stroke: '#FF8A70', 'stroke-width': 2, opacity: 0}, sv);
+    const lb = el('text', {x: x + tw / 2, y: y + 140, 'text-anchor': 'middle', fill: '#9A5A4A', 'font-family': 'IBM Plex Mono', 'font-size': 22, 'letter-spacing': 3}, sv); lb.textContent = labels[i];
+    trays.push({x: x + tw / 2, y: y + 14, rp});
+  }
+  // giọt nước từ dải phim 2 rơi xuống khay 1
+  const drop = el('ellipse', {rx: 6, ry: 9, fill: '#FF9A80', opacity: 0}, sv);
+  // bóng đèn an toàn
+  el('line', {x1: bulb.x, y1: 0, x2: bulb.x, y2: bulb.y - 40, stroke: '#2A1A14', 'stroke-width': 4}, sv);
+  const bl = el('circle', {cx: bulb.x, cy: bulb.y, r: 38, fill: '#2A0A08'}, sv);
+  const sl = $('#sl'); sl.style.left = (bulb.x - 900) + 'px'; sl.style.top = (bulb.y - 900) + 'px'; sl.style.width = sl.style.height = '1800px';
+  DR.clock(tl, (t) => {
+    const on = t < 0.55 ? 0 : t < 0.62 ? 1 : t < 0.7 ? 0.3 : t < 0.78 ? 1 : 1;   // chớp khi bật
+    bl.setAttribute('fill', on > 0.5 ? 'url(#bulb)' : '#2A0A08');
+    sl.style.opacity = (on * (0.85 + 0.15 * Math.sin(t * 3.1))).toFixed(3);
+    $('#dark').style.opacity = (1 - on * 0.97).toFixed(3) * DR.L(0, 0, 1) + (1 - on) * 0;
+    $('#dark').style.opacity = on > 0.5 ? 0 : (t < 0.55 ? 0.92 : 0.6);
+    strips.forEach((s) => s.g.setAttribute('transform', 'translate(' + s.x + ',' + s.y0 + ') rotate(' + (2.2 * Math.sin(t * 1.4 + s.ph)).toFixed(3) + ')'));
+    // giọt: chu kỳ 1,6 s từ đáy dải phim 2 tới khay giữa
+    const s2 = strips[P ? 1 : 1], tr = trays[P ? 1 : 0], c = ((t - 0.9) % 1.6 + 1.6) % 1.6, f = DR.cl(c / 0.55);
+    const yb = s2.y0 + s2.len, x0 = s2.x;
+    drop.setAttribute('cx', DR.mix(x0, tr.x, 0.0)); drop.setAttribute('cy', DR.mix(yb, tr.y, f * f));
+    drop.setAttribute('opacity', t > 0.9 && c < 0.55 ? 0.9 : 0);
+    const rr = DR.cl((c - 0.55) / 0.8);
+    tr.rp.setAttribute('cx', x0); tr.rp.setAttribute('rx', 10 + 110 * rr); tr.rp.setAttribute('ry', 3 + 12 * rr); tr.rp.setAttribute('opacity', t > 0.9 && c >= 0.55 ? (1 - rr) * 0.8 : 0);
+  });
+  S.arrive(tl, '#tag', 0.9, {dist: 14, blur: 6});
+  S.arrive(tl, S.words($('#h')), 1.1, {stagger: 0.09, dist: 24});
+</script>
+</body>
+</html>

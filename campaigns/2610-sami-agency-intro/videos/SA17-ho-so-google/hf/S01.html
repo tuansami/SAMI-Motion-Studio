@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/300.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/dr.css">
+<style>
+  /* S01 · hook: cực cận một ảnh tối → lùi ra: thẻ "Hiên Nhà" trong danh sách Maps → ngón tay vuốt qua */
+  #ph { left: 270px; top: 740px; transform-origin: 0 0; }
+  #list { position: absolute; left: 0; right: 0; top: 184px; }
+  #mapstrip { position: absolute; left: 0; right: 0; top: 0; height: 200px; background: linear-gradient(180deg, #DDE6DE, #E8EDE6); }
+  #finger { position: absolute; z-index: 12; width: 150px; height: 190px; border-radius: 75px 75px 60px 60px; background: radial-gradient(ellipse at 40% 30%, rgba(236, 196, 170, .95), rgba(190, 140, 112, .92)); box-shadow: 0 20px 50px rgba(0, 0, 0, .45); opacity: 0; }
+  #hl { position: absolute; left: 0; right: 0; height: 170px; background: rgba(26, 115, 232, .06); border-left: 6px solid rgba(26, 115, 232, .0); }
+  .stack { top: 236px; }
+  [data-ratio="16x9"] #ph { left: 1180px; top: 70px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S01">
+  <div class="room"></div>
+  <div class="safelight" id="sl" style="left:-300px;top:-420px;width:1300px;height:1300px"></div>
+  <div class="cam" id="cam">
+    <div class="phone" id="ph"><div class="scr" id="scr">
+      <div id="mapstrip"></div>
+      <div class="sbar" style="position:absolute;left:0;right:0;top:0;z-index:3">
+        <span id="sico"></span><span id="q"></span></div>
+      <div id="list"></div>
+    </div><div class="notch"></div><div class="glare"></div></div>
+    <div id="finger"></div>
+  </div>
+  <div class="scrim-top" id="scrim" style="height:760px"></div>
+  <div class="stack">
+    <div class="hd" id="h" data-copy="S01_h"></div>
+    <div class="sub" id="s" data-copy="S01_s"></div>
+  </div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/dr.js"></script>
+<script>
+  const S = window.SAMI; S.bindCopy();
+  const tl = S.timeline(), $ = (x) => document.querySelector(x), P = S.portrait;
+  $('#sico').innerHTML = DR.ico.search;
+  const qTxt = S.text('S01_q'), name = S.text('S01_name');
+  const list = DR.mlist($('#list'), {items: [
+    ['Mekong Küche', '★★★★★', 'Vietnamesisch', 'Geöffnet · 0,6 km', null, '', 'linear-gradient(135deg,#C9824A,#7A3F1E)'],
+    [name, '★★★<span style="color:#DADCE0">★★</span>', 'Vietnamesisch', '<span style="color:#D93025">Geschlossen</span> · 0,3 km', 'public/img/before.webp', 'filter:brightness(.42) saturate(.55) blur(1px);transform:scale(1.3) rotate(-4deg)'],
+    ['Lotus Bistro', '★★★★★', 'Asiatisch', 'Geöffnet · 0,9 km', null, '', 'linear-gradient(135deg,#E3B061,#9A5A22)'],
+    ['Bambus Haus', '★★★★', 'Vietnamesisch', 'Geöffnet · 1,2 km', null, '', 'linear-gradient(135deg,#88A26A,#3F5A2C)'],
+    ['Saigon Ecke', '★★★★★', 'Vietnamesisch', 'Geöffnet · 1,4 km', null, '', 'linear-gradient(135deg,#D9905A,#83401C)'],
+    ['Reisfeld', '★★★★', 'Asiatisch', 'Geöffnet · 1,7 km', null, '', 'linear-gradient(135deg,#C46F55,#6E2E22)'],
+    ['Pho Nam', '★★★★★', 'Vietnamesisch', 'Geöffnet · 2,0 km', null, '', 'linear-gradient(135deg,#B9945C,#5E4422)'],
+    ['Kim Garden', '★★★★', 'Asiatisch', 'Geöffnet · 2,3 km', null, '', 'linear-gradient(135deg,#C0864E,#6A3A1C)']]});
+  const its = list.querySelectorAll('.it');
+  // tâm ảnh nhỏ của thẻ "Hiên Nhà" (toạ độ trong .cam, đo khi chưa biến đổi)
+  const ph = $('#ph'), sc = P ? 0.9 : 0.8;
+  const th = its[1].querySelector('.th').getBoundingClientRect(), pr = ph.getBoundingClientRect();
+  const k = pr.width / ph.offsetWidth;
+  const ox = ph.offsetLeft + (th.left - pr.left + th.width / 2) / k * sc, oy = ph.offsetTop + (th.top - pr.top + th.height / 2) / k * sc;
+  ph.style.transform = 'scale(' + sc + ')';
+  const cam = $('#cam'); cam.style.transformOrigin = '0 0';
+  const fg = $('#finger');
+  const fx = ph.offsetLeft + 300 * sc, dust = DR.dust($('#root'), 26, 11);
+  DR.clock(tl, (t) => {
+    // cực cận → lùi nhanh (0,25 → 1,5 s)
+    const z = DR.E(t, 0.65, 1.75);
+    const s0 = P ? 19 : 11;
+    const zs = DR.mix(s0, 1, z), cx = DR.mix(S.w / 2, ox, z), cy = DR.mix(S.h / 2, oy, z);
+    cam.style.transform = 'translate(' + (cx - zs * ox).toFixed(1) + 'px,' + (cy - zs * oy).toFixed(1) + 'px) scale(' + zs.toFixed(4) + ')';
+    // gõ tìm kiếm (đã gõ sẵn một phần khi lùi ra)
+    const n = Math.round(qTxt.length * DR.L(t, 0.0, 1.3));
+    $('#q').textContent = qTxt.slice(0, n) + (t < 1.6 && Math.floor(t * 3) % 2 === 0 ? '|' : '');
+    // ngón tay vào, vuốt lên (1,8 → 2,5), danh sách trôi
+    const fIn = DR.E(t, 1.45, 1.8), sw = DR.E(t, 1.85, 2.55), fOut = DR.E(t, 2.55, 2.95);
+    fg.style.opacity = (fIn * (1 - fOut)).toFixed(3);
+    fg.style.left = (fx - 75) + 'px';
+    fg.style.top = (ph.offsetTop + (1050 - 620 * sw) * sc) + 'px';
+    const scroll = 400 * DR.E(t, 1.9, 2.9) + 50 * DR.L(t, 2.9, 8);
+    $('#list').style.transform = 'translateY(' + (-scroll).toFixed(1) + 'px)';
+    // vệt nhoè khi lướt
+    $('#list').style.filter = 'blur(' + (5 * Math.sin(Math.PI * DR.L(t, 1.9, 2.8))).toFixed(2) + 'px)';
+    $('#sl').style.opacity = (0.75 + 0.25 * Math.sin(t * 1.7)).toFixed(3);
+    dust(t);
+  });
+  $('#scrim').style.display = P ? '' : 'none';
+  tl.fromTo('#scrim', {opacity: 0}, {opacity: 1, duration: 0.6}, 1.7);
+  S.arrive(tl, S.words($('#h')), 2.0, {stagger: 0.09, dist: 26});
+  S.arrive(tl, '#s', 3.2, {dist: 20, dur: 0.8});
+</script>
+</body>
+</html>

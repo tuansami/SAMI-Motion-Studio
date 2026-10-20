@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/300.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/dr.css">
+<style>
+  /* S02 · hồ sơ cũ in thử trên bàn đèn, kính lúp soi, bút sáp đỏ khoanh 3 lỗi */
+  #lt { left: -60px; right: -60px; top: 700px; bottom: -80px; transform: rotate(-1.5deg); }
+  #print { position: absolute; left: 190px; top: 770px; width: 600px; transform-origin: 0 0; box-shadow: 0 30px 60px rgba(60, 30, 10, .35), 0 0 0 10px #fff; border-radius: 4px; }
+  #marks { position: absolute; left: 0; top: 0; width: 600px; height: 100%; overflow: visible; z-index: 5; }
+  .stack { gap: 22px; top: 226px; }
+  .ln { font-size: 66px; }
+  .ln.k { opacity: 1; }
+  #loupe { position: absolute; z-index: 12; width: 250px; height: 250px; border-radius: 50%; border: 14px solid #1B1B1B; box-shadow: 0 30px 60px rgba(0, 0, 0, .5), inset 0 0 0 3px rgba(255, 255, 255, .25); background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, .35), rgba(255, 255, 255, .05) 45%, rgba(255, 240, 220, .08) 100%); backdrop-filter: brightness(1.1) contrast(1.1); }
+  #loupe:after { content: ""; position: absolute; left: 50%; bottom: -150px; width: 34px; height: 140px; margin-left: -17px; border-radius: 12px; background: linear-gradient(90deg, #2B2B2B, #111); transform-origin: 50% -125px; }
+  .tag-demo { right: 72px; top: 676px; }
+  [data-ratio="16x9"] #lt { left: 960px; right: -80px; top: -80px; bottom: -80px; }
+  [data-ratio="16x9"] #print { left: 1130px; top: 60px; }
+  [data-ratio="16x9"] .ln { font-size: 62px; }
+  [data-ratio="16x9"] .tag-demo { right: 60px; top: 40px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02">
+  <div class="room"></div>
+  <div class="safelight" style="left:-400px;top:-500px;width:1400px;height:1400px;opacity:.7"></div>
+  <div class="lighttable abs" id="lt"></div>
+  <div id="print"><svg id="marks" class="grease"></svg></div>
+  <div id="loupe"></div>
+  <div class="tag-demo">Minh họa</div>
+  <div class="stack">
+    <div class="hd ln" id="l1" data-copy="S02_l1"></div>
+    <div class="hd ln" id="l2" data-copy="S02_l2"></div>
+    <div class="hd ln" id="l3" data-copy="S02_l3"></div>
+  </div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/dr.js"></script>
+<script>
+  const S = window.SAMI; S.bindCopy();
+  const tl = S.timeline(), $ = (x) => document.querySelector(x), P = S.portrait, el = DR.el;
+  const pr = $('#print'), g = DR.gbp(pr, 'old');
+  pr.insertBefore(g, $('#marks'));
+  const sc = P ? 1.16 : 1.1;
+  pr.style.transform = 'scale(' + sc + ') rotate(' + (P ? 1.2 : 1.5) + 'deg)';
+  // vị trí 3 lỗi trong toạ độ tờ in (đo trước khi biến đổi)
+  const off = (e) => { let x = 0, y = 0; while (e && e !== pr) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return {x, y}; };
+  const cnt = g.querySelector('.cnt'), rh = g.querySelector('.r-h'), rr = g.querySelector('.r-r'), cv = g.querySelector('.cv');
+  const mk = $('#marks'); mk.setAttribute('height', g.offsetHeight);
+  const ring = (cx, cy, rx, ry, seed) => {
+    let d = ''; const n = 40;
+    for (let i = 0; i <= n + 5; i++) { const a = -0.6 + i / n * 6.6, w = 1 + 0.035 * Math.sin(a * 2 + seed) + 0.015 * Math.sin(a * 5 + seed * 2); d += (i ? 'L' : 'M') + (cx + Math.cos(a) * rx * w).toFixed(1) + ' ' + (cy + Math.sin(a) * ry * w * (1 + 0.04 * i / n)).toFixed(1) + ' '; }
+    return el('path', {d}, mk);
+  };
+  const a = off(cv), b = off(rh), c = off(rr);
+  const m1 = ring(a.x + cv.offsetWidth / 2, a.y + cv.offsetHeight / 2, cv.offsetWidth / 2 + 6, cv.offsetHeight / 2 + 10, 1);
+  const m2 = ring(b.x + rh.offsetWidth * 0.42, b.y + rh.offsetHeight / 2, rh.offsetWidth * 0.46, rh.offsetHeight / 2 + 10, 2);
+  const m3 = ring(c.x + rr.offsetWidth * 0.45, c.y + rr.offsetHeight / 2, rr.offsetWidth * 0.48, rr.offsetHeight / 2 + 12, 3);
+  const t1 = el('text', {x: 540, y: a.y + 60}, mk); t1.textContent = '✕';
+  const t2 = el('text', {x: 560, y: b.y + 60}, mk); t2.textContent = '?';
+  const t3 = el('text', {x: 560, y: c.y + 64}, mk); t3.textContent = '!';
+  [m1, m2, m3].forEach((m) => { const L = m.getTotalLength(); m.style.strokeDasharray = L; m.style.strokeDashoffset = L; m.dataset.l = L; });
+  const T = [0.9, 2.9, 4.9];
+  [m1, m2, m3].forEach((m, i) => tl.to(m, {strokeDashoffset: 0, duration: 0.6, ease: 'power1.inOut'}, T[i]));
+  [t1, t2, t3].forEach((m, i) => tl.fromTo(m, {opacity: 0, scale: 0.4, transformOrigin: '50% 50%'}, {opacity: 1, scale: 1, duration: 0.3}, T[i] + 0.55));
+  // kính lúp: đi tới từng lỗi (toạ độ màn hình)
+  const ang = (P ? 1.2 : 1.5) * Math.PI / 180;
+  const scr = (p) => ({x: pr.offsetLeft + (p.x * Math.cos(ang) - p.y * Math.sin(ang)) * sc, y: pr.offsetTop + (p.x * Math.sin(ang) + p.y * Math.cos(ang)) * sc});
+  const pts = [scr({x: a.x + 300, y: a.y + 165}), scr({x: b.x + 260, y: b.y + 40}), scr({x: c.x + 270, y: c.y + 40}), scr({x: 300, y: 400})];
+  const lp = $('#loupe');
+  DR.clock(tl, (t) => {
+    let k = DR.E(t, 0.2, 1.0), p = {x: DR.mix(pts[0].x + 260, pts[0].x, k), y: DR.mix(pts[0].y + 300, pts[0].y, k)};
+    for (let i = 1; i < 3; i++) { const e = DR.E(t, T[i] - 0.6, T[i]); p = {x: DR.mix(p.x, pts[i].x, e), y: DR.mix(p.y, pts[i].y, e)}; }
+    const e4 = DR.E(t, 6.2, 7.4); p = {x: DR.mix(p.x, pts[3].x + 520, e4), y: DR.mix(p.y, pts[3].y + 600, e4)};
+    lp.style.transform = 'translate(' + (p.x - 125).toFixed(1) + 'px,' + (p.y - 125 + 6 * Math.sin(t * 1.4)).toFixed(1) + 'px) rotate(-20deg)';
+    lp.style.opacity = DR.L(t, 0.1, 0.5);
+  });
+  tl.fromTo('#print', {opacity: 0, y: 40}, {opacity: 1, y: 0, duration: 0.8}, 0.1);
+  S.arrive(tl, '#l1', 0.6, {dist: 22});
+  S.arrive(tl, '#l2', 2.6, {dist: 22});
+  S.arrive(tl, S.words($('#l3')), 4.6, {dist: 22, stagger: 0.07});
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/300.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="hf/parts/dr.css">
+<style>
+  /* S03 · tờ hồ sơ dựng đứng thành khung cửa; sau cửa là quán đang sáng đèn; camera đẩy xuyên qua cửa */
+  #door { position: absolute; z-index: 6; overflow: hidden; background: #fff; box-shadow: 0 0 0 14px #2A1A12, 0 0 0 16px rgba(244, 178, 97, .5), 0 0 160px rgba(255, 190, 110, .45); }
+  #door .gbp { position: absolute; left: 0; top: 0; width: 600px; transform-origin: 0 0; }
+  #inside { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #spill { position: absolute; z-index: 4; background: linear-gradient(180deg, rgba(255, 196, 120, .55), rgba(255, 196, 120, 0)); clip-path: polygon(18% 0, 82% 0, 115% 100%, -15% 100%); filter: blur(6px); }
+  #floor { position: absolute; left: 0; right: 0; bottom: 0; height: 42%; background: linear-gradient(180deg, #120A08, #070404); }
+  #fade { position: absolute; inset: 0; z-index: 40; background: #2A0806; opacity: 0; }
+  .stack { top: 230px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S03">
+  <div class="room"></div>
+  <div id="floor"></div>
+  <div class="cam" id="cam">
+    <div id="spill"></div>
+    <div id="door"><svg id="inside" preserveAspectRatio="xMidYMid slice"></svg></div>
+  </div>
+  <div class="stack">
+    <div class="hd" id="h" data-copy="S03_h"></div>
+  </div>
+  <div class="vign"></div>
+  <div id="fade"></div>
+</div>
+<script src="hf/parts/dr.js"></script>
+<script>
+  const S = window.SAMI; S.bindCopy();
+  const tl = S.timeline(), $ = (x) => document.querySelector(x), P = S.portrait, el = DR.el;
+  // hình học: tờ hồ sơ (600 × 800) → khung cửa vòm
+  const cx = P ? 540 : 1390, cyB = P ? 1690 : 1000;     // tâm ngang, đáy cửa
+  const card = {w: P ? 600 : 520, h: P ? 800 : 690}, dw = P ? 470 : 400, dh = P ? 830 : 740;
+  const door = $('#door'), g = DR.gbp(door, 'old');
+  g.style.transform = 'scale(' + (card.w / 600) + ')';
+  // nội thất quán (vẽ code): tường ấm, đèn thả, bàn, khách
+  const sv = $('#inside'); sv.setAttribute('viewBox', '0 0 470 830');
+  sv.innerHTML = '<defs><radialGradient id="wall" cx="50%" cy="35%" r="75%"><stop offset="0" stop-color="#FFD9A0"/><stop offset=".45" stop-color="#E59A55"/><stop offset="1" stop-color="#7A3A1C"/></radialGradient>' +
+    '<radialGradient id="lamp" r=".5"><stop offset="0" stop-color="#FFF6DD"/><stop offset=".3" stop-color="rgba(255,226,170,.7)"/><stop offset="1" stop-color="rgba(255,200,120,0)"/></radialGradient></defs>' +
+    '<rect width="470" height="830" fill="url(#wall)"/><rect y="560" width="470" height="270" fill="#5A2A14"/><path d="M0 560 L470 560" stroke="#3A1A0C" stroke-width="4"/>';
+  const lamps = [];
+  [[110, 250], [235, 210], [360, 250]].forEach((p, i) => {
+    el('line', {x1: p[0], y1: 0, x2: p[0], y2: p[1] - 20, stroke: '#3A1A0C', 'stroke-width': 3}, sv);
+    lamps.push(el('circle', {cx: p[0], cy: p[1] + 30, r: 120, fill: 'url(#lamp)'}, sv));
+    el('path', {d: 'M' + (p[0] - 34) + ' ' + (p[1] + 10) + ' Q' + p[0] + ' ' + (p[1] - 40) + ' ' + (p[0] + 34) + ' ' + (p[1] + 10) + ' Z', fill: '#2A140A'}, sv);
+  });
+  // bàn + người (bóng)
+  const ppl = el('g', {}, sv);
+  [[120, 600], [350, 610]].forEach((p, i) => {
+    el('rect', {x: p[0] - 80, y: p[1], width: 160, height: 14, rx: 6, fill: '#2A140A'}, ppl);
+    el('rect', {x: p[0] - 6, y: p[1] + 14, width: 12, height: 130, fill: '#2A140A'}, ppl);
+    for (let k = -1; k <= 1; k += 2) {
+      const x = p[0] + k * 92;
+      el('circle', {cx: x, cy: p[1] - 70, r: 24, fill: '#3A1C10'}, ppl);
+      el('path', {d: 'M' + (x - 34) + ' ' + (p[1] + 30) + ' Q' + (x - 36) + ' ' + (p[1] - 44) + ' ' + x + ' ' + (p[1] - 44) + ' Q' + (x + 36) + ' ' + (p[1] - 44) + ' ' + (x + 34) + ' ' + (p[1] + 30) + ' Z', fill: '#3A1C10'}, ppl);
+    }
+    el('circle', {cx: p[0] - 30, cy: p[1] - 6, r: 14, fill: '#F2EADB'}, ppl); el('circle', {cx: p[0] + 30, cy: p[1] - 6, r: 14, fill: '#F2EADB'}, ppl);
+  });
+  const cam = $('#cam'), sp = $('#spill');
+  DR.clock(tl, (t) => {
+    // dựng đứng (0,2 → 1,6): tờ hồ sơ → khung cửa vòm
+    const k = DR.E(t, 0.25, 1.7);
+    const w = DR.mix(card.w, dw, k), h = DR.mix(card.h, dh, k), r = DR.mix(6, dw / 2, k);
+    door.style.left = (cx - w / 2) + 'px'; door.style.top = (cyB - h) + 'px'; door.style.width = w + 'px'; door.style.height = h + 'px';
+    door.style.borderRadius = r + 'px ' + r + 'px 0 0';
+    door.style.transform = 'perspective(1400px) rotateX(' + DR.mix(38, 0, k).toFixed(2) + 'deg)';
+    door.style.transformOrigin = '50% 100%';
+    g.style.opacity = 1 - DR.E(t, 0.6, 1.5);
+    g.style.filter = 'blur(' + (8 * DR.L(t, 0.6, 1.5)).toFixed(1) + 'px)';
+    sv.style.opacity = DR.E(t, 0.8, 1.9);
+    lamps.forEach((l, i) => l.setAttribute('opacity', (0.75 + 0.25 * Math.sin(t * 2.1 + i * 2)).toFixed(3)));
+    // vệt sáng hắt ra sàn
+    const sh = (P ? 260 : 120) * DR.E(t, 1.2, 2.4);
+    sp.style.left = (cx - dw / 2 - 40) + 'px'; sp.style.width = (dw + 80) + 'px'; sp.style.top = cyB + 'px'; sp.style.height = sh + 'px';
+    // đẩy xuyên qua cửa (6,7 → 7,9)
+    const p = DR.E(t, 6.7, 7.95), zs = 1 + 5 * p * p, oy = cyB - dh * 0.68;
+    cam.style.transformOrigin = cx + 'px ' + oy + 'px';
+    cam.style.transform = 'scale(' + zs.toFixed(4) + ')';
+    $('#fade').style.opacity = DR.L(t, 7.3, 8.0) * 0.9;
+  });
+  S.arrive(tl, S.words($('#h')), 0.7, {stagger: 0.08, dist: 24});
+  tl.to('.stack', {opacity: 0, duration: 0.5}, 7.2);
+</script>
+</body>
+</html>

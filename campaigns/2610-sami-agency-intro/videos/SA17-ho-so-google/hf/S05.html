@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/fraunces/300.css">
+<link rel="stylesheet" href="_fonts/fraunces/300-italic.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/300.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/400.css">
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="hf/parts/dr.css">
+<style>
+  /* S05 · chữ ký: ảnh điện thoại thật chìm vào khay tráng → ảnh SAU trồi lên rực rỡ → kẹp nhấc lên, nhỏ giọt → bay vào ảnh bìa hồ sơ Google */
+  #tray { position: absolute; z-index: 3; border-radius: 26px; background: linear-gradient(180deg, #2E2826, #121010); box-shadow: 0 40px 90px rgba(0, 0, 0, .65), inset 0 2px 0 rgba(255, 255, 255, .08); }
+  #liq { position: absolute; inset: 26px; border-radius: 14px; overflow: hidden; background: radial-gradient(ellipse at 40% 35%, #5E1C14 0%, #34100C 55%, #1C0806 100%); box-shadow: inset 0 10px 40px rgba(0, 0, 0, .6); }
+  #ripples { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #surf { position: absolute; z-index: 6; border-radius: 14px; pointer-events: none; background: radial-gradient(ellipse at 40% 35%, rgba(110, 30, 20, .92) 0%, rgba(60, 16, 12, .96) 60%, rgba(30, 8, 6, .98) 100%); }
+  #sheen { position: absolute; z-index: 7; border-radius: 14px; pointer-events: none; overflow: hidden; }
+  #sheen i { position: absolute; width: 60%; height: 40%; border-radius: 50%; background: radial-gradient(ellipse, rgba(255, 150, 120, .22), rgba(255, 150, 120, 0) 70%); }
+  #pr { position: absolute; z-index: 5; background: #F6F1E8; padding: 14px; box-shadow: 0 24px 50px rgba(0, 0, 0, .55); transform-origin: 50% 50%; }
+  #pr .im { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+  #pr img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
+  #wet { position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, .28) 45%, rgba(255, 255, 255, 0) 60%); mix-blend-mode: screen; }
+  #clip { position: absolute; z-index: 9; width: 70px; height: 120px; }
+  .lab { position: absolute; z-index: 12; font-size: 24px; padding: 10px 16px; border-radius: 8px; white-space: nowrap; }
+  #lb1 { color: #E2D6CA; border: 1px solid rgba(226, 214, 202, .4); background: rgba(13, 9, 8, .7); }
+  #lb2 { color: #0C2A20; background: #08DDA4; }
+  #src { position: absolute; z-index: 12; font-size: 19px; color: rgba(245, 237, 226, .6); }
+  .drop { position: absolute; z-index: 8; width: 12px; height: 18px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: radial-gradient(circle at 35% 35%, #FFD6C8, #C2604A); }
+  #ph { z-index: 4; }
+  #flash { position: absolute; z-index: 13; border-radius: 6px; background: #fff; opacity: 0; pointer-events: none; }
+  .stack { top: 226px; }
+  .stack .hd { font-size: 80px; }
+  #txt { position: absolute; left: 0; right: 0; top: 0; }
+  #txt > .stack { transition: none; }
+  [data-ratio="16x9"] .stack .hd { font-size: 72px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S05">
+  <div class="room"></div>
+  <div class="safelight" id="sl" style="left:-500px;top:-700px;width:1800px;height:1800px"></div>
+  <div id="tray"><div id="liq"><svg id="ripples"></svg></div></div>
+  <div id="pr"><div class="im"><img id="ib" src="public/img/before.webp"><img id="ia" src="public/img/after-1.webp" style="opacity:0"><div id="wet"></div></div></div>
+  <div id="surf"></div>
+  <div id="sheen"><i id="sh1"></i><i id="sh2"></i></div>
+  <svg id="clip" viewBox="0 0 70 120"><rect x="8" y="0" width="54" height="96" rx="8" fill="#C8986A"/><rect x="30" y="0" width="10" height="96" fill="#8A6038"/><circle cx="35" cy="40" r="9" fill="#5A3A20"/><rect x="14" y="88" width="42" height="30" rx="4" fill="#B48A5E"/></svg>
+  <div class="phone" id="ph"><div class="scr" id="scr"></div><div class="notch"></div><div class="glare"></div></div>
+  <div id="flash"></div>
+  <div class="lab mono" id="lb1" data-copy="S05_before"></div>
+  <div class="lab mono" id="lb2" data-copy="S05_after"></div>
+  <div class="mono" id="src" data-copy="S05_src"></div>
+  <div class="scrim-top" id="scrim" style="height:640px;opacity:.85"></div>
+  <div class="stack" id="ta"><div class="hd" id="a" data-copy="S05_a"></div></div>
+  <div class="stack" id="tb"><div class="hd" id="b" data-copy="S05_b"></div></div>
+  <div class="stack" id="tc"><div class="hd" id="c" data-copy="S05_c"></div></div>
+  <div class="vign"></div>
+</div>
+<script src="hf/parts/dr.js"></script>
+<script>
+  const S = window.SAMI; S.bindCopy();
+  const tl = S.timeline(), $ = (x) => document.querySelector(x), P = S.portrait, el = DR.el, E = DR.E, L = DR.L, mix = DR.mix;
+  // ── bố cục
+  const TR = P ? {x: 110, y: 640, w: 860, h: 780} : {x: 1000, y: 120, w: 820, h: 840};
+  const tray = $('#tray'); Object.assign(tray.style, {left: TR.x + 'px', top: TR.y + 'px', width: TR.w + 'px', height: TR.h + 'px'});
+  const LQ = {x: TR.x + 26, y: TR.y + 26, w: TR.w - 52, h: TR.h - 52};
+  ['#surf', '#sheen'].forEach((s) => Object.assign($(s).style, {left: LQ.x + 'px', top: LQ.y + 'px', width: LQ.w + 'px', height: LQ.h + 'px'}));
+  $('#sh1').style.left = '10%'; $('#sh2').style.left = '45%';
+  const C = {x: TR.x + TR.w / 2, y: TR.y + TR.h / 2};                 // tâm khay
+  const SZ_B = P ? {w: 600, h: 452} : {w: 580, h: 436}, SZ_A = P ? {w: 520, h: 690} : {w: 520, h: 690};
+  // điện thoại (vào cuối cảnh) + hồ sơ: ảnh bìa mới, phần còn lại vẫn cũ
+  const ph = $('#ph'), phs = P ? 0.78 : 0.74, PH = P ? {x: 540 - 300 * phs, y: 760} : {x: 1410 - 300 * phs, y: 75};
+  ph.style.left = PH.x + 'px'; ph.style.top = PH.y + 'px'; ph.style.transformOrigin = '0 0';
+  const g = DR.gbp($('#scr'), 'old'); g.style.marginTop = '0px';
+  const cvImg = g.querySelector('.cv img'); cvImg.setAttribute('src', 'public/img/after-1.webp'); cvImg.style.cssText = 'object-position:50% 58%;opacity:0';
+  g.querySelector('.cnt').textContent = 'Neu · Foto';
+  // ô ảnh bìa trên màn hình (toạ độ khung)
+  const COV = {x: PH.x + 18 * phs, y: PH.y + 18 * phs, w: 564 * phs, h: 330 * phs};
+  // gợn nước
+  const rs = $('#ripples'); rs.setAttribute('viewBox', '0 0 ' + LQ.w + ' ' + LQ.h);
+  const rings = []; for (let i = 0; i < 6; i++) rings.push(el('ellipse', {cx: LQ.w / 2, cy: LQ.h / 2, rx: 0, ry: 0, fill: 'none', stroke: '#FF9A80', 'stroke-width': 3}, rs));
+  const RT = [2.35, 2.55, 2.8, 3.1, 9.0, 9.3];                           // thời điểm phát gợn (rơi + nhấc)
+  // giọt nhỏ khi nhấc
+  const drops = []; for (let i = 0; i < 7; i++) { const d = document.createElement('div'); d.className = 'drop'; $('#root').appendChild(d); drops.push({e: d, t: 9.4 + i * 0.32, x: 0.15 + 0.7 * DR.R(i, 4)}); }
+  const pr = $('#pr'), ib = $('#ib'), ia = $('#ia'), clip = $('#clip'), surf = $('#surf'), lb1 = $('#lb1'), lb2 = $('#lb2'), fl = $('#flash');
+  const lbS = $('#src');
+  DR.clock(tl, (t) => {
+    // ── kích thước + vị trí ảnh
+    const morph = E(t, 4.4, 5.4);                                       // đổi khổ khi đang chìm (không thấy)
+    let w = mix(SZ_B.w, SZ_A.w, morph), h = mix(SZ_B.h, SZ_A.h, morph);
+    const fall = E(t, 0.3, 2.3);
+    let x = C.x, y = mix(C.y - (P ? 420 : 380), C.y, fall), rot = mix(-9, -3, fall), sc = mix(1.12, 0.94, fall);
+    // nhấc lên (8,6 → 10,0)
+    const lift = E(t, 8.6, 10.0);
+    y = mix(y, C.y - (P ? 70 : 40), lift); sc = mix(sc, 1.05, lift); rot = mix(rot, 2, lift);
+    const sway = Math.sin((t - 10) * 2.4) * 1.6 * L(t, 10, 10.6) * (1 - L(t, 11, 11.5)); rot += sway;
+    // bay vào điện thoại (11,0 → 12,2)
+    const fly = E(t, 11.0, 12.25);
+    const tw = mix(w * sc, COV.w, fly), th = mix(h * sc, COV.h, fly);
+    x = mix(x, COV.x + COV.w / 2, fly); y = mix(y, COV.y + COV.h / 2 + (P ? 0 : 0), fly) - 60 * Math.sin(Math.PI * fly);
+    rot = mix(rot, 0, fly);
+    const pad = 14 * (1 - fly);
+    pr.style.padding = pad + 'px';
+    pr.style.width = tw + 'px'; pr.style.height = th + 'px';
+    pr.style.transform = 'translate(' + (x - tw / 2).toFixed(1) + 'px,' + (y - th / 2).toFixed(1) + 'px) rotate(' + rot.toFixed(2) + 'deg)';
+    pr.style.opacity = t < 12.3 ? L(t, 0.25, 0.6) : 0;
+    pr.style.zIndex = t > 8.8 ? 10 : 5;
+    // ── chìm → hiện hình: lớp nước phủ ảnh
+    const sink = E(t, 2.35, 4.2), rise = E(t, 5.2, 8.2);
+    surf.style.opacity = (0.0 + 0.86 * sink * (1 - rise) + 0.18 * L(t, 2.35, 2.6) * (1 - L(t, 8.6, 9))).toFixed(3);
+    ib.style.opacity = morph > 0.5 ? 0 : 1;
+    ib.style.filter = 'brightness(.55) saturate(.6) contrast(.92)';
+    ia.style.opacity = morph > 0.5 ? 1 : 0;
+    // ảnh hiện dần: tối, ít tương phản → rực rỡ
+    const dv = E(t, 5.2, 8.8);
+    ia.style.filter = 'brightness(' + mix(0.15, 1.04, dv).toFixed(3) + ') contrast(' + mix(0.6, 1.06, dv).toFixed(3) + ') saturate(' + mix(0.2, 1.12, dv).toFixed(3) + ') sepia(' + mix(0.8, 0, dv).toFixed(3) + ')';
+    $('#wet').style.opacity = (L(t, 8.8, 9.2) * (1 - L(t, 10.6, 11.2))).toFixed(3);
+    $('#wet').style.transform = 'translateX(' + (-60 + 120 * L(t, 8.8, 11)).toFixed(1) + '%)';
+    // gợn
+    rings.forEach((r, i) => {
+      const k = L(t, RT[i], RT[i] + 1.6);
+      const cy = i < 4 ? LQ.h / 2 : LQ.h / 2 + (P ? 340 : 330);
+      r.setAttribute('cy', cy);
+      r.setAttribute('rx', (k * LQ.w * 0.62).toFixed(1)); r.setAttribute('ry', (k * LQ.h * 0.5).toFixed(1));
+      r.setAttribute('opacity', (k > 0 && k < 1 ? (1 - k) * 0.7 : 0).toFixed(3));
+    });
+    $('#sh1').style.top = (20 + 8 * Math.sin(t * 0.7)) + '%'; $('#sh2').style.top = (50 + 10 * Math.sin(t * 0.5 + 1)) + '%';
+    // kẹp gỗ: hạ xuống 8,1 → 8,6, giữ mép trên, đi theo ảnh, buông khi bay
+    const cIn = E(t, 7.9, 8.6), cOut = E(t, 10.8, 11.3);
+    const topY = y - th / 2;
+    clip.style.transform = 'translate(' + (x - 35).toFixed(1) + 'px,' + (mix(topY - 600, topY - 70, cIn) - 400 * cOut).toFixed(1) + 'px)';
+    clip.style.opacity = cIn * (1 - cOut);
+    // giọt nước
+    drops.forEach((d) => {
+      const k = t - d.t, on = k > 0 && k < 0.9 && t < 11;
+      const bx = x - tw / 2 + d.x * tw, by = y + th / 2 + 4;
+      d.e.style.transform = 'translate(' + bx.toFixed(1) + 'px,' + (by + (on ? 1400 * k * k * 0.5 : 0)).toFixed(1) + 'px)';
+      d.e.style.opacity = on ? 0.9 * (1 - L(k, 0.5, 0.9)) : 0;
+    });
+    // khay lùi xuống khi điện thoại vào
+    const pIn = E(t, 10.4, 11.6);
+    tray.style.transform = 'translateY(' + (P ? 1500 : 1300) * pIn * pIn + 'px)';
+    ['#surf', '#sheen'].forEach((s) => $(s).style.transform = tray.style.transform);
+    ph.style.transform = 'translateY(' + ((1 - pIn) * (P ? 1300 : 1200)).toFixed(1) + 'px) scale(' + phs + ')';
+    // ảnh bìa trên điện thoại hiện khi ảnh chạm khít
+    cvImg.style.opacity = t >= 12.25 ? 1 : 0;
+    fl.style.left = COV.x + 'px'; fl.style.top = COV.y + 'px'; fl.style.width = COV.w + 'px'; fl.style.height = COV.h + 'px';
+    fl.style.opacity = (0.8 * (1 - L(t, 12.25, 12.9)) * (t >= 12.25 ? 1 : 0)).toFixed(3);
+    // nhãn
+    lb1.style.opacity = L(t, 0.7, 1.1) * (1 - L(t, 2.4, 2.7));
+    lb1.style.transform = 'translate(' + (x - tw / 2 + pad).toFixed(1) + 'px,' + (y - th / 2 - 62).toFixed(1) + 'px)';
+    lb2.style.opacity = L(t, 7.0, 7.4) * (1 - L(t, 10.7, 11.0));
+    lb2.style.transform = 'translate(' + (x - tw / 2).toFixed(1) + 'px,' + (y + th / 2 + 26).toFixed(1) + 'px)';
+    lbS.style.opacity = L(t, 7.4, 7.8) * (1 - L(t, 10.7, 11.0));
+    lbS.style.transform = 'translate(' + (x - tw / 2).toFixed(1) + 'px,' + (y + th / 2 + 90).toFixed(1) + 'px)';
+    $('#sl').style.opacity = (0.8 + 0.2 * Math.sin(t * 1.6)).toFixed(3);
+  });
+  $('#scrim').style.display = P ? '' : 'none';
+  S.arrive(tl, S.words($('#a')), 0.4, {stagger: 0.07, dist: 22});
+  S.leave(tl, '#ta', 5.5, {dur: 0.4});
+  S.arrive(tl, S.words($('#b')), 5.9, {stagger: 0.08, dist: 22});
+  S.leave(tl, '#tb', 10.35, {dur: 0.4});
+  S.arrive(tl, S.words($('#c')), 10.7, {stagger: 0.08, dist: 22});
+</script>
+</body>
+</html>
