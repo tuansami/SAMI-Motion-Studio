@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="_fonts/lora/400.css">
+<link rel="stylesheet" href="_fonts/lora/700.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S02 · kính lúp soi menu cũ, 4 tem lỗi đập xuống */
+  #pg { left: 110px; width: 860px; top: 640px; height: 900px; padding: 34px 40px; box-sizing: border-box; font-size: 21px; transform: rotate(-1.2deg); z-index: 5; }
+  #lp { position: absolute; z-index: 15; width: 340px; height: 340px; border-radius: 50%; overflow: hidden; border: 10px solid var(--ink); box-sizing: border-box;
+    box-shadow: 8px 8px 0 var(--pink), 0 30px 60px rgba(40, 30, 20, .3); background: #fff; }
+  #lp .old { left: 0; top: 0; box-shadow: none; transform-origin: 0 0; padding: 34px 40px; box-sizing: border-box; font-size: 21px; }
+  #lp:after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(70% 70% at 30% 25%, rgba(255, 255, 255, .45), rgba(255, 255, 255, 0) 60%); }
+  #hdl { position: absolute; z-index: 14; width: 46px; height: 190px; background: var(--ink); border-radius: 18px; transform-origin: 50% 0; }
+  .stamp { font-size: 38px; }
+  [data-ratio="16x9"] #pg { left: 960px; width: 840px; top: 80px; height: 920px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S02">
+  <div class="old" id="pg"></div>
+  <div id="hdl"></div>
+  <div id="lp"></div>
+  <div class="stamp" id="s0"></div><div class="stamp blue" id="s1"></div><div class="stamp" id="s2"></div><div class="stamp blue" id="s3"></div>
+  <div class="hd top" id="hd" data-copy="S02_t1"></div>
+  <div class="demo demopos" id="demo" data-copy="S01_demo"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'), {seed: 7});
+  const html = '<h1>SPEISEKARTE</h1><div class="sub">Restaurant Bếp Sen · Alle Preise in Euro inkl. MwSt.</div>' + R.oldRows(30).map(R.oldRow).join('');
+  const pg = $('#pg'); pg.innerHTML = html;
+  const lp = $('#lp'), cl = document.createElement('div'); cl.className = 'old'; cl.style.width = pg.offsetWidth + 'px'; cl.style.height = pg.offsetHeight + 'px'; cl.innerHTML = html; lp.appendChild(cl);
+  const rows = pg.querySelectorAll('.row'), K = 2.1, LR = 170;
+  const P0 = {x: pg.offsetLeft, y: pg.offsetTop};
+  const at = (r, sel, dx) => { const e = rows[r].querySelector(sel); return [e.offsetLeft + (dx == null ? e.offsetWidth / 2 : dx), rows[r].offsetTop + rows[r].offsetHeight / 2]; };
+  // điểm soi (toạ độ trong trang): dị ứng · giá · không ảnh · chính tả
+  const pts = [at(5, '.n'), at(9, '.p'), [pg.offsetWidth * 0.78, rows[16].offsetTop], at(0, '.n', 70)];
+  const names = R.list('S02_stamps');
+  const T = [1.0, 2.1, 3.2, 4.3], rot = [-8, 6, -5, 9];
+  // tem xếp ở lề phải trang (chỗ trống), ngang hàng dòng lỗi
+  names.forEach((n, i) => { const s = $('#s' + i); s.textContent = n; s.style.left = (P0.x + pg.offsetWidth - s.offsetWidth - 26) + 'px'; s.style.top = (P0.y + pts[i][1] - s.offsetHeight / 2 + (i === 2 ? 60 : 0)) + 'px'; });
+  const ks = [[0, pg.offsetWidth * 1.3, pg.offsetHeight * 1.1]];
+  pts.forEach((p, i) => { ks.push([T[i] - 0.25, p[0], p[1]]); ks.push([T[i] + 0.55, p[0], p[1]]); });
+  ks.push([5.3, pts[3][0], pts[3][1]]); ks.push([6.4, pg.offsetWidth * 1.45, pts[3][1] + 300]);
+  R.clock(tl, (t) => {
+    bg(t);
+    const [px, py] = R.keys(t, ks);
+    const cx = P0.x + px, cy = P0.y + py;
+    lp.style.left = (cx - LR) + 'px'; lp.style.top = (cy - LR) + 'px';
+    cl.style.transform = 'translate(' + (LR - 10 - px * K).toFixed(1) + 'px,' + (LR - 10 - py * K).toFixed(1) + 'px) scale(' + K + ')';
+    const h = $('#hdl'); h.style.left = (cx + 120) + 'px'; h.style.top = (cy + 120) + 'px'; h.style.transform = 'rotate(-45deg)';
+    T.forEach((t1, i) => R.stampAt($('#s' + i), t, t1, rot[i]));
+    pg.style.transform = 'rotate(-1.2deg) translateY(' + T.reduce((a, t1) => a + R.wob(t, t1 + 0.12, 6, 40), 0).toFixed(2) + 'px)';
+  });
+  R.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.06, dur: 0.6});
+</script>
+</body>
+</html>

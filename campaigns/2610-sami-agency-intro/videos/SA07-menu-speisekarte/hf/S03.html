@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="_fonts/bricolage-grotesque/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css">
+<link rel="stylesheet" href="_fonts/lora/400.css">
+<link rel="stylesheet" href="_fonts/lora/700.css">
+<link rel="stylesheet" href="hf/parts/riso.css">
+<style>
+  /* S03 · khách hỏi dồn dập (bong bóng tiếng Đức), trang lật sang trang 3: món lời nhất chìm nghỉm */
+  #stage { transform-origin: 0 0; position: absolute; z-index: 5; left: 190px; top: 700px; width: 700px; height: 840px; perspective: 2200px; }
+  .pp { position: absolute; inset: 0; padding: 30px 36px; box-sizing: border-box; font-size: 18px; backface-visibility: hidden; transform-origin: 0 50%; }
+  .pp .pn { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-style: italic; }
+  .bb { position: absolute; z-index: 16; white-space: nowrap; font: 600 30px/1 "IBM Plex Mono", monospace; color: var(--ink); background: #fff; padding: 18px 24px;
+    border: 3.5px solid var(--ink); border-radius: 30px; box-shadow: 6px 6px 0 var(--pink); transform-origin: 20% 100%; }
+  .bb:after { content: ''; position: absolute; left: 34px; bottom: -22px; border: 11px solid transparent; border-top: 13px solid var(--ink); border-left-width: 4px; }
+  #ring { position: absolute; z-index: 9; overflow: visible; pointer-events: none; }
+  #lab { position: absolute; z-index: 17; white-space: nowrap; font: 800 40px/1 "Bricolage Grotesque", sans-serif; color: #fff; background: var(--pink); padding: 10px 16px 12px; border-radius: 6px; box-shadow: 5px 5px 0 var(--ink); }
+  [data-ratio="16x9"] #stage { left: 1030px; top: 120px; width: 700px; height: 840px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="S03">
+  <div id="stage"><div class="old pp" id="p3"></div><div class="old pp" id="p1"></div></div>
+  <svg id="ring"><ellipse id="el" fill="none" stroke="#FF4F9A" stroke-width="7" stroke-linecap="round"/></svg>
+  <div id="lab">món lời nhất ↓</div>
+  <div id="bbs"></div>
+  <div class="hd top" id="hd" data-copy="S03_t1"></div>
+  <div class="demo demopos" id="demo" data-copy="S01_demo"></div>
+</div>
+<script src="hf/parts/riso.js"></script>
+<script>
+  const S = window.SAMI, R = window.RS, tl = S.timeline(), $ = R.$;
+  const bg = R.bg($('#root'), {seed: 14});
+  const all = R.oldRows(80);
+  $('#p1').innerHTML = '<h1>SPEISEKARTE</h1><div class="sub">Restaurant Bếp Sen</div>' + all.slice(0, 27).map(R.oldRow).join('') + '<div class="pn">- 1 -</div>';
+  const p3 = all.slice(54, 81); p3[8] = {no: 63, nm: 'Phở Sen Spezial (Rinderbrühe 12 Std.)', pr: '15,90'};
+  $('#p3').innerHTML = p3.map(R.oldRow).join('') + '<div class="pn">- 3 -</div>';
+  const st = $('#stage'), hot = $('#p3').querySelectorAll('.row')[8];
+  const qs = R.list('S03_qs');
+  const pos = S.pick({'16:9': [[1000, 210], [1420, 330], [960, 560], [1380, 700], [1080, 860]], default: [[90, 660], [540, 800], [140, 1010], [470, 1190], [180, 1380]]});
+  const tq = [0.5, 0.95, 1.4, 1.85, 2.3];
+  qs.forEach((q, i) => { const b = document.createElement('div'); b.className = 'bb'; b.textContent = q; b.style.left = pos[i][0] + 'px'; b.style.top = pos[i][1] + 'px'; $('#bbs').appendChild(b); });
+  const bbs = document.querySelectorAll('.bb');
+  // vòng khoanh quanh dòng món chủ lực (trang 3)
+  const rx = st.offsetLeft + 36 + hot.querySelector('.n').offsetWidth / 2, ry = st.offsetTop + hot.offsetTop + hot.offsetHeight / 2;
+  const ew = hot.querySelector('.n').offsetWidth / 2 + 34, eh = 36;
+  const svg = $('#ring'); svg.style.left = '0px'; svg.style.top = '0px'; svg.setAttribute('width', S.w); svg.setAttribute('height', S.h);
+  const el = $('#el'); el.setAttribute('cx', rx); el.setAttribute('cy', ry); el.setAttribute('rx', ew); el.setAttribute('ry', eh);
+  el.setAttribute('transform', 'rotate(-3 ' + rx + ' ' + ry + ')');
+  const LEN = Math.PI * (3 * (ew + eh) - Math.sqrt((3 * ew + eh) * (ew + 3 * eh))) * 1.06;
+  el.style.strokeDasharray = LEN; $('#lab').style.left = (rx - 120) + 'px'; $('#lab').style.top = (ry - eh - 150) + 'px';
+  const tF = 3.0, tR = 4.1;
+  R.clock(tl, (t) => {
+    bg(t);
+    bbs.forEach((b, i) => {
+      const u = R.E(t, tq[i], tq[i] + 0.25), out = R.E(t, tF - 0.1, tF + 0.4);
+      b.style.opacity = (R.L(t, tq[i], tq[i] + 0.08) * (1 - out)).toFixed(3);
+      b.style.transform = 'scale(' + (0.4 + 0.6 * u + R.wob(t, tq[i] + 0.2, 0.08, 26)).toFixed(4) + ') rotate(' + ((i % 2 ? 3 : -3) + Math.sin(t * 2 + i) * 1.2).toFixed(2) + 'deg)';
+    });
+    // rung trang khi bị hỏi dồn
+    const sh = tq.reduce((a, t1) => a + R.wob(t, t1 + 0.05, 5, 36), 0);
+    const f = R.E(t, tF, tF + 0.7);
+    $('#p1').style.transform = 'rotateY(' + (-178 * f).toFixed(2) + 'deg)';
+    $('#p1').style.opacity = f > 0.5 ? 0 : 1;
+    const z = 1 + 0.45 * R.E(t, tR - 0.6, tR + 0.4);
+    const zo = 'translate(' + rx + 'px,' + ry + 'px) scale(' + z.toFixed(4) + ') translate(' + (-rx) + 'px,' + (-ry) + 'px)';
+    const lx = rx - st.offsetLeft, ly = ry - st.offsetTop;
+    st.style.transform = 'translateX(' + sh.toFixed(2) + 'px) translate(' + lx + 'px,' + ly + 'px) scale(' + z.toFixed(4) + ') translate(' + (-lx) + 'px,' + (-ly) + 'px)';
+    svg.style.transform = zo; svg.style.transformOrigin = '0 0';
+    el.style.opacity = t > tR ? 1 : 0;
+    el.style.strokeDashoffset = (LEN * (1 - R.E(t, tR, tR + 0.6))).toFixed(1);
+    $('#lab').style.opacity = R.L(t, tR + 0.4, tR + 0.6);
+    $('#lab').style.transform = 'translateY(' + (12 * (1 - R.E(t, tR + 0.4, tR + 0.8))).toFixed(1) + 'px)';
+    hot.style.background = 'rgba(255, 210, 63, ' + (0.5 * R.E(t, tR + 0.3, tR + 0.8)).toFixed(3) + ')';
+  });
+  R.rise(tl, S.words($('#hd')), 0.5, {stagger: 0.06, dur: 0.6});
+</script>
+</body>
+</html>
