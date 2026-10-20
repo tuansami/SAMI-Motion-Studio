@@ -1,0 +1,65 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S07 · Rà cụm tìm kiếm mỗi tuần: vạch quét qua 7 cụm; cụm tốt ✓ ở lại, cụm vô ích bị gạch, đóng tem, trượt xuống DANH SÁCH PHỦ ĐỊNH. */
+  .pan { position: absolute; z-index: 12; border-radius: 18px; background: var(--panel); box-shadow: inset 0 0 0 1.5px var(--line), 0 30px 70px rgba(0,0,0,.45); }
+  .pan .ph { position: absolute; left: 26px; right: 26px; top: 20px; display: flex; justify-content: space-between; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 21px; letter-spacing: .12em; color: var(--steel); }
+  .pan.neg { box-shadow: inset 0 0 0 1.5px rgba(255,90,95,.5), 0 30px 70px rgba(0,0,0,.45); }
+  .pan.neg .ph { color: var(--red); }
+  .rw { position: absolute; z-index: 14; height: 66px; display: flex; align-items: center; gap: 18px; box-sizing: border-box; padding: 0 20px; border-radius: 12px; font-family: "IBM Plex Mono"; font-weight: 500; font-size: 29px; color: var(--ink); white-space: nowrap; }
+  .rw i { flex: none; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-style: normal; font-weight: 700; font-size: 24px; box-shadow: inset 0 0 0 2px rgba(143,163,184,.4); color: transparent; }
+  .rw.ok i { background: rgba(8,221,164,.15); box-shadow: inset 0 0 0 2px var(--mint); color: var(--mint); }
+  .rw.ng { background: rgba(255,90,95,.08); }
+  .rw.ng i { background: rgba(255,90,95,.16); box-shadow: inset 0 0 0 2px var(--red); color: var(--red); }
+  .rw.ng span { color: rgba(238,242,246,.6); text-decoration: line-through; text-decoration-color: var(--red); text-decoration-thickness: 3px; }
+  .rw em { margin-left: auto; font-style: normal; font-weight: 700; font-size: 19px; letter-spacing: .12em; color: var(--red); padding: 4px 10px; border: 2.5px solid var(--red); border-radius: 6px; opacity: 0; }
+  .scan { position: absolute; z-index: 13; height: 66px; border-radius: 12px; background: linear-gradient(90deg, transparent, rgba(8,221,164,.2), transparent); box-shadow: 0 0 0 1.5px rgba(8,221,164,.35); opacity: 0; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S07"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.board(tl, stage, {sec: '§07 · RÀ SOÁT', seed: 19});
+  const R = K.list('S07_rows').map((r) => ({good: r[0] === '+', t: r.slice(1)}));
+  const A = P ? {x: 90, y: 250, w: 900, h: 640} : {x: 960, y: 70, w: 860, h: 620};
+  const B = P ? {x: 90, y: 920, w: 900, h: 290} : {x: 960, y: 720, w: 860, h: 290};
+  const pa = K.el('div', 'pan', '<div class="ph"><span>CỤM KHÁCH ĐÃ GÕ · TUẦN NÀY</span><span>7</span></div>', stage);
+  pa.style.cssText += 'left:' + A.x + 'px;top:' + A.y + 'px;width:' + A.w + 'px;height:' + A.h + 'px';
+  const pb = K.el('div', 'pan neg', '<div class="ph"><span>DANH SÁCH PHỦ ĐỊNH</span><span>−</span></div>', stage);
+  pb.style.cssText += 'left:' + B.x + 'px;top:' + B.y + 'px;width:' + B.w + 'px;height:' + B.h + 'px';
+  tl.fromTo([pa, pb], {opacity: 0, y: 24}, {opacity: 1, y: 0, duration: 0.6, stagger: 0.15}, 0.1);
+  const RY = (i) => A.y + 70 + i * 78, sc = K.el('div', 'scan', null, stage);
+  sc.style.left = (A.x + 16) + 'px'; sc.style.width = (A.w - 32) + 'px';
+  const s0 = K.b(1.4), dt = 0.42;
+  tl.fromTo(sc, {top: RY(0), opacity: 1}, {top: RY(6), duration: dt * 6, ease: 'none'}, s0);
+  tl.to(sc, {opacity: 0, duration: 0.2}, s0 + dt * 6 + 0.2);
+  let nb = 0, ng = 0;
+  const mv = K.b(6.0);
+  R.forEach((r, i) => {
+    const e = K.el('div', 'rw', '<i>' + (r.good ? '✓' : '✗') + '</i><span>' + r.t + '</span><em>PHỦ ĐỊNH</em>', stage);
+    e.style.left = (A.x + 16) + 'px'; e.style.width = (A.w - 32) + 'px'; e.style.top = RY(i) + 'px';
+    S.arrive(tl, e, 0.4 + i * 0.07, {dist: 14, blur: 6});
+    const at = s0 + i * dt;
+    tl.set(e, {className: 'rw ' + (r.good ? 'ok' : 'ng')}, at + 0.12);
+    tl.fromTo(e.querySelector('i'), {scale: 1.5}, {scale: 1, duration: 0.25}, at + 0.12);
+    if (!r.good) {
+      const em = e.querySelector('em');
+      tl.fromTo(em, {opacity: 0, scale: 1.8}, {opacity: 1, scale: 1, duration: 0.25, ease: 'power3.in'}, at + 0.35);
+      tl.to(e, {top: B.y + 70 + nb * 70, duration: 0.7}, mv + nb * 0.2); nb++;
+    } else {
+      tl.to(e, {top: RY(ng), duration: 0.6}, mv + 0.5); ng++;
+    }
+  });
+  const mh = K.el('div', 'note', 'MINH HỌA', stage); mh.style.cssText += P ? 'right:90px;top:1222px' : 'right:100px;top:1022px';
+  tl.fromTo(mh, {opacity: 0}, {opacity: 1, duration: 0.5}, K.b(2));
+  const head = K.text(stage, 'S07_head', 'hd', {P: {top: 1280}, L: {top: 330}});
+  const sub = K.text(stage, 'S07_sub', 'sub', {P: {top: 1462}, L: {top: 560}});
+  if (!P) K.below(sub, head, 30, tl);
+  K.say(tl, head, K.b(0.5), {stagger: 0.06});
+  K.say(tl, sub, K.b(5.2), {stagger: 0.05});
+</script>
+</body></html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S11 · CTA: ống dòng tiền cuối cùng chảy thẳng vào nút WhatsApp (bong bóng chat vẽ bằng code, không logo), vòng sóng. */
+  #note { position: absolute; z-index: 20; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 24px; letter-spacing: .1em; color: var(--ink2); white-space: nowrap; }
+  #note i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--mint); margin-right: 12px; box-shadow: 0 0 10px var(--mint); }
+  .sub { color: var(--ink); font-size: 44px; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S11"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.board(tl, stage, {sec: '§11 · LIÊN HỆ', seed: 37, mint: 0.3});
+  const wa = K.el('div', 'wa', K.bubble + '<div><small>WHATSAPP</small><span>' + S.html('S11_wa') + '</span></div>', stage);
+  const note = K.el('div', '', '<i></i>' + S.html('S11_note'), stage); note.id = 'note';
+  const WY = P ? 880 : 640;
+  if (P) { wa.style.left = '50%'; wa.style.top = WY + 'px'; wa.style.transform = 'translateX(-50%)'; note.style.left = '0'; note.style.right = '0'; note.style.textAlign = 'center'; note.style.top = (WY + 160) + 'px'; }
+  else { wa.style.left = '1080px'; wa.style.top = WY + 'px'; note.style.left = '1090px'; note.style.top = (WY + 162) + 'px'; }
+  const r0 = stage.getBoundingClientRect(), k = S.w / r0.width, r = wa.getBoundingClientRect();
+  const W = {x: (r.left - r0.left) * k, y: (r.top - r0.top) * k, w: r.width * k, h: r.height * k};
+  const svg = K.svg(stage, 8);
+  const tgt = [W.x + 66, W.y + 6];
+  const d = P ? 'M-40 560 C 300 560, ' + tgt[0] + ' 560, ' + tgt[0] + ' ' + tgt[1] : 'M' + (S.w + 40) + ' 250 C 1500 250, ' + tgt[0] + ' 250, ' + tgt[0] + ' ' + tgt[1];
+  const pop = K.b(3.2);
+  K.pipe(svg, d, {w: 16, at: K.b(1.2), dur: pop - K.b(1.2) - 0.1});
+  K.flow(tl);
+  tl.fromTo(wa, {opacity: 0, scale: 0.6}, {opacity: 1, scale: 1, duration: 0.6}, pop);
+  for (let i = 0; i < 3; i++) {
+    const v = K.el('div', 'wv', null, stage); v.style.cssText += 'left:' + W.x + 'px;top:' + W.y + 'px;width:' + W.w + 'px;height:' + W.h + 'px';
+    tl.fromTo(v, {opacity: 0.8, scale: 1}, {opacity: 0, scale: 1.35, duration: 1.3, ease: 'power1.out', immediateRender: false}, pop + 0.5 + i * 1.2);
+  }
+  S.arrive(tl, note, pop + 0.6, {dist: 10});
+  const head = K.text(stage, 'S11_head', 'hd', {P: {top: 280}, L: {top: 170, width: '880px'}});
+  const sub = K.text(stage, 'S11_sub', 'sub', {P: {top: 1180}, L: {top: 430, width: '820px'}});
+  if (!P) K.below(sub, head, 30, tl);
+  K.say(tl, head, K.b(0.3), {stagger: 0.06});
+  K.say(tl, sub, K.b(2.6), {stagger: 0.05});
+</script>
+</body></html>

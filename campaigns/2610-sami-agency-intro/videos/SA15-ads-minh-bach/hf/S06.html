@@ -1,0 +1,69 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S06 · Van tuần: ống góp cấp 7 cột Mo–So; tay van cột Mo quay đóng, cột cạn, tem RUHETAG · TẮT. */
+  .tank { position: absolute; z-index: 12; border-radius: 22px; background: rgba(12,18,26,.9); box-shadow: inset 0 0 0 2px rgba(190,215,235,.32); overflow: hidden; }
+  .tank .lq { position: absolute; left: 6px; right: 6px; bottom: 6px; border-radius: 16px; background: linear-gradient(180deg, rgba(8,221,164,.95), rgba(8,221,164,.55)); box-shadow: 0 0 30px rgba(8,221,164,.35); transform-origin: 50% 100%; }
+  .tank .lq:before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; border-radius: 3px; background: rgba(255,255,255,.7); }
+  .tank .bb { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.75); }
+  .day { position: absolute; z-index: 12; font-family: "IBM Plex Mono"; font-weight: 700; font-size: 28px; letter-spacing: .08em; color: var(--ink); text-align: center; }
+  .day.off { color: var(--amber); }
+  .wheel { position: absolute; z-index: 14; width: 70px; height: 70px; margin: -35px; }
+  .stamp { position: absolute; z-index: 25; padding: 12px 22px; border-radius: 10px; border: 4px solid var(--amber); color: var(--amber); font-family: "IBM Plex Mono"; font-weight: 700; font-size: 30px; letter-spacing: .12em; white-space: nowrap; background: rgba(10,14,20,.88); }
+  .ttl { position: absolute; z-index: 12; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 22px; letter-spacing: .14em; color: var(--steel); white-space: nowrap; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S06"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.board(tl, stage, {sec: '§06 · LỊCH CHẠY', seed: 17});
+  const D = ['MO', 'DI', 'MI', 'DO', 'FR', 'SA', 'SO'];
+  const L = P ? {x0: 150, dx: 130, my: 400, ty: 520, th: 470, tw: 88, ly: 1010, ttl: [90, 300]} : {x0: 1010, dx: 128, my: 200, ty: 310, th: 470, tw: 86, ly: 800, ttl: [960, 110]};
+  const ttl = K.el('div', 'ttl', 'LỊCH NGÂN SÁCH · THEO GIỜ MỞ CỬA', stage); ttl.style.left = L.ttl[0] + 'px'; ttl.style.top = L.ttl[1] + 'px';
+  tl.fromTo(ttl, {opacity: 0}, {opacity: 1, duration: 0.5}, K.b(0.3));
+  const svg = K.svg(stage, 10), xe = L.x0 + L.dx * 6;
+  // ống góp + ống nhánh
+  K.pipe(svg, 'M-40 ' + L.my + ' L' + (xe + 20) + ' ' + L.my, {w: 18, at: K.b(0.4), dur: 1.0});
+  const mo = K.b(3.0), drain = [mo + 0.5, mo + 1.6];
+  const tanks = D.map((d, i) => {
+    const x = L.x0 + L.dx * i;
+    K.pipe(svg, 'M' + x + ' ' + L.my + ' L' + x + ' ' + (L.ty + 6), {w: 12, at: K.b(1.2) + i * 0.08, dur: 0.4,
+      empty: i === 0 ? (t) => K.ramp(t, mo + 0.2, mo + 0.7) : null});
+    const tk = K.el('div', 'tank', '<div class="lq"></div>', stage);
+    tk.style.cssText += 'left:' + (x - L.tw / 2) + 'px;top:' + L.ty + 'px;width:' + L.tw + 'px;height:' + L.th + 'px';
+    const lq = tk.firstChild; lq.style.height = (L.th - 12) + 'px';
+    const lvl = 0.62 + 0.3 * S.rnd(i * 4.1 + 2);
+    tl.fromTo(lq, {scaleY: 0}, {scaleY: lvl, duration: 1.2}, K.b(1.6) + i * 0.08);
+    if (i === 0) tl.to(lq, {scaleY: 0, duration: drain[1] - drain[0], ease: 'power2.in'}, drain[0]);
+    for (let k = 0; k < 4; k++) { const b = K.el('i', 'bb', null, tk); b.style.left = (14 + S.rnd(i * 7 + k) * (L.tw - 36)) + 'px';
+      tl.fromTo(b, {y: L.th, opacity: 0}, {y: L.th * (1 - lvl) + 20, opacity: 0.8, duration: 1.6, ease: 'none', repeat: 3, delay: 0, immediateRender: false}, K.b(2.4) + k * 0.4 + i * 0.05);
+      if (i === 0) tl.to(b, {opacity: 0, duration: 0.2}, drain[0]); }
+    const dl = K.el('div', 'day' + (i === 0 ? '' : ''), d, stage); dl.style.cssText += 'left:' + (x - 50) + 'px;width:100px;top:' + (L.ly + 6) + 'px';
+    if (i === 0) tl.set(dl, {className: 'day off'}, mo + 0.3);
+    // tay van
+    const wh = K.el('div', 'wheel', '<svg viewBox="0 0 70 70"><circle cx="35" cy="35" r="27" fill="none" stroke="' + (i === 0 ? '#F5A524' : '#8FA3B8') + '" stroke-width="5"/><path d="M35 8 V62 M8 35 H62" stroke="' + (i === 0 ? '#F5A524' : '#8FA3B8') + '" stroke-width="5" stroke-linecap="round"/><circle cx="35" cy="35" r="7" fill="#0A0E14" stroke="' + (i === 0 ? '#F5A524' : '#8FA3B8') + '" stroke-width="4"/></svg>', stage);
+    wh.style.left = x + 'px'; wh.style.top = ((L.my + L.ty) / 2) + 'px';
+    if (i === 0) tl.fromTo(wh, {rotation: 0}, {rotation: 270, duration: 0.7}, mo);
+    return tk;
+  });
+  tl.fromTo(K.$$('.wheel'), {opacity: 0, scale: 0.6}, {opacity: 1, scale: 1, duration: 0.4, stagger: 0.06}, K.b(1.0));
+  tl.fromTo(K.$$('.day'), {opacity: 0}, {opacity: 1, duration: 0.4, stagger: 0.05}, K.b(1.4));
+  tl.to(tanks[0], {boxShadow: 'inset 0 0 0 2px rgba(245,165,36,.8)', duration: 0.3}, mo + 0.3);
+  // tem
+  const st = K.el('div', 'stamp', 'RUHETAG · TẮT', stage);
+  st.style.left = (L.x0 - 60) + 'px'; st.style.top = (L.ty + L.th * 0.42) + 'px';
+  tl.fromTo(st, {opacity: 0, scale: 2.2, rotation: -14}, {opacity: 1, scale: 1, rotation: -8, duration: 0.35, ease: 'power3.in'}, drain[1] - 0.2);
+  const mh = K.el('div', 'note', 'MINH HỌA', stage); mh.style.cssText += P ? 'right:90px;top:1080px' : 'right:100px;top:880px';
+  tl.fromTo(mh, {opacity: 0}, {opacity: 1, duration: 0.5}, K.b(2));
+  K.flow(tl);
+  const head = K.text(stage, 'S06_head', 'hd', {P: {top: 1220}, L: {top: 330}});
+  const sub = K.text(stage, 'S06_sub', 'sub', {P: {top: 1410}, L: {top: 540}});
+  if (!P) K.below(sub, head, 30, tl);
+  K.say(tl, head, K.b(0.5), {stagger: 0.06});
+  K.say(tl, sub, K.b(4.6), {stagger: 0.05});
+</script>
+</body></html>

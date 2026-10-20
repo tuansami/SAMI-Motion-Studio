@@ -1,0 +1,47 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S12 · End card SAMI: 4 ống mint hội tụ vào logo, vòng sáng lan, lưới mờ đi; câu chốt, tagline, WhatsApp + URL. */
+  #stage { background: radial-gradient(70% 45% at 50% 40%, rgba(118,103,254,.34), transparent 70%), radial-gradient(60% 40% at 50% 80%, rgba(8,221,164,.16), transparent 70%), #0C0628; }
+  #lw { position: absolute; left: 50%; top: 520px; width: 760px; height: 250px; margin-left: -330px; z-index: 12; }
+  #logo { position: absolute; left: 0; top: 0; width: 100%; clip-path: polygon(0 0, 100% 0, 100% 47.5%, 40% 47.5%, 40% 100%, 0 100%); }
+  #claim { top: 820px; font-size: 66px; line-height: 1.18; }
+  #tag { position: absolute; left: 0; right: 0; top: 1110px; text-align: center; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 25px; letter-spacing: .04em; color: rgba(255,255,255,.62); z-index: 12; }
+  #ct { position: absolute; left: 0; right: 0; top: 1200px; display: flex; flex-direction: column; align-items: center; gap: 14px; font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 50px; color: #fff; white-space: nowrap; z-index: 12; }
+  #ct .r { display: flex; align-items: center; gap: 18px; } #ct .u { font-weight: 700; font-size: 40px; color: var(--mint); }
+  #ct i { width: 22px; height: 22px; border-radius: 50%; background: var(--wa); box-shadow: 0 0 16px var(--wa); }
+  #ring { position: absolute; left: 50%; top: 628px; width: 900px; height: 900px; margin: -450px; border-radius: 50%; border: 2px solid rgba(8,221,164,.4); opacity: 0; }
+  [data-ratio="16x9"] #lw { top: 190px; width: 620px; height: 204px; margin-left: -270px; }
+  [data-ratio="16x9"] #claim { top: 440px; left: 200px; right: 200px; width: auto; text-align: center; font-size: 60px; }
+  [data-ratio="16x9"] #tag { top: 680px; } [data-ratio="16x9"] #ct { top: 760px; } [data-ratio="16x9"] #ring { top: 288px; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S12"><div id="stage" class="clip">
+  <div id="ring"></div>
+  <div id="lw"><img id="logo" src="public/img/logo-white.svg"></div>
+  <div id="claim" class="hd" data-copy="S12_claim"></div>
+  <div id="tag" data-copy="S12_tag"></div>
+  <div id="ct"><span class="r"><i></i><span data-copy="S12_contact"></span></span><span class="u" data-copy="S12_url"></span></div>
+</div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  const g = K.el('div', 'grid', null, stage); tl.fromTo(g, {opacity: 1}, {opacity: 0.25, duration: 1.2}, 0);
+  K.dust(tl, stage, 26, 131, {color: '#08DDA4', op: 0.3, rise: 140});
+  const LY = P ? 628 : 288, svg = K.svg(stage, 6);
+  // 4 ống hội tụ vào tâm logo
+  const C = [S.w / 2, LY], ends = P ? [[-40, 300], [S.w + 40, 420], [-40, 980], [S.w + 40, 1100]] : [[-40, 120], [S.w + 40, 160], [-40, 560], [S.w + 40, 600]];
+  ends.forEach((e, i) => K.pipe(svg, K.bandH(e[0], e[1], C[0] + (e[0] < 0 ? -120 : 120), C[1]), {w: 10, at: 0.0 + i * 0.06, dur: 0.6,
+    show: (t) => 1 - K.clamp((t - 0.75) / 0.35, 0, 1)}));
+  K.flow(tl);
+  tl.fromTo('#logo', {opacity: 0, scale: 0.86, filter: 'blur(14px)'}, {opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.8}, 0.6);
+  tl.fromTo('#ring', {opacity: 0.9, scale: 0.4}, {opacity: 0, scale: 1.2, duration: 1.5, ease: 'power1.out', immediateRender: false}, 0.65);
+  K.say(tl, '#claim', 1.0, {stagger: 0.06});
+  S.arrive(tl, '#tag', 1.7, {dist: 18});
+  S.arrive(tl, '#ct', 2.0, {dist: 18});
+  tl.fromTo('#lw', {y: 0}, {y: -8, duration: S.dur, ease: 'none'}, 0);
+</script>
+</body></html>

@@ -1,0 +1,60 @@
+/* SA15 · "Engineering Briefing Board": bảng kỹ thuật than-xanh, lưới bản vẽ, ống kính dòng tiền, nhãn mono. */
+:root {
+  --ink: #EEF2F6; --ink2: rgba(238,242,246,.64); --ink3: rgba(238,242,246,.42); --mint: #08DDA4; --amber: #F5A524; --red: #FF5A5F;
+  --steel: #8FA3B8; --line: rgba(143,163,184,.32); --violet: #7667FE; --wa: #25D366; --panel: rgba(16,23,33,.88);
+}
+#stage { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(80% 60% at 50% 42%, #131C29 0%, #0A0E14 58%, #06080C 100%); }
+.grid { position: absolute; inset: -160px; pointer-events: none;
+  background-image: linear-gradient(rgba(143,163,184,.10) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(143,163,184,.10) 1.5px, transparent 1.5px),
+    linear-gradient(rgba(143,163,184,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(143,163,184,.045) 1px, transparent 1px);
+  background-size: 150px 150px, 150px 150px, 30px 30px, 30px 30px;
+  -webkit-mask-image: radial-gradient(70% 60% at 50% 45%, #000 35%, transparent 90%); mask-image: radial-gradient(70% 60% at 50% 45%, #000 35%, transparent 90%); }
+.rim { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .45; pointer-events: none; }
+.crop { position: absolute; width: 46px; height: 46px; border: 0 solid rgba(143,163,184,.5); z-index: 41; }
+.tblock { position: absolute; z-index: 41; font-family: "IBM Plex Mono"; font-weight: 500; font-size: 20px; letter-spacing: .14em; color: rgba(143,163,184,.7); white-space: nowrap; }
+.tblock b { color: var(--mint); font-weight: 600; }
+
+/* ── chữ kể chuyện ── */
+.hd { position: absolute; left: 72px; right: 72px; font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 72px; line-height: 1.2; letter-spacing: -.025em; color: var(--ink); text-wrap: balance; text-align: center; z-index: 30; }
+.hd .w, .sub .w { padding-bottom: .08em; }
+.hd em.hl, .sub em.hl, .hd em.hl .w, .sub em.hl .w { font-style: normal; background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--mint); }
+.sub { position: absolute; left: 72px; right: 72px; font-family: "Be Vietnam Pro"; font-weight: 500; font-size: 42px; line-height: 1.32; color: var(--ink2); text-wrap: balance; text-align: center; z-index: 30; }
+.shadow { text-shadow: 0 4px 30px rgba(0,0,0,.7); }
+[data-ratio="16x9"] .hd, [data-ratio="16x9"] .sub { left: 100px; right: auto; width: 760px; text-align: left; }
+[data-ratio="16x9"] .hd { font-size: 64px; }
+.kick { position: absolute; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 26px; letter-spacing: .14em; color: var(--mint); z-index: 30; white-space: nowrap; }
+.note { position: absolute; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 22px; letter-spacing: .12em; color: var(--ink3); z-index: 40; white-space: nowrap; }
+.note:before { content: ""; display: inline-block; width: 10px; height: 10px; border: 2px solid var(--ink3); margin-right: 10px; vertical-align: 1px; }
+.mono { font-family: "IBM Plex Mono"; font-weight: 600; letter-spacing: .08em; }
+
+/* ── svg toàn khung ── */
+svg.full { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+
+/* ── thẻ nút (Sankey) ── */
+.node { position: absolute; z-index: 20; box-sizing: border-box; padding: 14px 20px 16px; border-radius: 14px; background: var(--panel); box-shadow: inset 0 0 0 1.5px var(--line), 0 24px 60px rgba(0,0,0,.45); }
+.node small { display: block; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 19px; letter-spacing: .12em; color: var(--steel); margin-bottom: 6px; white-space: nowrap; }
+.node b { display: block; font-family: "Be Vietnam Pro"; font-weight: 700; font-size: 30px; line-height: 1.22; color: var(--ink); }
+.node.on { box-shadow: inset 0 0 0 2px var(--mint), 0 0 34px rgba(8,221,164,.25), 0 24px 60px rgba(0,0,0,.45); }
+.node .port { position: absolute; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: #0A0E14; box-shadow: inset 0 0 0 2.5px var(--mint); }
+.colh { position: absolute; z-index: 20; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 20px; letter-spacing: .14em; color: var(--steel); white-space: nowrap; }
+.colh:after { content: ""; display: block; height: 1.5px; margin-top: 10px; background: linear-gradient(90deg, var(--line), transparent); }
+
+/* ── nhật ký lỗi ── */
+.log { position: absolute; z-index: 20; display: flex; align-items: center; gap: 18px; box-sizing: border-box; padding: 18px 24px; border-radius: 12px; background: rgba(20,14,16,.9); box-shadow: inset 0 0 0 1.5px rgba(255,90,95,.45), 0 20px 50px rgba(0,0,0,.45); font-family: "Be Vietnam Pro"; font-weight: 600; font-size: 34px; color: var(--ink); }
+.log .ix { font-family: "IBM Plex Mono"; font-weight: 600; font-size: 20px; letter-spacing: .1em; color: var(--red); flex: none; }
+.log i { flex: none; width: 46px; height: 46px; border-radius: 10px; background: rgba(255,90,95,.16); box-shadow: inset 0 0 0 2px var(--red); display: flex; align-items: center; justify-content: center; font-style: normal; font-family: "IBM Plex Mono"; font-weight: 700; font-size: 28px; color: var(--red); }
+.log.am { box-shadow: inset 0 0 0 1.5px rgba(245,165,36,.5), 0 20px 50px rgba(0,0,0,.45); background: rgba(22,18,10,.9); }
+.log.am i { background: rgba(245,165,36,.14); box-shadow: inset 0 0 0 2px var(--amber); color: var(--amber); }
+.log.am .ix { color: var(--amber); }
+.caret { display: inline-block; width: 4px; height: 1em; background: var(--ink); vertical-align: -.12em; margin-left: 6px; }
+
+/* ── con trỏ + chạm ── */
+.cursor { position: absolute; left: 0; top: 0; width: 46px; height: 46px; z-index: 60; filter: drop-shadow(0 6px 10px rgba(0,0,0,.45)); pointer-events: none; }
+.cursor svg { width: 100%; height: 100%; overflow: visible; }
+.ripple { position: absolute; width: 110px; height: 110px; margin: -55px 0 0 -55px; border-radius: 50%; border: 4px solid var(--mint); z-index: 59; opacity: 0; }
+
+/* ── nút WhatsApp ── */
+.wa { position: absolute; z-index: 20; display: flex; align-items: center; gap: 22px; padding: 26px 46px 26px 30px; border-radius: 99px; background: var(--wa); color: #06281A; font-family: "Be Vietnam Pro"; font-weight: 800; font-size: 50px; white-space: nowrap; box-shadow: 0 24px 60px rgba(37,211,102,.35); }
+.wa svg { width: 70px; height: 70px; flex: none; }
+.wa small { display: block; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 20px; letter-spacing: .14em; color: rgba(6,40,26,.75); margin-bottom: 2px; }
+.wv { position: absolute; z-index: 19; border-radius: 99px; border: 3px solid var(--wa); opacity: 0; }

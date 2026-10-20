@@ -1,0 +1,53 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S03 · Chữ ký: vết nứt mint chạy trên hộp đen → vỡ ~70 mảnh → lộ hộp kính; dòng tiền chảy từ khe xuống, tách 4 ống có nhãn, chảy ra khỏi khung. */
+  .tag { position: absolute; z-index: 22; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 22px; letter-spacing: .12em; color: var(--mint); padding: 6px 12px; border-radius: 8px; background: rgba(8,14,20,.85); box-shadow: inset 0 0 0 1.5px rgba(8,221,164,.5); white-space: nowrap; }
+  #flash { position: absolute; width: 1400px; height: 1400px; margin: -700px; border-radius: 50%; background: radial-gradient(circle, rgba(220,255,240,.55), rgba(8,221,164,.18) 25%, transparent 60%); opacity: 0; z-index: 12; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S03"><div id="stage" class="clip"><div id="flash"></div></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.board(tl, stage, {sec: '§03 · HỘP KÍNH', seed: 7, mint: 0.3});
+  const A = P ? {x: 540, y: 470, s: 210} : {x: 1330, y: 330, s: 190};   // vị trí cuối S02
+  const BX = P ? {x: 540, y: 600, s: 270} : {x: 1170, y: 500, s: 250};
+  const svg = K.svg(stage, 10), cam = K.sv('g', {}, svg), box = K.box(cam, BX.x, BX.y, BX.s, {seed: 11, nx: 4, ny: 4});
+  const F = K.$('#flash'); F.style.left = BX.x + 'px'; F.style.top = (BX.y - BX.s * 0.2) + 'px';
+  // ống: từ khe xuống điểm nối, rồi 4 ống ra mặt phải, chảy ra khỏi khung
+  const sl = box.slot, J = [BX.x, BX.y + BX.s * 0.28];
+  const inner = K.pipe(box.inner, 'M' + sl[0] + ' ' + (sl[1] + 6) + ' L' + J[0] + ' ' + J[1], {w: 16, at: K.b(4.0), dur: 0.7});
+  const ys = P ? [360, 540, 720, 900] : [260, 440, 620, 800], X1 = S.w + 60;
+  const outs = ys.map((y, i) => K.pipe(box.inner, K.bandH(J[0], J[1], X1, y), {w: 12, at: K.b(5.0) + i * 0.18, dur: 1.3, speed: 110}));
+  K.flow(tl);
+  const t3 = K.b(3.0), t2 = K.b(1.4);
+  K.tick(tl, (t) => {
+    box.q._op = t < t2 ? 0.55 + 0.45 * Math.abs(Math.cos(t * 2.6)) : 1;
+    box.update(K.lin(t, t2, t3), K.clamp((t - t3) / 1.5, 0, 1));
+    // camera: từ vị trí S02 tới vị trí mới
+    const p = K.ramp(t, 0.1, 1.3), k = K.lerp(A.s / BX.s, 1, p);
+    const tx = K.lerp(A.x - k * BX.x, 0, p), ty = K.lerp(A.y - k * BX.y, 0, p);
+    cam.setAttribute('transform', 'translate(' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ') scale(' + k.toFixed(4) + ')');
+    box.glass.style.opacity = t < t3 ? 0 : 1;
+  });
+  tl.fromTo(F, {opacity: 0, scale: 0.4}, {opacity: 1, scale: 1, duration: 0.18, ease: 'power2.out'}, t3);
+  tl.to(F, {opacity: 0, duration: 1.0}, t3 + 0.18);
+  tl.fromTo(svg, {x: 0}, {x: 9, duration: 0.04, yoyo: true, repeat: 7, ease: 'none', immediateRender: false}, t3);
+  // nhãn ống
+  ys.forEach((y, i) => {
+    const tg = K.el('div', 'tag', 'NHÓM 0' + (i + 1), stage), x = P ? 860 : 1560;
+    const pt = outs[i].liq.getPointAtLength(outs[i].L * (P ? 0.72 : 0.62));
+    tg.style.left = (pt.x - 60) + 'px'; tg.style.top = (pt.y - 52) + 'px';
+    tl.fromTo(tg, {opacity: 0, y: 10}, {opacity: 1, y: 0, duration: 0.5}, K.b(6.4) + i * 0.15);
+  });
+  const head = K.text(stage, 'S03_head', 'hd', {P: {top: 1210}, L: {top: 330}});
+  const sub = K.text(stage, 'S03_sub', 'sub', {P: {top: 1410}, L: {top: 560}});
+  if (!P) K.below(sub, head, 30, tl);
+  K.say(tl, head, K.b(1.6), {stagger: 0.06});
+  K.say(tl, sub, K.b(5.4), {stagger: 0.05});
+</script>
+</body></html>

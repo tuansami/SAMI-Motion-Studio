@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S02 · Nỗi đau: hộp đen nhả 3 dòng nhật ký lỗi (in kim): ngày nghỉ vẫn chạy, „pho rezept" vẫn tính tiền, báo cáo trống. */
+  .log { width: 900px; }
+  [data-ratio="16x9"] .log { width: 820px; }
+  .tape { position: absolute; z-index: 15; width: 6px; border-radius: 3px; background: linear-gradient(rgba(255,90,95,.0), rgba(255,90,95,.5)); }
+</style></head>
+<body>
+<div id="root" data-composition-id="S02"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.board(tl, stage, {sec: '§02 · NHẬT KÝ', seed: 5});
+  const BX = P ? {x: 540, y: 470, s: 210} : {x: 1330, y: 330, s: 190};
+  const svg = K.svg(stage, 10), box = K.box(svg, BX.x, BX.y, BX.s, {seed: 11});
+  tl.fromTo(svg, {scale: 1.12, transformOrigin: BX.x + 'px ' + BX.y + 'px'}, {scale: 1, duration: 0.9}, 0);
+  K.tick(tl, (t) => { box.q._op = 0.55 + 0.45 * Math.abs(Math.cos(t * 2.6)); box.update(0, 0); });
+  // 3 dòng nhật ký in ra từ hộp
+  const L0 = P ? {x: 90, y: 790, dy: 150} : {x: 1000, y: 600, dy: 135};
+  const keys = ['S02_l1', 'S02_l2', 'S02_l3'], ats = [K.b(2.4), K.b(5.2), K.b(8.0)];
+  keys.forEach((k, i) => {
+    const lg = K.el('div', 'log' + (i === 1 ? ' am' : ''), '<i>' + (i === 2 ? '∅' : '!') + '</i><div><span class="ix">LOG 0' + (i + 1) + '</span><br><span class="tx">' + S.html(k) + '</span>' + (i === 2 ? '<span class="caret"></span>' : '') + '</div>', stage);
+    lg.style.left = L0.x + 'px'; lg.style.top = (L0.y + i * L0.dy) + 'px';
+    tl.fromTo(lg, {opacity: 0, scale: 0.3, x: BX.x - L0.x - 450 * (P ? 1 : 0.9), y: BX.y - (L0.y + i * L0.dy), transformOrigin: '50% 50%'},
+      {opacity: 1, scale: 1, x: 0, y: 0, duration: 0.7}, ats[i]);
+    tl.fromTo(box.g, {x: 0}, {x: 5, duration: 0.04, yoyo: true, repeat: 5, ease: 'none', immediateRender: false}, ats[i] - 0.2);
+  });
+  const caret = K.$('.caret');
+  K.tick(tl, (t) => { caret.style.opacity = Math.floor(t * 2.4) % 2 ? 0 : 1; });
+  const mh = K.el('div', 'note', 'MINH HỌA', stage);
+  mh.style.cssText += P ? 'left:90px;top:1220px' : 'left:1000px;top:1010px';
+  tl.fromTo(mh, {opacity: 0}, {opacity: 1, duration: 0.5}, K.b(5.6));
+  const head = K.text(stage, 'S02_head', 'hd', {P: {top: 1290}, L: {top: 380}});
+  K.say(tl, head, K.b(0.5), {stagger: 0.06});
+</script>
+</body></html>

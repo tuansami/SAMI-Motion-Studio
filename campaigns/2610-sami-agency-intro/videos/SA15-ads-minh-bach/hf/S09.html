@@ -1,0 +1,73 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S09 · Báo cáo tuần/tháng: tờ báo cáo in ra từ khe bảng (tua nhanh ×16); 4 mục, không số; tab BÁO CÁO THÁNG phía sau. */
+  .prn { position: absolute; z-index: 22; height: 54px; border-radius: 16px; background: linear-gradient(#1B2534, #111823); box-shadow: inset 0 0 0 1.5px var(--line), 0 16px 40px rgba(0,0,0,.5); }
+  .prn:after { content: ""; position: absolute; left: 30px; right: 30px; bottom: 12px; height: 6px; border-radius: 3px; background: #04070B; }
+  .prn .led { position: absolute; left: 22px; top: 14px; width: 10px; height: 10px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 10px var(--mint); }
+  .ff { position: absolute; z-index: 23; font-family: "IBM Plex Mono"; font-weight: 700; font-size: 24px; letter-spacing: .1em; color: var(--mint); white-space: nowrap; }
+  .win { position: absolute; z-index: 20; overflow: hidden; }
+  .sheet { position: absolute; left: 0; top: 0; right: 0; border-radius: 0 0 14px 14px; background: #F3F5F7; color: #16202C; font-family: "Be Vietnam Pro"; box-shadow: 0 30px 70px rgba(0,0,0,.5); padding: 30px 38px; box-sizing: border-box; }
+  .sheet .hdr { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #16202C; padding-bottom: 16px; }
+  .sheet .hdr b { display: block; font-weight: 800; font-size: 40px; letter-spacing: -.01em; }
+  .sheet .hdr small { font-family: "IBM Plex Mono"; font-weight: 600; font-size: 20px; letter-spacing: .1em; color: #5B6878; }
+  .sheet .mh { font-family: "IBM Plex Mono"; font-weight: 700; font-size: 20px; letter-spacing: .12em; color: #B4232A; border: 2.5px solid #B4232A; border-radius: 6px; padding: 4px 10px; transform: rotate(4deg); }
+  .sheet h4 { margin: 24px 0 12px; font-family: "IBM Plex Mono"; font-weight: 700; font-size: 21px; letter-spacing: .12em; color: #5B6878; }
+  .stk { display: flex; height: 34px; border-radius: 8px; overflow: hidden; }
+  .stk i { display: block; height: 100%; transform-origin: 0 50%; }
+  .lg { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 12px; font-size: 22px; font-weight: 600; color: #36414F; }
+  .lg span:before { content: ""; display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: 8px; background: var(--c); vertical-align: -1px; }
+  .ar { display: flex; align-items: center; gap: 14px; height: 40px; font-size: 24px; font-weight: 600; }
+  .ar svg { width: 28px; height: 28px; flex: none; }
+  .ar .nm { width: 190px; flex: none; }
+  .ar .br { flex: 1; height: 14px; border-radius: 7px; background: #DDE3EA; overflow: hidden; }
+  .ar .br i { display: block; height: 100%; background: #0BB585; transform-origin: 0 50%; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chips span { font-family: "IBM Plex Mono"; font-weight: 600; font-size: 21px; padding: 6px 12px; border-radius: 8px; background: rgba(180,35,42,.1); color: #B4232A; }
+  .td { display: flex; align-items: center; gap: 14px; font-size: 24px; font-weight: 600; margin: 8px 0; }
+  .td i { width: 26px; height: 26px; border-radius: 6px; box-shadow: inset 0 0 0 2.5px #16202C; flex: none; }
+  .tab { position: absolute; z-index: 18; border-radius: 14px; background: #C9D2DC; box-shadow: 0 20px 50px rgba(0,0,0,.45); font-family: "IBM Plex Mono"; font-weight: 700; font-size: 22px; letter-spacing: .12em; color: #2A3646; padding: 20px 28px; box-sizing: border-box; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S09"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.board(tl, stage, {sec: '§09 · BÁO CÁO', seed: 29});
+  const R = P ? {x: 150, y: 236, w: 780, h: 900} : {x: 1040, y: 50, w: 740, h: 960};
+  const G = K.list('S04_g'), AC = K.list('S08_acts'), IC = ['cal', 'phone', 'pin', 'gift', 'menu'], COL = ['#0BB585', '#2F80ED', '#F5A524', '#7667FE'];
+  const NEG = K.list('S07_rows').filter((r) => r[0] === '-').map((r) => r.slice(1));
+  const prn = K.el('div', 'prn', '<i class="led"></i>', stage); prn.style.cssText += 'left:' + (R.x - 30) + 'px;top:' + (R.y - 40) + 'px;width:' + (R.w + 60) + 'px';
+  const ff = K.el('div', 'ff', '▶▶ ×16', stage); ff.style.cssText += 'left:' + (R.x + R.w - 120) + 'px;top:' + (R.y - 82) + 'px';
+  const tab = K.el('div', 'tab', 'BÁO CÁO THÁNG →', stage); tab.style.cssText += 'left:' + (R.x + 70) + 'px;top:' + (R.y + 40) + 'px;width:' + (R.w - 20) + 'px;height:' + (R.h - 30) + 'px';
+  const win = K.el('div', 'win', null, stage); win.style.cssText += 'left:' + R.x + 'px;top:' + (R.y - 12) + 'px;width:' + R.w + 'px;height:' + (R.h + 80) + 'px';
+  let h = '<div class="hdr"><div><b>Báo cáo tuần</b><small>QUÁN CỦA BẠN · GOOGLE ADS</small></div><span class="mh">MINH HỌA</span></div>';
+  h += '<h4>01 · TIỀN ĐÃ ĐI ĐÂU</h4><div class="stk">' + [34, 30, 20, 16].map((w, i) => '<i style="width:' + w + '%;background:' + COL[i] + '"></i>').join('') + '</div>';
+  h += '<div class="lg">' + G.map((g, i) => '<span style="--c:' + COL[i] + '">' + g + '</span>').join('') + '</div>';
+  h += '<h4>02 · MANG VỀ GÌ</h4>' + AC.map((a, i) => '<div class="ar">' + K.icon(IC[i], '#0BB585') + '<span class="nm">' + a + '</span><span class="br"><i style="width:' + [82, 56, 64, 30, 90][i] + '%"></i></span></div>').join('');
+  h += '<h4>03 · TỪ KHÓA PHỦ ĐỊNH MỚI</h4><div class="chips">' + NEG.map((n) => '<span>− ' + n + '</span>').join('') + '</div>';
+  h += '<h4>04 · TUẦN TỚI</h4><div class="td"><i></i>Thử mẫu quảng cáo mới cho Gutschein</div><div class="td"><i></i>Rà lại giờ chạy cuối tuần</div>';
+  const sh = K.el('div', 'sheet', h, win);
+  if (!P) sh.style.padding = '30px 34px';
+  const sH = sh.offsetHeight;
+  // in ra (tua nhanh): tờ giấy trượt xuống từ khe, rung theo bước
+  const p0 = K.b(0.8), p1 = K.b(5.2);
+  K.tick(tl, (t) => {
+    const p = K.clamp((t - p0) / (p1 - p0), 0, 1), q = Math.floor(p * 40) / 40;
+    sh.style.transform = 'translateY(' + (-sH + q * sH + 12) + 'px)';
+    ff.style.opacity = t > p0 && t < p1 + 0.2 ? (Math.floor(t * 4) % 2 ? 0.55 : 1) : 0;
+  });
+  tl.fromTo([prn, tab], {opacity: 0}, {opacity: 1, duration: 0.4, stagger: 0.2}, 0.1);
+  tl.fromTo(tab, {rotation: 0, x: 0}, {rotation: 3, x: 26, duration: 0.6}, p1);
+  tl.fromTo(K.$$('.stk i'), {scaleX: 0}, {scaleX: 1, duration: 0.5, stagger: 0.1}, p1 - 1.8);
+  tl.fromTo(K.$$('.ar .br i'), {scaleX: 0}, {scaleX: 1, duration: 0.6, stagger: 0.08}, p1 - 1.2);
+  const head = K.text(stage, 'S09_head', 'hd', {P: {top: 1250}, L: {top: 330}});
+  const sub = K.text(stage, 'S09_sub', 'sub', {P: {top: 1440}, L: {top: 560}});
+  if (!P) K.below(sub, head, 30, tl);
+  K.say(tl, head, K.b(0.5), {stagger: 0.06});
+  K.say(tl, sub, K.b(5.4), {stagger: 0.05});
+</script>
+</body></html>

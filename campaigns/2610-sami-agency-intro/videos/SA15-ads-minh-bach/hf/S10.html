@@ -1,0 +1,44 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S10 · Nhịp thở + cam kết: hộp kính đứng một mình, thở sáng (1 s tĩnh); một đồng xu rơi qua hộp, thấy rõ đường đi, chảy ra ống tới "ĐẶT BÀN ✓". */
+  .term { position: absolute; z-index: 20; display: flex; align-items: center; gap: 18px; padding: 18px 26px; border-radius: 18px; background: var(--panel); box-shadow: inset 0 0 0 1.5px var(--line); font-family: "IBM Plex Mono"; font-weight: 700; font-size: 26px; letter-spacing: .12em; color: var(--ink2); white-space: nowrap; }
+  .term .ic { position: relative; width: 44px; height: 44px; } .term .ic span { position: absolute; inset: 0; } .term svg { width: 44px; height: 44px; display: block; }
+  .term.on { box-shadow: inset 0 0 0 2px var(--mint), 0 0 40px rgba(8,221,164,.3); color: var(--mint); }
+  #halo { position: absolute; width: 900px; height: 900px; margin: -450px; border-radius: 50%; background: radial-gradient(circle, rgba(8,221,164,.16), transparent 62%); z-index: 5; }
+  .hd { font-size: 70px; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S10"><div id="stage" class="clip"><div id="halo"></div></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.board(tl, stage, {sec: '§10 · CAM KẾT', seed: 31, dust: 16, mint: 0.3});
+  const BX = P ? {x: 470, y: 600, s: 250} : {x: 1250, y: 470, s: 250};
+  const svg = K.svg(stage, 10), box = K.box(svg, BX.x, BX.y, BX.s, {mode: 'glass'});
+  const H = K.$('#halo'); H.style.left = BX.x + 'px'; H.style.top = BX.y + 'px';
+  tl.fromTo(H, {scale: 0.9, opacity: 0.6}, {scale: 1.1, opacity: 1, duration: 1.4, yoyo: true, repeat: 3, ease: 'sine.inOut'}, 0);
+  const sl = box.slot, J = [BX.x, BX.y + BX.s * 0.28];
+  const T = P ? [600, 1010] : [1560, 860];
+  const tm = K.el('div', 'term', '<span class="ic"><span class="g0">' + K.icon('cal', '#8FA3B8') + '</span><span class="g1">' + K.icon('cal') + '</span></span>ĐẶT BÀN <b class="ok" style="color:var(--mint)">✓</b>', stage);
+  tm.style.left = T[0] + 'px'; tm.style.top = T[1] + 'px';
+  const tp = K.port(tm, 'l');
+  const c0 = K.b(1.9), inP = K.pipe(box.inner, 'M' + sl[0] + ' ' + (sl[1] + 6) + ' L' + J[0] + ' ' + J[1], {w: 14, at: c0 + 0.35, dur: 0.5});
+  const oP = K.pipe(box.inner, K.bandH(J[0], J[1], tp[0] + 4, tp[1]), {w: 12, at: c0 + 0.7, dur: 1.1});
+  K.flow(tl);
+  // đồng xu rơi qua khe, thấy được bên trong hộp kính
+  const cn = K.mkCoin(stage, 96); cn.style.zIndex = 11;
+  tl.fromTo(cn, {x: sl[0], y: -80, scaleX: 1, rotation: -18, opacity: 1}, {x: sl[0], y: sl[1], scaleX: 0.3, rotation: 0, duration: 0.55, ease: 'power2.in'}, c0 - 0.55);
+  tl.to(cn, {y: J[1], scale: 0.55, scaleX: 0.2, opacity: 0.85, duration: 0.4, ease: 'none'}, c0);
+  tl.to(cn, {opacity: 0, duration: 0.15}, c0 + 0.4);
+  tl.fromTo(tm, {opacity: 0.35}, {opacity: 1, duration: 0.3}, c0 + 1.6);
+  tl.set(tm, {className: 'term on'}, c0 + 1.75);
+  tl.fromTo(tm.querySelector('.g1'), {opacity: 0}, {opacity: 1, duration: 0.2}, c0 + 1.75);
+  tl.fromTo(tm.querySelector('.ok'), {opacity: 0, scale: 1.8}, {opacity: 1, scale: 1, duration: 0.3}, c0 + 1.8);
+  const head = K.text(stage, 'S10_head', 'hd', {P: {top: 1250}, L: {top: 360}});
+  K.say(tl, head, K.b(1.8), {stagger: 0.07});
+</script>
+</body></html>

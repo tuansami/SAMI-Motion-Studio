@@ -1,0 +1,53 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S08 · Khép chữ ký: hộp kính toả 5 ống, mỗi ống kết thúc ở một hành động thật của khách; đầu cuối sáng + "ĐO ✓". */
+  .term { position: absolute; z-index: 20; height: 116px; box-sizing: border-box; display: flex; align-items: center; gap: 22px; padding: 0 24px; border-radius: 18px; background: var(--panel); box-shadow: inset 0 0 0 1.5px var(--line), 0 24px 60px rgba(0,0,0,.45); }
+  .term .ic { width: 64px; height: 64px; flex: none; border-radius: 16px; background: rgba(143,163,184,.1); display: flex; align-items: center; justify-content: center; }
+  .term .ic { position: relative; } .term .ic span { position: absolute; left: 11px; top: 11px; width: 42px; height: 42px; } .term .ic svg { width: 42px; height: 42px; display: block; }
+  .term b { font-family: "Be Vietnam Pro"; font-weight: 700; font-size: 36px; color: var(--ink); white-space: nowrap; }
+  .term .ck { margin-left: auto; font-family: "IBM Plex Mono"; font-weight: 700; font-size: 21px; letter-spacing: .12em; color: #06281A; background: var(--mint); padding: 7px 12px; border-radius: 8px; opacity: 0; white-space: nowrap; }
+  .term.on { box-shadow: inset 0 0 0 2px var(--mint), 0 0 40px rgba(8,221,164,.28), 0 24px 60px rgba(0,0,0,.45); }
+  .term.on .ic { background: rgba(8,221,164,.16); }
+  .pr { position: absolute; z-index: 19; height: 116px; border-radius: 18px; border: 3px solid var(--mint); opacity: 0; }
+  #tag { position: absolute; z-index: 20; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 21px; letter-spacing: .1em; color: var(--steel); white-space: nowrap; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S08"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.board(tl, stage, {sec: '§08 · ĐO LƯỜNG', seed: 23, mint: 0.32});
+  const AC = K.list('S08_acts'), IC = ['cal', 'phone', 'pin', 'gift', 'menu'];
+  const L = P ? {bx: [200, 470, 150], tx: 470, tw: 520, ty: 300, dy: 150, tag: [90, 1080]} : {bx: [1020, 470, 170], tx: 1350, tw: 470, ty: 150, dy: 150, tag: [960, 940]};
+  const svg = K.svg(stage, 10), box = K.box(svg, L.bx[0], L.bx[1], L.bx[2], {mode: 'glass'});
+  tl.fromTo(svg, {opacity: 0}, {opacity: 1, duration: 0.5}, 0);
+  const sl = box.slot, J = [L.bx[0], L.bx[1] + L.bx[2] * 0.28];
+  K.pipe(box.inner, 'M' + sl[0] + ' ' + (sl[1] + 6) + ' L' + J[0] + ' ' + J[1], {w: 14, at: 0.2, dur: 0.6});
+  const a0 = K.b(1.6);
+  AC.forEach((a, i) => {
+    const y = L.ty + i * L.dy, tm = K.el('div', 'term', '<div class="ic"><span class="g0">' + K.icon(IC[i], '#8FA3B8') + '</span><span class="g1">' + K.icon(IC[i]) + '</span></div><b>' + a + '</b><span class="ck">ĐO ✓</span>', stage);
+    tm.style.left = L.tx + 'px'; tm.style.top = y + 'px'; tm.style.width = L.tw + 'px';
+    S.arrive(tl, tm, 0.3 + i * 0.08, {dist: 16, blur: 6});
+    const at = a0 + i * 0.42, arr = at + 0.95;
+    K.pipe(box.inner, K.bandH(J[0], J[1], L.tx + 6, y + 58), {w: 11, at: at, dur: 1.0, speed: 100});
+    tl.set(tm, {className: 'term on'}, arr);
+    tl.fromTo(tm.querySelector('.g1'), {opacity: 0}, {opacity: 1, duration: 0.2}, arr);
+    tl.fromTo(tm.querySelector('.ic'), {scale: 1.35}, {scale: 1, duration: 0.35}, arr);
+    tl.fromTo(tm.querySelector('.ck'), {opacity: 0, x: 14}, {opacity: 1, x: 0, duration: 0.35}, arr + 0.15);
+    const pr = K.el('div', 'pr', null, stage); pr.style.cssText += 'left:' + L.tx + 'px;top:' + y + 'px;width:' + L.tw + 'px';
+    tl.fromTo(pr, {opacity: 0.9, scale: 1}, {opacity: 0, scale: 1.08, duration: 0.7, ease: 'power1.out', immediateRender: false}, arr);
+  });
+  const tg = K.el('div', '', S.html('S08_tag'), stage); tg.id = 'tag'; tg.style.left = L.tag[0] + 'px'; tg.style.top = L.tag[1] + 'px';
+  tl.fromTo(tg, {opacity: 0}, {opacity: 1, duration: 0.5}, a0 + 2.8);
+  K.flow(tl);
+  const head = K.text(stage, 'S08_head', 'hd', {P: {top: 1220, fontSize: '64px'}, L: {top: 330, fontSize: '66px'}});
+  const sub = K.text(stage, 'S08_sub', 'sub', {P: {top: 1450}, L: {top: 580}});
+  if (!P) K.below(sub, head, 30, tl);
+  K.say(tl, head, K.b(0.4), {stagger: 0.06});
+  K.say(tl, sub, K.b(5.4), {stagger: 0.05});
+</script>
+</body></html>

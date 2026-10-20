@@ -1,0 +1,54 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S01 · Hook: đồng euro lao vào khe hộp đen ngay khung đầu, thêm 4 đồng rơi nhanh dần; đồng hồ ngân sách đầy dần; dấu "?" amber. */
+  .meter { position: absolute; z-index: 20; }
+  .meter .lb { display: flex; justify-content: space-between; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 22px; letter-spacing: .14em; color: var(--steel); margin-bottom: 12px; }
+  .meter .lb b { color: var(--amber); }
+  .meter .bar { height: 18px; border-radius: 9px; background: rgba(143,163,184,.14); box-shadow: inset 0 0 0 1.5px var(--line); overflow: hidden; }
+  .meter .fill { height: 100%; width: 100%; transform-origin: 0 50%; background: repeating-linear-gradient(90deg, var(--amber) 0 26px, rgba(245,165,36,.7) 26px 30px); }
+  .puff { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #FFE08A; z-index: 24; opacity: 0; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S01"><div id="stage" class="clip">
+  <div id="cam" style="position:absolute;inset:0"></div>
+</div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage'), cam = K.$('#cam');
+  K.board(tl, stage, {sec: '§01 · HỘP ĐEN', seed: 3});
+  const BX = P ? {x: 540, y: 690, s: 290} : {x: 1340, y: 560, s: 270};
+  const svg = K.svg(cam, 10), box = K.box(svg, BX.x, BX.y, BX.s, {seed: 11});
+  const sl = box.slot;
+  tl.fromTo(cam, {scale: 1}, {scale: 1.06, duration: S.dur, ease: 'none', transformOrigin: BX.x + 'px ' + BX.y + 'px'}, 0);
+  // đồng hồ ngân sách
+  const mt = K.el('div', 'meter', '<div class="lb"><span data-copy="S01_meter"></span><b>?</b></div><div class="bar"><div class="fill"></div></div>', cam);
+  mt.querySelector('span').innerHTML = S.html('S01_meter');
+  mt.style.cssText += P ? 'left:200px;width:680px;top:1060px' : 'left:1040px;width:600px;top:910px';
+  const fill = mt.querySelector('.fill');
+  tl.fromTo(mt, {opacity: 0, y: 16}, {opacity: 1, y: 0, duration: 0.6}, 0.5);
+  // đồng xu rơi (khung đầu đã thấy đồng xu lao xuống)
+  const land = [0.38, 1.55, 2.25, 2.8, 3.25], sz = P ? 150 : 140;
+  land.forEach((t1, i) => {
+    const c = K.mkCoin(cam, sz), t0 = i === 0 ? 0 : t1 - 0.55;
+    tl.fromTo(c, {x: sl[0] + (i % 2 ? -40 : 30), y: i === 0 ? sl[1] - 420 : -sz, rotation: i % 2 ? 30 : -25, scale: i === 0 ? 2.8 : 1, scaleX: i === 0 ? 2.8 : 1, opacity: 1},
+      {x: sl[0], y: sl[1] - 6, rotation: 0, scale: 1, scaleX: 0.28, duration: t1 - t0, ease: 'power2.in', immediateRender: true}, t0);
+    tl.to(c, {y: sl[1] + 30, opacity: 0, duration: 0.08, ease: 'none'}, t1);
+    tl.fromTo(box.g, {y: 0}, {y: 7, duration: 0.05, ease: 'none', immediateRender: false}, t1);
+    tl.to(box.g, {y: 0, duration: 0.3}, t1 + 0.05);
+    for (let k = 0; k < 6; k++) {
+      const p = K.el('i', 'puff', null, cam), a = -Math.PI * (0.15 + 0.7 * S.rnd(i * 9 + k));
+      tl.fromTo(p, {x: sl[0], y: sl[1], opacity: 0.9}, {x: sl[0] + Math.cos(a) * 90 * (k % 2 ? 1 : -1), y: sl[1] + Math.sin(a) * 70, opacity: 0, duration: 0.5, ease: 'power2.out', immediateRender: false}, t1);
+    }
+    tl.to(fill, {scaleX: 0.16 + i * 0.19, duration: 0.25}, t1);
+  });
+  tl.set(fill, {scaleX: 0.02}, 0);
+  // dấu "?" nhấp nháy
+  K.tick(tl, (t) => { box.q._op = 0.55 + 0.45 * Math.abs(Math.cos(t * 2.6)); box.update(0, 0); });
+  const head = K.text(stage, 'S01_head', 'hd', {P: {top: 1250}, L: {top: 390}});
+  K.say(tl, head, K.b(0.4), {stagger: 0.06});
+</script>
+</body></html>

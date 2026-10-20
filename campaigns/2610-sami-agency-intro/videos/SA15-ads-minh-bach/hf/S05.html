@@ -1,0 +1,80 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<link rel="stylesheet" href="_fonts/cormorant/600-italic.css"><link rel="stylesheet" href="_fonts/cormorant/700.css"><link rel="stylesheet" href="_fonts/inter/500.css"><link rel="stylesheet" href="_fonts/inter/700.css">
+<style>
+  /* S05 · Từ khóa → quảng cáo → trang đích: gõ „vietnamesisch schliersee", thẻ Anzeige của Vị (minh hoạ), chạm, dòng chảy xuống landing "Vietnamesisch essen in Schliersee". */
+  .sbar { position: absolute; z-index: 20; height: 86px; border-radius: 43px; background: #fff; display: flex; align-items: center; gap: 18px; padding: 0 30px; box-sizing: border-box; font-family: Inter; font-weight: 500; font-size: 32px; color: #202124; box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+  .sbar svg { width: 38px; height: 38px; flex: none; }
+  .sbar .cr { display: inline-block; width: 3px; height: 1.1em; background: #1a73e8; vertical-align: -.18em; margin-left: 2px; }
+  .ad { position: absolute; z-index: 20; border-radius: 22px; background: #fff; padding: 26px 30px 24px; box-sizing: border-box; font-family: Inter; color: #202124; box-shadow: 0 30px 70px rgba(0,0,0,.5); }
+  .ad .top { font-size: 22px; display: flex; align-items: center; gap: 12px; }
+  .ad .top b { font-weight: 700; } .ad .top span { color: #4d5156; }
+  .ad .fav { width: 34px; height: 34px; border-radius: 50%; background: #2b170c; color: #d3ae76; font-family: Cormorant; font-weight: 700; font-size: 22px; display: flex; align-items: center; justify-content: center; }
+  .ad h3 { margin: 14px 0 10px; font-weight: 500; font-size: 33px; line-height: 1.3; color: #1a0dab; }
+  .ad p { margin: 0; font-size: 23px; line-height: 1.45; color: #4d5156; }
+  .ad .sl { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .ad .sl span { font-size: 21px; font-weight: 500; color: #1a0dab; padding: 7px 16px; border-radius: 99px; box-shadow: inset 0 0 0 1.5px #dadce0; }
+  .ad mark, .lp mark { background: rgba(8,221,164,.22); color: inherit; border-radius: 6px; padding: 0 3px; box-shadow: 0 0 0 0 transparent; }
+  .lp { position: absolute; z-index: 20; border-radius: 26px; overflow: hidden; background: #2b170c; box-shadow: 0 0 0 2px rgba(211,174,118,.35), 0 30px 70px rgba(0,0,0,.55); }
+  .lp .img { position: absolute; inset: 0; background: url(public/img/vi-hero.webp) center/cover; opacity: .55; }
+  .lp .sh { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(43,23,12,.35), rgba(43,23,12,.92) 70%); }
+  .lp .url { position: absolute; left: 24px; right: 24px; top: 18px; height: 44px; border-radius: 12px; background: rgba(237,231,227,.12); font-family: Inter; font-size: 20px; color: rgba(237,231,227,.8); display: flex; align-items: center; padding-left: 16px; }
+  .lp .nm { position: absolute; left: 36px; top: 96px; font-family: Cormorant; font-weight: 700; font-size: 30px; letter-spacing: .06em; color: #d3ae76; }
+  .lp h2 { position: absolute; left: 36px; right: 36px; top: 140px; margin: 0; font-family: Cormorant; font-style: italic; font-weight: 600; font-size: 50px; line-height: 1.04; color: #ede7e3; }
+  .lp .bt { position: absolute; left: 24px; right: 24px; bottom: 22px; display: flex; gap: 14px; }
+  .lp .bt span { flex: 1; text-align: center; padding: 18px 0; border-radius: 14px; font-family: Inter; font-weight: 700; font-size: 25px; }
+  .lp .bt .r { background: #d3ae76; color: #2b170c; } .lp .bt .c { box-shadow: inset 0 0 0 2px #d3ae76; color: #ede7e3; }
+  .lbl2 { position: absolute; z-index: 30; font-family: "IBM Plex Mono"; font-weight: 600; font-size: 22px; letter-spacing: .1em; color: var(--mint); white-space: nowrap; padding: 8px 14px; border-radius: 8px; background: rgba(8,14,20,.88); box-shadow: inset 0 0 0 1.5px rgba(8,221,164,.5); }
+</style></head>
+<body>
+<div id="root" data-composition-id="S05"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.board(tl, stage, {sec: '§05 · TỪ KHÓA → TRANG', seed: 13});
+  const Q = S.text('S05_q');
+  const L = P ? {sb: [90, 250, 900], ad: [90, 372, 900], lp: [190, 860, 700, 330], c1: [610, 1205], c2: [90, 795]}
+              : {sb: [960, 70, 860], ad: [960, 180, 860], lp: [1090, 650, 600, 340], c1: [1100, 1010], c2: [960, 590]};
+  const sb = K.el('div', 'sbar', K.icon('search', '#5f6368') + '<span id="q"></span><span class="cr"></span>', stage);
+  sb.style.cssText += 'left:' + L.sb[0] + 'px;top:' + L.sb[1] + 'px;width:' + L.sb[2] + 'px';
+  const ad = K.el('div', 'ad', '<div class="top"><span class="fav">V</span><div><b>Anzeige</b> · <span>vi-schliersee.de</span></div></div>' +
+    '<h3 id="hl"><mark>Vietnamesisch in Schliersee</mark> | Vị Vietnamese Cuisine | Jetzt Tisch reservieren</h3>' +
+    '<p>Frische Zutaten, täglich geliefert. Pho, Bánh Xèo und Currys. Online reservieren.</p>' +
+    '<div class="sl"><span>Speisekarte</span><span>Reservierung</span><span>Gutschein</span><span>Kontakt</span></div>', stage);
+  ad.style.cssText += 'left:' + L.ad[0] + 'px;top:' + L.ad[1] + 'px;width:' + L.ad[2] + 'px';
+  const lp = K.el('div', 'lp', '<div class="img"></div><div class="sh"></div><div class="url">vi-schliersee.de/reservieren</div><div class="nm">Vị · Vietnamese Cuisine</div>' +
+    '<h2><mark>Vietnamesisch essen in Schliersee</mark></h2><div class="bt"><span class="r">Jetzt reservieren</span><span class="c">Anrufen</span></div>', stage);
+  lp.style.cssText += 'left:' + L.lp[0] + 'px;top:' + L.lp[1] + 'px;width:' + L.lp[2] + 'px;height:' + L.lp[3] + 'px';
+  // gõ từ khóa
+  const qe = K.$('#q'), cr = sb.querySelector('.cr'), ty0 = K.b(0.6);
+  tl.fromTo(sb, {opacity: 0, y: -20}, {opacity: 1, y: 0, duration: 0.5}, 0.1);
+  K.tick(tl, (t) => { const n = Math.round(K.clamp((t - ty0) / 1.6, 0, 1) * Q.length); qe.textContent = Q.slice(0, n); cr.style.opacity = Math.floor(t * 2.5) % 2 ? 0 : 1; });
+  // thẻ quảng cáo hiện ra
+  tl.fromTo(ad, {opacity: 0, y: 40, rotationX: 25, transformPerspective: 1600}, {opacity: 1, y: 0, rotationX: 0, duration: 0.7}, K.b(3.6));
+  tl.fromTo('.ad mark', {backgroundColor: 'rgba(8,221,164,0)'}, {backgroundColor: 'rgba(8,221,164,.22)', duration: 0.4}, K.b(7.2));
+  // chạm vào quảng cáo
+  const cu = K.cursor(stage), hx = L.ad[0] + (P ? 300 : 320), hy = L.ad[1] + (P ? 120 : 120);
+  K.path(tl, cu, [{x: S.w + 60, y: hy + 300, t: 0}, {x: S.w + 60, y: hy + 300, t: K.b(4.4)}, {x: hx, y: hy, t: K.b(5.6), click: true}, {x: hx + 60, y: hy + 160, t: K.b(6.6)}]);
+  K.ring(tl, stage, hx + 8, hy + 8, K.b(5.6));
+  // dòng chảy từ quảng cáo xuống trang đích
+  const svg = K.svg(stage, 9), ab = ad.offsetTop + ad.offsetHeight;
+  const x0 = P ? 540 : 1390, pp = P ? K.bandV(x0, ab - 20, x0, L.lp[1] + 20) : K.bandV(x0, ab - 20, L.lp[0] + L.lp[2] / 2, L.lp[1] + 20);
+  K.pipe(svg, pp, {w: 16, at: K.b(5.8), dur: 0.7});
+  K.flow(tl);
+  tl.fromTo(lp, {opacity: 0, scale: 0.9, y: 30}, {opacity: 1, scale: 1, y: 0, duration: 0.7}, K.b(6.4));
+  tl.fromTo('.lp mark', {backgroundColor: 'rgba(8,221,164,0)'}, {backgroundColor: 'rgba(8,221,164,.28)', duration: 0.4}, K.b(7.4));
+  // nhãn nguyên tắc
+  const c2 = K.el('div', 'lbl2', S.html('S05_c2'), stage), c1 = K.el('div', 'lbl2', S.html('S05_c1'), stage);
+  c2.style.left = L.c2[0] + 'px'; c2.style.top = (P ? ab + 26 : ab + 20) + 'px';
+  c1.style.left = L.c1[0] + 'px'; c1.style.top = L.c1[1] + 'px';
+  if (P) { c1.style.left = 'auto'; c1.style.right = '90px'; }
+  S.arrive(tl, c2, K.b(7.6), {dist: 10}); S.arrive(tl, c1, K.b(8.4), {dist: 10});
+  const mh = K.el('div', 'note', S.html('S04_note'), stage); mh.style.cssText += P ? 'left:90px;top:1210px' : 'left:100px;top:1000px';
+  tl.fromTo(mh, {opacity: 0}, {opacity: 1, duration: 0.5}, K.b(4));
+  const head = K.text(stage, 'S05_head', 'hd', {P: {top: 1270, fontSize: '60px'}, L: {top: 330, fontSize: '62px'}});
+  K.say(tl, head, K.b(1.0), {stagger: 0.055});
+</script>
+</body></html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="_fonts/be-vietnam-pro/500.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/600.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/700.css"><link rel="stylesheet" href="_fonts/be-vietnam-pro/800.css">
+<link rel="stylesheet" href="_fonts/ibm-plex-mono/500.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/600.css"><link rel="stylesheet" href="_fonts/ibm-plex-mono/700.css">
+<link rel="stylesheet" href="hf/parts/kit.css">
+<style>
+  /* S04 · Sankey 3 cột: ngân sách → 4 nhóm quảng cáo → 4 trang đích (cấu trúc của Vị Schliersee, minh hoạ cách SAMI dựng). */
+  .node b { font-size: 29px; }
+  .src { text-align: center; }
+  .src b { font-size: 32px; }
+  #kick2 { color: var(--ink3); font-size: 22px; }
+</style></head>
+<body>
+<div id="root" data-composition-id="S04"><div id="stage" class="clip"></div></div>
+<script src="hf/parts/kit.js"></script>
+<script>
+  const S = window.SAMI, K = window.K, tl = S.timeline(), P = K.P, stage = K.$('#stage');
+  K.board(tl, stage, {sec: '§04 · CẤU TRÚC', seed: 9});
+  const G = K.list('S04_g'), PG = K.list('S04_p');
+  const Ly = P ? {src: [50, 200], g: [300, 340], p: [760, 270], rows: [420, 600, 780, 960], hy: 360}
+               : {src: [880, 190], g: [1120, 360], p: [1580, 270], rows: [190, 370, 550, 730], hy: 120};
+  const kk = K.el('div', 'kick', S.html('S04_kick'), stage), k2 = K.el('div', 'kick', S.html('S04_note'), stage); k2.id = 'kick2';
+  kk.style.cssText += P ? 'left:90px;top:236px' : 'left:100px;top:180px'; k2.style.cssText += P ? 'left:90px;top:280px' : 'left:100px;top:222px';
+  S.arrive(tl, [kk, k2], K.b(0.2), {dist: 12, stagger: 0.12});
+  // tiêu đề cột
+  [['NGUỒN', Ly.src[0]], ['NHÓM QUẢNG CÁO', Ly.g[0]], ['TRANG ĐÍCH', Ly.p[0]]].forEach((c, i) => {
+    const h = K.el('div', 'colh', c[0], stage); h.style.left = c[1] + 'px'; h.style.top = Ly.hy + 'px'; h.style.width = (i ? (i === 1 ? Ly.g[1] : Ly.p[1]) : Ly.src[1]) + 'px';
+    tl.fromTo(h, {opacity: 0}, {opacity: 1, duration: 0.5}, K.b(0.6) + i * 0.15);
+  });
+  const midY = (Ly.rows[0] + Ly.rows[3]) / 2 + 60;
+  const src = K.node(stage, Ly.src[0], midY - 70, Ly.src[1], '€ / THÁNG', S.html('S04_src')); src.classList.add('src', 'on');
+  const gn = G.map((t, i) => K.node(stage, Ly.g[0], Ly.rows[i], Ly.g[1], 'NHÓM 0' + (i + 1), t));
+  const pn = PG.map((t, i) => K.node(stage, Ly.p[0], Ly.rows[i], Ly.p[1], 'ĐÍCH 0' + (i + 1), t));
+  // căn giữa theo chiều cao thẻ nhóm (thẻ trang đích thấp hơn)
+  pn.forEach((n, i) => { n.style.top = (Ly.rows[i] + (gn[i].offsetHeight - n.offsetHeight) / 2) + 'px'; });
+  src.style.top = (midY - src.offsetHeight / 2) + 'px';
+  const svg = K.svg(stage, 8), W = [18, 15, 10, 8];
+  const s0 = K.port(src, 'r'), a1 = K.b(1.4);
+  gn.forEach((n, i) => {
+    const a = K.port(n, 'l'), b = K.port(n, 'r'), c = K.port(pn[i], 'l');
+    const y0 = s0[1] + (i - 1.5) * 16;
+    K.pipe(svg, K.bandH(s0[0] - 6, y0, a[0] + 6, a[1]), {w: W[i], at: a1 + i * 0.3, dur: 1.0});
+    K.pipe(svg, K.bandH(b[0] - 6, b[1], c[0] + 6, c[1]), {w: W[i], at: a1 + 1.4 + i * 0.3, dur: 0.8});
+    tl.fromTo(n, {opacity: 0, x: -20}, {opacity: 1, x: 0, duration: 0.5}, a1 + i * 0.3 + 0.55);
+    tl.set(n, {className: 'node on'}, a1 + i * 0.3 + 0.95);
+    tl.fromTo(pn[i], {opacity: 0, x: -20}, {opacity: 1, x: 0, duration: 0.5}, a1 + 1.4 + i * 0.3 + 0.45);
+    tl.set(pn[i], {className: 'node on'}, a1 + 1.4 + i * 0.3 + 0.8);
+  });
+  tl.fromTo(src, {opacity: 0, scale: 0.8}, {opacity: 1, scale: 1, duration: 0.6}, K.b(0.8));
+  K.flow(tl);
+  const head = K.text(stage, 'S04_head', 'hd', {P: {top: 1250}, L: {top: 330}});
+  K.say(tl, head, K.b(0.6), {stagger: 0.06});
+</script>
+</body></html>
