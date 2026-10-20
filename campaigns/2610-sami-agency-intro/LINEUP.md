@@ -154,12 +154,12 @@ Thời lượng mục tiêu 60–90 s. Thứ tự = thứ tự sản xuất (ch�
 | SA06 | session_014qakdgwugRTztKeCbUtrUU | ▢ | ▢ | dựng xong 87 s, chờ Tuấn duyệt quyền chạy cli-render |
 | SA07 | session_01CGZSmJDyVUorpjLZ8XNWni | ▢ | ▢ | dựng xong 89,5 s, chờ Tuấn duyệt quyền chạy cli-render |
 | SA08 | session_01JR29rVe3J9LQTVve5qQNpn | ✓ | ✓ | 87,5 s, đã gửi |
-| SA09 | session_01W1XM5hiVJLghEYUwVCKZDG (đang làm) | ▢ | ▢ | |
+| SA09 | session_01W1XM5hiVJLghEYUwVCKZDG | ▢ | ▢ | dựng xong 88,8 s, chờ Tuấn duyệt quyền chạy cli-render |
 | SA10 | session_01KpzfcsQEKggGHtcU7Wr8ja | ✓ | ✓ | 89,7 s, Google Trends + Eurostat, đã gửi |
-| SA11 | — | ▢ | ▢ | |
+| SA11 | session_01CDiJmZDXHWWAWGtZdbfG2j (đang làm) | ▢ | ▢ | |
 | SA12 | — | ▢ | ▢ | |
 | SA13 | — | ▢ | ▢ | |
-| SA14 | session_01VAnbc7r8nwdmwFf8omFNir (đang làm) | ▢ | ▢ | |
+| SA14 | session_01VAnbc7r8nwdmwFf8omFNir (đang làm) | ✓ | ▢ | |
 | SA15 | — | ▢ | ▢ | |
 | SA16 | session_0196K5hENCT3q4ztsyzTevbk | ✓ | ✓ | 87 s, Eurostat sts_rb_q, đã gửi |
 | SA17 | — | ▢ | ▢ | |
