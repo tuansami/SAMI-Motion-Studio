@@ -9,8 +9,11 @@ Cập nhật: 19.10.2026
 
 ## Còn lại
 - [x] 9:16: đã render (90 s, 30 fps, −13,9 LUFS, không khung đen), kiểm 18 khung từ MP4, đã gửi (out/SAMI_SA14_paper-popup_v1_9x16.mp4 + _contact.jpg)
-- [ ] 16:9: khung cuối đã chỉnh (bìa trái, thẻ CTA phải), readcheck đạt → render (~60 phút) → kiểm → gửi
-- [ ] Báo phiên điều phối session_01ENDrWfgWowxtPX9WgXNUEt
+- [x] 16:9: đã render (90 s, −13,9 LUFS, không khung đen), kiểm 16 khung từ MP4, đã gửi (out/SAMI_SA14_paper-popup_v1_16x9.mp4 + _contact.jpg)
+- [x] Đã báo phiên điều phối session_01ENDrWfgWowxtPX9WgXNUEt
+
+## Ghi chú
+- Mỗi bản render ~60 phút (SwiftShader, 3 worker). Chờ Tuấn góp ý.
 
 ## Cách chạy lại
 `sh build.sh 1080x1920` (hoặc 1920x1080). Ảnh tĩnh: `cd /home/user/lemo-opuscar && node core/render/still.mjs <dự án> 10 40 --size 1080x1920`.
