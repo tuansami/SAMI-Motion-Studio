@@ -33,10 +33,10 @@
 /* vị trí chữ chuẩn theo tỉ lệ */
 .top { left: 80px; right: 80px; top: 250px; }
 .tagpos { left: 80px; top: 186px; }
-[data-ratio="16x9"] .top { left: 110px; right: auto; width: 680px; top: 330px; }
+[data-ratio="16x9"] .top { left: 110px; right: auto; width: 690px; top: 330px; }
 [data-ratio="16x9"] .tagpos { left: 110px; top: 250px; }
-[data-ratio="16x9"] .hd { font-size: 60px; }
-[data-ratio="16x9"] .hd.lan { font-size: 80px; }
+[data-ratio="16x9"] .hd { font-size: 58px; }
+[data-ratio="16x9"] .hd.lan { font-size: 76px; }
 
 /* ── công cụ thiết kế (không nhãn hiệu) ── */
 .tool { position: absolute; z-index: 10; background: var(--ui); border-radius: 22px; overflow: hidden;

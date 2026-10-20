@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="hf/parts/bp.css">
 <style>
   /* S11 · 3 LỢI ÍCH: thẻ ấm, icon vẽ nét đồng, vào lần lượt rồi đứng yên; cuối cảnh ánh ấm dịu xuống (nhịp thở) */
-  #kick { font-size: 70px; }
+  #kick { font-size: 76px; color: #FFF6EA; }
   .bn { position: absolute; z-index: 10; left: 70px; right: 70px; height: 300px; border-radius: 24px; background: rgba(34, 18, 12, .58); border: 2px solid rgba(226, 193, 142, .35);
     box-shadow: 0 24px 60px rgba(0, 0, 0, .35); display: flex; align-items: center; gap: 36px; padding: 0 48px; box-sizing: border-box; will-change: transform; }
   .bn svg { flex: none; width: 150px; height: 150px; }
@@ -19,9 +19,10 @@
   #b1 { top: 560px; } #b2 { top: 900px; } #b3 { top: 1240px; }
   [data-ratio="16x9"] #kick { left: 110px; right: 110px; width: auto; top: 150px; font-size: 72px; }
   [data-ratio="16x9"] .bn { top: 360px; width: 540px; height: 540px; left: auto; right: auto; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 48px 44px; gap: 30px; }
+  [data-ratio="16x9"] #b1, [data-ratio="16x9"] #b2, [data-ratio="16x9"] #b3 { top: 360px; }
   [data-ratio="16x9"] #b1 { left: 110px; } [data-ratio="16x9"] #b2 { left: 690px; } [data-ratio="16x9"] #b3 { left: 1270px; }
-  [data-ratio="16x9"] .bn .t { font-size: 62px; }
-  [data-ratio="16x9"] .bn .s { font-size: 34px; }
+  [data-ratio="16x9"] .bn .t { font-size: 56px; white-space: nowrap; }
+  [data-ratio="16x9"] .bn .s { font-size: 31px; }
   #dim { position: absolute; inset: 0; z-index: 25; background: #0C0628; opacity: 0; }
 </style>
 </head>

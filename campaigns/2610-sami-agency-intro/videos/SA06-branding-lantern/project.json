@@ -142,7 +142,7 @@
   "S02_headline": {
    "label": "Câu bước ngoặt",
    "scene": "S02",
-   "value": "Thương hiệu không bắt đầu từ logo. / Nó bắt đầu từ *một câu chuyện.*"
+   "value": "Thương hiệu không bắt đầu từ logo. / Nó bắt đầu từ / *một câu chuyện.*"
   },
   "S03_tag": {
    "label": "Nhãn case thật",
@@ -252,7 +252,7 @@
   "S11_b1": {
    "label": "Thẻ 1 dòng phụ",
    "scene": "S11",
-   "value": "Khách nhắc tên, giới thiệu cho bạn bè."
+   "value": "Khách nhớ tên, kể cho bạn bè."
   },
   "S11_b2t": {
    "label": "Thẻ 2 tiêu đề",

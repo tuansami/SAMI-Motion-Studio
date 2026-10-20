@@ -2,6 +2,8 @@
 (function () {
   'use strict';
   var S = window.SAMI, EASE = S.EASE, B = (window.BP = {});
+  // 16:9: bỏ ngắt dòng cứng của bản dọc trong tiêu đề, để chữ tự cân dòng theo cột trái
+  if (S.landscape) document.querySelectorAll('.hd br').forEach(function (b) { b.replaceWith(' '); });
   B.cl = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
   B.L = function (t, a, b) { return B.cl((t - a) / (b - a)); };
   B.E = function (t, a, b) { return EASE(B.L(t, a, b)); };
